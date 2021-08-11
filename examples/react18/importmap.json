@@ -1,0 +1,10 @@
+{
+  "imports": {
+    "react": "https://exx.sh/react@alpha",
+    "react-dom": "https://exx.sh/react-dom@alpha",
+    "react-dom/server": "https://exx.sh/react-dom@alpha/server",
+    "helmet": "https://exx.sh/react-helmet-async?deps=react@alpha&no-check",
+    "wouter": "https://exx.sh/wouter?deps=react@alpha&no-check",
+    "swr": "https://exx.sh/swr?deps=react@alpha&no-check"
+  }
+}
