@@ -1,0 +1,94 @@
+import { Application, Router, send } from "https://deno.land/x/oak/mod.ts";
+import { existsSync } from "https://deno.land/std/fs/mod.ts";
+import { join } from "https://deno.land/std/path/mod.ts";
+import render from "./render.js";
+import transform from "./transform.js";
+import LRU from "https://deno.land/x/lru/mod.ts";
+
+const app = new Application();
+const router = new Router();
+const memory = new LRU(500);
+
+const isDev = Deno.env.get("mode") === "dev";
+const port = Deno.env.get("port") || 3000;
+const root = Deno.env.get("url") || `http://localhost:${port}`;
+
+const start = async ({
+  importmap,
+  lang = "en",
+}) => {
+  importmap = JSON.parse(importmap);
+
+  app.use(async (context, next) => {
+    const { pathname } = context.request.url;
+    if (pathname == "/") await next();
+    try {
+      await send(context, pathname, {
+        root: join(Deno.cwd(), "public"),
+      });
+    } catch (e) {
+      await next();
+    }
+  });
+
+  router.get("/:slug+.js", async (context, next) => {
+    let { pathname } = context.request.url;
+    if (memory.has(pathname) && !isDev) {
+      context.response.type = "application/javascript";
+      context.response.body = memory.get(pathname);
+      return;
+    }
+    let jsx = pathname.replaceAll(".js", ".jsx");
+    let tsx = pathname.replaceAll(".js", ".tsx");
+    let file = existsSync(join(Deno.cwd(), "public", jsx))
+      ? jsx
+      : existsSync(join(Deno.cwd(), "public", tsx))
+      ? tsx
+      : false;
+    if (!file) return await next();
+    try {
+      let source = await Deno.readTextFile(
+        join(Deno.cwd(), "public", ...file.split("/")),
+      );
+      let code = await transform({ source, importmap, root });
+      if (!isDev) memory.set(pathname, code);
+      context.response.type = "application/javascript";
+      context.response.body = code;
+    } catch (e) {
+      console.log(e);
+      await next();
+    }
+  });
+
+  router.get("/(.*)", async (context, next) => {
+    try {
+      context.response.body = await render({
+        root,
+        request: context.request,
+        importmap,
+        lang,
+      });
+    } catch (e) {
+      console.log(e);
+      await next();
+    }
+  });
+
+  app.use(router.routes());
+
+  app.use(router.allowedMethods());
+
+  app.addEventListener("listen", () => {
+    console.log(`Listening: ${root}`);
+  });
+
+  app.addEventListener("error", (evt) => {
+    console.log(evt.error);
+  });
+
+  app.listen({ port });
+};
+
+export default start;
+
+export { app, router };
