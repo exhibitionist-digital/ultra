@@ -71,7 +71,7 @@ dependencies. No bundling, building or complex package managers needed.
 ```js
 import React from "react";
 
-const Graveyard = () => {
+export default const Graveyard = () => {
   const gravestones = [
     ".cjs",
     "require()",
@@ -82,23 +82,20 @@ const Graveyard = () => {
     "create-react-app",
     "next.js",
   ];
+
   return (
     <ul className="graveyard">
-      {gravestones.map((grave) => {
-        return (
-          <li>
-            <figure>
-              <img src="/grave.svg" alt="Gravestone" />
-              <figcaption>{grave}</figcaption>
-            </figure>
-          </li>
-        );
-      })}
+      {gravestones.map((grave) => (
+        <li>
+          <figure>
+            <img src="/grave.svg" alt="Gravestone" />
+            <figcaption>{grave}</figcaption>
+          </figure>
+        </li>
+      ));}
     </ul>
-  );
+  )
 };
-
-export default Graveyard;
 ```
 
 **Under the hood:** We use [esbuild](https://esbuild.github.io) +
