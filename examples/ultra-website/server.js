@@ -1,4 +1,4 @@
-import ultra, { router } from "https://deno.land/x/ultra/mod.js";
+import ultra, { router } from "https://deno.land/x/ultra@v0.1/mod.js";
 import { join } from "https://deno.land/std@0.104.0/path/mod.ts";
 
 router.get("/markdown", async (context) => {
