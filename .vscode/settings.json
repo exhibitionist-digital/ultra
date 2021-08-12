@@ -1,5 +1,10 @@
 {
   "deno.enable": true,
   "prettier.enable": false,
-  "deno.importMap": "./import_map.json"
+  "deno.importMap": "./import_map.json",
+  "deno.suggest.imports.hosts": {
+    "https://deno.land/x/": true,
+    "https://x.nest.land/": true,
+    "https://esm.sh": false
+  }
 }

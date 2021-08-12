@@ -1,5 +1,5 @@
-import * as esbuild from "esbuild";
-import { parse } from "swc";
+import * as esbuild from "https://deno.land/x/esbuild@v0.12.19/mod.js";
+import { parse } from "https://x.nest.land/swc@0.1.2/mod.ts";
 
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();

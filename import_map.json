@@ -4,7 +4,7 @@
     "react-dom": "https://esm.sh/react-dom@alpha",
     "react-dom/": "https://esm.sh/react-dom@alpha/",
     "wouter": "https://esm.sh/wouter@2.7.4",
-    "swc": "https://x.nest.land/swc@0.0.6/mod.ts",
+    "swc": "https://x.nest.land/swc@0.1.2/mod.ts",
     "esbuild": "https://deno.land/x/esbuild@v0.12.19/mod.js",
     "oak": "https://deno.land/x/oak@v8.0.0/mod.ts",
     "fs": "https://deno.land/std@0.104.0/fs/mod.ts",

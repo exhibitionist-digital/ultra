@@ -1,9 +1,9 @@
-import { Application, Router, send } from "oak";
-import { existsSync } from "fs";
-import { join } from "path";
+import { Application, Router, send } from "https://deno.land/x/oak@v8.0.0/mod.ts";
+import { existsSync } from "https://deno.land/std@0.104.0/fs/mod.ts";
+import { join } from "https://deno.land/std@0.104.0/path/mod.ts";
 import render from "./render.js";
 import transform from "./transform.js";
-import LRU from "lru";
+import LRU from "https://deno.land/x/lru@1.0.2/mod.ts";
 
 const app = new Application();
 const router = new Router();
