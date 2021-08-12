@@ -1,10 +1,10 @@
 {
   "imports": {
-    "react": "https://exx.sh/react@alpha",
-    "react-dom": "https://exx.sh/react-dom@alpha",
-    "react-dom/server": "https://exx.sh/react-dom@alpha/server",
-    "helmet": "https://exx.sh/react-helmet-async?deps=react@alpha&no-check",
-    "wouter": "https://exx.sh/wouter?deps=react@alpha&no-check",
-    "swr": "https://exx.sh/swr?deps=react@alpha&no-check"
+    "react": "https://esm.sh/react@18.0.0-alpha-82583617b-20210812",
+    "react-dom": "https://esm.sh/react-dom@18.0.0-alpha-82583617b-20210812",
+    "react-dom/server": "https://esm.sh/react-dom@18.0.0-alpha-82583617b-20210812/server",
+    "helmet": "https://esm.sh/react-helmet-async?deps=react@18.0.0-alpha-82583617b-20210812&no-check",
+    "wouter": "https://esm.sh/wouter?deps=react@18.0.0-alpha-82583617b-20210812&no-check",
+    "swr": "https://esm.sh/swr?deps=react@18.0.0-alpha-82583617b-20210812&no-check"
   }
 }
