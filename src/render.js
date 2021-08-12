@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/server";
-import { join } from "https://deno.land/std/path/mod.ts";
+import { join } from "path";
 import { Router } from "wouter";
 
 const isDev = Deno.env.get("mode") === "dev";
@@ -16,17 +16,15 @@ const render = async ({ root, request, importmap, lang }) => {
     React.createElement(
       Router,
       { hook: staticLocationHook(request.url.pathname) },
-      React.createElement(
-        app.default,
-        { helmetContext },
-        null,
-      ),
+      React.createElement(app.default, { helmetContext }, null),
     ),
   );
   const { helmet } = helmetContext;
 
   const head = `<!DOCTYPE html><html lang="${lang}"><head>${
-    Object.keys(helmet).map((i) => helmet[i].toString()).join("")
+    Object.keys(helmet)
+      .map((i) => helmet[i].toString())
+      .join("")
   }<script type="module" async>import { createElement } from "${
     importmap.imports["react"]
   }";import { hydrateRoot } from "${
@@ -51,9 +49,10 @@ const render = async ({ root, request, importmap, lang }) => {
       }
       const queue = (part) => Promise.resolve(controller.enqueue(part));
 
-      queue(head).then(() => pushStream(body)).then(
-        () => queue(`</div></body></html>`),
-      ).then(() => controller.close());
+      queue(head)
+        .then(() => pushStream(body))
+        .then(() => queue(`</div></body></html>`))
+        .then(() => controller.close());
     },
   });
 };

@@ -111,7 +111,34 @@ Transpile: graveyard.jsx in 6ms
 
 ```js
 // Transpiled example of graveyard.jsx
-import e from"https://esm.sh/react@alpha";const a=()=>e.createElement("ul",{className:"graveyard"},[".cjs","require()","node_modules","package.json","webpack.config","babel.config","create-react-app","next.js"].map(r=>e.createElement("li",null,e.createElement("figure",null,e.createElement("img",{src:"/grave.svg",alt:"Gravestone"}),e.createElement("figcaption",null,r)))));export default a;
+import e from "https://esm.sh/react@alpha";
+const a = () =>
+  e.createElement(
+    "ul",
+    { className: "graveyard" },
+    [
+      ".cjs",
+      "require()",
+      "node_modules",
+      "package.json",
+      "webpack.config",
+      "babel.config",
+      "create-react-app",
+      "next.js",
+    ].map((r) =>
+      e.createElement(
+        "li",
+        null,
+        e.createElement(
+          "figure",
+          null,
+          e.createElement("img", { src: "/grave.svg", alt: "Gravestone" }),
+          e.createElement("figcaption", null, r),
+        ),
+      )
+    ),
+  );
+export default a;
 ```
 
 **Note:** In development, modules are transpiled every request. In production,

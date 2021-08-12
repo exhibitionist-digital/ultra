@@ -1,0 +1,5 @@
+{
+  "deno.enable": true,
+  "prettier.enable": false,
+  "deno.importMap": "./import_map.json"
+}
