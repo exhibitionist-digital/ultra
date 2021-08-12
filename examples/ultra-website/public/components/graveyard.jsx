@@ -11,16 +11,20 @@ const Graveyard = () => {
     "create-react-app",
     "next.js",
   ];
-  return <ul className="graveyard">
-    {gravestones.map((grave) => {
-      return <li>
-        <figure>
-          <img src="/grave.svg" alt="Gravestone" />
-          <figcaption>{grave}</figcaption>
-        </figure>
-      </li>;
-    })}
-  </ul>;
+  return (
+    <ul className="graveyard">
+      {gravestones.map((grave) => {
+        return (
+          <li>
+            <figure>
+              <img src="/grave.svg" alt="Gravestone" />
+              <figcaption>{grave}</figcaption>
+            </figure>
+          </li>
+        );
+      })}
+    </ul>
+  );
 };
 
 export default Graveyard;

@@ -13,7 +13,7 @@ const isDev = Deno.env.get("mode") === "dev";
 const port = Deno.env.get("port") || 3000;
 const root = Deno.env.get("url") || `http://localhost:${port}`;
 
-const start = async ({
+const start = ({
   importmap,
   lang = "en",
 }) => {
@@ -26,20 +26,20 @@ const start = async ({
       await send(context, pathname, {
         root: join(Deno.cwd(), "public"),
       });
-    } catch (e) {
+    } catch (_e) {
       await next();
     }
   });
 
   router.get("/:slug+.js", async (context, next) => {
-    let { pathname } = context.request.url;
+    const { pathname } = context.request.url;
     if (memory.has(pathname) && !isDev) {
       context.response.type = "application/javascript";
       context.response.body = memory.get(pathname);
       return;
     }
-    let jsx = pathname.replaceAll(".js", ".jsx");
-    let tsx = pathname.replaceAll(".js", ".tsx");
+    const jsx = pathname.replaceAll(".js", ".jsx");
+    const tsx = pathname.replaceAll(".js", ".tsx");
     let file = existsSync(join(Deno.cwd(), "public", jsx))
       ? jsx
       : existsSync(join(Deno.cwd(), "public", tsx))
@@ -47,10 +47,10 @@ const start = async ({
       : false;
     if (!file) return await next();
     try {
-      let source = await Deno.readTextFile(
+      const source = await Deno.readTextFile(
         join(Deno.cwd(), "public", ...file.split("/")),
       );
-      let code = await transform({ source, importmap, root });
+      const code = await transform({ source, importmap, root });
       if (!isDev) memory.set(pathname, code);
       context.response.type = "application/javascript";
       context.response.body = code;

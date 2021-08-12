@@ -2,7 +2,7 @@ import React from "react";
 import useSWR from "swr";
 
 export const fetcher = async () => {
-  let comments = await new Promise((resolve, reject) => {
+  const comments = await new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve([
         "Wait, it doesn't wait for React to load?",

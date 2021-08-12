@@ -5,7 +5,7 @@ const Ghost = () => {
   const [pos, setPos] = useState(false);
   const [orient, setOrient] = useState({ x: true, y: true });
   const update = (e) => {
-    let { clientX, clientY } = e;
+    const { clientX, clientY } = e;
     requestAnimationFrame(() => setPos({ clientX, clientY }));
   };
   useEffect(() => {

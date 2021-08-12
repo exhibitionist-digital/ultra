@@ -85,12 +85,14 @@ const Graveyard = () => {
   return;
   <ul className="graveyard">
     {gravestones.map((grave) => {
-      return <li>
-        <figure>
-          <img src="/grave.svg" alt="Gravestone" />
-          <figcaption>{grave}</figcaption>
-        </figure>
-      </li>;
+      return (
+        <li>
+          <figure>
+            <img src="/grave.svg" alt="Gravestone" />
+            <figcaption>{grave}</figcaption>
+          </figure>
+        </li>
+      );
     })}
   </ul>;
 };

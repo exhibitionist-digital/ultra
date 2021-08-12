@@ -10,7 +10,6 @@ const render = async ({ root, request, importmap, lang }) => {
   const ts = isDev ? +new Date() : serverStart;
   const app = await import(join(root, `app.js?ts=${ts}`));
 
-  const routerContext = {};
   const helmetContext = { helmet: {} };
 
   const body = ReactDOM.renderToReadableStream(
@@ -45,7 +44,7 @@ const render = async ({ root, request, importmap, lang }) => {
           try {
             controller.enqueue(result.value);
             return reader.read().then(process);
-          } catch (e) {
+          } catch (_e) {
             return;
           }
         });
