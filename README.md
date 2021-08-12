@@ -1,3 +1,4 @@
+<!-- deno-fmt-ignore-file -->
 <img src="https://ultrajs.dev/ultra.svg" width="150" />
 
 ### Deno, ESM + React: No build, no bundle, all streaming
