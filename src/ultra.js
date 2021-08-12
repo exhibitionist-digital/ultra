@@ -40,6 +40,7 @@ const start = ({
     }
     const jsx = pathname.replaceAll(".js", ".jsx");
     const tsx = pathname.replaceAll(".js", ".tsx");
+    // deno-lint-ignore prefer-const
     let file = existsSync(join(Deno.cwd(), "public", jsx))
       ? jsx
       : existsSync(join(Deno.cwd(), "public", tsx))

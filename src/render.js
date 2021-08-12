@@ -62,6 +62,7 @@ export default render;
 
 // wouter helper
 const staticLocationHook = (path = "/", { record = false } = {}) => {
+  // deno-lint-ignore prefer-const
   let hook;
   const navigate = (to, { replace } = {}) => {
     if (record) {
