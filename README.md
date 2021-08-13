@@ -1,4 +1,7 @@
+<!-- deno-fmt-ignore-file -->
 <img src="https://ultrajs.dev/ultra.svg" width="150" />
+
+### Deno, ESM + React: No build, no bundle, all streaming
 
 **Ultra** is a web framework that leans hard into your browser's native
 features. Embrace the future of **ES Modules**, **Import Maps**, and **Web
@@ -71,7 +74,7 @@ dependencies. No bundling, building or complex package managers needed.
 ```js
 import React from "react";
 
-const Graveyard = () => {
+export default const Graveyard = () => {
   const gravestones = [
     ".cjs",
     "require()",
@@ -82,22 +85,20 @@ const Graveyard = () => {
     "create-react-app",
     "next.js",
   ];
-  return;
-  <ul className="graveyard">
-    {gravestones.map((grave) => {
-      return (
+
+  return (
+    <ul className="graveyard">
+      {gravestones.map((grave) => (
         <li>
           <figure>
             <img src="/grave.svg" alt="Gravestone" />
             <figcaption>{grave}</figcaption>
           </figure>
         </li>
-      );
-    })}
-  </ul>;
+      ));}
+    </ul>
+  )
 };
-
-export default Graveyard;
 ```
 
 **Under the hood:** We use [esbuild](https://esbuild.github.io) +
