@@ -1,8 +1,8 @@
 {
   "imports": {
-    "react": "https://esm.sh/react@alpha",
-    "react-dom": "https://esm.sh/react-dom@alpha",
-    "react-dom/": "https://esm.sh/react-dom@alpha/",
-    "wouter": "https://esm.sh/wouter"
+    "react": "https://esm.sh/react@18.0.0-alpha-82583617b-20210812",
+    "react-dom": "https://esm.sh/react-dom@18.0.0-alpha-82583617b-20210812",
+    "react-dom/server": "https://esm.sh/react-dom@18.0.0-alpha-82583617b-20210812/server",
+    "wouter": "https://esm.sh/wouter?deps=react@18.0.0-alpha-82583617b-20210812&no-check"
   }
 }
