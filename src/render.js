@@ -1,13 +1,7 @@
 import React from "react";
-<<<<<<< HEAD
-import ReactDOM from "react-dom";
-import { join } from "https://deno.land/std@0.104.0/path/mod.ts";
-import { Router } from "https://esm.sh/wouter@2.7.4";
-=======
 import ReactDOM from "react-dom/server";
 import { join } from "https://deno.land/std@0.104.0/path/mod.ts";
 import { Router } from "wouter";
->>>>>>> e04693d477daf90721f2fafb3f2cbf8e2862064c
 
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();
