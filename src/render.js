@@ -1,5 +1,5 @@
-import React from "https://esm.sh/react@alpha";
-import ReactDOM from "https://esm.sh/react-dom@alpha/server";
+import React from "react";
+import ReactDOM from "react-dom";
 import { join } from "https://deno.land/std@0.104.0/path/mod.ts";
 import { Router } from "https://esm.sh/wouter@2.7.4";
 
