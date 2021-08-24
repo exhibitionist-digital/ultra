@@ -1,6 +1,6 @@
+import { join } from "https://deno.land/std@0.104.0/path/mod.ts";
 import React from "react";
 import ReactDOM from "react-dom/server";
-import { join } from "https://deno.land/std@0.104.0/path/mod.ts";
 import { Router } from "wouter";
 
 const isDev = Deno.env.get("mode") === "dev";
@@ -22,7 +22,9 @@ const render = async ({ root, request, importmap, lang }) => {
   const { helmet } = helmetContext;
 
   const head = `<!DOCTYPE html><html lang="${lang}"><head>${
-    Object.keys(helmet).map((i) => helmet[i].toString()).join("")
+    Object.keys(helmet)
+      .map((i) => helmet[i].toString())
+      .join("")
   }<script type="module" async>import { createElement } from "${
     importmap.imports["react"]
   }";import { hydrateRoot } from "${
