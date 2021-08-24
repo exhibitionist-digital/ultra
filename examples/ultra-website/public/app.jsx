@@ -17,7 +17,7 @@ const Ultra = ({ helmetContext }) => {
         <title>Ultra</title>
         <meta
           name="description"
-          content="👻 ESM + React: No build, No bundle"
+          content="Deno, ESM + React: No build, No bundle, All streaming"
         />
         <link rel="icon" type="image/svg+xml" href="/ultra.svg" />
       </Helmet>
