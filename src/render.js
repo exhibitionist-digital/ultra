@@ -11,12 +11,17 @@ const render = async ({ root, request, importmap, lang }) => {
   const app = await import(join(root, `app.js?ts=${ts}`));
 
   const helmetContext = { helmet: {} };
+  const cache = new Map();
 
   const body = ReactDOM.renderToReadableStream(
     React.createElement(
       Router,
       { hook: staticLocationHook(request.url.pathname) },
-      React.createElement(app.default, { helmetContext }, null),
+      React.createElement(
+        app.default,
+        { helmetContext, cache },
+        null,
+      ),
     ),
   );
   const { helmet } = helmetContext;
@@ -51,7 +56,13 @@ const render = async ({ root, request, importmap, lang }) => {
 
       queue(head)
         .then(() => pushStream(body))
-        .then(() => queue(`</div></body></html>`))
+        .then(() =>
+          queue(
+            `</div></body><script>self.__ultra = ${
+              JSON.stringify(Array.from(cache.entries()))
+            }</script></html>`,
+          )
+        )
         .then(() => controller.close());
     },
   });
