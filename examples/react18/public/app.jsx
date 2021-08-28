@@ -1,12 +1,12 @@
 import React, { lazy, Suspense } from "react";
-import { Helmet, HelmetProvider } from "helmet";
+import { Helmet } from "helmet";
 import { Route } from "wouter";
 
 const Index = lazy(() => import("./index.jsx"));
 
-const Ultra = ({ helmetContext }) => {
+const Ultra = () => {
   return (
-    <HelmetProvider context={helmetContext}>
+    <div>
       <Helmet>
         <meta
           name="viewport"
@@ -22,7 +22,7 @@ const Ultra = ({ helmetContext }) => {
           <Index />
         </Route>
       </Suspense>
-    </HelmetProvider>
+    </div>
   );
 };
 
