@@ -2,6 +2,7 @@ import { join } from "https://deno.land/std@0.104.0/path/mod.ts";
 import React from "react";
 import ReactDOM from "react-dom/server";
 import { Router } from "wouter";
+import { HelmetProvider } from "helmet";
 
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();
@@ -18,9 +19,13 @@ const render = async ({ root, request, importmap, lang }) => {
       Router,
       { hook: staticLocationHook(request.url.pathname) },
       React.createElement(
-        app.default,
-        { helmetContext, cache },
-        null,
+        HelmetProvider,
+        { context: helmetContext },
+        React.createElement(
+          app.default,
+          { cache },
+          null,
+        ),
       ),
     ),
   );
@@ -36,7 +41,9 @@ const render = async ({ root, request, importmap, lang }) => {
     importmap.imports["react-dom"]
   }";import { Router } from "${
     importmap.imports["wouter"]
-  }";import App from "/app.js";const root = hydrateRoot(document.getElementById('ultra'),createElement(Router, null, createElement(App)))</script></head><body><div id="ultra">`;
+  }";import { HelmetProvider } from "${
+    importmap.imports["helmet"]
+  }";import App from "/app.js";const root = hydrateRoot(document.getElementById('ultra'),createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))</script></head><body><div id="ultra">`;
 
   return new ReadableStream({
     start(controller) {
