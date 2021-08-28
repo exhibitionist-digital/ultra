@@ -151,7 +151,7 @@ const App = () => {
 [SWR](https://github.com/vercel/swr) lets us fetch data anywhere in our
 components, works with Suspense everywhere.
 
-**UPDATE v0.2**: now uses SWR v.1.0.0. This allows building of a cache server side, and repopulating on client side. Please see examples [here](https://github.com/exhibitionist-digital/ultra/blob/0.2/examples/ultra-website/public/app.jsx#L5) and [here](https://github.com/exhibitionist-digital/ultra/blob/0.2/examples/ultra-website/public/app.jsx#L5).
+**UPDATE v0.2**: now uses SWR v.1.0.0. This allows building of a cache server side, and repopulating on client side. Please see examples [here](https://github.com/exhibitionist-digital/ultra/blob/master/examples/ultra-website/public/app.jsx#L5) and [here](https://github.com/exhibitionist-digital/ultra/blob/master/examples/ultra-website/public/app.jsx#L5).
 
 ```js
 import { Suspense } from "react";
