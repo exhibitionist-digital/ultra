@@ -1,12 +1,14 @@
 import React, { lazy, Suspense } from "react";
 import { Helmet } from "helmet";
 import { Route } from "wouter";
+import { SWRConfig } from "swr";
+import ultraCache from "ultra-cache";
 
 const Index = lazy(() => import("./index.jsx"));
 
-const Ultra = () => {
+const Ultra = ({ cache }) => {
   return (
-    <div>
+    <SWRConfig value={{ provider: () => ultraCache(cache) }}>
       <Helmet>
         <meta
           name="viewport"
@@ -22,7 +24,7 @@ const Ultra = () => {
           <Index />
         </Route>
       </Suspense>
-    </div>
+    </SWRConfig>
   );
 };
 
