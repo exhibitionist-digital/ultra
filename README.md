@@ -1,7 +1,16 @@
-<!-- deno-fmt-ignore-file -->
-<img src="https://ultrajs.dev/ultra.svg" width="150" />
 
-### Deno, ESM + React: No build, no bundle, all streaming
+<!-- deno-fmt-ignore-file -->
+<div align="center">
+  <br />
+  <img src="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" height="350" />
+  <h1>Ultra</h1>
+  <sub>Deno, ESM + React: No build, no bundle, all streaming</sub>
+  <br /><br />
+  
+  [![GitHub Workflow Status][actions-badge]][actions]
+  
+  <br /><br />
+</div>
 
 **Ultra** is a web framework that leans hard into your browser's native
 features. Embrace the future of **ES Modules**, **Import Maps**, and **Web
@@ -166,7 +175,12 @@ const App = () => {
   return (
     <Suspense fallback={<Loading />}>
       <Profile />
-    </Suspense>
+    </Suspense>https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm
   );
 };
 ```
+
+[docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&style=for-the-badge&color=B06892&
+[docs]: https://doc.deno.land/https/deno.land/x/ultra/mod.js&
+[actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?style=for-the-badge&color=53A3D3&logo=github&label=
+[actions]: https://github.com/exhibitionist-digital/ultra/actions
