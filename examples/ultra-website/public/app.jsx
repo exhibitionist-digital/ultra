@@ -6,9 +6,15 @@ import ultraCache from "ultra-cache";
 
 const Index = lazy(() => import("./index.jsx"));
 
+let options = (cache) => ({
+  provider: () => ultraCache(cache),
+  revalidateIfStale: false,
+  revalidateOnMount: false,
+});
+
 const Ultra = ({ cache }) => {
   return (
-    <SWRConfig value={{ provider: () => ultraCache(cache) }}>
+    <SWRConfig value={options(cache)}>
       <Helmet>
         <meta
           name="viewport"
