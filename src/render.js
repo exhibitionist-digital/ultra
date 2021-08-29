@@ -35,7 +35,7 @@ const render = async ({ root, request, importmap, lang }) => {
     Object.keys(helmet)
       .map((i) => helmet[i].toString())
       .join("")
-  }<script type="module" async>import { createElement } from "${
+  }<script type="module" defer>import { createElement } from "${
     importmap.imports["react"]
   }";import { hydrateRoot } from "${
     importmap.imports["react-dom"]
