@@ -4,7 +4,7 @@
   <br />
   <img src="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" height="350" />
   <h1>Ultra</h1>
-  <sub>Deno, ESM + React: No build, no bundle, all streaming</sub>
+  <sub>Deno + React: No build, no bundle, all streaming</sub>
   <br /><br />
   
   [![GitHub Workflow Status][actions-badge]][actions]
