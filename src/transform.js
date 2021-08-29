@@ -12,7 +12,7 @@ const transform = async ({ source, importmap, root }) => {
   const { code } = await esbuild.transform(source, {
     loader: "jsx",
     target: ["esnext"],
-    minify: true,
+    minify: !isDev,
   });
   let c = "";
   const ast = parse(code, {

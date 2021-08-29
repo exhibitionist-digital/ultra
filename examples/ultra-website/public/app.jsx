@@ -1,12 +1,20 @@
 import React, { lazy, Suspense } from "react";
-import { Helmet, HelmetProvider } from "helmet";
+import { Helmet } from "helmet";
 import { Route } from "wouter";
+import { SWRConfig } from "swr";
+import ultraCache from "ultra-cache";
 
 const Index = lazy(() => import("./index.jsx"));
 
-const Ultra = ({ helmetContext }) => {
+const options = (cache) => ({
+  provider: () => ultraCache(cache),
+  revalidateIfStale: false,
+  revalidateOnMount: false,
+});
+
+const Ultra = ({ cache }) => {
   return (
-    <HelmetProvider context={helmetContext}>
+    <SWRConfig value={options(cache)}>
       <Helmet>
         <meta
           name="viewport"
@@ -17,7 +25,7 @@ const Ultra = ({ helmetContext }) => {
         <title>Ultra</title>
         <meta
           name="description"
-          content="👻 ESM + React: No build, No bundle"
+          content="Deno, ESM + React: No build, No bundle, All streaming"
         />
         <link rel="icon" type="image/svg+xml" href="/ultra.svg" />
       </Helmet>
@@ -26,7 +34,7 @@ const Ultra = ({ helmetContext }) => {
           <Index />
         </Route>
       </Suspense>
-    </HelmetProvider>
+    </SWRConfig>
   );
 };
 

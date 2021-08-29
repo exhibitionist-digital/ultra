@@ -1,3 +1,6 @@
+import { existsSync } from "https://deno.land/std@0.104.0/fs/mod.ts";
+import { join } from "https://deno.land/std@0.104.0/path/mod.ts";
+import LRU from "https://deno.land/x/lru@1.0.2/mod.ts";
 import {
   Application,
   Router,
@@ -7,7 +10,6 @@ import { existsSync } from "https://deno.land/std@0.106.0/fs/mod.ts";
 import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
 import render from "./render.js";
 import transform from "./transform.js";
-import LRU from "https://deno.land/x/lru@1.0.2/mod.ts";
 
 const app = new Application();
 const router = new Router();
@@ -17,10 +19,7 @@ const isDev = Deno.env.get("mode") === "dev";
 const port = Deno.env.get("port") || 3000;
 const root = Deno.env.get("url") || `http://localhost:${port}`;
 
-const start = ({
-  importmap,
-  lang = "en",
-}) => {
+const start = ({ importmap, lang = "en" }) => {
   importmap = JSON.parse(importmap);
 
   app.use(async (context, next) => {

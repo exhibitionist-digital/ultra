@@ -1,7 +1,9 @@
+import { join } from "https://deno.land/std@0.104.0/path/mod.ts";
 import React from "react";
 import ReactDOM from "react-dom/server";
 import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
 import { Router } from "wouter";
+import { HelmetProvider } from "helmet";
 
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();
@@ -11,12 +13,21 @@ const render = async ({ root, request, importmap, lang }) => {
   const app = await import(join(root, `app.js?ts=${ts}`));
 
   const helmetContext = { helmet: {} };
+  const cache = new Map();
 
   const body = ReactDOM.renderToReadableStream(
     React.createElement(
       Router,
       { hook: staticLocationHook(request.url.pathname) },
-      React.createElement(app.default, { helmetContext }, null),
+      React.createElement(
+        HelmetProvider,
+        { context: helmetContext },
+        React.createElement(
+          app.default,
+          { cache },
+          null,
+        ),
+      ),
     ),
   );
   const { helmet } = helmetContext;
@@ -25,13 +36,15 @@ const render = async ({ root, request, importmap, lang }) => {
     Object.keys(helmet)
       .map((i) => helmet[i].toString())
       .join("")
-  }<script type="module" async>import { createElement } from "${
+  }<script type="module" defer>import { createElement } from "${
     importmap.imports["react"]
   }";import { hydrateRoot } from "${
     importmap.imports["react-dom"]
   }";import { Router } from "${
     importmap.imports["wouter"]
-  }";import App from "/app.js";const root = hydrateRoot(document.getElementById('ultra'),createElement(Router, null, createElement(App)))</script></head><body><div id="ultra">`;
+  }";import { HelmetProvider } from "${
+    importmap.imports["helmet"]
+  }";import App from "/app.js";const root = hydrateRoot(document.getElementById('ultra'),createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))</script></head><body><div id="ultra">`;
 
   return new ReadableStream({
     start(controller) {
@@ -51,7 +64,13 @@ const render = async ({ root, request, importmap, lang }) => {
 
       queue(head)
         .then(() => pushStream(body))
-        .then(() => queue(`</div></body></html>`))
+        .then(() =>
+          queue(
+            `</div></body><script>self.__ultra = ${
+              JSON.stringify(Array.from(cache.entries()))
+            }</script></html>`,
+          )
+        )
         .then(() => controller.close());
     },
   });

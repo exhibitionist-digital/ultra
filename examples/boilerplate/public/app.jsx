@@ -1,21 +1,16 @@
-import React from "react";
 import { Helmet, HelmetProvider } from "helmet";
+import React from "react";
 
-const Ultra = ({ helmetContext }) => {
+const Ultra = () => {
   return (
-    <HelmetProvider context={helmetContext}>
+    <div>
       <Helmet>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1"
-        />
-        <meta charset="UTF-8" />
         <title>ULTRA</title>
       </Helmet>
       <main>
-        <h1>hello world</h1>
+        <h1>Hello World</h1>
       </main>
-    </HelmetProvider>
+    </div>
   );
 };
 

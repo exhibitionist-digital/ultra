@@ -1,11 +1,14 @@
-import ultra, { router } from "https://deno.land/x/ultra@v0.1/mod.js";
 import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
+import ultra, { router } from "https://deno.land/x/ultra@v0.3/mod.js";
+
+let content;
 
 router.get("/markdown", async (context) => {
-  const md = await grabFileAndReturnMarkdown("content.md");
-  context.response.body = {
-    content: md.content,
-  };
+  if (!content) {
+    const md = await grabFileAndReturnMarkdown("content.md");
+    content = md.content;
+  }
+  context.response.body = { content };
 });
 
 await ultra({

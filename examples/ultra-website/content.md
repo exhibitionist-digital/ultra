@@ -1,5 +1,5 @@
 <!-- deno-fmt-ignore-file -->
-## Deno, ESM + React: No build, no bundle
+## Deno, ESM + React: No build, no bundle, all streaming
 
 [![View on GitHub](https://img.shields.io/badge/-View%20on%20GitHub-blue?style=for-the-badge&logo=github)](https://github.com/exhibitionist-digital/ultra)
 
@@ -141,8 +141,7 @@ const App = () => {
 [SWR](https://github.com/vercel/swr) lets us fetch data anywhere in our
 components, works with Suspense everywhere.
 
-**Caveat:** Suspense data fetching is still in it's early days... watch this
-space.
+**UPDATE v0.2**: now uses SWR v.1.0.0. This allows building of a cache server side, and repopulating on client side. Please see examples [here](https://github.com/exhibitionist-digital/ultra/blob/master/examples/ultra-website/public/app.jsx#L5) and [here](https://github.com/exhibitionist-digital/ultra/blob/master/examples/ultra-website/public/app.jsx#L5).
 
 ```js
 import { Suspense } from "react";
