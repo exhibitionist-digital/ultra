@@ -1,4 +1,4 @@
-import { join } from "https://deno.land/std@0.104.0/path/mod.ts";
+import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
 import ultra, { router } from "https://deno.land/x/ultra@v0.3/mod.js";
 
 let content;
