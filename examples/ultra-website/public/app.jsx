@@ -6,7 +6,7 @@ import ultraCache from "ultra-cache";
 
 const Index = lazy(() => import("./index.jsx"));
 
-let options = (cache) => ({
+const options = (cache) => ({
   provider: () => ultraCache(cache),
   revalidateIfStale: false,
   revalidateOnMount: false,
