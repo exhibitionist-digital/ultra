@@ -1,5 +1,5 @@
 import { join } from "https://deno.land/std@0.104.0/path/mod.ts";
-import ultra, { router } from "https://deno.land/x/ultra@v0.2/mod.js";
+import ultra, { router } from "https://deno.land/x/ultra@v0.3/mod.js";
 
 router.get("/markdown", async (context) => {
   const md = await grabFileAndReturnMarkdown("content.md");
