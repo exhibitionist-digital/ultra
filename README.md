@@ -175,7 +175,7 @@ const App = () => {
   return (
     <Suspense fallback={<Loading />}>
       <Profile />
-    </Suspense>https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm
+    </Suspense>
   );
 };
 ```
