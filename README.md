@@ -128,7 +128,7 @@ transpiled modules are stored in an LRU cache. 👍
 
 ---
   
-<details><summary>ROUTING</summary>
+<details><summary>LAZY ROUTING</summary>
   
 <br/>
 
@@ -158,7 +158,7 @@ const App = () => {
 
 ---
   
-<details><summary>DATA FETCHING</summary>
+<details><summary>SUSPENSE DATA FETCHING</summary>
 
 <br/>
 
