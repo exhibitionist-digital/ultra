@@ -60,6 +60,8 @@ img:first-of-type {
   width: 100%;
   height: auto;
   max-width: 200px;
+  position: relative;
+  z-index: 3;
 }
 
 img.logo {
@@ -72,12 +74,14 @@ img.logo {
 .gh {
   display: block;
   padding: 1em 0.5em;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(20, 23, 33, 0.6);
   margin: 1em auto 3em;
   text-align: center;
   font-weight: bold;
   border-radius: 0.65em;
   max-width: 150px;
+  position: relative;
+  z-index: 3;
 }
 
 .gh:hover {
@@ -205,7 +209,7 @@ code.hljs {
 
 .hljs {
   color: #e9e9f4;
-  background: rgba(0, 0, 0, 0.2)
+  background: rgba(20, 23, 33, 0.6)
 }
 
 .hljs::selection {
