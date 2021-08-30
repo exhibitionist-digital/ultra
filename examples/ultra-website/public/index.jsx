@@ -13,7 +13,13 @@ const Index = () => {
       />
       <h1>Ultra</h1>
       <h2>Deno + React: No build, No bundle, All streaming</h2>
-      <a className="gh" target="_blank" href="https://github.com/exhibitionist-digital/ultra">View on GitHub</a>
+      <a
+        className="gh"
+        target="_blank"
+        href="https://github.com/exhibitionist-digital/ultra"
+      >
+        View on GitHub
+      </a>
       <Graveyard />
     </main>
   );
