@@ -25,12 +25,12 @@ const Ultra = ({ cache }) => {
         <title>Ultra</title>
         <meta
           name="description"
-          content="Deno, ESM + React: No build, No bundle, All streaming"
+          content="Deno + React: No build, No bundle, All streaming"
         />
         <link
           rel="icon"
           type="image/svg+xml"
-          href="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm"
+          href="https://ultrajs.dev/logo.svg"
         />
       </Helmet>
       <Suspense fallback={null}>

@@ -74,7 +74,7 @@ img.logo {
 .gh {
   display: block;
   padding: 1em 0.5em;
-  background: rgba(20, 23, 33, 0.6);
+  background: rgba(0, 0, 0, 0.33);
   margin: 1em auto 3em;
   text-align: center;
   font-weight: bold;
@@ -148,7 +148,7 @@ ul.graveyard {
 ul.graveyard li {
   flex: 0 0 50%;
   padding: 2em;
-  color: rgba(0, 0, 0, 0.88);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 @media(min-width:600px) {
@@ -172,108 +172,4 @@ ul.graveyard li img {
 ul.graveyard figcaption {
   white-space: nowrap;
   font-size: 80%;
-}
-
-hr {
-  border: none;
-  height: 2px;
-  margin: 2em auto;
-  display: block;
-  background: rgba(0, 0, 0, 0.1);
-}
-
-pre code.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 1em;
-  max-width: 720px;
-  box-sizing: border-box;
-  margin: 1em auto;
-  border-radius: 0.5em;
-  font-size: 120%;
-  padding: 2em;
-  position: relative;
-  z-index: 2;
-  display: block;
-  overflow-x: auto;
-  line-height: 1.33;
-}
-
-pre code::-webkit-scrollbar {
-  display: none;
-}
-
-code.hljs {
-  padding: 3px 5px
-}
-
-.hljs {
-  color: #e9e9f4;
-  background: rgba(20, 23, 33, 0.6)
-}
-
-.hljs::selection {
-  color: #4d4f68
-}
-
-.hljs-comment {
-  color: #626483
-}
-
-.hljs-tag {
-  color: #62d6e8
-}
-
-.hljs-operator, .hljs-punctuation, .hljs-subst {
-  color: #e9e9f4
-}
-
-.hljs-operator {
-  opacity: .7
-}
-
-.hljs-bullet, .hljs-deletion, .hljs-name, .hljs-selector-tag, .hljs-template-variable, .hljs-variable {
-  color: #ea51b2
-}
-
-.hljs-attr, .hljs-link, .hljs-literal, .hljs-number, .hljs-symbol, .hljs-variable.constant_ {
-  color: #b45bcf
-}
-
-.hljs-class .hljs-title, .hljs-title, .hljs-title.class_ {
-  color: #986CB4
-}
-
-.hljs-strong {
-  font-weight: 700;
-  color: #986CB4
-}
-
-.hljs-addition, .hljs-code, .hljs-string, .hljs-title.class_.inherited__ {
-  color: #1CB5CA
-}
-
-.hljs-built_in, .hljs-doctag, .hljs-keyword.hljs-atrule, .hljs-quote, .hljs-regexp {
-  color: #a1efe4
-}
-
-.hljs-attribute, .hljs-function .hljs-title, .hljs-section, .hljs-title.function_, .ruby .hljs-property {
-  color: #3BBC9D
-}
-
-.diff .hljs-meta, .hljs-keyword, .hljs-template-tag, .hljs-type {
-  color: #b45bcf
-}
-
-.hljs-emphasis {
-  color: #b45bcf;
-  font-style: italic
-}
-
-.hljs-meta, .hljs-meta .hljs-keyword, .hljs-meta .hljs-string {
-  color: #00f769
-}
-
-.hljs-meta .hljs-keyword, .hljs-meta-keyword {
-  font-weight: 700
 }
