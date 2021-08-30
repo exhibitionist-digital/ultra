@@ -27,7 +27,7 @@ const Ultra = ({ cache }) => {
           name="description"
           content="Deno, ESM + React: No build, No bundle, All streaming"
         />
-        <link rel="icon" type="image/svg+xml" href="/ultra.svg" />
+        <link rel="icon" type="image/svg+xml" href="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" />
       </Helmet>
       <Suspense fallback={null}>
         <Route path="/">

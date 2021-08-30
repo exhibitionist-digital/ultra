@@ -1,5 +1,5 @@
 <!-- deno-fmt-ignore-file -->
-## Deno, ESM + React: No build, no bundle, all streaming
+## Deno + React: No build, no bundle, all streaming
 
 [![View on GitHub](https://img.shields.io/badge/-View%20on%20GitHub-blue?style=for-the-badge&logo=github)](https://github.com/exhibitionist-digital/ultra)
 

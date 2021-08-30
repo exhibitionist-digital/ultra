@@ -9,7 +9,7 @@
   
   [![GitHub Workflow Status][actions-badge]][actions]
   
-  <br /><br />
+  <br />
 </div>
 
 **Ultra** is a web framework that leans hard into your browser's native

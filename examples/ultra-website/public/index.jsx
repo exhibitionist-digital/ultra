@@ -14,7 +14,8 @@ const Index = () => {
   const { content } = data;
   return (
     <main>
-      <Ghost />
+     {/* <Ghost />*/}
+      <img class="logo" src="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" height="350" />
       <h1>Ultra</h1>
       <div dangerouslySetInnerHTML={{ __html: content }} />
       <Graveyard />
