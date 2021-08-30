@@ -3,8 +3,8 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
-  color: black;
-  background: #fafafa;
+  color: white;
+  background: #272B3C;
   min-width: 300px;
   font-family: Inter var, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
 }
@@ -47,7 +47,7 @@ p, h1, h2, h3 {
 }
 
 a {
-  color: black
+  color: white
 }
 
 p {
@@ -67,6 +67,23 @@ img.logo {
   width: 90vw;
   height: auto;
   max-width: 350px;
+}
+
+.gh {
+  display: block;
+  padding: 1em 0.5em;
+  background: rgba(0, 0, 0, 0.2);
+  margin: 1em auto 3em;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 0.65em;
+  max-width: 150px;
+}
+
+.gh:hover {
+  background: white;
+  color: #292D3E;
+  cursor: pointer;
 }
 
 h1 {
@@ -102,7 +119,8 @@ ol, ul {
 
 li:before {
   content: '—';
-  opacity: 0.2;
+  opacity: 1;
+  color: rgba(0, 0, 0, 0.2);
   margin-left: 0px;
   margin-right: 10px;
 }
@@ -126,6 +144,7 @@ ul.graveyard {
 ul.graveyard li {
   flex: 0 0 50%;
   padding: 2em;
+  color: rgba(0, 0, 0, 0.88);
 }
 
 @media(min-width:600px) {
@@ -153,10 +172,10 @@ ul.graveyard figcaption {
 
 hr {
   border: none;
-  height: 5px;
+  height: 2px;
   margin: 2em auto;
   display: block;
-  background: rgba(0, 0, 0, 0.025);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 pre code.hljs {
@@ -166,7 +185,6 @@ pre code.hljs {
   max-width: 720px;
   box-sizing: border-box;
   margin: 1em auto;
-  border: 1px solid #dadada;
   border-radius: 0.5em;
   font-size: 120%;
   padding: 2em;
@@ -177,13 +195,17 @@ pre code.hljs {
   line-height: 1.33;
 }
 
+pre code::-webkit-scrollbar {
+  display: none;
+}
+
 code.hljs {
   padding: 3px 5px
 }
 
 .hljs {
   color: #e9e9f4;
-  background: #282936
+  background: rgba(0, 0, 0, 0.2)
 }
 
 .hljs::selection {
@@ -215,16 +237,16 @@ code.hljs {
 }
 
 .hljs-class .hljs-title, .hljs-title, .hljs-title.class_ {
-  color: #00f769
+  color: #986CB4
 }
 
 .hljs-strong {
   font-weight: 700;
-  color: #00f769
+  color: #986CB4
 }
 
 .hljs-addition, .hljs-code, .hljs-string, .hljs-title.class_.inherited__ {
-  color: #ebff87
+  color: #1CB5CA
 }
 
 .hljs-built_in, .hljs-doctag, .hljs-keyword.hljs-atrule, .hljs-quote, .hljs-regexp {
@@ -232,7 +254,7 @@ code.hljs {
 }
 
 .hljs-attribute, .hljs-function .hljs-title, .hljs-section, .hljs-title.function_, .ruby .hljs-property {
-  color: #62d6e8
+  color: #3BBC9D
 }
 
 .diff .hljs-meta, .hljs-keyword, .hljs-template-tag, .hljs-type {

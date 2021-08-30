@@ -15,8 +15,10 @@ const Index = () => {
   return (
     <main>
      {/* <Ghost />*/}
-      <img class="logo" src="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" height="350" />
+      <img className="logo" src="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" height="350" />
       <h1>Ultra</h1>
+      <h2>Deno + React: No build, No bundle, All streaming</h2>
+      <a className="gh" target="_blank">View on GitHub</a>
       <div dangerouslySetInnerHTML={{ __html: content }} />
       <Graveyard />
     </main>

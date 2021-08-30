@@ -1,8 +1,4 @@
 <!-- deno-fmt-ignore-file -->
-## Deno + React: No build, no bundle, all streaming
-
-[![View on GitHub](https://img.shields.io/badge/-View%20on%20GitHub-blue?style=for-the-badge&logo=github)](https://github.com/exhibitionist-digital/ultra)
-
 **Ultra** is a web framework that leans hard into your browser's native
 features. Embrace the future of **ES Modules**, **Import Maps**, and **Web
 Streams**. All while supporting some of the non-standards that many normal
