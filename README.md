@@ -2,14 +2,13 @@
 <!-- deno-fmt-ignore-file -->
 <div align="center">
   <br />
-  <img src="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" height="350" />
+  <img src="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" height="300" />
   <h1>Ultra</h1>
-  <sub>Deno + React: No build, no bundle, all streaming</sub>
-  <br /><br />
+  <strong>Deno + React: No build, no bundle, all streaming</strong>
+  <br /><br /> 
   
   [![GitHub Workflow Status][actions-badge]][actions]
   
-  <br />
 </div>
 
 **Ultra** is a web framework that leans hard into your browser's native
@@ -38,11 +37,7 @@ Mileage may vary.
 [Here is a port of the React 18 SSR demo which showcases Suspense
 SSR.](https://react18.ultrajs.dev)
 
----
-
-### Quick start
-
-The most minimal setup of **Ultra** can be found at
+**Quick start:** The most minimal setup of **Ultra** can be found at
 [/examples/boilerplate](https://github.com/exhibitionist-digital/ultra/tree/master/examples/boilerplate).
 There are more
 [/examples](https://github.com/exhibitionist-digital/ultra/tree/master/examples)
@@ -50,7 +45,9 @@ as well.
 
 ---
 
-### Native first
+<details><summary>HOW IT WORKS</summary>
+
+<br/>
 
 Everything is ES Modules. Server side rendering is default. Have the quickest
 TTFB by using the React streaming server renderer.
@@ -126,10 +123,14 @@ import e from"https://esm.sh/react@alpha";const a=()=>e.createElement("ul",{clas
 
 **Note:** In development, modules are transpiled every request. In production,
 transpiled modules are stored in an LRU cache. 👍
+  
+</details>
 
 ---
-
-### Routing
+  
+<details><summary>LAZY ROUTING</summary>
+  
+<br/>
 
 Stop poking around at your filesystem. Routing can be defined anywhere in your
 app, and dynamic imports will ensure only relevant route files are downloaded at
@@ -152,10 +153,14 @@ const App = () => {
   </Router>;
 };
 ```
+  
+</details>
 
 ---
+  
+<details><summary>SUSPENSE DATA FETCHING</summary>
 
-### Data fetching
+<br/>
 
 [SWR](https://github.com/vercel/swr) lets us fetch data anywhere in our
 components, works with Suspense everywhere.
@@ -179,6 +184,7 @@ const App = () => {
   );
 };
 ```
+</details>
 
 [docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&style=for-the-badge&color=B06892&
 [docs]: https://doc.deno.land/https/deno.land/x/ultra/mod.js&
