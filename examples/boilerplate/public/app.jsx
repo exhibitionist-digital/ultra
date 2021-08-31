@@ -1,4 +1,4 @@
-import { Helmet, HelmetProvider } from "helmet";
+import { Helmet } from "helmet";
 import React from "react";
 
 const Ultra = () => {
