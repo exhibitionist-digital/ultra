@@ -1,11 +1,8 @@
 import React from "react";
-import Graveyard from "./components/graveyard.jsx";
-import Ghost from "./components/ghost.jsx";
 
 const Index = () => {
   return (
     <main>
-      <Ghost />
       <img
         className="logo"
         src="/logo.svg"
@@ -20,7 +17,6 @@ const Index = () => {
       >
         View on GitHub
       </a>
-      <Graveyard />
     </main>
   );
 };
