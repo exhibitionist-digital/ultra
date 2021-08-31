@@ -1,20 +1,28 @@
-import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
 import React from "react";
 import ReactDOM from "react-dom/server";
 import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
 import { Router } from "wouter";
 import { HelmetProvider } from "helmet";
+import type { ImportMap,Navigate } from "./types.ts";
 
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();
 
-const render = async ({ root, request, importmap, lang }) => {
+const render = async (
+  { root, request, importmap, lang }: {
+    root: string;
+    importmap: ImportMap;
+    request: { url: URL };
+    lang: string;
+  },
+) => {
   const ts = isDev ? +new Date() : serverStart;
   const app = await import(join(root, `app.js?ts=${ts}`));
 
-  const helmetContext = { helmet: {} };
+  const helmetContext: { helmet: Record<string, any> } = { helmet: {} };
   const cache = new Map();
 
+  // @ts-ignore
   const body = ReactDOM.renderToReadableStream(
     React.createElement(
       Router,
@@ -48,9 +56,9 @@ const render = async ({ root, request, importmap, lang }) => {
 
   return new ReadableStream({
     start(controller) {
-      function pushStream(stream) {
+      function pushStream(stream: ReadableStream) {
         const reader = stream.getReader();
-        return reader.read().then(function process(result) {
+        return reader.read().then(function process(result: ReadableStreamReadResult<unknown>): any {
           if (result.done) return;
           try {
             controller.enqueue(result.value);
@@ -60,7 +68,7 @@ const render = async ({ root, request, importmap, lang }) => {
           }
         });
       }
-      const queue = (part) => Promise.resolve(controller.enqueue(part));
+      const queue = (part: unknown) => Promise.resolve(controller.enqueue(part));
 
       queue(head)
         .then(() => pushStream(body))
@@ -78,16 +86,19 @@ const render = async ({ root, request, importmap, lang }) => {
 
 export default render;
 
+
+
 // wouter helper
 const staticLocationHook = (path = "/", { record = false } = {}) => {
   // deno-lint-ignore prefer-const
-  let hook;
-  const navigate = (to, { replace } = {}) => {
+  let hook: { history?: string[]} & (() => [string, Navigate]);
+  
+  const navigate: Navigate = (to, { replace } = {}) => {
     if (record) {
       if (replace) {
-        hook.history.pop();
+        hook.history?.pop();
       }
-      hook.history.push(to);
+      hook.history?.push(to);
     }
   };
   hook = () => [path, navigate];

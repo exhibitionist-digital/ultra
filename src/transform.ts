@@ -1,5 +1,6 @@
 import * as esbuild from "https://deno.land/x/esbuild@v0.12.24/mod.js";
 import { parse } from "https://x.nest.land/swc@0.1.4/mod.ts";
+import { ImportMap } from "./types.ts";
 
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();
@@ -7,7 +8,13 @@ const serverStart = +new Date();
 let offset = 0;
 let length = 0;
 
-const transform = async ({ source, importmap, root }) => {
+const transform = async (
+  { source, importmap, root }: {
+    source: string;
+    importmap: ImportMap;
+    root: string;
+  },
+) => {
   const t0 = performance.now();
   const { code } = await esbuild.transform(source, {
     loader: "jsx",
@@ -33,19 +40,28 @@ const transform = async ({ source, importmap, root }) => {
     }
     if (i.type == "VariableDeclaration") {
       i.declarations?.forEach((o) =>
-        o?.init?.arguments?.forEach((a) => {
+        (o?.init as any).arguments?.forEach((a: any) => {
           if (a?.expression?.body?.callee?.value?.toLowerCase() === "import") {
-            a?.expression?.body?.arguments?.forEach((b) => {
-              const { value, span } = b?.expression;
-              c += code.substring(offset - length, span.start - length);
-              c += `"${
-                value.replace(
-                  /.jsx|.tsx/gi,
-                  () => `.js?ts=${isDev ? +new Date() : serverStart}`,
-                )
-              }"`;
-              offset = span.end;
-            });
+            a?.expression?.body?.arguments?.forEach(
+              (
+                b: {
+                  expression: {
+                    value: string;
+                    span: { start: number; end: number };
+                  };
+                },
+              ) => {
+                const { value, span } = b?.expression;
+                c += code.substring(offset - length, span.start - length);
+                c += `"${
+                  value.replace(
+                    /.jsx|.tsx/gi,
+                    () => `.js?ts=${isDev ? +new Date() : serverStart}`,
+                  )
+                }"`;
+                offset = span.end;
+              },
+            );
           }
         })
       );
