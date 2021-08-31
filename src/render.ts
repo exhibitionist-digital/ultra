@@ -19,10 +19,10 @@ const render = async (
   const ts = isDev ? +new Date() : serverStart;
   const app = await import(join(root, `app.js?ts=${ts}`));
 
-  const helmetContext: { helmet: Record<string, any> } = { helmet: {} };
+  const helmetContext: { helmet: Record<string, number> } = { helmet: {} };
   const cache = new Map();
 
-  // @ts-ignore
+  // @ts-ignore there's no types for toreadablestream yet
   const body = ReactDOM.renderToReadableStream(
     React.createElement(
       Router,
@@ -59,7 +59,7 @@ const render = async (
       function pushStream(stream: ReadableStream) {
         const reader = stream.getReader();
         return reader.read().then(
-          function process(result: ReadableStreamReadResult<unknown>): any {
+          function process(result: ReadableStreamReadResult<unknown>): unknown {
             if (result.done) return;
             try {
               controller.enqueue(result.value);

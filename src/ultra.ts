@@ -12,7 +12,7 @@ import type { ImportMap } from "./types.ts";
 
 const app = new Application();
 const router = new Router();
-const memory = new LRU<any>(500);
+const memory = new LRU<string>(500);
 
 const isDev = Deno.env.get("mode") === "dev";
 const port = parseInt(Deno.env.get("port") || "", 10) || 3000;
