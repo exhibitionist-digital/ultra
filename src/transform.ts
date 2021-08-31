@@ -44,9 +44,8 @@ const transform = async (
     if (i.type == "VariableDeclaration") {
       i.declarations?.forEach((o) =>
         (o.init as CallExpression)!.arguments?.forEach(({ expression }) => {
-
           // @ts-ignore deno_swc doesn't have generics
-          const expressionBody = expression.body
+          const expressionBody = expression.body;
 
           if (expressionBody.callee?.value?.toLowerCase() === "import") {
             expressionBody.arguments?.forEach(
