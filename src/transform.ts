@@ -1,6 +1,6 @@
 import * as esbuild from "https://deno.land/x/esbuild@v0.12.24/mod.js";
 import { parse } from "https://x.nest.land/swc@0.1.4/mod.ts";
-import type {CallExpression, ArrowFunctionExpression} from 'https://deno.land/x/swc@0.1.4/types/options.ts'
+import type { CallExpression } from "https://deno.land/x/swc@0.1.4/types/options.ts";
 import { ImportMap } from "./types.ts";
 
 const isDev = Deno.env.get("mode") === "dev";
