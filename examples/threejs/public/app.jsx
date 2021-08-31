@@ -1,6 +1,6 @@
 import { Helmet, HelmetProvider } from "helmet";
 import React, { useEffect, useRef, useState } from "react";
-import { Canvas, useFrame, useLoader } from "three";
+import { Canvas, useFrame } from "three";
 
 const Ultra = () => {
   const [mount, set] = useState(false);
