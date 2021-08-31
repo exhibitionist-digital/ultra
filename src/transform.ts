@@ -1,6 +1,8 @@
 import * as esbuild from "https://deno.land/x/esbuild@v0.12.24/mod.js";
 import { parse } from "https://x.nest.land/swc@0.1.4/mod.ts";
-import type { CallExpression } from "https://deno.land/x/swc@0.1.4/types/options.ts";
+import type {
+  CallExpression,
+} from "https://deno.land/x/swc@0.1.4/types/options.ts";
 import { ImportMap } from "./types.ts";
 
 const isDev = Deno.env.get("mode") === "dev";
@@ -41,9 +43,13 @@ const transform = async (
     }
     if (i.type == "VariableDeclaration") {
       i.declarations?.forEach((o) =>
-        (o.init as CallExpression)!.arguments?.forEach((a: any) => {
-          if (a?.expression?.body?.callee?.value?.toLowerCase() === "import") {
-            a?.expression?.body?.arguments?.forEach(
+        (o.init as CallExpression)!.arguments?.forEach(({ expression }) => {
+
+          // @ts-ignore deno_swc doesn't have generics
+          const expressionBody = expression.body
+
+          if (expressionBody.callee?.value?.toLowerCase() === "import") {
+            expressionBody.arguments?.forEach(
               (
                 b: {
                   expression: {
