@@ -35,7 +35,9 @@ Mileage may vary.
 
 **Demo:**
 [Here is a port of the React 18 SSR demo which showcases Suspense
-SSR.](https://react18.ultrajs.dev)
+SSR 👩‍🚀👨‍🚀](https://react18.ultrajs.dev)
+
+**Demo:** [Threejs-fiber, no build, no bundle 🔥🔥](https://threejs.ultrajs.dev/)
 
 **Quick start:** The most minimal setup of **Ultra** can be found at
 [/examples/boilerplate](https://github.com/exhibitionist-digital/ultra/tree/master/examples/boilerplate).
