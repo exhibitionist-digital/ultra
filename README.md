@@ -33,11 +33,13 @@ It's driven by the following hot-takes:
 [React 18](https://reactjs.org/blog/2021/06/08/the-plan-for-react-18.html).
 Mileage may vary.
 
-**Demo:**
-[Here is a port of the React 18 SSR demo which showcases Suspense
-SSR 👩‍🚀👨‍🚀](https://react18.ultrajs.dev)
+Here are some neat demos:
 
-**Demo:** [Threejs-fiber, no build, no bundle 🔥🔥](https://threejs.ultrajs.dev/)
+**React 18 Suspense SSR:**
+[Suspense
+SSR (taken from React's release announcement) 👩‍🚀👨‍🚀](https://react18.ultrajs.dev)
+
+**React-three-fiber:** [Threejs, react, no build, no bundle 🔥🔥](https://threejs.ultrajs.dev/)
 
 **Quick start:** The most minimal setup of **Ultra** can be found at
 [/examples/boilerplate](https://github.com/exhibitionist-digital/ultra/tree/master/examples/boilerplate).
