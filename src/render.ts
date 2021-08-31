@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/server";
 import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
 import { Router } from "wouter";
 import { HelmetProvider } from "helmet";
-import type { ImportMap,Navigate } from "./types.ts";
+import type { ImportMap, Navigate } from "./types.ts";
 
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();
@@ -58,17 +58,20 @@ const render = async (
     start(controller) {
       function pushStream(stream: ReadableStream) {
         const reader = stream.getReader();
-        return reader.read().then(function process(result: ReadableStreamReadResult<unknown>): any {
-          if (result.done) return;
-          try {
-            controller.enqueue(result.value);
-            return reader.read().then(process);
-          } catch (_e) {
-            return;
-          }
-        });
+        return reader.read().then(
+          function process(result: ReadableStreamReadResult<unknown>): any {
+            if (result.done) return;
+            try {
+              controller.enqueue(result.value);
+              return reader.read().then(process);
+            } catch (_e) {
+              return;
+            }
+          },
+        );
       }
-      const queue = (part: unknown) => Promise.resolve(controller.enqueue(part));
+      const queue = (part: unknown) =>
+        Promise.resolve(controller.enqueue(part));
 
       queue(head)
         .then(() => pushStream(body))
@@ -86,13 +89,11 @@ const render = async (
 
 export default render;
 
-
-
 // wouter helper
 const staticLocationHook = (path = "/", { record = false } = {}) => {
   // deno-lint-ignore prefer-const
-  let hook: { history?: string[]} & (() => [string, Navigate]);
-  
+  let hook: { history?: string[] } & (() => [string, Navigate]);
+
   const navigate: Navigate = (to, { replace } = {}) => {
     if (record) {
       if (replace) {

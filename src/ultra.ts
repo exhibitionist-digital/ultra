@@ -8,17 +8,22 @@ import {
 } from "https://deno.land/x/oak@v9.0.0/mod.ts";
 import render from "./render.ts";
 import transform from "./transform.ts";
-import type { ImportMap} from './types.ts'
+import type { ImportMap } from "./types.ts";
 
 const app = new Application();
 const router = new Router();
 const memory = new LRU<any>(500);
 
 const isDev = Deno.env.get("mode") === "dev";
-const port = parseInt(Deno.env.get("port") || '', 10) || 3000;
+const port = parseInt(Deno.env.get("port") || "", 10) || 3000;
 const root = Deno.env.get("url") || `http://localhost:${port}`;
 
-const start = ({ importmap: importMapSource, lang = "en" }: { importmap: string; lang: string}) => {
+const start = (
+  { importmap: importMapSource, lang = "en" }: {
+    importmap: string;
+    lang: string;
+  },
+) => {
   const importmap: ImportMap = JSON.parse(importMapSource);
 
   app.use(async (context, next) => {
