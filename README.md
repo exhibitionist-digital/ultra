@@ -141,10 +141,10 @@ import ultraCache from "ultra-cache";
 // ultraCache is used to populate your cache server side.
 // This cache will be used when hydating app client side.
 const options = (cache) => ({
-  provider: () => ultraCache(cache),
+  provider: () => ultraCache(cache), // required
+  suspense: true, // required
   revalidateIfStale: false,
   revalidateOnMount: false,
-  suspense: true,
 });
 
 const Ultra = ({ cache }) => {
