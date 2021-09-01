@@ -17,7 +17,11 @@ const Ultra = ({ cache }) => {
         <meta charset="UTF-8" />
         <link rel="stylesheet" href="/style.css" />
         <title>Ultra: React 18 Streaming SSR Demo</title>
-        <link rel="icon" type="image/svg+xml" href="/ultra.svg" />
+        <link
+          rel="icon"
+          type="image/svg+xml"
+          href="https://ultrajs.dev/logo.svg"
+        />
       </Helmet>
       <Suspense fallback={null}>
         <Route path="/">

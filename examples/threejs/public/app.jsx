@@ -12,6 +12,11 @@ const Ultra = () => {
       <Helmet>
         <title>ULTRA</title>
         <link rel="stylesheet" href="/style.css" />
+        <link
+          rel="icon"
+          type="image/svg+xml"
+          href="https://ultrajs.dev/logo.svg"
+        />
       </Helmet>
       <main>
         {!mount && <span>LOADING</span>}

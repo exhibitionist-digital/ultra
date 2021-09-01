@@ -7,7 +7,7 @@ html {
   background: #272B3C;
   min-width: 300px;
   text-align: center;
-  font-family: 'monospace'
+  font-family: monospace
 }
 
 body {
@@ -85,6 +85,8 @@ section {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  max-width: 1000px;
+  margin: auto;
 }
 
 .ex {
@@ -95,6 +97,8 @@ section {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 1rem;
   padding: 2rem;
+  flex: 1 1 450px;
+  min-height: 165px;
   box-sizing: border-box;
   transition: 0.2s;
 }
