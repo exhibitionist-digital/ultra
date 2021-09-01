@@ -33,6 +33,8 @@ const Ultra = ({ cache }) => {
           type="image/svg+xml"
           href="https://ultrajs.dev/logo.svg"
         />
+        <meta property="og:image" content="https://ultrajs.dev/screen.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
       <Suspense fallback={null}>
         <Route path="/">
