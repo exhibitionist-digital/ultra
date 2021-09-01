@@ -2,7 +2,7 @@
 <!-- deno-fmt-ignore-file -->
 <div align="center">
   <br />
-  <img src="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" height="300" />
+  <img src="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" height="250" />
   <h1>Ultra</h1>
   <strong>Deno + React: No build, no bundle, all streaming</strong>
   <br /><br /> 
@@ -35,13 +35,14 @@ Mileage may vary.
 
 Here are some neat demos:
 
-**React 18 Suspense SSR:**
-[Suspense
-SSR (taken from React's release announcement) 👩‍🚀👨‍🚀](https://react18.ultrajs.dev)
+### 👩‍🚀👨‍🚀 React 18: Suspense SSR
+[Demo (taken from React's release announcement)](https://react18.ultrajs.dev)
 
-**React-three-fiber:** [Threejs, react, no build, no bundle 🔥🔥](https://threejs.ultrajs.dev/)
+### 🔥🔥 React Three Fiber
+[Threejs, react, no build, no bundle](https://threejs.ultrajs.dev/)
 
-**Quick start:** The most minimal setup of **Ultra** can be found at
+### Quick start 
+The most minimal setup of **Ultra** can be found at
 [/examples/boilerplate](https://github.com/exhibitionist-digital/ultra/tree/master/examples/boilerplate).
 There are more
 [/examples](https://github.com/exhibitionist-digital/ultra/tree/master/examples)
@@ -81,49 +82,10 @@ dependencies. No bundling, building or complex package managers needed.
 }
 ```
 
-```js
-import React from "react";
-
-export default const Graveyard = () => {
-  const gravestones = [
-    ".cjs",
-    "require()",
-    "node_modules",
-    "package.json",
-    "webpack.config",
-    "babel.config",
-    "create-react-app",
-    "next.js",
-  ];
-
-  return (
-    <ul className="graveyard">
-      {gravestones.map((grave) => (
-        <li>
-          <figure>
-            <img src="/grave.svg" alt="Gravestone" />
-            <figcaption>{grave}</figcaption>
-          </figure>
-        </li>
-      ));}
-    </ul>
-  )
-};
-```
-
 **Under the hood:** We use [esbuild](https://esbuild.github.io) +
 [SWC](https://swc.rs) to transpile jsx/tsx in realtime. Your single ES modules
 stay single ES modules, but as minified vanilla js, with your import maps
 inlined.
-
-```bash
-Transpile: graveyard.jsx in 6ms
-```
-
-```js
-// Transpiled example of graveyard.jsx
-import e from"https://esm.sh/react@alpha";const a=()=>e.createElement("ul",{className:"graveyard"},[".cjs","require()","node_modules","package.json","webpack.config","babel.config","create-react-app","next.js"].map(r=>e.createElement("li",null,e.createElement("figure",null,e.createElement("img",{src:"/grave.svg",alt:"Gravestone"}),e.createElement("figcaption",null,r)))));export default a;
-```
 
 **Note:** In development, modules are transpiled every request. In production,
 transpiled modules are stored in an LRU cache. 👍
@@ -172,21 +134,28 @@ components, works with Suspense everywhere.
 **UPDATE v0.2**: now uses SWR v.1.0.0. This allows building of a cache server side, and repopulating on client side. Please see examples [here](https://github.com/exhibitionist-digital/ultra/blob/master/examples/ultra-website/public/app.jsx#L5) and [here](https://github.com/exhibitionist-digital/ultra/blob/master/examples/ultra-website/public/app.jsx#L5).
 
 ```js
-import { Suspense } from "react";
-import useSWR from "swr";
+import { SWRConfig } from "swr";
+import ultraCache from "ultra-cache";
 
-const Profile = () => {
-  const { data } = useSWR("/api/user", fetcher, { suspense: true });
-  return <div>hello, {data.name}</div>;
-};
+// Pass any SWR options your app needs here.
+// ultraCache is used to populate your cache server side.
+// This cache will be used when hydating app client side.
+const options = (cache) => ({
+  provider: () => ultraCache(cache),
+  revalidateIfStale: false,
+  revalidateOnMount: false,
+  suspense: true,
+});
 
-const App = () => {
+const Ultra = ({ cache }) => {
   return (
-    <Suspense fallback={<Loading />}>
-      <Profile />
-    </Suspense>
+    <SWRConfig value={options(cache)}>
+      <h1>Hello World</h1>
+    </SWRConfig>
   );
 };
+
+export default Ultra;
 ```
 </details>
 
