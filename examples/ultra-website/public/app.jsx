@@ -10,6 +10,7 @@ const options = (cache) => ({
   provider: () => ultraCache(cache),
   revalidateIfStale: false,
   revalidateOnMount: false,
+  suspense: true,
 });
 
 const Ultra = ({ cache }) => {
