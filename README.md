@@ -106,17 +106,21 @@ Powered by [Wouter](https://github.com/molefrog/wouter). Ah, what a breath of
 fresh air...
 
 ```js
-import { Suspense } from "react";
-import { Router } from "wouter";
+import React, { Suspense } from "react";
+import { Route } from "wouter";
 
 const Home = lazy(() => import("./home.jsx"));
 
 const App = () => {
-  <Router>
-    <Suspense path="/home" fallback={<Loading />}>
-      <Home />
-    </Suspense>
-  </Router>;
+  return (
+    <Router>
+      <Suspense fallback={<Loading />}>
+        <Route path="/">
+          <Home />
+        </Route>
+      </Suspense>
+    </Router>
+  );
 };
 ```
   
