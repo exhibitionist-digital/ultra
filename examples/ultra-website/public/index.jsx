@@ -18,6 +18,15 @@ const Examples = () => {
           </a>
         ))}
       </section>
+      <p>
+        Source code for these examples can be found on{" "}
+        <a
+          href="https://github.com/exhibitionist-digital/ultra/tree/master/examples"
+          target="_blank"
+        >
+          GitHub
+        </a>
+      </p>
     </>
   );
 };

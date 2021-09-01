@@ -11,6 +11,7 @@ html {
 }
 
 body {
+  padding: 1em 0;
   margin: 0;
   line-height: 1.5;
 }
@@ -25,7 +26,7 @@ a {
 }
 
 p {
-  margin: 1.5em auto;
+  margin: 1em auto;
 }
 
 img.logo {
@@ -75,10 +76,6 @@ h3 {
 h4 {
   margin: 0 0 2em;
   font-weight: 200;
-}
-
-p {
-  margin: 0;
 }
 
 section {
