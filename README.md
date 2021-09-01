@@ -113,13 +113,11 @@ const Home = lazy(() => import("./home.jsx"));
 
 const App = () => {
   return (
-    <Router>
-      <Suspense fallback={<Loading />}>
-        <Route path="/">
-          <Home />
-        </Route>
-      </Suspense>
-    </Router>
+    <Suspense fallback={<Loading />}>
+      <Route path="/">
+        <Home />
+      </Route>
+    </Suspense>
   );
 };
 ```
