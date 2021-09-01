@@ -3,6 +3,9 @@ import useSWR from "swr";
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
 
+const link =
+  "https://github.com/exhibitionist-digital/ultra/tree/master/examples";
+
 const Examples = () => {
   const { data } = useSWR(`ULTRA_URL/data.json`, fetcher);
   const { examples } = data;
@@ -19,13 +22,8 @@ const Examples = () => {
         ))}
       </section>
       <p>
-        Source code for these examples can be found on{" "}
-        <a
-          href="https://github.com/exhibitionist-digital/ultra/tree/master/examples"
-          target="_blank"
-        >
-          GitHub
-        </a>
+        Source code for these can be found on&nbsp;
+        <a href={link} target="_blank">GitHub</a>
       </p>
     </>
   );
@@ -40,7 +38,7 @@ const Index = () => {
         height="350"
       />
       <h1>Ultra</h1>
-      <h2>Deno + React: No build, no bundle, all streaming</h2>
+      <h2>Deno + React: No&nbsp;build, no&nbsp;bundle, all&nbsp;streaming</h2>
       <a
         className="gh"
         target="_blank"

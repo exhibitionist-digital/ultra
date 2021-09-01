@@ -10,7 +10,11 @@ const Ultra = () => {
   return (
     <div>
       <Helmet>
-        <title>ULTRA</title>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1"
+        />
+        <title>Ultra: React Three Fiber</title>
         <link rel="stylesheet" href="/style.css" />
         <link
           rel="icon"

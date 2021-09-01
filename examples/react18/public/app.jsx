@@ -16,7 +16,7 @@ const Ultra = ({ cache }) => {
         />
         <meta charset="UTF-8" />
         <link rel="stylesheet" href="/style.css" />
-        <title>Ultra: React 18 Streaming SSR Demo</title>
+        <title>Ultra: React 18 Streaming SSR</title>
         <link
           rel="icon"
           type="image/svg+xml"
