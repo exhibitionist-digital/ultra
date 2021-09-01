@@ -156,8 +156,6 @@ const Ultra = ({ cache }) => {
     </SWRConfig>
   );
 };
-
-export default Ultra;
 ```
 </details>
 
