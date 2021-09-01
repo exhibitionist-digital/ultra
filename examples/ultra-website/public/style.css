@@ -11,7 +11,7 @@ html {
 }
 
 body {
-  margin: 0 0 25vmin;
+  margin: 0;
   line-height: 1.5;
 }
 
@@ -29,10 +29,10 @@ p {
 }
 
 img.logo {
-  margin: 4em auto 1em;
-  width: 90vw;
+  margin: 1em auto;
+  width: 80vw;
   height: auto;
-  max-width: 350px;
+  max-width: 280px;
   display: block;
 }
 
@@ -58,12 +58,13 @@ img.logo {
 }
 
 h1 {
-  font-size: 400%;
+  font-size: 200%;
   text-transform: uppercase;
 }
 
 h2 {
   font-weight: 200;
+  font-size: 100%;
 }
 
 h3 {
@@ -80,8 +81,14 @@ p {
   margin: 0;
 }
 
+section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .ex {
-  margin: 0 auto 1rem;
+  margin: 0 0.5rem 1rem;
   display: block;
   text-decoration: none;
   max-width: 450px;

@@ -7,16 +7,18 @@ const Examples = () => {
   const { data } = useSWR(`ULTRA_URL/data.json`, fetcher);
   const { examples } = data;
   return (
-    <section>
+    <>
       <h4>Check out these examples</h4>
-      {examples.map((ex) => (
-        <a target="_blank" href={ex.url} className="ex">
-          <h3>{ex.emoji}</h3>
-          <strong>{ex.title}</strong>
-          <p>{ex.description}</p>
-        </a>
-      ))}
-    </section>
+      <section>
+        {examples.map((ex) => (
+          <a target="_blank" href={ex.url} className="ex">
+            <h3>{ex.emoji}</h3>
+            <strong>{ex.title}</strong>
+            <p>{ex.description}</p>
+          </a>
+        ))}
+      </section>
+    </>
   );
 };
 
