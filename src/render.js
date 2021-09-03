@@ -1,7 +1,6 @@
 import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
 import React from "react";
 import ReactDOM from "react-dom/server";
-import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
 import { Router } from "wouter";
 import { HelmetProvider } from "helmet";
 
