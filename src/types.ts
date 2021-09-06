@@ -12,3 +12,10 @@ export type TransformOptions = {
   importmap: ImportMap;
   root: string;
 };
+
+export type RenderOptions = {
+  root: string;
+  importmap: ImportMap;
+  request: { url: URL };
+  lang: string;
+};
