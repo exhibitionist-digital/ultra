@@ -10,8 +10,17 @@ const Ultra = () => {
   return (
     <div>
       <Helmet>
-        <title>ULTRA</title>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1"
+        />
+        <title>Ultra: React Three Fiber</title>
         <link rel="stylesheet" href="/style.css" />
+        <link
+          rel="icon"
+          type="image/svg+xml"
+          href="https://ultrajs.dev/logo.svg"
+        />
       </Helmet>
       <main>
         {!mount && <span>LOADING</span>}

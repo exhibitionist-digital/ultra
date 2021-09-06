@@ -1,0 +1,16 @@
+{
+  "examples": [
+    {
+      "url": "https://react18.ultrajs.dev",
+      "title": "React 18: Suspense SSR",
+      "emoji": "👩‍🚀👨‍🚀",
+      "description": "Streaming SSR with Suspense. Taken from the React 18 SSR demo."
+    },
+    {
+      "url": "https://threejs.ultrajs.dev",
+      "title": "React Three Fiber",
+      "emoji": "🔥🔥",
+      "description": "Enter the third dimension with JSX + react-three-fiber. No build, no bundle."
+    }
+  ]
+}

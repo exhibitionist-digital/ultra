@@ -6,7 +6,7 @@ html, body {
 	color: white;
 	text-align: center;
 	line-height: 100vh;
-	font-family: 'monospace'
+	font-family: monospace
 }
 
 canvas {

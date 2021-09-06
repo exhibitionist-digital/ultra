@@ -1,8 +1,6 @@
 import * as esbuild from "https://deno.land/x/esbuild@v0.12.24/mod.js";
 import { parse } from "https://x.nest.land/swc@0.1.4/mod.ts";
-import type {
-  CallExpression,
-} from "https://deno.land/x/swc@0.1.4/types/options.ts";
+import type { CallExpression } from "https://deno.land/x/swc@0.1.4/types/options.ts";
 import { ImportMap } from "./types.ts";
 
 const isDev = Deno.env.get("mode") === "dev";
@@ -49,21 +47,21 @@ const transform = async (
 
           if (expressionBody.callee?.value?.toLowerCase() === "import") {
             expressionBody.arguments?.forEach(
-              (
-                b: {
-                  expression: {
-                    value: string;
-                    span: { start: number; end: number };
-                  };
-                },
-              ) => {
+              (b: {
+                expression: {
+                  value: string;
+                  span: { start: number; end: number };
+                };
+              }) => {
                 const { value, span } = b?.expression;
                 c += code.substring(offset - length, span.start - length);
                 c += `"${
-                  value.replace(
-                    /.jsx|.tsx/gi,
-                    () => `.js?ts=${isDev ? +new Date() : serverStart}`,
-                  )
+                  value.replace(/.jsx|.tsx/gi, () =>
+                    `.js?ts=${
+                      isDev
+                        ? +new Date()
+                        : serverStart
+                    }`)
                 }"`;
                 offset = span.end;
               },
