@@ -1,19 +1,23 @@
-import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
 import React from "react";
 import ReactDOM from "react-dom/server";
 import { Router } from "wouter";
 import { HelmetProvider } from "helmet";
+import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
+import type { Navigate, RenderOptions } from "./types.ts";
 
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();
 
-const render = async ({ root, request, importmap, lang }) => {
+const render = async (
+  { root, request, importmap, lang }: RenderOptions,
+) => {
   const ts = isDev ? +new Date() : serverStart;
   const app = await import(join(root, `app.js?ts=${ts}`));
 
-  const helmetContext = { helmet: {} };
+  const helmetContext: { helmet: Record<string, number> } = { helmet: {} };
   const cache = new Map();
 
+  // @ts-ignore there's no types for toreadablestream yet
   const body = ReactDOM.renderToReadableStream(
     React.createElement(
       Router,
@@ -47,19 +51,22 @@ const render = async ({ root, request, importmap, lang }) => {
 
   return new ReadableStream({
     start(controller) {
-      function pushStream(stream) {
+      function pushStream(stream: ReadableStream) {
         const reader = stream.getReader();
-        return reader.read().then(function process(result) {
-          if (result.done) return;
-          try {
-            controller.enqueue(result.value);
-            return reader.read().then(process);
-          } catch (_e) {
-            return;
-          }
-        });
+        return reader.read().then(
+          function process(result: ReadableStreamReadResult<unknown>): unknown {
+            if (result.done) return;
+            try {
+              controller.enqueue(result.value);
+              return reader.read().then(process);
+            } catch (_e) {
+              return;
+            }
+          },
+        );
       }
-      const queue = (part) => Promise.resolve(controller.enqueue(part));
+      const queue = (part: unknown) =>
+        Promise.resolve(controller.enqueue(part));
 
       queue(head)
         .then(() => pushStream(body))
@@ -80,13 +87,14 @@ export default render;
 // wouter helper
 const staticLocationHook = (path = "/", { record = false } = {}) => {
   // deno-lint-ignore prefer-const
-  let hook;
-  const navigate = (to, { replace } = {}) => {
+  let hook: { history?: string[] } & (() => [string, Navigate]);
+
+  const navigate: Navigate = (to, { replace } = {}) => {
     if (record) {
       if (replace) {
-        hook.history.pop();
+        hook.history?.pop();
       }
-      hook.history.push(to);
+      hook.history?.push(to);
     }
   };
   hook = () => [path, navigate];
