@@ -1,7 +1,10 @@
 import * as esbuild from "https://deno.land/x/esbuild@v0.12.24/mod.js";
 import { parse } from "https://x.nest.land/swc@0.1.4/mod.ts";
-import type { CallExpression } from "https://deno.land/x/swc@0.1.4/types/options.ts";
-import { ImportMap } from "./types.ts";
+import type {
+  CallExpression,
+  HasSpan,
+} from "https://deno.land/x/swc@0.1.4/types/options.ts";
+import { TransformOptions } from "./types.ts";
 
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();
@@ -10,11 +13,7 @@ let offset = 0;
 let length = 0;
 
 const transform = async (
-  { source, importmap, root }: {
-    source: string;
-    importmap: ImportMap;
-    root: string;
-  },
+  { source, importmap, root }: TransformOptions,
 ) => {
   const t0 = performance.now();
   const { code } = await esbuild.transform(source, {
@@ -50,8 +49,7 @@ const transform = async (
               (b: {
                 expression: {
                   value: string;
-                  span: { start: number; end: number };
-                };
+                } & HasSpan;
               }) => {
                 const { value, span } = b?.expression;
                 c += code.substring(offset - length, span.start - length);
