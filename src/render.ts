@@ -3,18 +3,13 @@ import ReactDOM from "react-dom/server";
 import { Router } from "wouter";
 import { HelmetProvider } from "helmet";
 import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
-import type { ImportMap, Navigate } from "./types.ts";
+import type { RenderOptions, Navigate } from "./types.ts";
 
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();
 
 const render = async (
-  { root, request, importmap, lang }: {
-    root: string;
-    importmap: ImportMap;
-    request: { url: URL };
-    lang: string;
-  },
+  { root, request, importmap, lang }: RenderOptions,
 ) => {
   const ts = isDev ? +new Date() : serverStart;
   const app = await import(join(root, `app.js?ts=${ts}`));
