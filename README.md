@@ -1,14 +1,12 @@
-
-<!-- deno-fmt-ignore-file -->
 <div align="center">
   <br />
   <img src="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" height="250" />
   <h1>Ultra</h1>
   <strong>Deno + React: No build, no bundle, all streaming</strong>
-  <br /><br /> 
-  
-  [![GitHub Workflow Status][actions-badge]][actions]
-  
+  <br /><br />
+
+[![GitHub Workflow Status][actions-badge]][actions]
+
 </div>
 
 **Ultra** is a web framework that leans hard into your browser's native
@@ -36,12 +34,15 @@ Mileage may vary.
 Here are some neat demos:
 
 ### 👩‍🚀👨‍🚀 React 18: Suspense SSR
+
 [Demo (taken from React's release announcement)](https://react18.ultrajs.dev)
 
 ### 🔥🔥 React Three Fiber
+
 [Threejs, react, no build, no bundle](https://threejs.ultrajs.dev/)
 
-### Quick start 
+### Quick start
+
 The most minimal setup of **Ultra** can be found at
 [/examples/boilerplate](https://github.com/exhibitionist-digital/ultra/tree/master/examples/boilerplate).
 There are more
@@ -58,7 +59,7 @@ Everything is ES Modules. Server side rendering is default. Have the quickest
 TTFB by using the React streaming server renderer.
 
 ```bash
-# HTTP/2 200  
+# HTTP/2 200
 
 * Received 381 B chunk
 * Received 8 B chunk
@@ -89,13 +90,13 @@ inlined.
 
 **Note:** In development, modules are transpiled every request. In production,
 transpiled modules are stored in an LRU cache. 👍
-  
+
 </details>
 
 ---
-  
+
 <details><summary>LAZY ROUTING</summary>
-  
+
 <br/>
 
 Stop poking around at your filesystem. Routing can be defined anywhere in your
@@ -121,11 +122,11 @@ const App = () => {
   );
 };
 ```
-  
+
 </details>
 
 ---
-  
+
 <details><summary>SUSPENSE DATA FETCHING</summary>
 
 <br/>
@@ -133,7 +134,9 @@ const App = () => {
 [SWR](https://github.com/vercel/swr) lets us fetch data anywhere in our
 components, works with Suspense everywhere.
 
-**UPDATE v0.2**: now uses SWR v.1.0.0. This allows building of a cache server side, and repopulating on client side. Please see example [here](https://github.com/exhibitionist-digital/ultra/blob/master/examples/ultra-website/public/app.jsx#L5).
+**UPDATE v0.2**: now uses SWR v.1.0.0. This allows building of a cache server
+side, and repopulating on client side. Please see example
+[here](https://github.com/exhibitionist-digital/ultra/blob/master/examples/ultra-website/src/app.jsx#L5).
 
 ```js
 import { SWRConfig } from "swr";
@@ -157,6 +160,7 @@ const Ultra = ({ cache }) => {
   );
 };
 ```
+
 </details>
 
 [docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&style=for-the-badge&color=B06892&

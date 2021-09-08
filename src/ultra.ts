@@ -18,9 +18,7 @@ const isDev = Deno.env.get("mode") === "dev";
 const port = parseInt(Deno.env.get("port") || "", 10) || 3000;
 const root = Deno.env.get("url") || `http://localhost:${port}`;
 
-const start = (
-  { importmap: importMapSource, lang = "en" }: StartOptions,
-) => {
+const start = ({ importmap: importMapSource, lang = "en" }: StartOptions) => {
   const importmap: ImportMap = JSON.parse(importMapSource);
 
   app.use(async (context, next) => {
@@ -28,7 +26,7 @@ const start = (
     if (pathname == "/") await next();
     try {
       await send(context, pathname, {
-        root: join(Deno.cwd(), "public"),
+        root: join(Deno.cwd(), "src"),
       });
     } catch (_e) {
       await next();
@@ -45,15 +43,15 @@ const start = (
     const jsx = pathname.replaceAll(".js", ".jsx");
     const tsx = pathname.replaceAll(".js", ".tsx");
     // deno-lint-ignore prefer-const
-    let file = existsSync(join(Deno.cwd(), "public", jsx))
+    let file = existsSync(join(Deno.cwd(), "src", jsx))
       ? jsx
-      : existsSync(join(Deno.cwd(), "public", tsx))
+      : existsSync(join(Deno.cwd(), "src", tsx))
       ? tsx
       : false;
     if (!file) return await next();
     try {
       const source = await Deno.readTextFile(
-        join(Deno.cwd(), "public", ...file.split("/")),
+        join(Deno.cwd(), "src", ...file.split("/")),
       );
       const code = await transform({ source, importmap, root });
       if (!isDev) memory.set(pathname, code);
