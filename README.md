@@ -140,7 +140,7 @@ side, and repopulating on client side. Please see example
 
 ```js
 import { SWRConfig } from "swr";
-import ultraCache from "ultra-cache";
+import ultraCache from "ultra/cache";
 
 // Pass any SWR options your app needs here.
 // ultraCache is used to populate your cache server side.

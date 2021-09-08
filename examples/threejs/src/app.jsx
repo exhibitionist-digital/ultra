@@ -15,7 +15,7 @@ const Ultra = () => {
           content="width=device-width, initial-scale=1"
         />
         <title>Ultra: React Three Fiber</title>
-        <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" href="/style.css?threejs" />
         <link
           rel="icon"
           type="image/svg+xml"
