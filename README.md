@@ -177,13 +177,28 @@ middleware or routing your app might need.
 [Oak docs](https://github.com/oakserver/oak#application-middleware-and-context)
 
 ```js
-import ultra, { app, router } from "https://deno.land/x/ultra@v0.5/mod.ts";
+import ultra, { app } from "https://deno.land/x/ultra@v0.5/mod.ts";
 
 // logger middleware
 app.use(async (context, next) => {
   await next();
   const rt = context.response.headers.get("X-Response-Time");
   console.log(`${context.request.method} ${context.request.url} - ${rt}`);
+});
+
+await ultra({
+  importmap: await Deno.readTextFile("importmap.json"),
+});
+```
+
+Custom routes can all be added, helpful for API's.
+
+```js
+import ultra, { router } from "https://deno.land/x/ultra@v0.5/mod.ts";
+
+// example API route
+router.get("/api/:slug", async (context) => {
+  // ...
 });
 
 await ultra({
