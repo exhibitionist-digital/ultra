@@ -7,7 +7,7 @@
     "wouter": "https://esm.sh/wouter?deps=react@18.0.0-alpha-67f38366a-20210830&bundle",
     "swr": "https://esm.sh/swr@1.0.0?deps=react@18.0.0-alpha-67f38366a-20210830&bundle",
     "ultra-cache": "https://deno.land/x/ultra@v0.3/cache.js",
-    "@web3-react/core": "https://esm.sh/@web3-react/core?deps=react@18.0.0-alpha-67f38366a-20210830",
+    "@web3-react/core": "https://esm.sh/@web3-react/core?deps=react@18.0.0-alpha-67f38366a-20210830&bundle",
     "@web3-react/injected-connector": "https://esm.sh/@web3-react/injected-connector",
     "@ethersproject/providers": "https://esm.sh/@ethersproject/providers"
   }
