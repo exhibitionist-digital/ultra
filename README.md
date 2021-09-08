@@ -1,13 +1,12 @@
-<!-- deno-fmt-ignore-file -->
 <div align="center">
   <br />
   <img src="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" height="250" />
   <h1>Ultra</h1>
   <strong>Deno + React: No build, no bundle, all streaming</strong>
-  <br /><br /> 
-  
-  [![GitHub Workflow Status][actions-badge]][actions]
-  
+  <br /><br />
+
+[![GitHub Workflow Status][actions-badge]][actions]
+
 </div>
 
 **Ultra** is a web framework that leans hard into your browser's native
@@ -97,7 +96,7 @@ transpiled modules are stored in an LRU cache. 👍
 ---
 
 <details><summary>LAZY ROUTING</summary>
-  
+
 <br/>
 
 Stop poking around at your filesystem. Routing can be defined anywhere in your
@@ -108,10 +107,10 @@ Powered by [Wouter](https://github.com/molefrog/wouter). Ah, what a breath of
 fresh air...
 
 ```js
-import React, { Suspense } from 'react'
-import { Route } from 'wouter'
+import React, { Suspense } from "react";
+import { Route } from "wouter";
 
-const Home = lazy(() => import('./home.jsx'))
+const Home = lazy(() => import("./home.jsx"));
 
 const App = () => {
   return (
@@ -120,8 +119,8 @@ const App = () => {
         <Home />
       </Route>
     </Suspense>
-  )
-}
+  );
+};
 ```
 
 </details>
@@ -135,11 +134,13 @@ const App = () => {
 [SWR](https://github.com/vercel/swr) lets us fetch data anywhere in our
 components, works with Suspense everywhere.
 
-**UPDATE v0.2**: now uses SWR v.1.0.0. This allows building of a cache server side, and repopulating on client side. Please see example [here](https://github.com/exhibitionist-digital/ultra/blob/master/examples/ultra-website/src/app.jsx#L5).
+**UPDATE v0.2**: now uses SWR v.1.0.0. This allows building of a cache server
+side, and repopulating on client side. Please see example
+[here](https://github.com/exhibitionist-digital/ultra/blob/master/examples/ultra-website/src/app.jsx#L5).
 
 ```js
-import { SWRConfig } from 'swr'
-import ultraCache from 'ultra-cache'
+import { SWRConfig } from "swr";
+import ultraCache from "ultra-cache";
 
 // Pass any SWR options your app needs here.
 // ultraCache is used to populate your cache server side.
@@ -148,16 +149,16 @@ const options = (cache) => ({
   provider: () => ultraCache(cache), // required
   suspense: true, // required
   revalidateIfStale: false,
-  revalidateOnMount: false
-})
+  revalidateOnMount: false,
+});
 
 const Ultra = ({ cache }) => {
   return (
     <SWRConfig value={options(cache)}>
       <h1>Hello World</h1>
     </SWRConfig>
-  )
-}
+  );
+};
 ```
 
 </details>
