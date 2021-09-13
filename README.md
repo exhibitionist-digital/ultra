@@ -233,10 +233,12 @@ RUN make cache
 CMD ["make", "start"]
 ```
 
-We are currently working on deployment support for
+---
+
+We are currently working on support for
 [Deno Deploy](https://deno.com/deploy),
-[Cloudflare workers](https://workers.cloudflare.com/), and
-[Vercel](https://vercel.com/).
+[Cloudflare Workers](https://workers.cloudflare.com/), and
+[Vercel](https://vercel.com/). Keen to help? Open a PR, please! 🙏
 
 </details>
 
