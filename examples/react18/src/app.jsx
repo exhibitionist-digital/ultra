@@ -2,7 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { Helmet } from "helmet";
 import { Route } from "wouter";
 import { SWRConfig } from "swr";
-import ultraCache from "ultra-cache";
+import ultraCache from "ultra/cache";
 
 const Index = lazy(() => import("./index.jsx"));
 
@@ -15,7 +15,7 @@ const Ultra = ({ cache }) => {
           content="width=device-width, initial-scale=1"
         />
         <meta charset="UTF-8" />
-        <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" href="/style.css?react18" />
         <title>Ultra: React 18 Streaming SSR</title>
         <link
           rel="icon"

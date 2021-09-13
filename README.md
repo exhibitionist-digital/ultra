@@ -106,6 +106,9 @@ any given time.
 Powered by [Wouter](https://github.com/molefrog/wouter). Ah, what a breath of
 fresh air...
 
+All Wouter hooks and functionality is supported:
+[Wouter docs](https://github.com/molefrog/wouter#wouter-api)
+
 ```js
 import React, { Suspense } from "react";
 import { Route } from "wouter";
@@ -114,11 +117,11 @@ const Home = lazy(() => import("./home.jsx"));
 
 const App = () => {
   return (
-    <Suspense fallback={<Loading />}>
-      <Route path="/">
+    <Route path="/">
+      <Suspense fallback={<Loading />}>
         <Home />
-      </Route>
-    </Suspense>
+      </Suspense>
+    </Route>
   );
 };
 ```
@@ -134,22 +137,20 @@ const App = () => {
 [SWR](https://github.com/vercel/swr) lets us fetch data anywhere in our
 components, works with Suspense everywhere.
 
-**UPDATE v0.2**: now uses SWR v.1.0.0. This allows building of a cache server
-side, and repopulating on client side. Please see example
+Ultra uses the brand new SWR-1.0.0. This allows building of a cache server side,
+and repopulating on client side. Please see example
 [here](https://github.com/exhibitionist-digital/ultra/blob/master/examples/ultra-website/src/app.jsx#L5).
+
+SWR options are supported:
+[SWR docs](https://swr.vercel.app/docs/options#options)
 
 ```js
 import { SWRConfig } from "swr";
-import ultraCache from "ultra-cache";
+import ultraCache from "ultra/cache";
 
-// Pass any SWR options your app needs here.
-// ultraCache is used to populate your cache server side.
-// This cache will be used when hydating app client side.
 const options = (cache) => ({
-  provider: () => ultraCache(cache), // required
-  suspense: true, // required
-  revalidateIfStale: false,
-  revalidateOnMount: false,
+  provider: () => ultraCache(cache),
+  suspense: true,
 });
 
 const Ultra = ({ cache }) => {
@@ -159,6 +160,50 @@ const Ultra = ({ cache }) => {
     </SWRConfig>
   );
 };
+```
+
+</details>
+
+---
+
+<details><summary>MIDDLEWARE + API ROUTES</summary>
+
+<br/>
+
+Ultra is powered by the mighty [Oak](https://github.com/oakserver/oak). We
+expose both the `app` and `router`, which can be configured for any custom
+middleware or routing your app might need.
+
+[Oak docs](https://github.com/oakserver/oak#application-middleware-and-context)
+
+```js
+import ultra, { app } from "https://deno.land/x/ultra@v0.5/mod.ts";
+
+// logger middleware
+app.use(async (context, next) => {
+  await next();
+  const rt = context.response.headers.get("X-Response-Time");
+  console.log(`${context.request.method} ${context.request.url} - ${rt}`);
+});
+
+await ultra({
+  importmap: await Deno.readTextFile("importmap.json"),
+});
+```
+
+Custom routes can all be added, helpful for API's.
+
+```js
+import ultra, { router } from "https://deno.land/x/ultra@v0.5/mod.ts";
+
+// example API route
+router.get("/api/:slug", async (context) => {
+  // ...
+});
+
+await ultra({
+  importmap: await Deno.readTextFile("importmap.json"),
+});
 ```
 
 </details>

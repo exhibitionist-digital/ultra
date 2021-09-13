@@ -44,8 +44,8 @@ const transform = async (
           // @ts-ignore deno_swc doesn't have generics
           const expressionBody = expression.body;
 
-          if (expressionBody.callee?.value?.toLowerCase() === "import") {
-            expressionBody.arguments?.forEach(
+          if (expressionBody?.callee?.value?.toLowerCase() === "import") {
+            expressionBody?.arguments?.forEach(
               (b: {
                 expression: {
                   value: string;
