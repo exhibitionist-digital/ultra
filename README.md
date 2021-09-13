@@ -235,8 +235,7 @@ CMD ["make", "start"]
 
 ---
 
-We are currently working on support for
-[Deno Deploy](https://deno.com/deploy),
+We are currently working on support for [Deno Deploy](https://deno.com/deploy),
 [Cloudflare Workers](https://workers.cloudflare.com/), and
 [Vercel](https://vercel.com/). Keen to help? Open a PR, please! 🙏
 
