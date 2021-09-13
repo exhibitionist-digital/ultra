@@ -208,6 +208,38 @@ await ultra({
 
 </details>
 
+---
+
+<details><summary>DEPLOYING</summary>
+
+<br/>
+
+**Classic deployment:** Ultra can be deployed via Docker. Here is an example
+Dockerfile which uses the official Denoland image.
+
+```bash
+FROM denoland/deno:1.13.2
+
+EXPOSE 3000 
+
+RUN apt-get update && apt-get -y install make
+
+WORKDIR /
+
+COPY . .
+
+RUN make cache
+
+CMD ["make", "start"]
+```
+
+We are currently working on deployment support for
+[Deno Deploy](https://deno.com/deploy),
+[Cloudflare workers](https://workers.cloudflare.com/), and
+[Vercel](https://vercel.com/).
+
+</details>
+
 [docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&style=for-the-badge&color=B06892&
 [docs]: https://doc.deno.land/https/deno.land/x/ultra/mod.js&
 [actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?style=for-the-badge&color=53A3D3&logo=github&label=
