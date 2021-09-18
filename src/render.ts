@@ -68,9 +68,9 @@ const render = async (
   // body.getReader() can emit Uint8Arrays() or strings; our chunking expects
   // UTF-8 encoded Uint8Arrays at present, so this stream ensures everything
   // is encoded that way:
-  const encodedStream = encodeStream(body)
+  const encodedStream = encodeStream(body);
 
-  const bodyReader = encodedStream.getReader()
+  const bodyReader = encodedStream.getReader();
 
   // Buffer the first portion of the response before streaming; this allows
   // us to respond with correct server codes if the component contains errors,
@@ -106,30 +106,31 @@ const render = async (
 
 export default render;
 
-const encodeStream = (readable) => new ReadableStream({
-  start(controller) {
-    return (async () => {
-      const enc = new TextEncoder()
-      const rdr = readable.getReader()
-      try {
-        while (true) { 
-          const { value, done } = await rdr.read()
-          if (done) break
+const encodeStream = (readable) =>
+  new ReadableStream({
+    start(controller) {
+      return (async () => {
+        const enc = new TextEncoder();
+        const rdr = readable.getReader();
+        try {
+          while (true) {
+            const { value, done } = await rdr.read();
+            if (done) break;
 
-          if (typeof value === "string") {
-            controller.enqueue(enc.encode(value))
-          } else if (value instanceof Uint8Array) {
-            controller.enqueue(value)
-          } else {
-            throw new TypeError()
+            if (typeof value === "string") {
+              controller.enqueue(enc.encode(value));
+            } else if (value instanceof Uint8Array) {
+              controller.enqueue(value);
+            } else {
+              throw new TypeError();
+            }
           }
+        } finally {
+          controller.close();
         }
-      } finally {
-        controller.close()
-      }
-    })()
-  }
-})
+      })();
+    },
+  });
 
 async function pushBody(reader, controller, chunkSize) {
   let parts = [];
