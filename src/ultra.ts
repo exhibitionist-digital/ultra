@@ -59,7 +59,6 @@ const start = ({ importmap: importMapSource, lang = "en" }: StartOptions) => {
       context.response.body = code;
     } catch (e) {
       console.log(e);
-      await next();
     }
   });
 
@@ -73,7 +72,7 @@ const start = ({ importmap: importMapSource, lang = "en" }: StartOptions) => {
       });
     } catch (e) {
       console.log(e);
-      await next();
+      context.throw(500);
     }
   });
 
