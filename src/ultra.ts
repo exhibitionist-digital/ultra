@@ -62,7 +62,7 @@ const start = ({ importmap: importMapSource, lang = "en" }: StartOptions) => {
     }
   });
 
-  router.get("/(.*)", async (context, next) => {
+  router.get("/(.*)", async (context) => {
     try {
       context.response.body = await render({
         root,
