@@ -1,5 +1,5 @@
-import { existsSync } from "https://deno.land/std@0.106.0/fs/mod.ts";
-import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
+import { existsSync } from "https://deno.land/std@0.107.0/fs/mod.ts";
+import { join } from "https://deno.land/std@0.107.0/path/mod.ts";
 import LRU from "https://deno.land/x/lru@1.0.2/mod.ts";
 import {
   Application,
@@ -59,11 +59,10 @@ const start = ({ importmap: importMapSource, lang = "en" }: StartOptions) => {
       context.response.body = code;
     } catch (e) {
       console.log(e);
-      await next();
     }
   });
 
-  router.get("/(.*)", async (context, next) => {
+  router.get("/(.*)", async (context) => {
     try {
       context.response.body = await render({
         root,
@@ -73,7 +72,7 @@ const start = ({ importmap: importMapSource, lang = "en" }: StartOptions) => {
       });
     } catch (e) {
       console.log(e);
-      await next();
+      context.throw(500);
     }
   });
 
