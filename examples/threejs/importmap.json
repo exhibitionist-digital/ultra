@@ -1,12 +1,12 @@
 {
   "imports": {
-    "react": "https://esm.sh/react@18.0.0-alpha-67f38366a-20210830?no-check",
-    "react-dom": "https://esm.sh/react-dom@18.0.0-alpha-67f38366a-20210830?no-check",
-    "react-dom/server": "https://esm.sh/react-dom@18.0.0-alpha-67f38366a-20210830/server?no-check",
-    "helmet": "https://esm.sh/react-helmet-async?deps=react@18.0.0-alpha-67f38366a-20210830&bundle&no-check",
-    "wouter": "https://esm.sh/wouter?deps=react@18.0.0-alpha-67f38366a-20210830&bundle&no-check",
-    "swr": "https://esm.sh/swr@1.0.0?deps=react@18.0.0-alpha-67f38366a-20210830&bundle&no-check",
+    "react": "https://esm.sh/react@18.0.0-alpha-bc9bb87c2-20210917?no-check",
+    "react-dom": "https://esm.sh/react-dom@18.0.0-alpha-bc9bb87c2-20210917?no-check",
+    "react-dom/server": "https://esm.sh/react-dom@18.0.0-alpha-bc9bb87c2-20210917/server?no-check",
+    "helmet": "https://esm.sh/react-helmet-async?deps=react@18.0.0-alpha-bc9bb87c2-20210917&bundle&no-check",
+    "wouter": "https://esm.sh/wouter?deps=react@18.0.0-alpha-bc9bb87c2-20210917&bundle&no-check",
+    "swr": "https://esm.sh/swr@1.0.0?deps=react@18.0.0-alpha-bc9bb87c2-20210917&bundle&no-check",
     "ultra/cache": "https://deno.land/x/ultra@v0.3/cache.js",
-    "three": "https://esm.sh/@react-three/fiber?alias=debounce:lodash.debounce&deps=react@18.0.0-alpha-67f38366a-20210830&no-check&bundle"
+    "three": "https://esm.sh/@react-three/fiber?alias=debounce:lodash.debounce&deps=react@18.0.0-alpha-bc9bb87c2-20210917&no-check&bundle"
   }
 }
