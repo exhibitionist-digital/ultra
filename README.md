@@ -218,7 +218,7 @@ await ultra({
 Dockerfile which uses the official Denoland image.
 
 ```bash
-FROM denoland/deno:1.13.2
+FROM denoland/deno:1.14.0
 
 EXPOSE 3000 
 
