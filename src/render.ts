@@ -82,43 +82,46 @@ const render = async (
     buffer.writeSync(read.value);
   }
 
-  return new ReadableStream({
-    start(controller) {
-      const queue = (part: unknown) =>
-        Promise.resolve(controller.enqueue(part));
+  return encodeStream(
+    new ReadableStream({
+      start(controller) {
+        const queue = (part: unknown) =>
+          Promise.resolve(controller.enqueue(part));
 
-      queue(head)
-        .then(() => queue(buffer.bytes({ copy: false })))
-        .then(() => pushBody(bodyReader, controller, chunkSize))
-        .catch(async (e) => {
-          console.error("readable stream error", e);
+        queue(head)
+          .then(() => queue(buffer.bytes({ copy: false })))
+          .then(() => pushBody(bodyReader, controller, chunkSize))
+          .catch(async (e) => {
+            console.error("readable stream error", e);
 
-          // Might be possible to push something to the client that renders
-          // an error if in 'dev mode' here, but the markup that precedes it
-          // could very well be broken:
-          await queue("Error");
-        })
-        .then(() => controller.enqueue(tail()))
-        .then(() => controller.close());
-    },
-  });
+            // Might be possible to push something to the client that renders
+            // an error if in 'dev mode' here, but the markup that precedes it
+            // could very well be broken:
+            await queue("Error");
+          })
+          .then(() => controller.enqueue(tail()))
+          .then(() => controller.close());
+      },
+    }),
+  );
 };
 
 export default render;
 
+// @ts-ignore fixme: add types
 const encodeStream = (readable) =>
   new ReadableStream({
     start(controller) {
       return (async () => {
-        const enc = new TextEncoder();
-        const rdr = readable.getReader();
+        const encoder = new TextEncoder();
+        const reader = readable.getReader();
         try {
           while (true) {
-            const { value, done } = await rdr.read();
+            const { value, done } = await reader.read();
             if (done) break;
 
             if (typeof value === "string") {
-              controller.enqueue(enc.encode(value));
+              controller.enqueue(encoder.encode(value));
             } else if (value instanceof Uint8Array) {
               controller.enqueue(value);
             } else {
@@ -132,6 +135,7 @@ const encodeStream = (readable) =>
     },
   });
 
+// @ts-ignore fixme: add types
 async function pushBody(reader, controller, chunkSize) {
   let parts = [];
   let partsSize = 0;

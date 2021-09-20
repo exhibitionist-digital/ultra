@@ -4,7 +4,7 @@ export type Navigate = (to: string, opts?: { replace?: boolean }) => void;
 
 export type StartOptions = {
   importmap: string;
-  lang: string;
+  lang?: string;
 };
 
 export type TransformOptions = {
@@ -27,3 +27,5 @@ export type RenderOptions = {
   // Size of the chunk to emit to the connection as the response streams:
   chunkSize?: number;
 };
+
+export type Cache = Map<unknown, unknown>;
