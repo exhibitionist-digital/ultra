@@ -61,14 +61,9 @@ TTFB by using the React streaming server renderer.
 ```bash
 # HTTP/2 200
 
-* Received 381 B chunk
-* Received 8 B chunk
-* Received 6 B chunk
-* Received 6 B chunk
-* Received 1 B chunk
-* Received 5 B chunk
-* Received 2 B chunk
-* Received 7 B chunk
+* Received 1259 B chunk
+* Received 1989 B chunk
+* Received 552 B chunk
 ```
 
 [Import Maps](https://github.com/WICG/import-maps) are used to manage 3rd party
