@@ -2,15 +2,22 @@ import React from "react";
 import ReactDOM from "react-dom/server";
 import { Router } from "wouter";
 import { HelmetProvider } from "helmet";
-import { join } from "https://deno.land/std@0.106.0/path/mod.ts";
+import { concat } from "https://deno.land/std@0.107.0/bytes/mod.ts";
+import { join } from "https://deno.land/std@0.107.0/path/mod.ts";
+import { Buffer } from "https://deno.land/std@0.107.0/io/mod.ts";
 import type { Navigate, RenderOptions } from "./types.ts";
 
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();
 
+const defaultBufferSize = 8 * 1024;
+const defaultChunkSize = 8 * 1024;
+
 const render = async (
-  { root, request, importmap, lang }: RenderOptions,
+  { root, request, importmap, lang, bufferSize, chunkSize }: RenderOptions,
 ) => {
+  chunkSize = chunkSize ?? defaultChunkSize;
+
   const ts = isDev ? +new Date() : serverStart;
   const app = await import(join(root, `app.js?ts=${ts}`));
 
@@ -33,6 +40,7 @@ const render = async (
       ),
     ),
   );
+
   const { helmet } = helmetContext;
 
   const head = `<!DOCTYPE html><html lang="${lang}"><head>${
@@ -47,42 +55,108 @@ const render = async (
     importmap.imports["wouter"]
   }";import { HelmetProvider } from "${
     importmap.imports["helmet"]
-  }";import App from "/app.js";const root = hydrateRoot(document.getElementById('ultra'),createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))</script></head><body><div id="ultra">`;
+  }";import App from "/app.js";` +
+    `const root = hydrateRoot(document.getElementById('ultra'),` +
+    `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +
+    `</script></head><body><div id="ultra">`;
 
-  return new ReadableStream({
-    start(controller) {
-      function pushStream(stream: ReadableStream) {
-        const reader = stream.getReader();
-        return reader.read().then(
-          function process(result: ReadableStreamReadResult<unknown>): unknown {
-            if (result.done) return;
-            try {
-              controller.enqueue(result.value);
-              return reader.read().then(process);
-            } catch (_e) {
-              return;
-            }
-          },
-        );
-      }
-      const queue = (part: unknown) =>
-        Promise.resolve(controller.enqueue(part));
+  const tail = () =>
+    `</div></body><script>self.__ultra = ${
+      JSON.stringify(Array.from(cache.entries()))
+    }</script></html>`;
 
-      queue(head)
-        .then(() => pushStream(body))
-        .then(() =>
-          queue(
-            `</div></body><script>self.__ultra = ${
-              JSON.stringify(Array.from(cache.entries()))
-            }</script></html>`,
-          )
-        )
-        .then(() => controller.close());
-    },
-  });
+  // body.getReader() can emit Uint8Arrays() or strings; our chunking expects
+  // UTF-8 encoded Uint8Arrays at present, so this stream ensures everything
+  // is encoded that way:
+  const encodedStream = encodeStream(body);
+
+  const bodyReader = encodedStream.getReader();
+
+  // Buffer the first portion of the response before streaming; this allows
+  // us to respond with correct server codes if the component contains errors,
+  // but only if those errors occur within the buffered portion:
+  const buffer = new Buffer();
+  while (buffer.length < (bufferSize ?? defaultBufferSize)) {
+    const read = await bodyReader.read();
+    if (read.done) break;
+    buffer.writeSync(read.value);
+  }
+
+  return encodeStream(
+    new ReadableStream({
+      start(controller) {
+        const queue = (part: unknown) =>
+          Promise.resolve(controller.enqueue(part));
+
+        queue(head)
+          .then(() => queue(buffer.bytes({ copy: false })))
+          .then(() => pushBody(bodyReader, controller, chunkSize))
+          .catch(async (e) => {
+            console.error("readable stream error", e);
+
+            // Might be possible to push something to the client that renders
+            // an error if in 'dev mode' here, but the markup that precedes it
+            // could very well be broken:
+            await queue("Error");
+          })
+          .then(() => controller.enqueue(tail()))
+          .then(() => controller.close());
+      },
+    }),
+  );
 };
 
 export default render;
+
+// @ts-ignore fixme: add types
+const encodeStream = (readable) =>
+  new ReadableStream({
+    start(controller) {
+      return (async () => {
+        const encoder = new TextEncoder();
+        const reader = readable.getReader();
+        try {
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            if (typeof value === "string") {
+              controller.enqueue(encoder.encode(value));
+            } else if (value instanceof Uint8Array) {
+              controller.enqueue(value);
+            } else {
+              throw new TypeError();
+            }
+          }
+        } finally {
+          controller.close();
+        }
+      })();
+    },
+  });
+
+// @ts-ignore fixme: add types
+async function pushBody(reader, controller, chunkSize) {
+  let parts = [];
+  let partsSize = 0;
+
+  while (true) {
+    const read = await reader.read();
+    if (read.done) break;
+    partsSize += read.value.length;
+    parts.push(read.value);
+    if (partsSize >= chunkSize) {
+      const write = concat(...parts);
+      parts = [];
+      partsSize = 0;
+      if (write.length > chunkSize) {
+        parts.push(write.slice(chunkSize));
+      }
+      controller.enqueue(write.slice(0, chunkSize));
+    }
+  }
+  controller.enqueue(concat(...parts));
+}
 
 // wouter helper
 const staticLocationHook = (path = "/", { record = false } = {}) => {

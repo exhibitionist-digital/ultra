@@ -11,11 +11,13 @@ const Examples = () => {
   const { examples } = data;
   return (
     <>
-      <h4>Check out these examples</h4>
+      <h3>Check out these examples</h3>
       <section>
-        {examples.map((ex) => (
-          <a target="_blank" href={ex.url} className="ex">
-            <h3>{ex.emoji}</h3>
+        {examples.map((
+          ex,
+        ) => (
+          <a target="_blank" href={ex.url} className="ex" rel="noopener">
+            <div className="emoji">{ex.emoji}</div>
             <strong>{ex.title}</strong>
             <p>{ex.description}</p>
           </a>
@@ -23,8 +25,16 @@ const Examples = () => {
       </section>
       <p>
         Source code for these can be found on&nbsp;
-        <a href={link} target="_blank">GitHub</a>
+        <a href={link} target="_blank" rel="noopener">GitHub</a>
       </p>
+      <h4>Go ahead, run Lighthouse, we dare you</h4>
+      <img
+        className="lighthouse"
+        width="100%"
+        height="auto"
+        alt="perfect lighthouse score"
+        src="/lighthouse.png"
+      />
     </>
   );
 };
@@ -34,6 +44,7 @@ const Index = () => {
     <main>
       <img
         className="logo"
+        alt="ultra"
         src="/logo.svg"
         height="350"
       />
@@ -43,6 +54,7 @@ const Index = () => {
         className="gh"
         target="_blank"
         href="https://github.com/exhibitionist-digital/ultra"
+        rel="noopener"
       >
         View on GitHub
       </a>
