@@ -10,19 +10,23 @@ declare global {
 }
 
 const Ultra = () => {
-  const [provider, set] = useState<Web3Provider>();
+  const [provider, setProvider] = useState<Web3Provider>();
 
   useEffect(() => {
     if (window.ethereum) {
-      set(new Web3Provider(window.ethereum));
+      setProvider(new Web3Provider(window.ethereum));
     }
-  }, []);
+  }, [window.ethereum]);
 
   return (
     <div>
-      <Helmet>
-        <title>ULTRA</title>
-      </Helmet>
+      <button
+        onClick={() => {
+          provider?.send("eth_accounts", []);
+        }}
+      >
+        Connect wallet
+      </button>
     </div>
   );
 };
