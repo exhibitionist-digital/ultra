@@ -5,12 +5,13 @@ import type { ExternalProvider } from "@ethersproject/providers";
 
 declare global {
   interface Window {
-    ethereum: ExternalProvider;
+    ethereum: ExternalProvider & { enable: () => void };
   }
 }
 
 const Ultra = () => {
   const [provider, setProvider] = useState<Web3Provider>();
+  const [address, setAddress] = useState("");
 
   useEffect(() => {
     if (window.ethereum) {
@@ -18,15 +19,27 @@ const Ultra = () => {
     }
   }, [window.ethereum]);
 
+  useEffect(() => {
+    if (provider) {
+      provider?.send("eth_accounts", []).then(setAddress);
+    }
+  }, [provider]);
+
   return (
     <div>
-      <button
-        onClick={() => {
-          provider?.send("eth_accounts", []);
-        }}
-      >
-        Connect wallet
-      </button>
+      {provider ? <p>Connected to <code>{address}</code></p> : (
+        <button
+          onClick={() => {
+            if (window.ethereum) {
+              window.ethereum.enable();
+
+              provider?.send("eth_accounts", []).then(setAddress);
+            }
+          }}
+        >
+          Connect wallet
+        </button>
+      )}
     </div>
   );
 };
