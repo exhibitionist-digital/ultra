@@ -27,19 +27,25 @@ const Ultra = () => {
 
   return (
     <div>
-      {provider ? <p>Connected to <code>{address}</code></p> : (
-        <button
-          onClick={() => {
-            if (window.ethereum) {
-              window.ethereum.enable();
+      {provider
+        ? (
+          <p>
+            Connected to <code>{address}</code>
+          </p>
+        )
+        : (
+          <button
+            onClick={() => {
+              if (window.ethereum) {
+                window.ethereum.enable();
 
-              provider?.send("eth_accounts", []).then(setAddress);
-            }
-          }}
-        >
-          Connect wallet
-        </button>
-      )}
+                provider?.send("eth_accounts", []).then(setAddress);
+              }
+            }}
+          >
+            Connect wallet
+          </button>
+        )}
     </div>
   );
 };
