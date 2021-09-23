@@ -11,7 +11,7 @@ declare global {
 
 const Ultra = () => {
   const [provider, setProvider] = useState<Web3Provider>();
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState(false);
 
   useEffect(() => {
     if (window.ethereum) {
@@ -27,18 +27,36 @@ const Ultra = () => {
 
   return (
     <div>
-      {provider
-        ? (
-          <p>
-            Connected to <code>{address}</code>
-          </p>
-        )
-        : (
+      <Helmet>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1"
+        />
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" href="/style.css?web3" />
+        <title>Ultra</title>
+        <meta
+          name="description"
+          content="Web3 Starter"
+        />
+        <link
+          rel="icon"
+          type="image/svg+xml"
+          href="https://ultrajs.dev/logo.svg"
+        />
+      </Helmet>
+      <main>
+        {!!address?.length &&
+          (
+            <p>
+              Connected to <code>{address}</code>
+            </p>
+          )}
+        {!address?.length && (
           <button
             onClick={() => {
               if (window.ethereum) {
                 window.ethereum.enable();
-
                 provider?.send("eth_accounts", []).then(setAddress);
               }
             }}
@@ -46,6 +64,7 @@ const Ultra = () => {
             Connect wallet
           </button>
         )}
+      </main>
     </div>
   );
 };
