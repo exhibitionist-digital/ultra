@@ -1,0 +1,14 @@
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.0.0-alpha-bc9bb87c2-20210917",
+    "react-dom": "https://esm.sh/react-dom@18.0.0-alpha-bc9bb87c2-20210917",
+    "react-dom/server": "https://esm.sh/react-dom@18.0.0-alpha-bc9bb87c2-20210917/server",
+    "helmet": "https://esm.sh/react-helmet-async?deps=react@18.0.0-alpha-bc9bb87c2-20210917&bundle",
+    "wouter": "https://esm.sh/wouter?deps=react@18.0.0-alpha-bc9bb87c2-20210917&bundle",
+    "swr": "https://esm.sh/swr@1.0.0?deps=react@18.0.0-alpha-bc9bb87c2-20210917&bundle",
+    "ultra-cache": "https://deno.land/x/ultra@v0.6/cache.js",
+    "@web3-react/core": "https://esm.sh/@web3-react/core?deps=react@18.0.0-alpha-bc9bb87c2-20210917",
+    "@web3-react/injected-connector": "https://esm.sh/@web3-react/injected-connector",
+    "@ethersproject/providers": "https://esm.sh/@ethersproject/providers"
+  }
+}
