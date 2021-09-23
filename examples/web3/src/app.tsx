@@ -11,7 +11,7 @@ declare global {
 
 const Ultra = () => {
   const [provider, setProvider] = useState<Web3Provider>();
-  const [address, setAddress] = useState(false);
+  const [address, setAddress] = useState("");
 
   useEffect(() => {
     if (window.ethereum) {
