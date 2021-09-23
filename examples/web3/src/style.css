@@ -1,0 +1,39 @@
+html, body {
+	background: black;
+	color: #b2ff9e;
+	font-family: monospace;
+	text-transform: uppercase;
+	padding: 0;
+	margin: 0;
+}
+
+main {
+	display: flex;
+	min-height: 100vh;
+	align-items: center;
+	justify-content: center;
+}
+
+p {
+	font-size: clamp(1em, 6vw, 2em);
+	color: #b2ff9e;
+}
+
+button {
+	appearance: none;
+	outline: none;
+	padding: 0.1em 0.5em 0em;
+	background: none;
+	border: 0.1em solid #b2ff9e;
+	font-size: clamp(1em, 10vw, 5em);
+	color: #b2ff9e;
+	font-family: monospace;
+	text-transform: uppercase;
+	border-radius: 0.5em;
+}
+
+button:hover, button:hover {
+	color: black;
+	background: #b2ff9e;
+	cursor: pointer;
+}
