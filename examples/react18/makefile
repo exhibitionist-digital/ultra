@@ -1,8 +1,8 @@
-dev: 
-	mode=dev deno run --no-check --allow-net --allow-read --allow-env --allow-run --allow-write --import-map=importmap.json --unstable server.js
+dev:
+	ultra dev
 
 start: 
-	url=https://react18.ultrajs.dev deno run --no-check --allow-net --allow-read --allow-env --allow-run --allow-write --import-map=importmap.json --unstable server.js
+	ultra start --url=https://react18.ultrajs.dev
 
-cache: 
-	deno cache --reload --no-check server.js
+cache:
+	ultra cache

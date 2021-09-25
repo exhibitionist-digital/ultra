@@ -8,5 +8,5 @@ git clone https://github.com/exhibitionist-digital/ultra
 
 cd ultra/examples/web3
 
-make dev
+ultra dev
 ```

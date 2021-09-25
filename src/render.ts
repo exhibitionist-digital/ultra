@@ -2,9 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/server";
 import { Router } from "wouter";
 import { HelmetProvider } from "helmet";
-import { concat } from "https://deno.land/std@0.107.0/bytes/mod.ts";
-import { join } from "https://deno.land/std@0.107.0/path/mod.ts";
-import { Buffer } from "https://deno.land/std@0.107.0/io/mod.ts";
+import { concat } from "https://deno.land/std@0.108.0/bytes/mod.ts";
+import { join } from "https://deno.land/std@0.108.0/path/mod.ts";
+import { Buffer } from "https://deno.land/std@0.108.0/io/mod.ts";
 import type { Navigate, RenderOptions } from "./types.ts";
 
 const isDev = Deno.env.get("mode") === "dev";
@@ -28,7 +28,7 @@ const render = async (
   const body = ReactDOM.renderToReadableStream(
     React.createElement(
       Router,
-      { hook: staticLocationHook(request.url.pathname) },
+      { hook: staticLocationHook(request.url.pathname) } as any,
       React.createElement(
         HelmetProvider,
         { context: helmetContext },

@@ -1,4 +1,4 @@
-import * as esbuild from "https://deno.land/x/esbuild@v0.12.24/mod.js";
+import * as esbuild from "https://deno.land/x/esbuild@v0.13.2/mod.js";
 import { parse } from "https://x.nest.land/swc@0.1.4/mod.ts";
 import type {
   CallExpression,

@@ -1,11 +1,11 @@
-import { existsSync } from "https://deno.land/std@0.107.0/fs/mod.ts";
-import { join } from "https://deno.land/std@0.107.0/path/mod.ts";
+import { existsSync } from "https://deno.land/std@0.108.0/fs/mod.ts";
+import { join } from "https://deno.land/std@0.108.0/path/mod.ts";
 import LRU from "https://deno.land/x/lru@1.0.2/mod.ts";
 import {
   Application,
   Router,
   send,
-} from "https://deno.land/x/oak@v9.0.0/mod.ts";
+} from "https://deno.land/x/oak@v9.0.1/mod.ts";
 import render from "./render.ts";
 import transform from "./transform.ts";
 import type { ImportMap, StartOptions } from "./types.ts";
@@ -79,10 +79,6 @@ const start = ({ importmap: importMapSource, lang = "en" }: StartOptions) => {
   app.use(router.routes());
 
   app.use(router.allowedMethods());
-
-  app.addEventListener("listen", () => {
-    console.log(`Listening: ${root}`);
-  });
 
   app.addEventListener("error", (evt) => {
     console.log(evt.error);

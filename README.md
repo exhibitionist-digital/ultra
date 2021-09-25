@@ -49,6 +49,20 @@ There are more
 [/examples](https://github.com/exhibitionist-digital/ultra/tree/master/examples)
 as well.
 
+### CLI
+
+Ultra provides a CLI for smooth developer experience.
+
+```sh
+deno install --unstable -A -f -n ultra https://deno.land/x/ultra/cli.ts
+```
+
+And then use as:
+
+```sh
+ultra dev --port=1234 --server=server.ts --importmap=import_map.json
+```
+
 ---
 
 <details><summary>HOW IT WORKS</summary>

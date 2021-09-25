@@ -1,8 +1,8 @@
 dev:
-	mode=dev deno run --no-check --allow-net --allow-read --allow-env --allow-run --allow-write --import-map=importmap.json --unstable server.ts
+	ultra dev --server=server.ts
 
 start: 
-	url=https://ultrajs.dev deno run --no-check --allow-net --allow-read --allow-env --allow-run --allow-write --import-map=importmap.json --unstable server.ts
+	ultra start --url=https://ultrajs.dev --server=server.ts
 
 cache:
-	deno cache --reload --no-check server.ts
+	ultra cache --server=server.ts
