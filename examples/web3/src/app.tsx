@@ -5,7 +5,7 @@ import type { ExternalProvider } from "@ethersproject/providers";
 
 declare global {
   interface Window {
-    ethereum: ExternalProvider & { enable: () => void };
+    ethereum: ExternalProvider & { enable: () => void } & EventEmitter;
   }
 }
 
@@ -14,15 +14,22 @@ const Ultra = () => {
   const [address, setAddress] = useState("");
 
   useEffect(() => {
+    window.ethereum?.on("accountsChanged", ([addr]) => {
+      setAddress(addr);
+    });
     if (window.ethereum) {
-      setProvider(new Web3Provider(window.ethereum));
+      setProvider(new Web3Provider(window.ethereum, "any"));
     }
   }, [window.ethereum]);
 
+  const getAddress = async () => {
+    const [addr] = await provider?.send("eth_accounts", []);
+
+    return addr;
+  };
+
   useEffect(() => {
-    if (provider) {
-      provider?.send("eth_accounts", []).then(setAddress);
-    }
+    if (provider) getAddress().then(setAddress);
   }, [provider]);
 
   return (
@@ -32,7 +39,7 @@ const Ultra = () => {
           name="viewport"
           content="width=device-width, initial-scale=1"
         />
-        <meta charset="UTF-8" />
+        <meta charSet="UTF-8" />
         <link rel="stylesheet" href="/style.css?web3" />
         <title>Ultra</title>
         <meta
@@ -46,19 +53,16 @@ const Ultra = () => {
         />
       </Helmet>
       <main>
-        {!!address?.length &&
+        {address &&
           (
             <p>
               Connected to <code>{address}</code>
             </p>
           )}
-        {!address?.length && (
+        {!address && (
           <button
             onClick={() => {
-              if (window.ethereum) {
-                window.ethereum.enable();
-                provider?.send("eth_accounts", []).then(setAddress);
-              }
+              window.ethereum?.enable();
             }}
           >
             Connect wallet
