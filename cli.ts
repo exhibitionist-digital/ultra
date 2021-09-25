@@ -18,14 +18,19 @@ await new Command().name("ultra").version("0.6.0").description("CLI for Ultra")
   .option("-p,--port [port:number]", "Server port")
   .option("--importmap [importmap:string]", "Import map path")
   .option("--server [server:string]", "Server file")
-  .option('-u, --url [url:string]', 'CDN Base URL')
+  .option("-u, --url [url:string]", "CDN Base URL")
   .action(
     (
-      { port = 3000, importmap = "./importmap.json", server = "server.js", url = `http://localhost:${port}` }: {
+      {
+        port = 3000,
+        importmap = "./importmap.json",
+        server = "server.js",
+        url = `http://localhost:${port}`,
+      }: {
         port: number;
         importmap: string;
         server: string;
-        url: string
+        url: string;
       },
     ) => {
       console.log(`Started dev server on http://localhost:${port}`);
@@ -39,14 +44,19 @@ await new Command().name("ultra").version("0.6.0").description("CLI for Ultra")
   .option("--port [port:number]", "Server port")
   .option("--importmap [importmap:string]", "Import map path")
   .option("--server [server:string]", "Server file")
-  .option('-u, --url [url:string]', 'CDN Base URL')
+  .option("-u, --url [url:string]", "CDN Base URL")
   .action(
     (
-      { port = 3000, importmap = "./importmap.json", server = "server.js", url = `http://localhost:${port}` }: {
+      {
+        port = 3000,
+        importmap = "./importmap.json",
+        server = "server.js",
+        url = `http://localhost:${port}`,
+      }: {
         port: number;
         importmap: string;
         server: string;
-        url: string
+        url: string;
       },
     ) => {
       console.log(`Started production server on http://localhost:${port}`);
@@ -55,9 +65,9 @@ await new Command().name("ultra").version("0.6.0").description("CLI for Ultra")
       );
     },
   )
-  .command('cache', 'Cache dependencies')
+  .command("cache", "Cache dependencies")
   .option("--server [server:string]", "Server file")
-  .action(({server = 'server.js'}: {server: string}) => {
-    runDeno(`deno cache --reload --no-check ${server}`)
+  .action(({ server = "server.js" }: { server: string }) => {
+    runDeno(`deno cache --reload --no-check ${server}`);
   })
   .parse(Deno.args);

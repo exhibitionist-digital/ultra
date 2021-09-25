@@ -28,6 +28,7 @@ const render = async (
   const body = ReactDOM.renderToReadableStream(
     React.createElement(
       Router,
+      // deno-lint-ignore no-explicit-any
       { hook: staticLocationHook(request.url.pathname) } as any,
       React.createElement(
         HelmetProvider,
