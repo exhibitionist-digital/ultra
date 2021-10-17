@@ -13,11 +13,11 @@ let offset = 0;
 let length = 0;
 
 const transform = async (
-  { source, importmap, root }: TransformOptions,
+  { source, importmap, root, loader = "tsx" }: TransformOptions,
 ) => {
   const t0 = performance.now();
   const { code } = await esbuild.transform(source, {
-    loader: "tsx",
+    loader,
     target: ["esnext"],
     minify: !isDev,
   });
@@ -33,7 +33,7 @@ const transform = async (
       c += code.substring(offset - length, span.start - length);
       c += `"${importmap?.imports?.[value] ||
         value.replace(
-          /.jsx|.tsx/gi,
+          /\.(j|t)sx?/gi,
           () => `.js?ts=${isDev ? +new Date() : serverStart}`,
         )}"`;
       offset = span.end;
@@ -54,7 +54,7 @@ const transform = async (
                 const { value, span } = b?.expression;
                 c += code.substring(offset - length, span.start - length);
                 c += `"${
-                  value.replace(/.jsx|.tsx/gi, () =>
+                  value.replace(/\.(j|t)sx?/gi, () =>
                     `.js?ts=${
                       isDev
                         ? +new Date()

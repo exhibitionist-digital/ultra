@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/server";
-import { Router } from "wouter";
+import { BaseLocationHook, Router } from "wouter";
 import { HelmetProvider } from "helmet";
 import { concat } from "https://deno.land/std@0.107.0/bytes/mod.ts";
 import { join } from "https://deno.land/std@0.107.0/path/mod.ts";
@@ -16,6 +16,7 @@ const defaultChunkSize = 8 * 1024;
 const render = async (
   { root, request, importmap, lang, bufferSize, chunkSize }: RenderOptions,
 ) => {
+  bufferSize = bufferSize ?? defaultBufferSize;
   chunkSize = chunkSize ?? defaultChunkSize;
 
   const ts = isDev ? +new Date() : serverStart;
@@ -28,7 +29,7 @@ const render = async (
   const body = ReactDOM.renderToReadableStream(
     React.createElement(
       Router,
-      { hook: staticLocationHook(request.url.pathname) },
+      { hook: staticLocationHook(request.url.pathname), children: null },
       React.createElement(
         HelmetProvider,
         { context: helmetContext },
@@ -76,10 +77,12 @@ const render = async (
   // us to respond with correct server codes if the component contains errors,
   // but only if those errors occur within the buffered portion:
   const buffer = new Buffer();
-  while (buffer.length < (bufferSize ?? defaultBufferSize)) {
-    const read = await bodyReader.read();
-    if (read.done) break;
-    buffer.writeSync(read.value);
+  if (bufferSize && bufferSize > 0) {
+    while (buffer.length < bufferSize) {
+      const read = await bodyReader.read();
+      if (read.done) break;
+      buffer.writeSync(read.value);
+    }
   }
 
   return encodeStream(
@@ -137,8 +140,17 @@ const encodeStream = (readable) =>
 
 // @ts-ignore fixme: add types
 async function pushBody(reader, controller, chunkSize) {
-  let parts = [];
+  const chunkFlushTimeoutMs = 10;
+  let parts = [] as Uint8Array[];
   let partsSize = 0;
+
+  let idleTimeout = 0;
+  const idleFlush = () => {
+    const write = concat(...parts);
+    parts = [];
+    partsSize = 0;
+    controller.enqueue(write);
+  };
 
   while (true) {
     const read = await reader.read();
@@ -153,13 +165,20 @@ async function pushBody(reader, controller, chunkSize) {
         parts.push(write.slice(chunkSize));
       }
       controller.enqueue(write.slice(0, chunkSize));
+    } else {
+      if (idleTimeout) clearTimeout(idleTimeout);
+      idleTimeout = setTimeout(idleFlush, chunkFlushTimeoutMs);
     }
   }
+  if (idleTimeout) clearTimeout(idleTimeout);
   controller.enqueue(concat(...parts));
 }
 
 // wouter helper
-const staticLocationHook = (path = "/", { record = false } = {}) => {
+const staticLocationHook = (
+  path = "/",
+  { record = false } = {},
+): BaseLocationHook => {
   // deno-lint-ignore prefer-const
   let hook: { history?: string[] } & (() => [string, Navigate]);
 
