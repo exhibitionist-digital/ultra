@@ -184,7 +184,7 @@ app.use(async (context, next) => {
 });
 
 await ultra({
-  importmap: await Deno.readTextFile("importmap.json"),
+  importmap: await Deno.readTextFile("import_map.json"),
 });
 ```
 
@@ -199,7 +199,7 @@ router.get("/api/:slug", async (context) => {
 });
 
 await ultra({
-  importmap: await Deno.readTextFile("importmap.json"),
+  importmap: await Deno.readTextFile("import_map.json"),
 });
 ```
 
