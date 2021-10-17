@@ -44,7 +44,9 @@ Here are some neat demos:
 ### Quick start
 
 The most minimal setup of **Ultra** can be found at
-[/examples/boilerplate](https://github.com/exhibitionist-digital/ultra/tree/master/examples/boilerplate).
+[boilerplate (js)](https://github.com/exhibitionist-digital/ultra/tree/master/examples/boilerplate)
+or
+[boilerplate (ts)](https://github.com/exhibitionist-digital/ultra/tree/master/examples/boilerplate-ts).
 There are more
 [/examples](https://github.com/exhibitionist-digital/ultra/tree/master/examples)
 as well.
@@ -215,7 +217,7 @@ Dockerfile which uses the official Denoland image.
 ```bash
 FROM denoland/deno:1.14.0
 
-EXPOSE 3000 
+EXPOSE 3000
 
 RUN apt-get update && apt-get -y install make
 
