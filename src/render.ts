@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import ReactDOM from "react-dom/server";
 import { Router } from "wouter";
 import { HelmetProvider } from "helmet";
@@ -7,6 +7,15 @@ import { join } from "https://deno.land/std@0.107.0/path/mod.ts";
 import { Buffer } from "https://deno.land/std@0.107.0/io/mod.ts";
 import type { Navigate, RenderOptions } from "./types.ts";
 
+// renderToReadableStream not available yet in official types
+declare global {
+  namespace ReactDOMServer {
+    export const renderToReadableStream: (
+      element: ReactElement,
+    ) => ReadableStream<string | Uint8Array>;
+  }
+}
+
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();
 
@@ -14,9 +23,10 @@ const defaultBufferSize = 8 * 1024;
 const defaultChunkSize = 8 * 1024;
 
 const render = async (
-  { root, request, importmap, lang, bufferSize, chunkSize }: RenderOptions,
+  { root, request, importmap, lang, bufferSize, chunkSize: _chunkSize }:
+    RenderOptions,
 ) => {
-  chunkSize = chunkSize ?? defaultChunkSize;
+  const chunkSize = _chunkSize ?? defaultChunkSize;
 
   const ts = isDev ? +new Date() : serverStart;
   const app = await import(join(root, `app.js?ts=${ts}`));
@@ -24,11 +34,10 @@ const render = async (
   const helmetContext: { helmet: Record<string, number> } = { helmet: {} };
   const cache = new Map();
 
-  // @ts-ignore there's no types for toreadablestream yet
   const body = ReactDOM.renderToReadableStream(
     React.createElement(
       Router,
-      { hook: staticLocationHook(request.url.pathname) },
+      { hook: staticLocationHook(request.url.pathname), children: null },
       React.createElement(
         HelmetProvider,
         { context: helmetContext },
@@ -85,7 +94,7 @@ const render = async (
   return encodeStream(
     new ReadableStream({
       start(controller) {
-        const queue = (part: unknown) =>
+        const queue = (part: string | Uint8Array) =>
           Promise.resolve(controller.enqueue(part));
 
         queue(head)
@@ -108,8 +117,7 @@ const render = async (
 
 export default render;
 
-// @ts-ignore fixme: add types
-const encodeStream = (readable) =>
+const encodeStream = (readable: ReadableStream<string | Uint8Array>) =>
   new ReadableStream({
     start(controller) {
       return (async () => {
@@ -117,13 +125,13 @@ const encodeStream = (readable) =>
         const reader = readable.getReader();
         try {
           while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
+            const read = await reader.read();
+            if (read.done) break;
 
-            if (typeof value === "string") {
-              controller.enqueue(encoder.encode(value));
-            } else if (value instanceof Uint8Array) {
-              controller.enqueue(value);
+            if (typeof read.value === "string") {
+              controller.enqueue(encoder.encode(read.value));
+            } else if (read.value instanceof Uint8Array) {
+              controller.enqueue(read.value);
             } else {
               throw new TypeError();
             }
@@ -135,8 +143,11 @@ const encodeStream = (readable) =>
     },
   });
 
-// @ts-ignore fixme: add types
-async function pushBody(reader, controller, chunkSize) {
+async function pushBody(
+  reader: ReadableStreamDefaultReader<Uint8Array>,
+  controller: ReadableStreamDefaultController<Uint8Array>,
+  chunkSize: number,
+) {
   let parts = [];
   let partsSize = 0;
 
