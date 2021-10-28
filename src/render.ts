@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import ReactDOM from "react-dom/server";
-import { Router } from "wouter";
+import { BaseLocationHook, Router } from "wouter";
 import { HelmetProvider } from "helmet";
 import { concat } from "https://deno.land/std@0.107.0/bytes/mod.ts";
 import { join } from "https://deno.land/std@0.107.0/path/mod.ts";
@@ -23,9 +23,16 @@ const defaultBufferSize = 8 * 1024;
 const defaultChunkSize = 8 * 1024;
 
 const render = async (
-  { root, request, importmap, lang, bufferSize, chunkSize: _chunkSize }:
-    RenderOptions,
+  {
+    root,
+    request,
+    importmap,
+    lang,
+    bufferSize: _bufferSize,
+    chunkSize: _chunkSize,
+  }: RenderOptions,
 ) => {
+  const bufferSize = _bufferSize ?? defaultBufferSize;
   const chunkSize = _chunkSize ?? defaultChunkSize;
 
   const ts = isDev ? +new Date() : serverStart;
@@ -85,10 +92,12 @@ const render = async (
   // us to respond with correct server codes if the component contains errors,
   // but only if those errors occur within the buffered portion:
   const buffer = new Buffer();
-  while (buffer.length < (bufferSize ?? defaultBufferSize)) {
-    const read = await bodyReader.read();
-    if (read.done) break;
-    buffer.writeSync(read.value);
+  if (bufferSize && bufferSize > 0) {
+    while (buffer.length < bufferSize) {
+      const read = await bodyReader.read();
+      if (read.done) break;
+      buffer.writeSync(read.value);
+    }
   }
 
   return encodeStream(
@@ -148,8 +157,17 @@ async function pushBody(
   controller: ReadableStreamDefaultController<Uint8Array>,
   chunkSize: number,
 ) {
-  let parts = [];
+  const chunkFlushTimeoutMs = 1;
+  let parts = [] as Uint8Array[];
   let partsSize = 0;
+
+  let idleTimeout = 0;
+  const idleFlush = () => {
+    const write = concat(...parts);
+    parts = [];
+    partsSize = 0;
+    controller.enqueue(write);
+  };
 
   while (true) {
     const read = await reader.read();
@@ -164,13 +182,20 @@ async function pushBody(
         parts.push(write.slice(chunkSize));
       }
       controller.enqueue(write.slice(0, chunkSize));
+    } else {
+      if (idleTimeout) clearTimeout(idleTimeout);
+      idleTimeout = setTimeout(idleFlush, chunkFlushTimeoutMs);
     }
   }
+  if (idleTimeout) clearTimeout(idleTimeout);
   controller.enqueue(concat(...parts));
 }
 
 // wouter helper
-const staticLocationHook = (path = "/", { record = false } = {}) => {
+const staticLocationHook = (
+  path = "/",
+  { record = false } = {},
+): BaseLocationHook => {
   // deno-lint-ignore prefer-const
   let hook: { history?: string[] } & (() => [string, Navigate]);
 
