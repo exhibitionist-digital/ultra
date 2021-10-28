@@ -31,11 +31,13 @@ const transform = async (
     if (i.type == "ImportDeclaration") {
       const { value, span } = i.source;
       c += code.substring(offset - length, span.start - length);
-      c += `"${importmap?.imports?.[value] ||
+      c += `"${
+        importmap?.imports?.[value] ||
         value.replace(
           /\.(j|t)sx?/gi,
           () => `.js?ts=${isDev ? +new Date() : serverStart}`,
-        )}"`;
+        )
+      }"`;
       offset = span.end;
     }
     if (i.type == "VariableDeclaration") {
