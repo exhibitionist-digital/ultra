@@ -84,7 +84,7 @@ const start = (
         request: context.request,
         importmap,
         lang,
-        // TODO: fix, it breaks streaming small chunks
+        // 0 to disable buffering which stops streaming
         bufferSize: 0,
       });
     } catch (e) {
