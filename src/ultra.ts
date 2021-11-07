@@ -8,7 +8,7 @@ import {
 } from "https://deno.land/x/oak@v9.0.0/mod.ts";
 import render from "./render.ts";
 import transform from "./transform.ts";
-import type { ImportMap, StartOptions } from "./types.ts";
+import type { ImportMap, StartOptions, TransformOptions } from "./types.ts";
 
 const app = new Application();
 const router = new Router();
@@ -18,23 +18,29 @@ const isDev = Deno.env.get("mode") === "dev";
 const port = parseInt(Deno.env.get("port") || "", 10) || 3000;
 const root = Deno.env.get("url") || `http://localhost:${port}`;
 
-function findFileOnDisk(pathname: string) {
+function findLoaderForFile(pathname: string): {
+  path: string;
+  loader: TransformOptions["loader"];
+} | null {
   const jsx = pathname.replaceAll(".js", ".jsx");
   const tsx = pathname.replaceAll(".js", ".tsx");
   const ts = pathname.replaceAll(".js", ".ts");
 
-  return existsSync(join(Deno.cwd(), "src", jsx))
-    ? { path: jsx, loader: "jsx" as const }
-    : existsSync(join(Deno.cwd(), "src", tsx))
-    ? { path: tsx, loader: "tsx" as const }
-    : existsSync(join(Deno.cwd(), "src", ts))
-    ? { path: ts, loader: "ts" as const }
+  return existsSync(jsx)
+    ? { path: jsx, loader: "jsx" }
+    : existsSync(tsx)
+    ? { path: tsx, loader: "tsx" }
+    : existsSync(ts)
+    ? { path: ts, loader: "ts" }
     : null;
 }
 
-const start = (
-  { importmap: importMapSource, lang = "en" }: StartOptions,
-) => {
+const start = ({
+  importmap: importMapSource,
+  rootDirectory = ".",
+  lang = "en",
+}: StartOptions) => {
+  const rootDirectoryPath = join(Deno.cwd(), rootDirectory);
   const importmap: ImportMap = JSON.parse(importMapSource);
 
   app.use(async (context, next) => {
@@ -42,7 +48,7 @@ const start = (
     if (pathname == "/") await next();
     try {
       await send(context, pathname, {
-        root: join(Deno.cwd(), "src"),
+        root: rootDirectoryPath,
       });
     } catch (_e) {
       await next();
@@ -56,13 +62,13 @@ const start = (
       context.response.body = memory.get(pathname);
       return;
     }
-    const file = findFileOnDisk(pathname);
+
+    const filePath = join(rootDirectoryPath, pathname);
+    const file = findLoaderForFile(filePath);
     if (!file) return await next();
 
     try {
-      const source = await Deno.readTextFile(
-        join(Deno.cwd(), "src", ...file.path.split("/")),
-      );
+      const source = await Deno.readTextFile(file.path);
       const code = await transform({
         source,
         importmap,

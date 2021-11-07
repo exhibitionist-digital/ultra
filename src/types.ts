@@ -6,6 +6,7 @@ export type Navigate = (to: string, opts?: { replace?: boolean }) => void;
 
 export type StartOptions = {
   importmap: string;
+  rootDirectory?: string;
   lang?: string;
 };
 
