@@ -1,5 +1,5 @@
-import React from "react";
-import useSWR from "swr";
+import React from "https://esm.sh/react@18.0.0-alpha-67f38366a-20210830";
+import useSWR from "https://esm.sh/swr@1.0.0?deps=react@18.0.0-alpha-67f38366a-20210830&bundle";
 
 export const fetcher = async () => {
   const comments = await new Promise((resolve, reject) => {

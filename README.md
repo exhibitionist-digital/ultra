@@ -105,8 +105,8 @@ All Wouter hooks and functionality is supported:
 [Wouter docs](https://github.com/molefrog/wouter#wouter-api)
 
 ```js
-import React, { Suspense } from "react";
-import { Route } from "wouter";
+import React, { Suspense } from "https://esm.sh/react@18.0.0-alpha-67f38366a-20210830";
+import { Route } from "https://esm.sh/wouter?deps=react@18.0.0-alpha-67f38366a-20210830&bundle";
 
 const Home = lazy(() => import("./home.jsx"));
 
@@ -140,7 +140,7 @@ SWR options are supported:
 [SWR docs](https://swr.vercel.app/docs/options#options)
 
 ```js
-import { SWRConfig } from "swr";
+import { SWRConfig } from "https://esm.sh/swr@1.0.0?deps=react@18.0.0-alpha-67f38366a-20210830&bundle";
 import ultraCache from "ultra/cache";
 
 const options = (cache) => ({

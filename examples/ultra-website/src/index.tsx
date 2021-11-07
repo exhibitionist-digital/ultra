@@ -1,5 +1,5 @@
-import React, { Suspense } from "react";
-import useSWR from "swr";
+import React, { Suspense } from "https://esm.sh/react@18.0.0-alpha-67f38366a-20210830";
+import useSWR from "https://esm.sh/swr@1.0.0?deps=react@18.0.0-alpha-67f38366a-20210830&bundle";
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
 

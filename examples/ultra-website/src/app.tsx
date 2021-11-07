@@ -1,7 +1,7 @@
-import React, { lazy, Suspense } from "react";
-import { Helmet } from "helmet";
-import { Route } from "wouter";
-import { SWRConfig } from "swr";
+import React, { lazy, Suspense } from "https://esm.sh/react@18.0.0-alpha-67f38366a-20210830";
+import { Helmet } from "https://esm.sh/react-helmet-async?deps=react@18.0.0-alpha-67f38366a-20210830&bundle";
+import { Route } from "https://esm.sh/wouter?deps=react@18.0.0-alpha-67f38366a-20210830&bundle";
+import { SWRConfig } from "https://esm.sh/swr@1.0.0?deps=react@18.0.0-alpha-67f38366a-20210830&bundle";
 import ultraCache from "ultra/cache";
 import { Cache } from "https://deno.land/x/ultra/src/types.ts";
 
