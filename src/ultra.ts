@@ -67,6 +67,7 @@ const start = (
         source,
         importmap,
         root,
+        path: file.path,
         loader: file.loader,
       });
       if (!isDev) memory.set(pathname, code);

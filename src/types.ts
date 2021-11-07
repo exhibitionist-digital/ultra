@@ -13,6 +13,7 @@ export type TransformOptions = {
   source: string;
   importmap: ImportMap;
   root: string;
+  path?: string;
   loader?: EsBuildTransformOptions["loader"];
 };
 

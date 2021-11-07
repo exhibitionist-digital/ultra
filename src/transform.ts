@@ -13,7 +13,7 @@ let offset = 0;
 let length = 0;
 
 const transform = async (
-  { source, importmap, root, loader = "tsx" }: TransformOptions,
+  { source, importmap, root, path, loader = "tsx" }: TransformOptions,
 ) => {
   const t0 = performance.now();
   const { code } = await esbuild.transform(source, {
@@ -75,7 +75,14 @@ const transform = async (
   length += code.length + 1;
   offset = length;
   const t1 = performance.now();
-  console.log(`Transpile: in ${t1 - t0}ms`);
+
+  const difference = t1 - t0;
+  if (path) {
+    console.log(`Transpile: ${difference}ms ${path}`);
+  } else {
+    console.log(`Transpile: ${difference}ms`);
+  }
+
   c = c.replaceAll("ULTRA_URL", root);
   return c;
 };
