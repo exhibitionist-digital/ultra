@@ -1,11 +1,20 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import ReactDOM from "react-dom/server";
-import { Router } from "wouter";
+import { BaseLocationHook, Router } from "wouter";
 import { HelmetProvider } from "helmet";
 import { concat } from "https://deno.land/std@0.108.0/bytes/mod.ts";
 import { join } from "https://deno.land/std@0.108.0/path/mod.ts";
 import { Buffer } from "https://deno.land/std@0.108.0/io/mod.ts";
 import type { Navigate, RenderOptions } from "./types.ts";
+
+// renderToReadableStream not available yet in official types
+declare global {
+  namespace ReactDOMServer {
+    export const renderToReadableStream: (
+      element: ReactElement,
+    ) => ReadableStream<string | Uint8Array>;
+  }
+}
 
 const isDev = Deno.env.get("mode") === "dev";
 const serverStart = +new Date();
@@ -14,9 +23,17 @@ const defaultBufferSize = 8 * 1024;
 const defaultChunkSize = 8 * 1024;
 
 const render = async (
-  { root, request, importmap, lang, bufferSize, chunkSize }: RenderOptions,
+  {
+    root,
+    request,
+    importmap,
+    lang,
+    bufferSize: _bufferSize,
+    chunkSize: _chunkSize,
+  }: RenderOptions,
 ) => {
-  chunkSize = chunkSize ?? defaultChunkSize;
+  const bufferSize = _bufferSize ?? defaultBufferSize;
+  const chunkSize = _chunkSize ?? defaultChunkSize;
 
   const ts = isDev ? +new Date() : serverStart;
   const app = await import(join(root, `app.js?ts=${ts}`));
@@ -24,12 +41,10 @@ const render = async (
   const helmetContext: { helmet: Record<string, number> } = { helmet: {} };
   const cache = new Map();
 
-  // @ts-ignore there's no types for toreadablestream yet
   const body = ReactDOM.renderToReadableStream(
     React.createElement(
       Router,
-      // deno-lint-ignore no-explicit-any
-      { hook: staticLocationHook(request.url.pathname) } as any,
+      { hook: staticLocationHook(request.url.pathname), children: null },
       React.createElement(
         HelmetProvider,
         { context: helmetContext },
@@ -77,16 +92,18 @@ const render = async (
   // us to respond with correct server codes if the component contains errors,
   // but only if those errors occur within the buffered portion:
   const buffer = new Buffer();
-  while (buffer.length < (bufferSize ?? defaultBufferSize)) {
-    const read = await bodyReader.read();
-    if (read.done) break;
-    buffer.writeSync(read.value);
+  if (bufferSize && bufferSize > 0) {
+    while (buffer.length < bufferSize) {
+      const read = await bodyReader.read();
+      if (read.done) break;
+      buffer.writeSync(read.value);
+    }
   }
 
   return encodeStream(
     new ReadableStream({
       start(controller) {
-        const queue = (part: unknown) =>
+        const queue = (part: string | Uint8Array) =>
           Promise.resolve(controller.enqueue(part));
 
         queue(head)
@@ -109,8 +126,7 @@ const render = async (
 
 export default render;
 
-// @ts-ignore fixme: add types
-const encodeStream = (readable) =>
+const encodeStream = (readable: ReadableStream<string | Uint8Array>) =>
   new ReadableStream({
     start(controller) {
       return (async () => {
@@ -118,13 +134,13 @@ const encodeStream = (readable) =>
         const reader = readable.getReader();
         try {
           while (true) {
-            const { value, done } = await reader.read();
-            if (done) break;
+            const read = await reader.read();
+            if (read.done) break;
 
-            if (typeof value === "string") {
-              controller.enqueue(encoder.encode(value));
-            } else if (value instanceof Uint8Array) {
-              controller.enqueue(value);
+            if (typeof read.value === "string") {
+              controller.enqueue(encoder.encode(read.value));
+            } else if (read.value instanceof Uint8Array) {
+              controller.enqueue(read.value);
             } else {
               throw new TypeError();
             }
@@ -136,10 +152,22 @@ const encodeStream = (readable) =>
     },
   });
 
-// @ts-ignore fixme: add types
-async function pushBody(reader, controller, chunkSize) {
-  let parts = [];
+async function pushBody(
+  reader: ReadableStreamDefaultReader<Uint8Array>,
+  controller: ReadableStreamDefaultController<Uint8Array>,
+  chunkSize: number,
+) {
+  const chunkFlushTimeoutMs = 1;
+  let parts = [] as Uint8Array[];
   let partsSize = 0;
+
+  let idleTimeout = 0;
+  const idleFlush = () => {
+    const write = concat(...parts);
+    parts = [];
+    partsSize = 0;
+    controller.enqueue(write);
+  };
 
   while (true) {
     const read = await reader.read();
@@ -154,13 +182,20 @@ async function pushBody(reader, controller, chunkSize) {
         parts.push(write.slice(chunkSize));
       }
       controller.enqueue(write.slice(0, chunkSize));
+    } else {
+      if (idleTimeout) clearTimeout(idleTimeout);
+      idleTimeout = setTimeout(idleFlush, chunkFlushTimeoutMs);
     }
   }
+  if (idleTimeout) clearTimeout(idleTimeout);
   controller.enqueue(concat(...parts));
 }
 
 // wouter helper
-const staticLocationHook = (path = "/", { record = false } = {}) => {
+const staticLocationHook = (
+  path = "/",
+  { record = false } = {},
+): BaseLocationHook => {
   // deno-lint-ignore prefer-const
   let hook: { history?: string[] } & (() => [string, Navigate]);
 

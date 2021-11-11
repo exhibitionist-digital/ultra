@@ -18,7 +18,23 @@ const isDev = Deno.env.get("mode") === "dev";
 const port = parseInt(Deno.env.get("port") || "", 10) || 3000;
 const root = Deno.env.get("url") || `http://localhost:${port}`;
 
-const start = ({ importmap: importMapSource, lang = "en" }: StartOptions) => {
+function findFileOnDisk(pathname: string) {
+  const jsx = pathname.replaceAll(".js", ".jsx");
+  const tsx = pathname.replaceAll(".js", ".tsx");
+  const ts = pathname.replaceAll(".js", ".ts");
+
+  return existsSync(join(Deno.cwd(), "src", jsx))
+    ? { path: jsx, loader: "jsx" as const }
+    : existsSync(join(Deno.cwd(), "src", tsx))
+    ? { path: tsx, loader: "tsx" as const }
+    : existsSync(join(Deno.cwd(), "src", ts))
+    ? { path: ts, loader: "ts" as const }
+    : null;
+}
+
+const start = (
+  { importmap: importMapSource, lang = "en" }: StartOptions,
+) => {
   const importmap: ImportMap = JSON.parse(importMapSource);
 
   app.use(async (context, next) => {
@@ -40,20 +56,19 @@ const start = ({ importmap: importMapSource, lang = "en" }: StartOptions) => {
       context.response.body = memory.get(pathname);
       return;
     }
-    const jsx = pathname.replaceAll(".js", ".jsx");
-    const tsx = pathname.replaceAll(".js", ".tsx");
-    // deno-lint-ignore prefer-const
-    let file = existsSync(join(Deno.cwd(), "src", jsx))
-      ? jsx
-      : existsSync(join(Deno.cwd(), "src", tsx))
-      ? tsx
-      : false;
+    const file = findFileOnDisk(pathname);
     if (!file) return await next();
+
     try {
       const source = await Deno.readTextFile(
-        join(Deno.cwd(), "src", ...file.split("/")),
+        join(Deno.cwd(), "src", ...file.path.split("/")),
       );
-      const code = await transform({ source, importmap, root });
+      const code = await transform({
+        source,
+        importmap,
+        root,
+        loader: file.loader,
+      });
       if (!isDev) memory.set(pathname, code);
       context.response.type = "application/javascript";
       context.response.body = code;
@@ -69,6 +84,8 @@ const start = ({ importmap: importMapSource, lang = "en" }: StartOptions) => {
         request: context.request,
         importmap,
         lang,
+        // 0 to disable buffering which stops streaming
+        bufferSize: 0,
       });
     } catch (e) {
       console.log(e);
