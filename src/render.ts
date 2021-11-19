@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 import ReactDOM from "react-dom/server";
 import { BaseLocationHook, Router } from "wouter";
-import { HelmetProvider } from "helmet";
+import { HelmetProvider } from "react-helmet";
 import { concat } from "https://deno.land/std@0.107.0/bytes/mod.ts";
 import { join } from "https://deno.land/std@0.107.0/path/mod.ts";
 import { Buffer } from "https://deno.land/std@0.107.0/io/mod.ts";
@@ -70,7 +70,7 @@ const render = async (
   }";import { Router } from "${
     importmap.imports["wouter"]
   }";import { HelmetProvider } from "${
-    importmap.imports["helmet"]
+    importmap.imports["react-helmet"]
   }";import App from "/app.js";` +
     `const root = hydrateRoot(document.body,` +
     `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +

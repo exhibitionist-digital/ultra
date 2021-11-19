@@ -1,4 +1,4 @@
-import { Helmet } from "helmet";
+import { Helmet } from "react-helmet";
 import React, { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "three";
 

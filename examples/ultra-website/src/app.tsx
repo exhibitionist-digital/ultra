@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import { Helmet } from "helmet";
+import { Helmet } from "react-helmet";
 import { Route } from "wouter";
 import { SWRConfig } from "swr";
 import ultraCache from "ultra/cache";

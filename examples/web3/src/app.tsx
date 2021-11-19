@@ -1,4 +1,4 @@
-import { Helmet } from "helmet";
+import { Helmet } from "react-helmet";
 import React, { useEffect, useState } from "react";
 import { Web3Provider } from "@ethersproject/providers";
 import type { ExternalProvider } from "@ethersproject/providers";
