@@ -72,12 +72,12 @@ const render = async (
   }";import { HelmetProvider } from "${
     importmap.imports["helmet"]
   }";import App from "/app.js";` +
-    `const root = hydrateRoot(document.getElementById('ultra'),` +
+    `const root = hydrateRoot(document.body,` +
     `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +
-    `</script></head><body><div id="ultra">`;
+    `</script></head><body>`;
 
   const tail = () =>
-    `</div></body><script>self.__ultra = ${
+    `</body><script>self.__ultra = ${
       JSON.stringify(Array.from(cache.entries()))
     }</script></html>`;
 
