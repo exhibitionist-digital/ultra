@@ -18,7 +18,7 @@ const transform = async (
   const t0 = performance.now();
   const { code } = await esbuild.transform(source, {
     loader,
-    target: ["esnext"],
+    target: ["es2017"],
     minify: !isDev,
   });
   let c = "";
