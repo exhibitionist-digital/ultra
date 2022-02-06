@@ -32,14 +32,32 @@ It's driven by the following hot-takes:
 
 This is a near full rewrite of Ultra. It includes:
 
-- Removal of Oak, in favour of std/http library. This makes it heaps easier to
-  deploy to multiple targets now (below)
+- Removal of Oak, in favour of `std/http` library. This makes it heaps easier to
+  deploy to multiple targets
 - Addition of `preloadmodule` headers for core Ultra components
 - Main `app` entry point added to `importMap`
 - Deno Deploy support
 - Fly/Docker support
 - Vercel support
 - Example projects moved into their own repos for easier hacking
+
+---
+
+### v1.0.0 Roadmap (+ Beyond)
+
+As we await the official release of React 18, here some things we are interested
+in for the future of Ultra:
+
+- Native import maps: Browser support for import maps is still a bit sketchy.
+  Instead of using import map polyfills, Ultra inlines your imports directly
+  into the served ES modules. We look forward to rolling this back in the
+  future.
+- Simpler alternatives to esm.sh
+- [Native CSS modules](https://css-tricks.com/css-modules-the-native-ones/)
+- A custom `request` context hook
+- Meaningful Puppeteer tests
+
+Thank you for going on this journey with us.
 
 ---
 
