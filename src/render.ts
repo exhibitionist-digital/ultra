@@ -1,11 +1,12 @@
+import { Buffer, concat } from "./deps.ts";
 import React, { ReactElement } from "react";
 import ReactDOM from "react-dom/server";
 import { BaseLocationHook, Router } from "wouter";
 import { HelmetProvider } from "react-helmet";
-import { concat } from "https://deno.land/std@0.107.0/bytes/mod.ts";
-import { join } from "https://deno.land/std@0.107.0/path/mod.ts";
-import { Buffer } from "https://deno.land/std@0.107.0/io/mod.ts";
 import type { Navigate, RenderOptions } from "./types.ts";
+
+// todo: maybe make this import dynamically added?
+import app from "app";
 
 // renderToReadableStream not available yet in official types
 declare global {
@@ -24,10 +25,9 @@ const defaultChunkSize = 8 * 1024;
 
 const render = async (
   {
-    root,
-    request,
+    url,
     importmap,
-    lang,
+    lang = "en",
     bufferSize: _bufferSize,
     chunkSize: _chunkSize,
   }: RenderOptions,
@@ -36,7 +36,6 @@ const render = async (
   const chunkSize = _chunkSize ?? defaultChunkSize;
 
   const ts = isDev ? +new Date() : serverStart;
-  const app = await import(join(root, `app.js?ts=${ts}`));
 
   const helmetContext: { helmet: Record<string, number> } = { helmet: {} };
   const cache = new Map();
@@ -44,12 +43,12 @@ const render = async (
   const body = ReactDOM.renderToReadableStream(
     React.createElement(
       Router,
-      { hook: staticLocationHook(request.url.pathname), children: null },
+      { hook: staticLocationHook(url.pathname), children: null },
       React.createElement(
         HelmetProvider,
         { context: helmetContext },
         React.createElement(
-          app.default,
+          app,
           { cache },
           null,
         ),
@@ -72,12 +71,12 @@ const render = async (
   }";import { HelmetProvider } from "${
     importmap.imports["react-helmet"]
   }";import App from "/app.js";` +
-    `const root = hydrateRoot(document.body,` +
+    `const root = hydrateRoot(document.getElementById("ultra"),` +
     `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +
-    `</script></head><body>`;
+    `</script></head><body><div id="ultra">`;
 
   const tail = () =>
-    `</body><script>self.__ultra = ${
+    `</div></body><script>self.__ultra = ${
       JSON.stringify(Array.from(cache.entries()))
     }</script></html>`;
 
@@ -103,8 +102,9 @@ const render = async (
   return encodeStream(
     new ReadableStream({
       start(controller) {
-        const queue = (part: string | Uint8Array) =>
-          Promise.resolve(controller.enqueue(part));
+        const queue = (part: string | Uint8Array) => {
+          return Promise.resolve(controller.enqueue(part));
+        };
 
         queue(head)
           .then(() => queue(buffer.bytes({ copy: false })))
@@ -117,7 +117,7 @@ const render = async (
             // could very well be broken:
             await queue("Error");
           })
-          .then(() => controller.enqueue(tail()))
+          .then(() => queue(tail()))
           .then(() => controller.close());
       },
     }),
@@ -140,9 +140,15 @@ const encodeStream = (readable: ReadableStream<string | Uint8Array>) =>
             if (typeof read.value === "string") {
               controller.enqueue(encoder.encode(read.value));
             } else if (read.value instanceof Uint8Array) {
-              controller.enqueue(read.value);
+              // wierd react 18 bug (hopefully this will be fixed)
+              const bug = new TextDecoder().decode(read.value);
+              const patch = bug.replace(
+                '<div hidden id="S:1',
+                "S:1",
+              );
+              controller.enqueue(encoder.encode(patch));
             } else {
-              throw new TypeError();
+              return null;
             }
           }
         } finally {
@@ -171,7 +177,9 @@ async function pushBody(
 
   while (true) {
     const read = await reader.read();
-    if (read.done) break;
+    if (read.done) {
+      break;
+    }
     partsSize += read.value.length;
     parts.push(read.value);
     if (partsSize >= chunkSize) {

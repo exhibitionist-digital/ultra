@@ -19,7 +19,7 @@ export type TransformOptions = {
 export type RenderOptions = {
   root: string;
   importmap: ImportMap;
-  request: { url: URL };
+  url: URL;
   lang: string;
 
   // Number of bytes of the response to buffer before starting to stream. This

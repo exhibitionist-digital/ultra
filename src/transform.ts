@@ -1,5 +1,4 @@
-import * as esbuild from "https://deno.land/x/esbuild@v0.12.24/mod.js";
-import { parse } from "https://x.nest.land/swc@0.1.4/mod.ts";
+import { esbuild, parse } from "./deps.ts";
 import type {
   CallExpression,
   HasSpan,
@@ -18,7 +17,7 @@ const transform = async (
   const t0 = performance.now();
   const { code } = await esbuild.transform(source, {
     loader,
-    target: ["es2017"],
+    target: ["esnext"],
     minify: !isDev,
   });
   let c = "";
