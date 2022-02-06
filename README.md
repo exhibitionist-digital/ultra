@@ -1,13 +1,14 @@
 <div align="center">
-  <br />
-  <img src="https://dweb.link/ipfs/bafkreiah6lyqltjzmqaggn3iang6sip7tnbotvxyqeg6zgrem6wqniegfm" height="250" />
-  <h1>Ultra</h1>
-  <strong>Deno + React: No build, no bundle, all streaming</strong>
-  <br /><br />
+<br />
+<img src="./ultra.svg" height="250" />
 
-[![GitHub Workflow Status][actions-badge]][actions]
+### ULTRA
+
+#### Modern Streaming React Framework
 
 </div>
+
+---
 
 **Ultra** is a web framework that leans hard into your browser's native
 features. Embrace the future of **ES Modules**, **Import Maps**, and **Web
@@ -27,6 +28,21 @@ It's driven by the following hot-takes:
 
 ---
 
+### v0.7.0
+
+This is a near full rewrite of Ultra. It includes:
+
+- Removal of Oak, in favour of std/http library. This makes it heaps easier to
+  deploy to multiple targets now (below)
+- Addition of `preloadmodule` headers for core Ultra components
+- Main `app` entry point added to `importMap`
+- Deno Deploy support
+- Fly/Docker support
+- Vercel support
+- Example projects moved into their own repos for easier hacking
+
+---
+
 **Warning:** The following is built around the _alpha_ version of
 [React 18](https://reactjs.org/blog/2021/06/08/the-plan-for-react-18.html).
 Mileage may vary.
@@ -37,18 +53,11 @@ Here are some neat demos:
 
 [Demo (taken from React's release announcement)](https://react18.ultrajs.dev)
 
-### 🔥🔥 React Three Fiber
+### 📦📦 React Three Fiber
 
 [Threejs, react, no build, no bundle](https://threejs.ultrajs.dev/)
 
-### Quick start
-
-The most minimal setup of **Ultra** can be found at
-[/examples/boilerplate](https://github.com/exhibitionist-digital/ultra/tree/master/examples/boilerplate).
-There are more
-[/examples](https://github.com/exhibitionist-digital/ultra/tree/master/examples)
-as well.
-
+<!--
 ---
 
 <details><summary>HOW IT WORKS</summary>
@@ -161,50 +170,6 @@ const Ultra = ({ cache }) => {
 
 ---
 
-<details><summary>MIDDLEWARE + API ROUTES</summary>
-
-<br/>
-
-Ultra is powered by the mighty [Oak](https://github.com/oakserver/oak). We
-expose both the `app` and `router`, which can be configured for any custom
-middleware or routing your app might need.
-
-[Oak docs](https://github.com/oakserver/oak#application-middleware-and-context)
-
-```js
-import ultra, { app } from "https://deno.land/x/ultra@v0.6/mod.ts";
-
-// logger middleware
-app.use(async (context, next) => {
-  await next();
-  const rt = context.response.headers.get("X-Response-Time");
-  console.log(`${context.request.method} ${context.request.url} - ${rt}`);
-});
-
-await ultra({
-  importmap: await Deno.readTextFile("importmap.json"),
-});
-```
-
-Custom routes can all be added, helpful for API's.
-
-```js
-import ultra, { router } from "https://deno.land/x/ultra@v0.6/mod.ts";
-
-// example API route
-router.get("/api/:slug", async (context) => {
-  // ...
-});
-
-await ultra({
-  importmap: await Deno.readTextFile("importmap.json"),
-});
-```
-
-</details>
-
----
-
 <details><summary>DEPLOYING</summary>
 
 <br/>
@@ -213,9 +178,9 @@ await ultra({
 Dockerfile which uses the official Denoland image.
 
 ```bash
-FROM denoland/deno:1.14.0
+FROM denoland/deno:1.18.1
 
-EXPOSE 3000 
+EXPOSE 3000
 
 RUN apt-get update && apt-get -y install make
 
@@ -228,15 +193,4 @@ RUN make cache
 CMD ["make", "start"]
 ```
 
----
-
-We are currently working on support for [Deno Deploy](https://deno.com/deploy),
-[Cloudflare Workers](https://workers.cloudflare.com/), and
-[Vercel](https://vercel.com/). Keen to help? Open a PR, please! 🙏
-
-</details>
-
-[docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&style=for-the-badge&color=B06892&
-[docs]: https://doc.deno.land/https/deno.land/x/ultra/mod.js&
-[actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?style=for-the-badge&color=53A3D3&logo=github&label=
-[actions]: https://github.com/exhibitionist-digital/ultra/actions
+</details> -->
