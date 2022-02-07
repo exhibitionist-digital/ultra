@@ -4,12 +4,13 @@ import { LRU, readableStreamFromReader, serve } from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
+import modulepreloadArgs from "./modulepreload.ts";
 const memory = new LRU(1000);
 
 const deploy = async ({ root, importMap, base }) => {
   const { raw, trans } = await assets({ root });
 
-  const ultraGraph = await graph([
+  const linkUltra = await modulepreloadArgs([
     importMap.imports["react"],
     importMap.imports["react-dom"],
     importMap.imports["wouter"],
@@ -57,7 +58,7 @@ const deploy = async ({ root, importMap, base }) => {
       {
         headers: {
           "content-type": "text/html",
-          link: ultraGraph,
+          link: linkUltra,
         },
       },
     );
