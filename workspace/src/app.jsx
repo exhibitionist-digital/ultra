@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { SWRConfig } from "swr";
 import { Helmet } from "react-helmet";
 import ultraCache from "ultra/cache";
+import a from "./test/a.js";
 
 const options = (cache) => ({
   provider: () => ultraCache(cache),

@@ -1,6 +1,6 @@
 // @ts-nocheck todo: add types
 
-import { LRU, readableStreamFromReader, serve } from "./deps.ts";
+import { createGraph, LRU, readableStreamFromReader, serve } from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
@@ -27,25 +27,50 @@ const deploy = async ({ root, importMap, base }) => {
     const assetMeta = assetsMeta.get(path);
 
     if (assetMeta) {
+      const headers = {
+        "content-type": assetMeta["content-type"],
+      };
+
       const relPath = "./" + path;
-      if (assetMeta.transpile) {
-        let js = memory.get(url.pathname);
-        if (!js) {
-          const source = await Deno.readTextFile(relPath);
-          js = await transform({
-            source,
-            importmap: importMap,
-            root: base,
-          });
-          memory.set(url.pathname, js);
+
+      if (assetMeta.isScript) {
+        const fileRootUri = `file://${Deno.cwd()}/${root}`;
+        const graph = await createGraph(`${fileRootUri}${url.pathname}`);
+
+        const { modules } = graph.toJSON();
+        const response = [];
+
+        for (const { specifier } of modules) {
+          const path = specifier.replace(fileRootUri, "");
+          if (path !== url.pathname) {
+            response.push(`<${url.origin}${path}>; rel="modulepreload"`);
+          }
         }
 
-        body = js;
+        if (response.length > 0) {
+          headers.link = response.join(", ");
+        }
+
+        if (assetMeta.transpile) {
+          let js = memory.get(url.pathname);
+          if (!js) {
+            const source = await Deno.readTextFile(relPath);
+            js = await transform({
+              source,
+              importmap: importMap,
+              root: base,
+            });
+            memory.set(url.pathname, js);
+          }
+
+          body = js;
+        }
       } else {
         const file = await Deno.open(relPath);
         body = readableStreamFromReader(file);
       }
-      return new Response(body, { headers: assetMeta.headers });
+
+      return new Response(body, { headers });
     }
 
     return new Response(
@@ -63,7 +88,9 @@ const deploy = async ({ root, importMap, base }) => {
       },
     );
   };
+
   console.log("Listening on http://localhost:8000");
+
   return serve(handler);
 };
 

@@ -70,7 +70,7 @@ const render = async (
     importmap.imports["wouter"]
   }";import { HelmetProvider } from "${
     importmap.imports["react-helmet"]
-  }";import App from "/app.js";` +
+  }";import App from "/app.jsx";` +
     `const root = hydrateRoot(document.getElementById("ultra"),` +
     `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +
     `</script></head><body><div id="ultra">`;
