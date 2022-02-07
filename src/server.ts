@@ -1,16 +1,22 @@
 // @ts-nocheck todo: add types
 
 import { LRU, readableStreamFromReader, serve } from "./deps.ts";
-import staticFiles from "./static.ts";
+import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
-import graph from "./graph.ts";
 const memory = new LRU(1000);
 
 const deploy = async ({ root, importMap, base }) => {
-  const { raw, trans } = await staticFiles({ root });
+  const { raw, trans } = await assets({ root });
 
-  const ultraGraph = await graph({ importMap });
+  const ultraGraph = await graph([
+    importMap.imports["react"],
+    importMap.imports["react-dom"],
+    importMap.imports["wouter"],
+    importMap.imports["swr"],
+    importMap.imports["react-helmet"],
+    importMap.imports["ultra/cache"],
+  ]);
 
   const handler = async (request) => {
     const url = new URL(request.url);
@@ -19,13 +25,15 @@ const deploy = async ({ root, importMap, base }) => {
     if (raw.has(`${root}${url.pathname}`)) {
       const file = await Deno.open(`./${root}${url.pathname}`);
       const body = readableStreamFromReader(file);
-      return new Response(body);
+      const { headers } = raw.get(`${root}${url.pathname}`);
+      return new Response(body, { headers });
     }
     // jsx/tsx
-    if (trans.has(`${root}${url.pathname}x`)) {
+    const path = `${root}${url.pathname}x`;
+    if (trans.has(path)) {
       let js = memory.get(url.pathname);
       if (!js) {
-        const source = await Deno.readTextFile(`./${root}${url.pathname}x`);
+        const source = await Deno.readTextFile("./" + path);
         js = await transform({
           source,
           importmap: importMap,
@@ -33,11 +41,10 @@ const deploy = async ({ root, importMap, base }) => {
         });
         memory.set(url.pathname, js);
       }
-      return new Response(js, {
-        headers: {
-          "content-type": "application/javascript",
-        },
-      });
+
+      const { headers } = trans.get(path);
+
+      return new Response(js, { headers });
     }
 
     return new Response(
@@ -50,7 +57,7 @@ const deploy = async ({ root, importMap, base }) => {
       {
         headers: {
           "content-type": "text/html",
-          "link": ultraGraph.join(", "),
+          link: ultraGraph,
         },
       },
     );
