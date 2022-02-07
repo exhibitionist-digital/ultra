@@ -48,14 +48,15 @@ This is a near full rewrite of Ultra. It includes:
 As we await the official release of React 18, here some things we are interested
 in for the future of Ultra:
 
-- Deno [vendor](https://github.com/denoland/deno/issues/13346)!
+- Deno [vendor](https://github.com/denoland/deno/issues/13346): Serve remote
+  packages locally
+- React 18 [ESM support](https://github.com/facebook/react/issues/11503)
 - Native import maps: Browser support for import maps is still a bit sketchy.
   Instead of using import map polyfills, Ultra inlines your imports directly
-  into the served ES modules. We look forward to rolling this back in the
-  future.
+  into the served ES modules. We look forward to rolling this back in the future
 - Simpler alternatives to [esm.sh](https://esm.sh)
-- Deno Deploy
-  [dynamic imports](https://github.com/denoland/deploy_feedback/issues/1)
+- [Dynamic import](https://github.com/denoland/deploy_feedback/issues/1) support
+  on Deno Deploy
 - [Native CSS modules](https://css-tricks.com/css-modules-the-native-ones/)
 - A custom `request` context hook
 - Meaningful Puppeteer tests
