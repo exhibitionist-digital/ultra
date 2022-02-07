@@ -1,23 +1,50 @@
 // @ts-nocheck todo: add types
 
-import { createGraph, LRU, readableStreamFromReader, serve } from "./deps.ts";
+import {
+  createCache,
+  createGraph,
+  extname,
+  LRU,
+  readableStreamFromReader,
+  serve,
+} from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
-import modulepreloadArgs from "./modulepreload.ts";
 const memory = new LRU(1000);
+
+const cache = createCache();
+const { cacheInfo, load } = cache;
 
 const deploy = async ({ root, importMap, base }) => {
   const assetsMeta = await assets({ root });
 
-  const linkUltra = await modulepreloadArgs([
+  const graph = await createGraph([
     importMap.imports["react"],
     importMap.imports["react-dom"],
     importMap.imports["wouter"],
     importMap.imports["swr"],
     importMap.imports["react-helmet"],
     importMap.imports["ultra/cache"],
-  ]);
+  ], {
+    cacheInfo,
+    load,
+  });
+
+  const { modules } = graph.toJSON();
+  const attributes = [];
+
+  for (const { specifier } of modules) {
+    if (extname(specifier) === ".js") {
+      attributes.push(`<${specifier}>; rel="modulepreload"`);
+    }
+  }
+
+  let linkUltra;
+
+  if (attributes.length > 0) {
+    linkUltra = attributes.join(", ");
+  }
 
   const handler = async (request) => {
     const url = new URL(request.url);
@@ -38,17 +65,17 @@ const deploy = async ({ root, importMap, base }) => {
         const graph = await createGraph(`${fileRootUri}${url.pathname}`);
 
         const { modules } = graph.toJSON();
-        const response = [];
+        const attributes = [];
 
         for (const { specifier } of modules) {
           const path = specifier.replace(fileRootUri, "");
           if (path !== url.pathname) {
-            response.push(`<${url.origin}${path}>; rel="modulepreload"`);
+            attributes.push(`<${url.origin}${path}>; rel="modulepreload"`);
           }
         }
 
-        if (response.length > 0) {
-          headers.link = response.join(", ");
+        if (attributes.length > 0) {
+          headers.link = attributes.join(", ");
         }
 
         if (assetMeta.transpile) {
