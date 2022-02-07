@@ -40,11 +40,7 @@ const deploy = async ({ root, importMap, base }) => {
     }
   }
 
-  let linkUltra;
-
-  if (attributes.length > 0) {
-    linkUltra = attributes.join(", ");
-  }
+  const linkUltra = attributes.join(", ");
 
   const handler = async (request) => {
     const url = new URL(request.url);
