@@ -18,6 +18,7 @@ const { cacheInfo, load } = cache;
 
 const deploy = async ({ root, importMap, base }) => {
   const assetsMeta = await assets({ root });
+  const fileRootUri = `file://${Deno.cwd()}/${root}`;
 
   const graph = await createGraph([
     importMap.imports["react"],
@@ -40,6 +41,18 @@ const deploy = async ({ root, importMap, base }) => {
     }
   }
 
+  const graphApp = await createGraph(`${fileRootUri}/app.jsx`);
+  const { modules: appModules } = graphApp.toJSON();
+
+  for (const { specifier } of appModules) {
+    if ([".js", ".jsx", ".ts", ".tsx"].includes(extname(specifier))) {
+      const path = specifier.replace(fileRootUri, "");
+      attributes.push(
+        `<http://localhost:8000${path}>; rel="modulepreload"`,
+      );
+    }
+  }
+
   const linkUltra = attributes.join(", ");
 
   const handler = async (request) => {
@@ -57,7 +70,6 @@ const deploy = async ({ root, importMap, base }) => {
       const relPath = "./" + path;
 
       if (assetMeta.isScript) {
-        const fileRootUri = `file://${Deno.cwd()}/${root}`;
         const graph = await createGraph(`${fileRootUri}${url.pathname}`);
 
         const { modules } = graph.toJSON();
