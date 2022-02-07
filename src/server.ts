@@ -8,7 +8,7 @@ import modulepreloadArgs from "./modulepreload.ts";
 const memory = new LRU(1000);
 
 const deploy = async ({ root, importMap, base }) => {
-  const { raw, trans } = await assets({ root });
+  const assetsMeta = await assets({ root });
 
   const linkUltra = await modulepreloadArgs([
     importMap.imports["react"],
@@ -22,30 +22,30 @@ const deploy = async ({ root, importMap, base }) => {
   const handler = async (request) => {
     const url = new URL(request.url);
 
-    // static files
-    if (raw.has(`${root}${url.pathname}`)) {
-      const file = await Deno.open(`./${root}${url.pathname}`);
-      const body = readableStreamFromReader(file);
-      const { headers } = raw.get(`${root}${url.pathname}`);
-      return new Response(body, { headers });
-    }
-    // jsx/tsx
-    const path = `${root}${url.pathname}x`;
-    if (trans.has(path)) {
-      let js = memory.get(url.pathname);
-      if (!js) {
-        const source = await Deno.readTextFile("./" + path);
-        js = await transform({
-          source,
-          importmap: importMap,
-          root: base,
-        });
-        memory.set(url.pathname, js);
+    let body;
+    const path = `${root}${url.pathname}`;
+    const assetMeta = assetsMeta.get(path);
+
+    if (assetMeta) {
+      const relPath = "./" + path;
+      if (assetMeta.transpile) {
+        let js = memory.get(url.pathname);
+        if (!js) {
+          const source = await Deno.readTextFile(relPath);
+          js = await transform({
+            source,
+            importmap: importMap,
+            root: base,
+          });
+          memory.set(url.pathname, js);
+        }
+
+        body = js;
+      } else {
+        const file = await Deno.open(relPath);
+        body = readableStreamFromReader(file);
       }
-
-      const { headers } = trans.get(path);
-
-      return new Response(js, { headers });
+      return new Response(body, { headers: assetMeta.headers });
     }
 
     return new Response(
