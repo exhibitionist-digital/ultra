@@ -45,12 +45,10 @@ const deploy = async ({ root, importMap, base }) => {
   const { modules: appModules } = graphApp.toJSON();
 
   for (const { specifier } of appModules) {
-    if ([".js", ".jsx", ".ts", ".tsx"].includes(extname(specifier))) {
-      const path = specifier.replace(fileRootUri, "");
-      attributes.push(
-        `<http://localhost:8000${path}>; rel="modulepreload"`,
-      );
-    }
+    const path = specifier.replace(fileRootUri, "");
+    attributes.push(
+      `<http://localhost:8000${path}>; rel="modulepreload"`,
+    );
   }
 
   const linkUltra = attributes.join(", ");
