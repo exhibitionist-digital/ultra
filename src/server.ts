@@ -17,7 +17,7 @@ const cache = createCache();
 const { cacheInfo, load } = cache;
 
 const deploy = async ({ root, importMap, base }) => {
-  const assetsMeta = await assets({ root });
+  const { raw, transpile } = await assets({ root });
   const fileRootUri = `file://${Deno.cwd()}/${root}`;
 
   const graph = await createGraph([
@@ -41,33 +41,19 @@ const deploy = async ({ root, importMap, base }) => {
     }
   }
 
-  const graphApp = await createGraph(`${fileRootUri}/app.jsx`);
-  const { modules: appModules } = graphApp.toJSON();
-
-  for (const { specifier } of appModules) {
-    const path = specifier.replace(fileRootUri, "");
-    attributes.push(
-      `<http://localhost:8000${path}>; rel="modulepreload"`,
-    );
-  }
-
-  const linkUltra = attributes.join(", ");
+  const link = attributes.join(", ");
 
   const handler = async (request) => {
     const url = new URL(request.url);
 
-    let body;
-    const path = `${root}${url.pathname}`;
-    const assetMeta = assetsMeta.get(path);
-
-    if (assetMeta) {
+    // static
+    if (raw.has(`${root}${url.pathname}`)) {
+      const contentType = raw.get(`${root}${url.pathname}`);
       const headers = {
-        "content-type": assetMeta["content-type"],
+        "content-type": contentType,
       };
 
-      const relPath = "./" + path;
-
-      if (assetMeta.isScript) {
+      if (contentType === "application/javascript") {
         const graph = await createGraph(`${fileRootUri}${url.pathname}`);
 
         const { modules } = graph.toJSON();
@@ -83,27 +69,49 @@ const deploy = async ({ root, importMap, base }) => {
         if (attributes.length > 0) {
           headers.link = attributes.join(", ");
         }
-
-        if (assetMeta.transpile) {
-          let js = memory.get(url.pathname);
-          if (!js) {
-            const source = await Deno.readTextFile(relPath);
-            js = await transform({
-              source,
-              importmap: importMap,
-              root: base,
-            });
-            memory.set(url.pathname, js);
-          }
-
-          body = js;
-        }
-      } else {
-        const file = await Deno.open(relPath);
-        body = readableStreamFromReader(file);
       }
 
+      const file = await Deno.open(`./${root}${url.pathname}`);
+      const body = readableStreamFromReader(file);
+
       return new Response(body, { headers });
+    }
+
+    // transpile
+    if (transpile.has(`${root}${url.pathname}x`)) {
+      const headers = {
+        "content-type": "application/javascript",
+      };
+
+      let js = memory.get(url.pathname);
+
+      if (!js) {
+        const source = await Deno.readTextFile(`./${root}${url.pathname}x`);
+        js = await transform({
+          source,
+          importmap: importMap,
+          root: base,
+        });
+        memory.set(url.pathname, js);
+      }
+
+      const graph = await createGraph(`${fileRootUri}${url.pathname}x`);
+
+      const { modules } = graph.toJSON();
+      const attributes = [];
+
+      for (const { specifier } of modules) {
+        const path = specifier.replace(fileRootUri, "");
+        if (path !== `${url.pathname}x`) {
+          attributes.push(`<${url.origin}${path}>; rel="modulepreload"`);
+        }
+      }
+
+      if (attributes.length > 0) {
+        headers.link = attributes.join(", ");
+      }
+
+      return new Response(js, { headers });
     }
 
     return new Response(
@@ -116,7 +124,7 @@ const deploy = async ({ root, importMap, base }) => {
       {
         headers: {
           "content-type": "text/html",
-          link: linkUltra,
+          link,
         },
       },
     );

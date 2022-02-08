@@ -3,24 +3,29 @@
 import { mime, walk } from "./deps.ts";
 
 const assets = async ({ root }) => {
-  const assetsMeta = new Map();
+  const meta = {
+    raw: new Map(),
+    transpile: new Map(),
+  };
+
   for await (const file of walk(`./${root}`)) {
     if (file.isFile) {
-      const type = mime.lookup(file.path.split(".").pop());
-      if (type) {
-        const needsTranspilation = type == "text/jsx" || type == "text/tsx";
-        const isScript = needsTranspilation ||
-          type === "application/javascript";
+      const contentType = mime.lookup(file.path.split(".").pop());
+      if (contentType) {
+        const transpile = contentType == "text/jsx" ||
+          contentType == "text/tsx";
+        const isScript = transpile ||
+          contentType === "application/javascript";
 
-        assetsMeta.set(file.path, {
-          transpile: needsTranspilation,
-          "content-type": isScript ? "application/javascript" : type,
-          isScript,
-        });
+        meta[transpile ? "transpile" : "raw"].set(
+          file.path,
+          isScript ? "application/javascript" : contentType,
+        );
       }
     }
   }
-  return assetsMeta;
+
+  return meta;
 };
 
 export default assets;
