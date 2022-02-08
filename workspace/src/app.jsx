@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { SWRConfig } from "swr";
 import { Helmet } from "react-helmet";
 import ultraCache from "ultra/cache";
