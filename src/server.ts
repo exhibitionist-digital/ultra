@@ -1,47 +1,27 @@
 // @ts-nocheck todo: add types
 
-import {
-  createCache,
-  createGraph,
-  extname,
-  LRU,
-  readableStreamFromReader,
-  serve,
-} from "./deps.ts";
+import { extname, LRU, readableStreamFromReader, serve } from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
 const memory = new LRU(1000);
 
-const cache = createCache();
-const { cacheInfo, load } = cache;
-
 const deploy = async ({ root, importMap, base }) => {
   const { raw, transpile } = await assets({ root });
   const fileRootUri = `file://${Deno.cwd()}/${root}`;
 
-  const graph = await createGraph([
+  const link = await generateLinkHeader([
     importMap.imports["react"],
     importMap.imports["react-dom"],
     importMap.imports["wouter"],
     importMap.imports["swr"],
     importMap.imports["react-helmet"],
     importMap.imports["ultra/cache"],
-  ], {
-    cacheInfo,
-    load,
-  });
-
-  const { modules } = graph.toJSON();
-  const attributes = [];
-
-  for (const { specifier } of modules) {
-    if (extname(specifier) === ".js") {
-      attributes.push(`<${specifier}>; rel="modulepreload"`);
+  ], (specifier) => {
+    if (extname(specifier) !== ".js") {
+      return specifier;
     }
-  }
-
-  const link = attributes.join(", ");
+  });
 
   const handler = async (request) => {
     const url = new URL(request.url);
@@ -54,20 +34,18 @@ const deploy = async ({ root, importMap, base }) => {
       };
 
       if (contentType === "application/javascript") {
-        const graph = await createGraph(`${fileRootUri}${url.pathname}`);
+        const link = await generateLinkHeader(
+          `${fileRootUri}${url.pathname}`,
+          (specifier) => {
+            const path = specifier.replace(fileRootUri, "");
+            if (path !== url.pathname) {
+              return `${url.origin}${path}`;
+            }
+          },
+        );
 
-        const { modules } = graph.toJSON();
-        const attributes = [];
-
-        for (const { specifier } of modules) {
-          const path = specifier.replace(fileRootUri, "");
-          if (path !== url.pathname) {
-            attributes.push(`<${url.origin}${path}>; rel="modulepreload"`);
-          }
-        }
-
-        if (attributes.length > 0) {
-          headers.link = attributes.join(", ");
+        if (link) {
+          headers.link = link;
         }
       }
 
@@ -95,20 +73,18 @@ const deploy = async ({ root, importMap, base }) => {
         memory.set(url.pathname, js);
       }
 
-      const graph = await createGraph(`${fileRootUri}${url.pathname}x`);
+      const link = await generateLinkHeader(
+        `${fileRootUri}${url.pathname}x`,
+        (specifier) => {
+          const path = specifier.replace(fileRootUri, "");
+          if (path !== `${url.pathname}x`) {
+            return `${url.origin}${path}`;
+          }
+        },
+      );
 
-      const { modules } = graph.toJSON();
-      const attributes = [];
-
-      for (const { specifier } of modules) {
-        const path = specifier.replace(fileRootUri, "");
-        if (path !== `${url.pathname}x`) {
-          attributes.push(`<${url.origin}${path}>; rel="modulepreload"`);
-        }
-      }
-
-      if (attributes.length > 0) {
-        headers.link = attributes.join(", ");
+      if (link) {
+        headers.link = link;
       }
 
       return new Response(js, { headers });
