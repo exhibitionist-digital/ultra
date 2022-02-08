@@ -4,8 +4,9 @@ import { extname, LRU, readableStreamFromReader, serve } from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
-const memory = new LRU(1000);
 import generateLinkHeader from "./link.ts";
+
+const memory = new LRU(1000);
 
 const deploy = async ({ root, importMap, base }) => {
   const { raw, transpile } = await assets({ root });
