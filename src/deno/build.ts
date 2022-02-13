@@ -1,7 +1,7 @@
 import { createCache } from "../deps.ts";
 import assets from "./../assets.ts";
 import transform from "./../transform.ts";
-import preloader, { ultraloader } from "./../preloader.ts";
+import { ultraloader } from "./../preloader.ts";
 import { jsify } from "../resolver.ts";
 import { emptyDir, ensureDir } from "https://deno.land/std/fs/mod.ts";
 
