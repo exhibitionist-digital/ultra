@@ -38,7 +38,7 @@ This is a near full rewrite of Ultra. It includes:
   deploy to multiple targets
 - Addition of `preloadmodule` headers for core Ultra components
 - Main `app` entry point added to `importMap`
-- Deno Deploy support
+- Deno Deploy support via GitHub Actions
 - Fly/Docker support
 - [Example projects moved into their own repo](https://github.com/exhibitionist-digital/ultra-examples)
   for easier hacking
