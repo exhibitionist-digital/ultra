@@ -1,6 +1,6 @@
 <div align="center">
 <br />
-<img src="./ultra.svg" height="250" />
+<img src="./workspace/src/ultra.svg" height="250" />
 
 ### ULTRA
 

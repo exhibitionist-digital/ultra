@@ -2,7 +2,6 @@ import React from "react";
 import { SWRConfig } from "swr";
 import { Helmet } from "react-helmet";
 import ultraCache from "ultra/cache";
-import a from "./test/a.js";
 
 const options = (cache) => ({
   provider: () => ultraCache(cache),
@@ -15,7 +14,8 @@ const Ultra = ({ cache }) => {
       <Helmet>
         <link rel="stylesheet" href="/style.css" />
       </Helmet>
-      <h1>Ultra</h1>
+      <img src="./ultra.svg" />
+      <h1>ULTRA</h1>
     </SWRConfig>
   );
 };

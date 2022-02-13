@@ -1,24 +1,30 @@
-// @ts-nocheck todo: add types
-
-import staticFiles from "../static.ts";
-import transform from "../transform.ts";
-import graph from "../graph.ts";
+import { createCache } from "../deps.ts";
+import assets from "./../assets.ts";
+import transform from "./../transform.ts";
+import preloader, { ultraloader } from "./../preloader.ts";
+import { jsify } from "../resolver.ts";
 import { emptyDir, ensureDir } from "https://deno.land/std/fs/mod.ts";
 
 await emptyDir("./.ultra");
 
-const build = async ({ root = "src", importMap, base }) => {
-  const { raw, trans } = await staticFiles({ root });
+const root = Deno.env.get("root") || "http://localhost:8000";
+const dir = Deno.env.get("dir") || "src";
+const lang = Deno.env.get("lang") || "en";
+const importmapPath = Deno.env.get("importmap") || "./importmap.json";
+const importmap = JSON.parse(await Deno.readTextFile(importmapPath));
 
-  const iterator = trans.keys();
+const build = async () => {
+  const { transpile } = await assets(dir);
 
-  for (let i = 0; i < trans.size; i++) {
+  const iterator = transpile.keys();
+
+  for (let i = 0; i < transpile.size; i++) {
     const file = iterator.next().value;
     const source = await Deno.readTextFile(file);
     const js = await transform({
       source,
-      importmap: importMap,
-      root: base,
+      importmap,
+      root,
     });
 
     const directory = file.split("/");
@@ -28,53 +34,97 @@ const build = async ({ root = "src", importMap, base }) => {
     await Deno.writeTextFile(`./.ultra/${directory.join("/")}/${name}`, js);
   }
 
+  // importmap
+  Object.keys(importmap.imports)?.forEach((k) => {
+    // @ts-ignore any
+    const im: string = importmap.imports[k];
+    if (im.indexOf("http") < 0) {
+      // @ts-ignore any
+      importmap.imports[k] = jsify(im);
+    }
+  });
+  await Deno.writeTextFile(
+    `./.ultra/importmap.json`,
+    JSON.stringify(importmap),
+  );
+
   // graph
-  const ultraGraph = await graph({ importMap });
+  const cache = createCache();
+  const ultraGraph = await ultraloader({ importmap, cache });
   await Deno.writeTextFile(`./.ultra/graph.json`, JSON.stringify(ultraGraph));
 
   // deps
-  let d = await fetch(
-    "http://127.0.0.1:8080/src/deps.js",
+  const depReq = await fetch(
+    "https://raw.githubusercontent.com/exhibitionist-digital/ultra/0.7.0/src/deno/deps.ts",
   );
-  d = await d.text();
-  await Deno.writeTextFile(`./.ultra/deps.js`, d);
+  const depText = await depReq.text();
+  await Deno.writeTextFile(`./.ultra/deps.js`, depText);
 
-  // static
-  let c = await fetch(
-    "http://127.0.0.1:8080/src/static.js",
+  // assets
+  const assetReq = await fetch(
+    "https://raw.githubusercontent.com/exhibitionist-digital/ultra/0.7.0/src/assets.ts",
   );
-  c = await c.text();
-  c = await transform({
-    source: c,
-    importmap: importMap,
-    root: base,
+  const assetText = await assetReq.text();
+  const assetTrans = await transform({
+    source: assetText,
+    importmap,
+    root,
   });
-  await Deno.writeTextFile(`./.ultra/static.js`, c);
+  await Deno.writeTextFile(`./.ultra/assets.js`, assetTrans);
 
   // render
-  let render = await fetch(
-    "http://127.0.0.1:8080/src/render.ts",
+  const renderReq = await fetch(
+    "https://raw.githubusercontent.com/exhibitionist-digital/ultra/0.7.0/src/render.ts",
   );
-  render = await render.text();
-  render = await transform({
-    source: render,
-    importmap: importMap,
-    root: base,
+  const renderText = await renderReq.text();
+  const renderTrans = await transform({
+    source: renderText,
+    importmap,
+    root,
   });
-  await Deno.writeTextFile(`./.ultra/render.js`, render);
+  await Deno.writeTextFile(`./.ultra/render.js`, renderTrans);
+
+  // env
+  const envReq = await fetch(
+    "https://raw.githubusercontent.com/exhibitionist-digital/ultra/0.7.0/src/env.ts",
+  );
+  const envText = await envReq.text();
+  const envTrans = await transform({
+    source: envText,
+    importmap,
+    root,
+  });
+  await Deno.writeTextFile(`./.ultra/env.js`, envTrans);
 
   // ultra
-  let ultra = await fetch(
-    "http://127.0.0.1:8080/src/deno/server.js",
+  const ultraReq = await fetch(
+    "https://raw.githubusercontent.com/exhibitionist-digital/ultra/0.7.0/src/deno/server.ts",
   );
-  ultra = await ultra.text();
-  ultra = await transform({
-    source: ultra,
-    importmap: importMap,
-    root: base,
+  const ultraText = await ultraReq.text();
+  const ultraTrans = await transform({
+    source: ultraText,
+    importmap,
+    root,
   });
   await ensureDir("./.ultra/deno/");
-  await Deno.writeTextFile(`./.ultra/deno/server.js`, ultra);
+  await Deno.writeTextFile(`./.ultra/deno/server.js`, ultraTrans);
+
+  // server
+  const server = `import ultra from "./deno/server.js";
+  const importmap = await Deno.readTextFile("./importmap.json")
+  
+  await ultra({
+    importmap: JSON.parse(importmap),
+    root: "${root}",
+    lang: "${lang}"
+  });`;
+
+  await Deno.writeTextFile(`./.ultra/ULTRA.js`, server);
+
+  console.log("Ultra build complete");
+  Deno.exit();
 };
 
 export default build;
+
+await build();

@@ -1,12 +1,18 @@
-import { Buffer, concat, join } from "./deps.ts";
-import React, { ReactElement } from "react";
+// @ts-nocheck this file needs to have checking off for vercel deployment
+
+import { Buffer, concat } from "./deps.ts";
+import React from "react";
 import ReactDOM from "react-dom/server";
-import { BaseLocationHook, Router } from "wouter";
+import { Router } from "wouter";
 import { HelmetProvider } from "react-helmet";
 import app from "app";
-import { isDev } from "./env.ts";
 
-import type { Navigate, RenderOptions } from "./types.ts";
+import type {
+  BaseLocationHook,
+  Navigate,
+  ReactElement,
+  RenderOptions,
+} from "./../types.ts";
 
 // renderToReadableStream not available yet in official types
 declare global {
@@ -23,20 +29,15 @@ const defaultChunkSize = 8 * 1024;
 const render = async (
   {
     url,
-    root,
     importmap,
     lang = "en",
     bufferSize: _bufferSize,
     chunkSize: _chunkSize,
-    cacheBuster,
   }: RenderOptions,
 ) => {
   const bufferSize = _bufferSize ?? defaultBufferSize;
   const chunkSize = _chunkSize ?? defaultChunkSize;
-  let importedApp;
-  if (cacheBuster && isDev) {
-    importedApp = await import(join(root, `app.js?ts=${cacheBuster}`));
-  }
+
   const helmetContext: { helmet: Record<string, number> } = { helmet: {} };
   const cache = new Map();
 
@@ -48,7 +49,7 @@ const render = async (
         HelmetProvider,
         { context: helmetContext },
         React.createElement(
-          importedApp?.default || app,
+          app,
           { cache },
           null,
         ),
@@ -128,7 +129,6 @@ export default render;
 
 const encodeStream = (readable: ReadableStream<string | Uint8Array>) =>
   new ReadableStream({
-    //@ts-ignore undefined
     start(controller) {
       return (async () => {
         const encoder = new TextEncoder();
@@ -144,8 +144,8 @@ const encodeStream = (readable: ReadableStream<string | Uint8Array>) =>
               // wierd react 18 bug (hopefully this will be fixed)
               const bug = new TextDecoder().decode(read.value);
               const patch = bug.replace(
-                'hidden id="<div hidden id=',
-                "hidden id=",
+                '<div hidden id="S:1',
+                "S:1",
               );
               controller.enqueue(encoder.encode(patch));
             } else {
