@@ -8,6 +8,8 @@
 
 [ultrajs.dev](https://ultrajs.dev)
 
+[![GitHub Workflow Status][actions-badge]][actions]
+
 </div>
 
 ---
@@ -65,3 +67,8 @@ in for the future of Ultra:
 - Meaningful Puppeteer tests
 
 **Thank you for going on this journey with us.**
+
+[docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&style=for-the-badge&color=B06892&
+[docs]: https://ultrajs.dev/docs&
+[actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?color=6666ff&style=for-the-badge&logo=github&label=
+[actions]: https://github.com/exhibitionist-digital/ultra/actions
