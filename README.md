@@ -38,7 +38,8 @@ This is a near full rewrite of Ultra. It includes:
 
 - Removal of Oak, in favour of `std/http` library. This makes it heaps easier to
   deploy to multiple targets
-- Addition of `preloadmodule` `link` header attributes for core and application level assets
+- Addition of `preloadmodule` `link` header attributes for core and application
+  level assets
 - Main `app` entry point added to `importMap`
 - Deno Deploy support via GitHub Actions
 - Fly/Docker support
