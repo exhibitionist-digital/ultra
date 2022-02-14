@@ -1,0 +1,18 @@
+html, body {
+  text-align: center; 
+  font-family: system, -apple-system, "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", sans-serif;
+}
+
+img {
+  display: block;
+  max-width: 300px;
+  height: auto;
+  margin: 3em auto 0;
+}
+
+h1 {
+  font-weight: 500;
+  font-size: clamp(2em, 10vw, 4em);
+  margin: 0.25em auto;
+  letter-spacing: 0.1em;
+}

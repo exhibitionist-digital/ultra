@@ -1,24 +1,20 @@
-import * as esbuild from "https://deno.land/x/esbuild@v0.12.24/mod.js";
-import { parse } from "https://x.nest.land/swc@0.1.4/mod.ts";
+import { esbuild, parse } from "./deps.ts";
+import { isDev } from "./env.ts";
 import type {
   CallExpression,
   HasSpan,
 } from "https://deno.land/x/swc@0.1.4/types/options.ts";
 import { TransformOptions } from "./types.ts";
 
-const isDev = Deno.env.get("mode") === "dev";
-const serverStart = +new Date();
-
 let offset = 0;
 let length = 0;
 
 const transform = async (
-  { source, importmap, root, loader = "tsx" }: TransformOptions,
+  { source, importmap, loader = "tsx", cacheBuster, env }: TransformOptions,
 ) => {
-  const t0 = performance.now();
   const { code } = await esbuild.transform(source, {
     loader,
-    target: ["es2017"],
+    target: ["esnext"],
     minify: !isDev,
   });
   let c = "";
@@ -35,7 +31,7 @@ const transform = async (
         importmap?.imports?.[value] ||
         value.replace(
           /\.(j|t)sx?/gi,
-          () => `.js?ts=${isDev ? +new Date() : serverStart}`,
+          () => `.js${cacheBuster ? `?ts=${cacheBuster}` : ""}`,
         )
       }"`;
       offset = span.end;
@@ -57,10 +53,10 @@ const transform = async (
                 c += code.substring(offset - length, span.start - length);
                 c += `"${
                   value.replace(/\.(j|t)sx?/gi, () =>
-                    `.js?ts=${
-                      isDev
-                        ? +new Date()
-                        : serverStart
+                    `.js${
+                      cacheBuster
+                        ? `?ts=${cacheBuster}`
+                        : ""
                     }`)
                 }"`;
                 offset = span.end;
@@ -74,9 +70,14 @@ const transform = async (
   c += code.substring(offset - length, code.length + offset);
   length += code.length + 1;
   offset = length;
-  const t1 = performance.now();
-  console.log(`Transpile: in ${t1 - t0}ms`);
-  c = c.replaceAll("ULTRA_URL", root);
+
+  // slug replacer
+  Object.keys(env || {}).forEach((slug) => {
+    if (!slug) return;
+    // @ts-ignore any
+    c = c.replaceAll(slug, env[slug]);
+  });
+
   return c;
 };
 
