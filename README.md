@@ -8,7 +8,7 @@
 
 [ultrajs.dev](https://ultrajs.dev)
 
-[![GitHub Workflow Status][actions-badge]][actions]
+[![GitHub Workflow Status][actions-badge]][actions] [![deno module](https://shield.deno.dev/x/ultra)](https://deno.land/x/ultra) ![deno compatibility](https://shield.deno.dev/deno/^1.18.2)
 
 </div>
 
@@ -69,7 +69,7 @@ in for the future of Ultra:
 
 **Thank you for going on this journey with us.**
 
-[docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&style=for-the-badge&color=B06892&
+[docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&color=B06892&
 [docs]: https://ultrajs.dev/docs&
-[actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?color=6666ff&style=for-the-badge&logo=github&label=
+[actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?color=000000&logo=github&label=
 [actions]: https://github.com/exhibitionist-digital/ultra/actions
