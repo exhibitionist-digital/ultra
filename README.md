@@ -8,7 +8,9 @@
 
 [ultrajs.dev](https://ultrajs.dev)
 
-[![GitHub Workflow Status][actions-badge]][actions] [![deno module](https://shield.deno.dev/x/ultra)](https://deno.land/x/ultra) ![deno compatibility](https://shield.deno.dev/deno/^1.18.2)
+[![GitHub Workflow Status][actions-badge]][actions]
+[![deno module](https://shield.deno.dev/x/ultra)](https://deno.land/x/ultra)
+![deno compatibility](https://shield.deno.dev/deno/^1.18.2)
 
 </div>
 
