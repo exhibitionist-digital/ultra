@@ -28,10 +28,10 @@ const server = async (
   const cache = createCache();
   const fileRootUri = `file://${Deno.cwd()}/${dir}`;
   const link = await ultraloader({ importmap, cache });
-  const serverStart = +new Date();
+  const serverStart = Math.ceil(+new Date() / 100);
 
   const handler = async (request: Request) => {
-    const requestStart = +new Date();
+    const requestStart = Math.ceil(+new Date() / 100);
     const cacheBuster = isDev ? requestStart : serverStart;
     const { raw, transpile } = await assets(dir);
     const url = new URL(request.url);
