@@ -41,7 +41,7 @@ const transform = async (
         (o.init as CallExpression)!.arguments?.forEach(({ expression }) => {
           // @ts-ignore deno_swc doesn't have generics
           const expressionBody = expression.body;
-
+          // inline imports
           if (expressionBody?.callee?.value?.toLowerCase() === "import") {
             expressionBody?.arguments?.forEach(
               (b: {
@@ -63,6 +63,32 @@ const transform = async (
               },
             );
           }
+          // function imports
+          const statements = expressionBody.stmts || [];
+          // @ts-ignore add typings for swc argument
+          statements.forEach(({ argument }) => {
+            if (argument?.callee?.value?.toLowerCase() === "import") {
+              argument?.arguments?.forEach(
+                (b: {
+                  expression: {
+                    value: string;
+                  } & HasSpan;
+                }) => {
+                  const { value, span } = b?.expression;
+                  c += code.substring(offset - length, span.start - length);
+                  c += `"${
+                    value.replace(/\.(j|t)sx?/gi, () =>
+                      `.js${
+                        cacheBuster
+                          ? `?ts=${cacheBuster}`
+                          : ""
+                      }`)
+                  }"`;
+                  offset = span.end;
+                },
+              );
+            }
+          });
         })
       );
     }
