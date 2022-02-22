@@ -135,7 +135,7 @@ const server = async (
       }),
       {
         headers: {
-          "content-type": "text/html",
+          "content-type": "text/html; charset=utf-8",
           link,
         },
       },
