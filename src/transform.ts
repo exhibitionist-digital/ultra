@@ -64,7 +64,7 @@ const transform = async (
             );
           }
           // function imports
-          const statements = expressionBody.stmts || [];
+          const statements = expressionBody?.stmts || [];
           // @ts-ignore add typings for swc argument
           statements.forEach(({ argument }) => {
             if (argument?.callee?.value?.toLowerCase() === "import") {
