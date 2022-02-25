@@ -55,14 +55,14 @@ const build = async () => {
 
   // deps
   const depReq = await fetch(
-    "https://raw.githubusercontent.com/exhibitionist-digital/ultra/0.7.0/src/deno/deps.ts",
+    "https://deno.land/x/ultra@v0.7.5/src/deno/deps.ts",
   );
   const depText = await depReq.text();
   await Deno.writeTextFile(`./.ultra/deps.js`, depText);
 
   // assets
   const assetReq = await fetch(
-    "https://raw.githubusercontent.com/exhibitionist-digital/ultra/0.7.0/src/assets.ts",
+    "https://deno.land/x/ultra@v0.7.5/src/assets.ts",
   );
   const assetText = await assetReq.text();
   const assetTrans = await transform({
@@ -74,7 +74,7 @@ const build = async () => {
 
   // render
   const renderReq = await fetch(
-    "https://raw.githubusercontent.com/exhibitionist-digital/ultra/0.7.0/src/render.ts",
+    "https://deno.land/x/ultra@v0.7.5/src/render.ts",
   );
   const renderText = await renderReq.text();
   const renderTrans = await transform({
@@ -86,7 +86,7 @@ const build = async () => {
 
   // env
   const envReq = await fetch(
-    "https://raw.githubusercontent.com/exhibitionist-digital/ultra/0.7.0/src/env.ts",
+    "https://deno.land/x/ultra@v0.7.5/src/env.ts",
   );
   const envText = await envReq.text();
   const envTrans = await transform({
@@ -98,7 +98,7 @@ const build = async () => {
 
   // ultra
   const ultraReq = await fetch(
-    "https://raw.githubusercontent.com/exhibitionist-digital/ultra/0.7.0/src/deno/server.ts",
+    "https://deno.land/x/ultra@v0.7.5/src/deno/server.ts",
   );
   const ultraText = await ultraReq.text();
   const ultraTrans = await transform({
