@@ -117,10 +117,7 @@ const render = async (
         encodeStream(
           new ReadableStream({
             start(controller) {
-              const queue = (part: string | Uint8Array) => {
-                return Promise.resolve(controller.enqueue(part));
-              };
-              queue("")
+              Promise.resolve()
                 .then(() => pushBody(bodyReader, controller, chunkSize))
                 .then(() => controller.close());
             },
