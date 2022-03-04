@@ -5,7 +5,6 @@ import { BaseLocationHook, Router } from "wouter";
 import { HelmetProvider } from "react-helmet";
 import app from "app";
 import { isDev } from "./env.ts";
-
 import type { Navigate, RenderOptions } from "./types.ts";
 
 // FIXME: these react types are wrong now
@@ -153,7 +152,6 @@ export default render;
 
 const encodeStream = (readable: ReadableStream<string | Uint8Array>) =>
   new ReadableStream({
-    //@ts-ignore undefined
     start(controller) {
       return (async () => {
         const encoder = new TextEncoder();
@@ -168,7 +166,7 @@ const encodeStream = (readable: ReadableStream<string | Uint8Array>) =>
             } else if (read.value instanceof Uint8Array) {
               controller.enqueue(read.value);
             } else {
-              return null;
+              return undefined;
             }
           }
         } finally {
