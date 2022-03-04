@@ -34,6 +34,12 @@ It's driven by the following hot-takes:
 
 ---
 
+### next
+
+We are working towards the next milestone. [v0.8.0](https://github.com/exhibitionist-digital/ultra/milestone/1) 🗿
+
+---
+
 ### v0.7.0
 
 This is a near full rewrite of Ultra. It includes:
