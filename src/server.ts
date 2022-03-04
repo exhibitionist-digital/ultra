@@ -29,12 +29,25 @@ const server = async (
   const fileRootUri = `file://${Deno.cwd()}/${dir}`;
   const link = await ultraloader({ importmap, cache });
   const serverStart = Math.ceil(+new Date() / 100);
+  const listeners = new Set<WebSocket>();
 
   const handler = async (request: Request) => {
     const requestStart = Math.ceil(+new Date() / 100);
     const cacheBuster = isDev ? requestStart : serverStart;
     const { raw, transpile } = await assets(dir);
     const url = new URL(request.url);
+
+    // web socket listener
+    if (isDev) {
+      if (url.pathname == "/_ultra_socket") {
+        const { socket, response } = Deno.upgradeWebSocket(request);
+        listeners.add(socket);
+        socket.onclose = () => {
+          listeners.delete(socket);
+        };
+        return response;
+      }
+    }
 
     // static assets
     if (raw.has(`${dir}${url.pathname}`)) {
@@ -139,6 +152,19 @@ const server = async (
       },
     );
   };
+
+  // async file watcher to send socket messages
+  if (isDev) {
+    (async () => {
+      for await (const { kind } of Deno.watchFs(dir, { recursive: true })) {
+        if (kind === "modify") {
+          for (const socket of listeners) {
+            socket.send("reload");
+          }
+        }
+      }
+    })();
+  }
 
   console.log(`Ultra running ${root}`);
   //@ts-ignore any
