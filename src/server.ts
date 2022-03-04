@@ -130,8 +130,6 @@ const server = async (
         importmap,
         lang,
         cacheBuster,
-        // 0 to disable buffering which stops streaming
-        bufferSize: 0,
       }),
       {
         headers: {

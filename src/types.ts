@@ -30,14 +30,7 @@ export type RenderOptions = {
   importmap: Importmap;
   url: URL;
   lang: string;
-
-  // Number of bytes of the response to buffer before starting to stream. This
-  // allows 500 statuses to be raised, provided the error happens while the
-  // response is buffering, rather than streaming:
-  bufferSize?: number;
-
-  // Size of the chunk to emit to the connection as the response streams:
-  chunkSize?: number;
+  streaming?: boolean;
   cacheBuster?: number;
 };
 
