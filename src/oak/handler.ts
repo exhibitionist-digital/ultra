@@ -80,7 +80,6 @@ const server = (
     });
   };
 
-  // @ts-ignore fix request
   return handler(context.request);
 };
 

@@ -1,5 +1,4 @@
 import { TransformOptions as EsBuildTransformOptions } from "https://deno.land/x/esbuild@v0.12.24/mod.js";
-import { Context } from "https://deno.land/x/oak@v10.4.0/context.ts";
 
 export type Importmap = { imports: Record<string, unknown> };
 
@@ -11,6 +10,14 @@ export type StartOptions = {
   root?: string;
   dir?: string;
   env?: Record<string, unknown>;
+};
+
+type Context = {
+  request: Request;
+  response: {
+    body: string | ReadableStream<Uint8Array>;
+    type: string;
+  };
 };
 
 export type OakOptions = {
