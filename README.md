@@ -36,7 +36,8 @@ It's driven by the following hot-takes:
 
 ### next
 
-We are working towards the next milestone. [v0.8.0](https://github.com/exhibitionist-digital/ultra/milestone/1) 🗿
+We are working towards the next milestone.
+[v0.8.0](https://github.com/exhibitionist-digital/ultra/milestone/1) 🗿
 
 ---
 
