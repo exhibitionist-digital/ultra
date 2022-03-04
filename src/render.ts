@@ -243,13 +243,13 @@ const staticLocationHook = (
 };
 
 const socket = (root: string) => {
+  const url = new URL(root);
   return `
-  const _socket = new WebSocket("ws://${
-    root.replace("http://", "").replace("https://", "")
-  }/_ultra_socket");
-  _socket.addEventListener("message", (e) => {
-    if (e.data === "reload") {
-      location.reload();
-    }
-  });`;
+    const _ultra_socket = new WebSocket("ws://${url.host}/_ultra_socket");
+    _ultra_socket.addEventListener("message", (e) => {
+      if (e.data === "reload") {
+        location.reload();
+      }
+    });
+  `;
 };
