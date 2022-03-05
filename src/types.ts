@@ -12,6 +12,23 @@ export type StartOptions = {
   env?: Record<string, unknown>;
 };
 
+type Context = {
+  request: Request;
+  response: {
+    body: string | ReadableStream<Uint8Array>;
+    type: string;
+  };
+};
+
+export type OakOptions = {
+  importmap: Importmap;
+  lang?: string;
+  root?: string;
+  dir?: string;
+  env?: Record<string, unknown>;
+  context: Context;
+};
+
 export type TransformOptions = {
   source: string;
   importmap: Importmap;
