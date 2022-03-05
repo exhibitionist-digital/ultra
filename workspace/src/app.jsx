@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SWRConfig } from "swr";
 import { Helmet } from "react-helmet";
 import ultraCache from "ultra/cache";
@@ -12,6 +12,9 @@ const options = (cache) => ({
 });
 
 const Ultra = ({ cache }) => {
+  useEffect(() => {
+    console.log("mount");
+  }, []);
   return (
     <SWRConfig value={options(cache)}>
       <Helmet>

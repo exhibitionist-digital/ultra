@@ -1,23 +1,23 @@
-import { Buffer, concat, join } from "./deps.ts";
-import React, { ReactElement } from "react";
+import { concat, join } from "./deps.ts";
+import React from "react";
 import ReactDOM from "react-dom/server";
 import { BaseLocationHook, Router } from "wouter";
 import { HelmetProvider } from "react-helmet";
 import app from "app";
 import { isDev } from "./env.ts";
-
 import type { Navigate, RenderOptions } from "./types.ts";
 
+// FIXME: these react types are wrong now
 // renderToReadableStream not available yet in official types
-declare global {
-  namespace ReactDOMServer {
-    export const renderToReadableStream: (
-      element: ReactElement,
-    ) => ReadableStream<string | Uint8Array>;
-  }
-}
+// declare global {
+//   namespace ReactDOMServer {
+//     export const renderToReadableStream: (
+//       element: ReactElement,
+//     ) => ReadableStream<string | Uint8Array>;
+//   }
+// }
 
-const defaultBufferSize = 8 * 1024;
+// Size of the chunk to emit to the connection as the response streams:
 const defaultChunkSize = 8 * 1024;
 
 const render = async (
@@ -26,59 +26,83 @@ const render = async (
     root,
     importmap,
     lang = "en",
-    bufferSize: _bufferSize,
-    chunkSize: _chunkSize,
     cacheBuster,
+    streaming = true,
   }: RenderOptions,
 ) => {
-  const bufferSize = _bufferSize ?? defaultBufferSize;
-  const chunkSize = _chunkSize ?? defaultChunkSize;
+  const chunkSize = defaultChunkSize;
+  // in dev we can dynamically import that app component
+  // in prod we use the import at the top of this file
+  // this is so changes to app can be seen in real time in dev
   let importedApp;
   if (cacheBuster && isDev) {
     importedApp = await import(join(root, `app.js?ts=${cacheBuster}`));
   }
+
+  // kickstart caches for react-helmet and swr
   const helmetContext: { helmet: Record<string, number> } = { helmet: {} };
   const cache = new Map();
 
-  const body = ReactDOM.renderToReadableStream(
-    React.createElement(
-      Router,
-      { hook: staticLocationHook(url.pathname), children: null },
+  // this uses the new promisied react stream render available in rc.1
+  const controller = new AbortController();
+  let body;
+  try {
+    // @ts-ignore fix react stream types
+    body = await ReactDOM.renderToReadableStream(
       React.createElement(
-        HelmetProvider,
-        { context: helmetContext },
+        Router,
+        { hook: staticLocationHook(url.pathname), children: null },
         React.createElement(
-          importedApp?.default || app,
-          { cache },
-          null,
+          HelmetProvider,
+          { context: helmetContext },
+          React.createElement(
+            importedApp?.default || app,
+            { cache },
+            null,
+          ),
         ),
       ),
-    ),
-  );
+      // @ts-ignore fix react stream types
+      {
+        signal: controller.signal,
+      },
+    );
+  } catch (error) {
+    console.error(error);
+    body = "<h1>Ultra error</h1>";
+  }
 
-  const { helmet } = helmetContext;
+  // head builder
+  const renderHead = () => {
+    const { helmet } = helmetContext;
+    const head =
+      `<!DOCTYPE html><html lang="${lang}"><head>${
+        Object.keys(helmet)
+          .map((i) => helmet[i].toString())
+          .join("")
+      }<script type="module" defer>${
+        isDev && socket(root)
+      }import { createElement } from "${
+        importmap.imports["react"]
+      }";import { hydrateRoot } from "${
+        importmap.imports["react-dom"]
+      }";import { Router } from "${
+        importmap.imports["wouter"]
+      }";import { HelmetProvider } from "${
+        importmap.imports["react-helmet"]
+      }";import App from "/app.js";` +
+      `const root = hydrateRoot(document.getElementById("ultra"),` +
+      `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +
+      `</script></head><body><div id="ultra">`;
+    return head;
+  };
 
-  const head = `<!DOCTYPE html><html lang="${lang}"><head>${
-    Object.keys(helmet)
-      .map((i) => helmet[i].toString())
-      .join("")
-  }<script type="module" defer>import { createElement } from "${
-    importmap.imports["react"]
-  }";import { hydrateRoot } from "${
-    importmap.imports["react-dom"]
-  }";import { Router } from "${
-    importmap.imports["wouter"]
-  }";import { HelmetProvider } from "${
-    importmap.imports["react-helmet"]
-  }";import App from "/app.js";` +
-    `const root = hydrateRoot(document.getElementById("ultra"),` +
-    `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +
-    `</script></head><body><div id="ultra">`;
-
-  const tail = () =>
-    `</div></body><script>self.__ultra = ${
+  // tail builder
+  const renderTail = () => {
+    return `</div></body><script>self.__ultra = ${
       JSON.stringify(Array.from(cache.entries()))
     }</script></html>`;
+  };
 
   // body.getReader() can emit Uint8Arrays() or strings; our chunking expects
   // UTF-8 encoded Uint8Arrays at present, so this stream ensures everything
@@ -87,16 +111,24 @@ const render = async (
 
   const bodyReader = encodedStream.getReader();
 
-  // Buffer the first portion of the response before streaming; this allows
-  // us to respond with correct server codes if the component contains errors,
-  // but only if those errors occur within the buffered portion:
-  const buffer = new Buffer();
-  if (bufferSize && bufferSize > 0) {
-    while (buffer.length < bufferSize) {
-      const read = await bodyReader.read();
-      if (read.done) break;
-      buffer.writeSync(read.value);
-    }
+  // if streaming is disabled, here is a renderToString equiv
+  if (!streaming) {
+    const renderToString = async () => {
+      const html = await new Response(
+        encodeStream(
+          new ReadableStream({
+            start(controller) {
+              Promise.resolve()
+                .then(() => pushBody(bodyReader, controller, chunkSize))
+                .then(() => controller.close());
+            },
+          }),
+        ),
+      )
+        .text();
+      return (renderHead() + html + renderTail());
+    };
+    return await renderToString();
   }
 
   return encodeStream(
@@ -106,18 +138,9 @@ const render = async (
           return Promise.resolve(controller.enqueue(part));
         };
 
-        queue(head)
-          .then(() => queue(buffer.bytes({ copy: false })))
+        queue(renderHead())
           .then(() => pushBody(bodyReader, controller, chunkSize))
-          .catch(async (e) => {
-            console.error("readable stream error", e);
-
-            // Might be possible to push something to the client that renders
-            // an error if in 'dev mode' here, but the markup that precedes it
-            // could very well be broken:
-            await queue("Error");
-          })
-          .then(() => queue(tail()))
+          .then(() => queue(renderTail()))
           .then(() => controller.close());
       },
     }),
@@ -128,7 +151,6 @@ export default render;
 
 const encodeStream = (readable: ReadableStream<string | Uint8Array>) =>
   new ReadableStream({
-    //@ts-ignore undefined
     start(controller) {
       return (async () => {
         const encoder = new TextEncoder();
@@ -141,15 +163,9 @@ const encodeStream = (readable: ReadableStream<string | Uint8Array>) =>
             if (typeof read.value === "string") {
               controller.enqueue(encoder.encode(read.value));
             } else if (read.value instanceof Uint8Array) {
-              // wierd react 18 bug (hopefully this will be fixed)
-              const bug = new TextDecoder().decode(read.value);
-              const patch = bug.replace(
-                'hidden id="<div hidden id=',
-                "hidden id=",
-              );
-              controller.enqueue(encoder.encode(patch));
+              controller.enqueue(read.value);
             } else {
-              return null;
+              return undefined;
             }
           }
         } finally {
@@ -219,4 +235,16 @@ const staticLocationHook = (
   hook = () => [path, navigate];
   hook.history = [path];
   return hook;
+};
+
+const socket = (root: string) => {
+  const url = new URL(root);
+  return `
+    const _ultra_socket = new WebSocket("ws://${url.host}/_ultra_socket");
+    _ultra_socket.addEventListener("message", (e) => {
+      if (e.data === "reload") {
+        location.reload();
+      }
+    });
+  `;
 };

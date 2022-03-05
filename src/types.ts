@@ -12,6 +12,23 @@ export type StartOptions = {
   env?: Record<string, unknown>;
 };
 
+type Context = {
+  request: Request;
+  response: {
+    body: string | ReadableStream<Uint8Array>;
+    type: string;
+  };
+};
+
+export type OakOptions = {
+  importmap: Importmap;
+  lang?: string;
+  root?: string;
+  dir?: string;
+  env?: Record<string, unknown>;
+  context: Context;
+};
+
 export type TransformOptions = {
   source: string;
   importmap: Importmap;
@@ -30,14 +47,7 @@ export type RenderOptions = {
   importmap: Importmap;
   url: URL;
   lang: string;
-
-  // Number of bytes of the response to buffer before starting to stream. This
-  // allows 500 statuses to be raised, provided the error happens while the
-  // response is buffering, rather than streaming:
-  bufferSize?: number;
-
-  // Size of the chunk to emit to the connection as the response streams:
-  chunkSize?: number;
+  streaming?: boolean;
   cacheBuster?: number;
 };
 
