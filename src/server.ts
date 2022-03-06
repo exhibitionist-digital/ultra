@@ -56,24 +56,6 @@ const server = async (
         "content-type": contentType,
       };
 
-      if (contentType === "application/javascript") {
-        const link = await preloader(
-          `${fileRootUri}${url.pathname}`,
-          (specifier: string) => {
-            const path = specifier.replace(fileRootUri, "");
-            if (path !== url.pathname) {
-              return `${url.origin}${path}`;
-            }
-          },
-          cache,
-        );
-
-        if (link) {
-          //@ts-ignore any
-          headers.link = link;
-        }
-      }
-
       const file = await Deno.open(`./${dir}${url.pathname}`);
       const body = readableStreamFromReader(file);
 
