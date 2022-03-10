@@ -46,7 +46,6 @@ const deploy = async (
         root,
         importmap,
         lang,
-        bufferSize: 0,
       }),
       {
         headers: {
