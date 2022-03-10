@@ -1,22 +1,15 @@
-import {
-  createCache,
-  extname,
-  LRU,
-  readableStreamFromReader,
-  serve,
-} from "./deps.ts";
+import { LRU, readableStreamFromReader, serve } from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
-import preloader, { ultraloader } from "./preloader.ts";
-import { jsify, jsxify, tsxify } from "./resolver.ts";
+import { jsxify, tsxify } from "./resolver.ts";
 import { isDev, port } from "./env.ts";
 
 import { StartOptions } from "./types.ts";
 
 const memory = new LRU(500);
 
-const server = async (
+const server = (
   {
     importmap,
     dir = "src",
@@ -25,9 +18,6 @@ const server = async (
     env,
   }: StartOptions,
 ) => {
-  const cache = createCache();
-  const fileRootUri = `file://${Deno.cwd()}/${dir}`;
-  const link = await ultraloader({ importmap, cache });
   const serverStart = Math.ceil(+new Date() / 100);
   const listeners = new Set<WebSocket>();
 
@@ -84,24 +74,6 @@ const server = async (
         if (!isDev) memory.set(url.pathname, js);
       }
 
-      const link = await preloader(
-        `${fileRootUri}${file.replace(dir, "")}`,
-        (specifier: string) => {
-          if (specifier.indexOf("http") == 0) return;
-          const path = jsify(specifier.replace(fileRootUri, ""));
-          if (extname(path) == ".ts") return;
-          if (path !== url.pathname) {
-            return `${url.origin}${path}?ts=${cacheBuster}`;
-          }
-        },
-        cache,
-      );
-
-      if (link) {
-        //@ts-ignore any
-        headers.link = link;
-      }
-
       //@ts-ignore any
       return new Response(js, { headers });
     };
@@ -129,7 +101,6 @@ const server = async (
       {
         headers: {
           "content-type": "text/html; charset=utf-8",
-          link,
         },
       },
     );
