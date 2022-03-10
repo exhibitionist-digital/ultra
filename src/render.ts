@@ -80,9 +80,7 @@ const render = async (
         Object.keys(helmet)
           .map((i) => helmet[i].toString())
           .join("")
-      }<script type="module" defer>${
-        isDev && socket(root)
-      }import { createElement } from "${
+      }<script type="module" defer>import { createElement } from "${
         importmap.imports["react"]
       }";import { hydrateRoot } from "${
         importmap.imports["react-dom"]
@@ -235,16 +233,4 @@ const staticLocationHook = (
   hook = () => [path, navigate];
   hook.history = [path];
   return hook;
-};
-
-const socket = (root: string) => {
-  const url = new URL(root);
-  return `
-    const _ultra_socket = new WebSocket("ws://${url.host}/_ultra_socket");
-    _ultra_socket.addEventListener("message", (e) => {
-      if (e.data === "reload") {
-        location.reload();
-      }
-    });
-  `;
 };
