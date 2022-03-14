@@ -65,6 +65,37 @@ const server = (
       return new Response(js, { headers });
     };
 
+    // API
+    type APIHandler = (request: Request) => Response
+    const getImportPathname = (pathname: string): string => {
+      return `${Deno.cwd()}/src/${pathname}`;
+    };
+    const stripSlashes = (pathname: string): string => {
+      let output = pathname;
+      if (output.startsWith('/')) {
+        output = output.slice(1);
+      }
+      if (output.endsWith('/')) {
+        output = output.slice(0, -1);
+      }
+      return output
+    }
+    if (url.pathname.startsWith('/api')) {
+      const pathname = stripSlashes(url.pathname);
+      let apiHandler: { default: APIHandler }
+      try {
+        apiHandler = await import(getImportPathname(`${pathname}.ts`));
+        return apiHandler.default(request)
+      } catch (_error) {
+        try {
+          apiHandler = await import(getImportPathname(`${pathname}/index.ts`));
+          return apiHandler.default(request)
+        } catch(_error) {
+          return new Response(`Not found`, { status: 404 });
+        }
+      }
+    }
+
     // jsx
     const jsx = `${dir}${jsxify(url.pathname)}`;
     if (transpile.has(jsx)) {
