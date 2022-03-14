@@ -69,19 +69,18 @@ const server = (
     if (url.pathname.startsWith("/api")) {
       type APIHandler = (request: Request) => Response;
       const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
-        const apiHandler: { default: APIHandler } = await import(
-          `${Deno.cwd()}/src${pathname}.ts`
-        );
+        const path = `${Deno.cwd()}/src${pathname}.ts`;
+        const apiHandler: { default: APIHandler } = await import(path);
         return apiHandler.default;
       };
       const pathname = url.pathname.endsWith("/")
         ? url.pathname.slice(0, -1)
         : url.pathname;
       try {
-        (await importAPIRoute(pathname))(request);
+        return (await importAPIRoute(pathname))(request);
       } catch (_error) {
         try {
-          (await importAPIRoute(`${pathname}/index`))(request);
+          return (await importAPIRoute(`${pathname}/index`))(request);
         } catch (_error) {
           return new Response(`Not found`, { status: 404 });
         }
