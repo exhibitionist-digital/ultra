@@ -74,13 +74,10 @@ const server = (
       return apiHandler.default;
     };
     if (url.pathname.startsWith("/api")) {
-      let pathname = url.pathname;
-      if (pathname.startsWith("/")) {
-        pathname = pathname.slice(1);
-      }
-      if (pathname.endsWith("/")) {
-        pathname = pathname.slice(0, -1);
-      }
+      let pathname = url.pathname.startsWith("/")
+        ? url.pathname.slice(1)
+        : url.pathname;
+      pathname = pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
       try {
         (await importAPIRoute(pathname))(request);
       } catch (_error) {
