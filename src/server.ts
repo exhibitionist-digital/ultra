@@ -66,18 +66,17 @@ const server = (
     };
 
     // API
-    type APIHandler = (request: Request) => Response;
-    const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
-      const apiHandler: { default: APIHandler } = await import(
-        `${Deno.cwd()}/src/${pathname}.ts`
-      );
-      return apiHandler.default;
-    };
     if (url.pathname.startsWith("/api")) {
-      let pathname = url.pathname.startsWith("/")
-        ? url.pathname.slice(1)
+      type APIHandler = (request: Request) => Response;
+      const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
+        const apiHandler: { default: APIHandler } = await import(
+          `${Deno.cwd()}/src${pathname}.ts`
+        );
+        return apiHandler.default;
+      };
+      const pathname = url.pathname.endsWith("/")
+        ? url.pathname.slice(0, -1)
         : url.pathname;
-      pathname = pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
       try {
         (await importAPIRoute(pathname))(request);
       } catch (_error) {
