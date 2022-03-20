@@ -66,35 +66,22 @@ const server = (
     };
 
     // API
-    console.log("cwd", Deno.cwd());
-    console.log("Request url.pathname", url.pathname);
     if (url.pathname.startsWith("/api")) {
-      console.log("url.pathname starts with /api");
       type APIHandler = (request: Request) => Response;
       const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
-        console.log("importAPIRoute", pathname);
         const path = `file://${Deno.cwd()}/${dir}${pathname}.ts`;
-        console.log("importAPIRoute:path", path);
         const apiHandler: { default: APIHandler } = await import(path);
-        console.log("importAPIRoute:apiHandler", apiHandler);
         return apiHandler.default;
       };
       const pathname = url.pathname.endsWith("/")
         ? url.pathname.slice(0, -1)
         : url.pathname;
       try {
-        console.log("first");
-        const handler = await importAPIRoute(pathname);
-        console.log("first:handler", handler);
-        handler(request);
+        return (await importAPIRoute(pathname))(request);
       } catch (_error) {
         try {
-          console.log("second", _error);
-          const handler = await importAPIRoute(`${pathname}/index`);
-          console.log("second:handler", handler);
-          return handler(request);
+          return (await importAPIRoute(`${pathname}/index`))(request);
         } catch (_error) {
-          console.log("third", _error);
           return new Response(`Not found`, { status: 404 });
         }
       }
