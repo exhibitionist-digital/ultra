@@ -82,11 +82,18 @@ const server = (
         ? url.pathname.slice(0, -1)
         : url.pathname;
       try {
-        return (await importAPIRoute(pathname))(request);
+        console.log("first");
+        const handler = await importAPIRoute(pathname);
+        console.log("first:handler", handler);
+        handler(request);
       } catch (_error) {
         try {
-          return (await importAPIRoute(`${pathname}/index`))(request);
+          console.log("second", _error);
+          const handler = await importAPIRoute(`${pathname}/index`);
+          console.log("second:handler", handler);
+          return handler(request);
         } catch (_error) {
+          console.log("third", _error);
           return new Response(`Not found`, { status: 404 });
         }
       }
