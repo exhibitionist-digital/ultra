@@ -73,7 +73,7 @@ const server = (
       type APIHandler = (request: Request) => Response;
       const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
         console.log("importAPIRoute", pathname);
-        const path = `${Deno.cwd()}/${dir}${pathname}.ts`;
+        const path = `file://${Deno.cwd()}/${dir}${pathname}.ts`;
         console.log("importAPIRoute:path", path);
         const apiHandler: { default: APIHandler } = await import(path);
         console.log("importAPIRoute:apiHandler", apiHandler);
