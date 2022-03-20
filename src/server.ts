@@ -66,6 +66,7 @@ const server = (
     };
 
     // API
+    console.log("cwd", Deno.cwd());
     console.log("Request url.pathname", url.pathname);
     if (url.pathname.startsWith("/api")) {
       console.log("url.pathname starts with /api");
