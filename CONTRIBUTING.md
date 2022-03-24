@@ -1,4 +1,6 @@
-The easiest way to work on Ultra is to clone this repo and navigate to the `/workspace` directory. This is simple setup of an Ultra project, and imports Ultra from a relative URL.
+The easiest way to work on Ultra is to clone this repo and navigate to the
+`/workspace` directory. This is simple setup of an Ultra project, and imports
+Ultra from a relative URL.
 
 - `cd workspace`
 - `deno task dev`
