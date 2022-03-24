@@ -78,6 +78,28 @@ const server = (
       return new Response(js, { headers });
     };
 
+    // API
+    if (url.pathname.startsWith("/api")) {
+      type APIHandler = (request: Request) => Response;
+      const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
+        const path = `file://${Deno.cwd()}/${dir}${pathname}.ts`;
+        const apiHandler: { default: APIHandler } = await import(path);
+        return apiHandler.default;
+      };
+      const pathname = url.pathname.endsWith("/")
+        ? url.pathname.slice(0, -1)
+        : url.pathname;
+      try {
+        return (await importAPIRoute(pathname))(request);
+      } catch (_error) {
+        try {
+          return (await importAPIRoute(`${pathname}/index`))(request);
+        } catch (_error) {
+          return new Response(`Not found`, { status: 404 });
+        }
+      }
+    }
+
     // jsx
     const jsx = `${dir}${jsxify(url.pathname)}`;
     if (transpile.has(jsx)) {
