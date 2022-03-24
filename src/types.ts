@@ -56,3 +56,5 @@ export type Cache = Map<unknown, unknown>;
 export type VercelStart = {
   request: Request;
 };
+
+export type APIHandler = (request: Request) => Response;

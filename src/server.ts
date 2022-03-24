@@ -5,7 +5,7 @@ import render from "./render.ts";
 import { jsxify, tsxify } from "./resolver.ts";
 import { isDev, port } from "./env.ts";
 
-import { StartOptions } from "./types.ts";
+import { APIHandler, StartOptions } from "./types.ts";
 
 const memory = new LRU(500);
 
@@ -80,9 +80,12 @@ const server = (
 
     // API
     if (url.pathname.startsWith("/api")) {
-      type APIHandler = (request: Request) => Response;
       const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
-        const path = `file://${Deno.cwd()}/${dir}${pathname}.ts`;
+        let path = `${dir}${pathname}`;
+        const js = `${path + ".js"}`;
+        const ts = `${path + ".ts"}`;
+        if (raw.has(js)) path = `file://${Deno.cwd()}/${js}`;
+        else if (raw.has(ts)) path = `file://${Deno.cwd()}/${ts}`;
         const apiHandler: { default: APIHandler } = await import(path);
         return apiHandler.default;
       };
