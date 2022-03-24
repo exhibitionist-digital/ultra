@@ -78,6 +78,12 @@ in for the future of Ultra:
 
 **Thank you for going on this journey with us.**
 
+---
+
+### Community
+
+We now have a [Discord](https://discord.gg/gNDRMv8p)
+
 [docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&color=B06892&
 [docs]: https://ultrajs.dev/docs&
 [actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?color=000000&logo=github&label=
