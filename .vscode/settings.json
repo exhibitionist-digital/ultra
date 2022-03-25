@@ -1,6 +1,6 @@
 {
   "deno.enable": true,
-  "deno.importMap": "./workspace/importmap.json",
+  "deno.importMap": "./workspace/importMap.json",
   "deno.lint": true,
   "editor.defaultFormatter": "denoland.vscode-deno",
   "prettier.enable": false

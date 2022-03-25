@@ -7,7 +7,7 @@ import { StartOptions } from "../types.ts";
 const transpiled = ".ultra";
 
 const deploy = async (
-  { importmap, dir = "src", root = "http://localhost:8000", lang = "en" }:
+  { importMap, dir = "src", root = "http://localhost:8000", lang = "en" }:
     StartOptions,
 ) => {
   const { raw } = await assets(dir);
@@ -44,7 +44,7 @@ const deploy = async (
       await render({
         url,
         root,
-        importmap,
+        importMap,
         lang,
       }),
       {

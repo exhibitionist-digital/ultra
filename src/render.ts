@@ -24,7 +24,7 @@ const render = async (
   {
     url,
     root,
-    importmap,
+    importMap,
     lang = "en",
     cacheBuster,
     streaming = true,
@@ -83,13 +83,13 @@ const render = async (
       }<script type="module" defer>${
         isDev && socket(root)
       }import { createElement } from "${
-        importmap.imports["react"]
+        importMap.imports["react"]
       }";import { hydrateRoot } from "${
-        importmap.imports["react-dom"]
+        importMap.imports["react-dom"]
       }";import { Router } from "${
-        importmap.imports["wouter"]
+        importMap.imports["wouter"]
       }";import { HelmetProvider } from "${
-        importmap.imports["react-helmet"]
+        importMap.imports["react-helmet"]
       }";import App from "/app.js";` +
       `const root = hydrateRoot(document.getElementById("ultra"),` +
       `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +

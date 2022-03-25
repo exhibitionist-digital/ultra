@@ -10,7 +10,7 @@ let offset = 0;
 let length = 0;
 
 const transform = async (
-  { source, importmap, loader = "tsx", cacheBuster, env }: TransformOptions,
+  { source, importMap, loader = "tsx", cacheBuster, env }: TransformOptions,
 ) => {
   const { code } = await esbuild.transform(source, {
     loader,
@@ -28,7 +28,7 @@ const transform = async (
       const { value, span } = i.source;
       c += code.substring(offset - length, span.start - length);
       c += `"${
-        importmap?.imports?.[value] ||
+        importMap?.imports?.[value] ||
         value.replace(
           /\.(j|t)sx?/gi,
           () => `.js${cacheBuster ? `?ts=${cacheBuster}` : ""}`,
