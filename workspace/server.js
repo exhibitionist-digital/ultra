@@ -1,6 +1,6 @@
 import ultra from "../mod.ts";
-import importmap from "./importmap.json" assert { type: "json" };
+import importMap from "./importMap.json" assert { type: "json" };
 
 await ultra({
-  importmap,
+  importMap,
 });

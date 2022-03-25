@@ -11,7 +11,7 @@ const memory = new LRU(500);
 
 const server = (
   {
-    importmap,
+    importMap,
     dir = "src",
     root = "http://localhost:8000",
     lang = "en",
@@ -43,7 +43,7 @@ const server = (
         const t0 = performance.now();
         js = await transform({
           source,
-          importmap,
+          importMap,
           root,
           cacheBuster,
           env,
@@ -74,7 +74,7 @@ const server = (
     context.response.body = await render({
       url,
       root,
-      importmap,
+      importMap,
       lang,
       cacheBuster,
     });

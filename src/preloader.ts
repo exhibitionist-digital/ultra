@@ -25,14 +25,14 @@ const preloader = async (path, map, cache) => {
   return attributes.join(", ");
 };
 
-export const ultraloader = async ({ importmap, cache }) => {
+export const ultraloader = async ({ importMap, cache }) => {
   const link = await preloader([
-    importmap.imports["react"],
-    importmap.imports["react-dom"],
-    importmap.imports["wouter"],
-    importmap.imports["swr"],
-    importmap.imports["react-helmet"],
-    importmap.imports["ultra/cache"],
+    importMap.imports["react"],
+    importMap.imports["react-dom"],
+    importMap.imports["wouter"],
+    importMap.imports["swr"],
+    importMap.imports["react-helmet"],
+    importMap.imports["ultra/cache"],
   ], (specifier) => {
     if (extname(specifier) === ".js") {
       return specifier;
