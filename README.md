@@ -57,9 +57,9 @@ Lots of changes in v0.8.0!
 - Removal of `makefile` in favour of
   [deno task](https://deno.com/blog/v1.20#new-subcommand-deno-task)
 - Websocket refresh in dev mode. Ultra will restart on local changes.
-- Fully support for
+- Full support for
   [react@rc](https://github.com/reactjs/rfcs/blob/react-18/text/0000-react-18.md):
-  There were some updates to how streams are handled in the latest `rc`.
+  There were some updates to how [streams are handled](https://github.com/reactwg/react-18/discussions/122) in the latest `rc`.
 - Tighter integration with
   [Deno config file](https://deno.land/manual/getting_started/configuration_file).
   Specifiying your `importMap` in `deno.json` is **required**
