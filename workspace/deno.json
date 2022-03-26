@@ -5,7 +5,7 @@
     "cache": "deno cache --reload --no-check server.js",
     "vendor": "importMap=importMap.json deno run -A --unstable ../src/vendor.ts"
   },
-  "importMap": "vendorMap.json",
+  "importMap": "importMap.json",
   "lint": {
     "files": {
       "exclude": [".ultra/"]
