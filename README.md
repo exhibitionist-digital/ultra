@@ -59,12 +59,20 @@ Heaps of updates in v0.8.0!
 - Websocket refresh in dev mode. Ultra will restart on local changes.
 - Full support for
   [react@rc](https://github.com/reactjs/rfcs/blob/react-18/text/0000-react-18.md):
-  There were some updates to how [streams are handled](https://github.com/reactwg/react-18/discussions/122) in the latest `rc`.
+  There were some updates to how
+  [streams are handled](https://github.com/reactwg/react-18/discussions/122) in
+  the latest `rc`.
 - Tighter integration with
   [Deno config file](https://deno.land/manual/getting_started/configuration_file).
   Specifiying your `importMap` in `deno.json` is **required**
+- Option to **disable streaming** 😱. Passing `disableStreaming: true` will force
+  Ultra to use it's custom `renderToString` equivalent - returning a **fully
+  resolved, suspense compatible**, html page!
+- **Legacy**: We also export an [Oak](https://deno.land/x/oak) compatible
+  `ultraHandler` for support inside of an pre-existing Oak project
 
-Because of these new features. Please ensure you are using at least Deno v1.20.3
+Because of these new features. Please ensure you are using at least Deno
+`v1.20.3`
 
 ---
 
