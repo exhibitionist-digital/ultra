@@ -12,12 +12,13 @@ type Context = {
   };
 };
 
+export type StartOptions = {
+  disableStreaming?: boolean;
+  env?: Record<string, string>;
+};
+
 export type OakOptions = {
-  importMap: ImportMap;
-  lang?: string;
-  root?: string;
-  dir?: string;
-  env?: Record<string, unknown>;
+  env?: Record<string, string>;
   context: Context;
 };
 
@@ -39,7 +40,7 @@ export type RenderOptions = {
   importMap: ImportMap;
   url: URL;
   lang: string;
-  streaming?: boolean;
+  disableStreaming?: boolean;
 };
 
 export type Cache = Map<unknown, unknown>;

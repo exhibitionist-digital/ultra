@@ -76,7 +76,6 @@ const server = (
       root,
       importMap,
       lang,
-      cacheBuster,
     });
   };
 

@@ -2,10 +2,10 @@ import { LRU, readableStreamFromReader, serve } from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
-import { jsxify, tsxify } from "./resolver.ts";
+import { jsxify, tsify, tsxify } from "./resolver.ts";
 import { isDev, port } from "./env.ts";
 
-import { APIHandler } from "./types.ts";
+import { APIHandler, StartOptions } from "./types.ts";
 
 const memory = new LRU(500);
 
@@ -18,9 +18,11 @@ const lang = Deno.env.get("lang") || "en";
 const config = JSON.parse(Deno.readTextFileSync(configPath));
 const importMap = JSON.parse(Deno.readTextFileSync(config?.importMap));
 
-const server = () => {
+const server = (options: StartOptions) => {
   const serverStart = Math.ceil(+new Date() / 100);
   const listeners = new Set<WebSocket>();
+  if (!options) options = {};
+  const { disableStreaming } = options;
 
   const handler = async (request: Request) => {
     const requestStart = Math.ceil(+new Date() / 100);
@@ -132,12 +134,19 @@ const server = () => {
       return await transpilation(tsx);
     }
 
+    // ts
+    const ts = `${sourceDirectory}${tsify(url.pathname)}`;
+    if (transpile.has(ts)) {
+      return await transpilation(ts);
+    }
+
     return new Response(
       await render({
         url,
         root,
         importMap,
         lang,
+        disableStreaming,
       }),
       {
         headers: {

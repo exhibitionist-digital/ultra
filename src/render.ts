@@ -26,7 +26,7 @@ const render = async (
     root,
     importMap,
     lang = "en",
-    streaming = true,
+    disableStreaming = false,
   }: RenderOptions,
 ) => {
   const chunkSize = defaultChunkSize;
@@ -110,7 +110,7 @@ const render = async (
   const bodyReader = encodedStream.getReader();
 
   // if streaming is disabled, here is a renderToString equiv
-  if (!streaming) {
+  if (disableStreaming) {
     const renderToString = async () => {
       const html = await new Response(
         encodeStream(
