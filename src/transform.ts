@@ -11,7 +11,7 @@ let offset = 0;
 let length = 0;
 
 const transform = async (
-  { source, importMap, loader = "tsx", cacheBuster, env }: TransformOptions,
+  { source, importMap, loader = "tsx", cacheBuster }: TransformOptions,
 ) => {
   const { code } = await esbuild.transform(source, {
     loader,
