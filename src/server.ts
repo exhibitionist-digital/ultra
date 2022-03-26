@@ -85,7 +85,9 @@ const server = () => {
           cacheBuster,
         });
         const t1 = performance.now();
-        console.log(`Transpile ${file.replace(source, "")} in ${t1 - t0}ms`);
+        console.log(
+          `Transpile ${file.replace(source, "")} in ${(t1 - t0).toFixed(2)}ms`,
+        );
         if (!isDev) memory.set(url.pathname, js);
       }
 
