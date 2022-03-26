@@ -34,7 +34,7 @@ It's driven by the following hot-takes:
 
 ---
 
-### Community
+### 👯 Community
 
 We now have a [Discord](https://discord.gg/gNDRMv8p). Come say HI.
 
@@ -47,7 +47,7 @@ We are working towards the next milestone.
 
 ---
 
-### v0.8.0
+### 🚧 v0.8.0
 
 Lots of changes in v0.8.0!
 
