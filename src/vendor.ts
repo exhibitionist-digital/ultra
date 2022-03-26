@@ -1,5 +1,3 @@
-// @ts-nocheck todo: add types
-
 import { createGraph, emptyDir, ensureDir } from "./deps.ts";
 import { vendor as vendorTransform } from "./transform.ts";
 import { hashFile, isValidURL } from "./resolver.ts";
@@ -13,7 +11,7 @@ const vendor = async () => {
   const directory = `.ultra/${vendorDirectory}`;
   await ensureDir(directory);
   await emptyDir(directory);
-  const vendorMap = {};
+  const vendorMap: Record<string, string> = {};
   for (const key of Object.keys(importMap?.imports)) {
     if (!isValidURL(importMap?.imports[key])) {
       vendorMap[key] = importMap?.imports[key];
