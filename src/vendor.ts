@@ -11,17 +11,27 @@ const vendor = async () => {
   const directory = `.ultra/${vendorDirectory}`;
   await ensureDir(directory);
   await emptyDir(directory);
+
+  // create a new object for the vendor import map
   const vendorMap: Record<string, string> = {};
+
+  // for our original import map, loop through keys
   for (const key of Object.keys(importMap?.imports)) {
     if (!isValidURL(importMap?.imports[key])) {
       vendorMap[key] = importMap?.imports[key];
       continue;
     }
     const p = new URL(importMap?.imports[key]);
+    // these params force the 'browser' imports
+    // these will work in BOTH deno and browser
     p.searchParams.append("target", "es2021");
-    p.searchParams.append("no-check", 1);
-    const graph = await createGraph(p);
+    p.searchParams.append("no-check", "true");
+
+    // create graph call
+    const graph = await createGraph(p.toString());
     const { modules } = graph.toJSON();
+
+    // loop through specifiers
     for (const { specifier } of modules) {
       const path = specifier;
       if (path) {
@@ -30,13 +40,13 @@ const vendor = async () => {
         console.log(`Vendoring ${path}`);
         const file = await fetch(path);
         const text = await file.text();
-        const directory = `.ultra/${vendorDirectory}`;
-        await ensureDir(directory);
         const hash = hashFile(url.pathname);
-        const content = vendorTransform({ source: text, root: ".", url });
         await Deno.writeTextFile(
           `${directory}/${hash}.js`,
-          content,
+          vendorTransform({
+            source: text,
+            root: ".",
+          }),
         );
         vendorMap[key] = `./.ultra/${vendorDirectory}/${hash}.js`;
       }
