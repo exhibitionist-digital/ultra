@@ -49,7 +49,7 @@ We are working towards the next milestone.
 
 ### 🚧 v0.8.0
 
-Lots of changes in v0.8.0!
+Heaps of updates in v0.8.0!
 
 - Vendored dependencies! We have a script that can take your CDN deps and make
   them local. (LINK 2 DOCS)
