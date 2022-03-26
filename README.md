@@ -51,13 +51,13 @@ We are working towards the next milestone.
 
 Heaps of updates in v0.8.0!
 
-- Vendored dependencies! We have a script that can take your CDN deps and make
-  them local. (LINK 2 DOCS)
-- API routes! (Thanks @Industrial) (LINK 2 DOCS)
+- **Vendored dependencies!** We have a script that can take your CDN deps and
+  make them local. (LINK 2 DOCS)
+- **API routes!** (Thanks @Industrial) (LINK 2 DOCS)
 - Option to **disable streaming** 😱. Passing `disableStreaming: true` will force
   Ultra to use it's custom `renderToString` equivalent - returning a **fully
   resolved, suspense compatible**, html page!
-- Websocket refresh in dev mode. Ultra will restart on local changes.
+- **Websocket refresh** in dev mode. Ultra will restart on local changes.
 - Full support for
   [react@rc](https://github.com/reactjs/rfcs/blob/react-18/text/0000-react-18.md):
   There were some updates to how
