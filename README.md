@@ -54,8 +54,9 @@ Heaps of updates in v0.8.0!
 - Vendored dependencies! We have a script that can take your CDN deps and make
   them local. (LINK 2 DOCS)
 - API routes! (Thanks @Industrial) (LINK 2 DOCS)
-- Removal of `makefile` in favour of
-  [deno task](https://deno.com/blog/v1.20#new-subcommand-deno-task)
+- Option to **disable streaming** 😱. Passing `disableStreaming: true` will force
+  Ultra to use it's custom `renderToString` equivalent - returning a **fully
+  resolved, suspense compatible**, html page!
 - Websocket refresh in dev mode. Ultra will restart on local changes.
 - Full support for
   [react@rc](https://github.com/reactjs/rfcs/blob/react-18/text/0000-react-18.md):
@@ -65,9 +66,8 @@ Heaps of updates in v0.8.0!
 - Tighter integration with
   [Deno config file](https://deno.land/manual/getting_started/configuration_file).
   Specifiying your `importMap` in `deno.json` is **required**
-- Option to **disable streaming** 😱. Passing `disableStreaming: true` will force
-  Ultra to use it's custom `renderToString` equivalent - returning a **fully
-  resolved, suspense compatible**, html page!
+- Removal of `makefile` in favour of
+  [deno task](https://deno.com/blog/v1.20#new-subcommand-deno-task)
 - **Legacy**: We also export an [Oak](https://deno.land/x/oak) compatible
   `ultraHandler` for support inside of an pre-existing Oak project
 
