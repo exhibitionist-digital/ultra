@@ -2,6 +2,11 @@
   "deno.enable": true,
   "deno.importMap": "./workspace/importMap.json",
   "deno.lint": true,
+  "deno.suggest.imports.hosts": {
+    "https://deno.land": true,
+    "https://x.nest.land": true,
+    "https://crux.land": true
+  },
   "editor.defaultFormatter": "denoland.vscode-deno",
   "prettier.enable": false
 }
