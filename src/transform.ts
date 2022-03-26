@@ -5,6 +5,7 @@ import type {
   HasSpan,
 } from "https://deno.land/x/swc@0.1.4/types/options.ts";
 import { TransformOptions } from "./types.ts";
+import { hashFile } from "./resolver.ts";
 
 let offset = 0;
 let length = 0;
@@ -27,8 +28,9 @@ const transform = async (
     if (i.type == "ImportDeclaration") {
       const { value, span } = i.source;
       c += code.substring(offset - length, span.start - length);
+
       c += `"${
-        importMap?.imports?.[value] ||
+        importMap?.imports?.[value]?.replace("./.ultra", "") ||
         value.replace(
           /\.(j|t)sx?/gi,
           () => `.js${cacheBuster ? `?ts=${cacheBuster}` : ""}`,
@@ -98,13 +100,59 @@ const transform = async (
   offset = length;
 
   // slug replacer
-  Object.keys(env || {}).forEach((slug) => {
-    if (!slug) return;
-    // @ts-ignore any
-    c = c.replaceAll(slug, env[slug]);
-  });
+  // Object.keys(env || {}).forEach((slug) => {
+  //   if (!slug) return;
+  //   // @ts-ignore any
+  //   c = c.replaceAll(slug, env[slug]);
+  // });
 
   return c;
 };
 
 export default transform;
+
+const vendor = (
+  { source, root }: { source: string; root: string },
+) => {
+  root;
+  let c = "";
+  const code = source;
+  const ast = parse(code, {
+    syntax: "typescript",
+    tsx: true,
+    dynamicImport: true,
+  });
+  ast.body.forEach((i) => {
+    const prefix = "./";
+    if (i.type == "ExportAllDeclaration") {
+      const { value, span } = i.source;
+      c += code.substring(offset - length, span.start - length);
+      const url = new URL(value);
+      c += `"${prefix + hashFile(value.replace(url.origin, ""))}.js"`;
+      offset = span.end;
+    }
+    if (i.type == "ExportNamedDeclaration") {
+      if (!i.source) return;
+      const { value, span } = i.source;
+      c += code.substring(offset - length, span.start - length);
+      const url = new URL(value);
+
+      c += `"${prefix + hashFile(value.replace(url.origin, ""))}.js"`;
+      offset = span.end;
+    }
+    if (i.type == "ImportDeclaration") {
+      const { value, span } = i.source;
+      c += code.substring(offset - length, span.start - length);
+
+      c += `"${prefix + hashFile(value)}.js"`;
+      offset = span.end;
+    }
+  });
+  c += code.substring(offset - length, code.length + offset);
+  length += code.length + 1;
+  offset = length;
+
+  return c;
+};
+
+export { vendor };

@@ -1,4 +1,4 @@
-import { concat, join } from "./deps.ts";
+import { concat } from "./deps.ts";
 import React from "react";
 import ReactDOM from "react-dom/server";
 import { BaseLocationHook, Router } from "wouter";
@@ -26,18 +26,10 @@ const render = async (
     root,
     importMap,
     lang = "en",
-    cacheBuster,
     streaming = true,
   }: RenderOptions,
 ) => {
   const chunkSize = defaultChunkSize;
-  // in dev we can dynamically import that app component
-  // in prod we use the import at the top of this file
-  // this is so changes to app can be seen in real time in dev
-  let importedApp;
-  if (cacheBuster && isDev) {
-    importedApp = await import(join(root, `app.js?ts=${cacheBuster}`));
-  }
 
   // kickstart caches for react-helmet and swr
   const helmetContext: { helmet: Record<string, number> } = { helmet: {} };
@@ -56,7 +48,7 @@ const render = async (
           HelmetProvider,
           { context: helmetContext },
           React.createElement(
-            importedApp?.default || app,
+            app,
             { cache },
             null,
           ),
@@ -68,8 +60,14 @@ const render = async (
       },
     );
   } catch (error) {
-    console.error(error);
-    body = "<h1>Ultra error</h1>";
+    console.log({ error });
+    body = new ReadableStream({
+      start(controller) {
+        const chunk = new TextEncoder().encode(error);
+        controller.enqueue(chunk);
+        controller.close();
+      },
+    });
   }
 
   // head builder
@@ -83,13 +81,13 @@ const render = async (
       }<script type="module" defer>${
         isDev && socket(root)
       }import { createElement } from "${
-        importMap.imports["react"]
+        importMap.imports["react"]?.replace("./.ultra", "")
       }";import { hydrateRoot } from "${
-        importMap.imports["react-dom"]
+        importMap.imports["react-dom"]?.replace("./.ultra", "")
       }";import { Router } from "${
-        importMap.imports["wouter"]
+        importMap.imports["wouter"]?.replace("./.ultra", "")
       }";import { HelmetProvider } from "${
-        importMap.imports["react-helmet"]
+        importMap.imports["react-helmet"]?.replace("./.ultra", "")
       }";import App from "/app.js";` +
       `const root = hydrateRoot(document.getElementById("ultra"),` +
       `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +
