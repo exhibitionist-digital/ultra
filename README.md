@@ -10,7 +10,7 @@
 
 [![GitHub Workflow Status][actions-badge]][actions]
 [![deno module](https://shield.deno.dev/x/ultra)](https://deno.land/x/ultra)
-![deno compatibility](https://shield.deno.dev/deno/^1.18.2)
+![deno compatibility](https://shield.deno.dev/deno/^1.20.3)
 
 </div>
 
@@ -34,55 +34,56 @@ It's driven by the following hot-takes:
 
 ---
 
-### next
+### Community
+
+We now have a [Discord](https://discord.gg/gNDRMv8p). Come say HI.
+
+---
+
+### 🙌 next
 
 We are working towards the next milestone.
-[v0.8.0](https://github.com/exhibitionist-digital/ultra/milestone/1) 🗿
+[v1.0.0](https://github.com/exhibitionist-digital/ultra/milestone/2) 🗿
 
 ---
 
-### v0.7.0
+### v0.8.0
 
-This is a near full rewrite of Ultra. It includes:
+Lots of changes in v0.8.0!
 
-- Removal of Oak, in favour of `std/http` library. This makes it heaps easier to
-  deploy to multiple targets
-- Addition of `preloadmodule` `link` header attributes for core and application
-  level assets
-- Main `app` entry point added to `importMap`
-- Deno Deploy support via GitHub Actions
-- Fly/Docker support
-- [Example projects moved into their own repo](https://github.com/exhibitionist-digital/ultra-examples)
-  for easier hacking
+- Vendored dependencies! We have a script that can take your CDN deps and make
+  them local. (LINK 2 DOCS)
+- API routes! (Thanks @Industrial) (LINK 2 DOCS)
+- Removal of `makefile` in favour of
+  [deno task](https://deno.com/blog/v1.20#new-subcommand-deno-task)
+- Websocket refresh in dev mode. Ultra will restart on local changes.
+- Fully support for
+  [react@rc](https://github.com/reactjs/rfcs/blob/react-18/text/0000-react-18.md):
+  There were some updates to how streams are handled in the latest `rc`.
+- Tighter integration with
+  [Deno config file](https://deno.land/manual/getting_started/configuration_file).
+  Specifiying your `importMap` in `deno.json` is **required**
+
+Because of these new features. Please ensure you are using at least Deno v1.20.3
 
 ---
 
-### v1.0.0 Roadmap (+ Beyond)
+### ✨ Wishlist
 
 As we await the official release of React 18, here some things we are interested
-in for the future of Ultra:
+in for the future of JS and/or Ultra:
 
-- Deno [vendor](https://github.com/denoland/deno/issues/13346): Serve remote
-  packages locally
-- Vercel support
-- React 18 [ESM support](https://github.com/facebook/react/issues/11503)
-- Native import maps: Browser support for import maps is still a bit sketchy.
-  Instead of using import map polyfills, Ultra inlines your imports directly
-  into the served ES modules.
-- Simpler alternatives to [esm.sh](https://esm.sh)
+- Better
+  [Deno support in Vercel](https://github.com/vercel-community/deno/issues/95)
+- React 18 [native ESM exports](https://github.com/facebook/react/issues/11503)
+- [Native import maps](https://caniuse.com/import-maps): Browser support for
+  import maps is still a bit sketchy. Instead of using import map polyfills,
+  Ultra inlines your imports directly into the served ES modules.
 - [Dynamic import](https://github.com/denoland/deploy_feedback/issues/1) support
   on Deno Deploy
 - [Native CSS modules](https://css-tricks.com/css-modules-the-native-ones/)
-- A custom `request` context hook
-- Meaningful Puppeteer tests
 
 **Thank you for going on this journey with us.**
-
----
-
-### Community
-
-We now have a [Discord](https://discord.gg/gNDRMv8p)
 
 [docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&color=B06892&
 [docs]: https://ultrajs.dev/docs&
