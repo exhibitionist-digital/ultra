@@ -49,7 +49,8 @@ We are working towards the next milestone.
 
 ### 🚧 v0.8.0
 
-Heaps of updates in v0.8.0!
+Heaps of updates in v0.8.0! Because of these new features. Please ensure you are
+using at least Deno `v1.20.3`
 
 - **Vendored dependencies!** We have a script that can take your CDN deps and
   make them local. (LINK 2 DOCS)
@@ -70,9 +71,6 @@ Heaps of updates in v0.8.0!
   [deno task](https://deno.com/blog/v1.20#new-subcommand-deno-task)
 - **Legacy**: We also export an [Oak](https://deno.land/x/oak) compatible
   `ultraHandler` for support inside of an pre-existing Oak project
-
-Because of these new features. Please ensure you are using at least Deno
-`v1.20.3`
 
 ---
 
