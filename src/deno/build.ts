@@ -5,7 +5,7 @@ import { emptyDir, ensureDir } from "./deps.ts";
 import vendor from "../vendor.ts";
 import { port } from "../env.ts";
 
-const ultra = "http://172.20.10.6:8080";
+const ultra = "https://3511-2001-8004-5110-1990-1885-c8db-3d08-9c9f.ngrok.io";
 
 await ensureDir("./.ultra");
 await emptyDir("./.ultra");
