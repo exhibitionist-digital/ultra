@@ -2,7 +2,7 @@ import { createGraph, emptyDir, ensureDir } from "./deps.ts";
 import { vendor as vendorTransform } from "./transform.ts";
 import { hashFile, isValidURL } from "./resolver.ts";
 
-const vendorDirectory = Deno.env.get("dir") || "x";
+const vendorDirectory = Deno.env.get("vendor") || "x";
 const importMapPath = Deno.env.get("importMap") || "./importMap.json";
 const importMap = JSON.parse(await Deno.readTextFile(importMapPath));
 
@@ -53,7 +53,7 @@ const vendor = async () => {
     }
   }
 
-  Deno.writeTextFile(`vendorMap.json`, JSON.stringify({ imports: vendorMap }));
+  return { imports: vendorMap };
 };
 
-vendor();
+export default vendor;
