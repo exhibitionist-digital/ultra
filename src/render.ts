@@ -79,7 +79,7 @@ const render = async (
           .map((i) => helmet[i].toString())
           .join("")
       }<script type="module" defer>${
-        isDev && socket(root)
+        isDev ? socket(root) : ""
       }import { createElement } from "${
         importMap.imports["react"]?.replace("./.ultra", "")
       }";import { hydrateRoot } from "${
