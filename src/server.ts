@@ -12,7 +12,7 @@ const memory = new LRU(500);
 const sourceDirectory = Deno.env.get("source") || "src";
 const vendorDirectory = Deno.env.get("vendor") || "x";
 const configPath = Deno.env.get("config") || "./deno.json";
-const root = Deno.env.get("root") || "http://localhost:8000";
+const root = Deno.env.get("root") || `http://localhost:${port}`;
 const lang = Deno.env.get("lang") || "en";
 
 const config = JSON.parse(Deno.readTextFileSync(configPath));

@@ -5,6 +5,7 @@ import render from "./../render.ts";
 import { APIHandler } from "../types.ts";
 
 const sourceDirectory = Deno.env.get("source") || "src";
+const vendorDirectory = Deno.env.get("vendor") || "x";
 const root = Deno.env.get("root") || "http://localhost:8000";
 const lang = Deno.env.get("lang") || "en";
 
@@ -12,9 +13,24 @@ const importMap = JSON.parse(Deno.readTextFileSync("importMap.json"));
 
 const deploy = async () => {
   const { raw } = await assets(sourceDirectory);
+  const x = await assets(vendorDirectory);
 
   const handler = async (request: Request) => {
     const url = new URL(request.url);
+
+    // vendor
+    if (x.raw.has(`${url.pathname.substring(1)}`)) {
+      const headers = {
+        "content-type": "text/javascript",
+      };
+
+      const file = await Deno.open(
+        `./${url.pathname}`,
+      );
+      const body = readableStreamFromReader(file);
+
+      return new Response(body, { headers });
+    }
 
     // static files
     if (raw.has(`${sourceDirectory}${url.pathname}`)) {

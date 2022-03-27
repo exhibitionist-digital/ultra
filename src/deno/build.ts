@@ -2,7 +2,8 @@ import assets from "./../assets.ts";
 import transform from "./../transform.ts";
 import { jsify } from "../resolver.ts";
 import { emptyDir, ensureDir } from "./deps.ts";
-// import vendor from "../vendor.ts";
+import vendor from "../vendor.ts";
+import { port } from "../env.ts";
 
 const ultra = "http://172.20.10.6:8080";
 
@@ -10,21 +11,16 @@ await ensureDir("./.ultra");
 await emptyDir("./.ultra");
 
 const sourceDirectory = Deno.env.get("source") || "src";
-const configPath = Deno.env.get("config") || "deno.json";
-const root = Deno.env.get("root") || "http://localhost:8000";
-// const lang = Deno.env.get("lang") || "en";
-
-const config = JSON.parse(Deno.readTextFileSync(configPath));
-
-const importMap = JSON.parse(Deno.readTextFileSync(config?.importMap));
+const root = Deno.env.get("root") || `http://localhost:${port}`;
 
 const build = async () => {
-  Object.keys(importMap.imports)?.forEach((k) => {
+  const vendorMap = await vendor();
+  Object.keys(vendorMap.imports)?.forEach((k) => {
     // @ts-ignore any
-    const im: string = importMap.imports[k];
+    const im: string = vendorMap.imports[k];
     if (im.indexOf("http") < 0) {
       // @ts-ignore any
-      importMap.imports[k] = jsify(im);
+      vendorMap.imports[k] = jsify(im);
     }
   });
   const { raw, transpile } = await assets(sourceDirectory);
@@ -35,7 +31,6 @@ const build = async () => {
     const file = rawIterator.next().value;
     const source = await Deno.readTextFile(file);
 
-    console.log({ file, source });
     const directory = file.split("/");
     const name = directory.pop();
     await ensureDir(`./.ultra/${directory.join("/")}`);
@@ -47,9 +42,25 @@ const build = async () => {
   for (let i = 0; i < transpile.size; i++) {
     const file = iterator.next().value;
     const source = await Deno.readTextFile(file);
+
+    let prefix = "./";
+    for (let x = 0; x < file.split("/").length; x++) {
+      if (x != 0) prefix = prefix + "../";
+    }
+
+    const localMap = { imports: {} };
+    Object.keys(vendorMap.imports)?.forEach((k) => {
+      // @ts-ignore any
+      const im: string = vendorMap.imports[k];
+      if (im.indexOf("http") < 0) {
+        // @ts-ignore any
+        localMap.imports[k] = `${prefix}${im.replace("./.ultra/", "")}`;
+      }
+    });
+
     const js = await transform({
       source,
-      importMap,
+      importMap: localMap,
       root,
     });
 
@@ -65,13 +76,23 @@ const build = async () => {
 
   await Deno.writeTextFile(
     `./.ultra/importMap.json`,
-    JSON.stringify(importMap),
+    JSON.stringify(vendorMap),
   );
 
   // graph
   // const cache = createCache();
   // const ultraGraph = await ultraloader({ importMap, cache });
   // await Deno.writeTextFile(`./.ultra/graph.json`, JSON.stringify(ultraGraph));
+
+  const denoMap = { imports: {} };
+  Object.keys(vendorMap.imports)?.forEach((k) => {
+    // @ts-ignore any
+    const im: string = vendorMap.imports[k];
+    if (im.indexOf("http") < 0) {
+      // @ts-ignore any
+      denoMap.imports[k] = `./${im.replace("./.ultra/", "")}`;
+    }
+  });
 
   // deps
   const depReq = await fetch(
@@ -87,7 +108,7 @@ const build = async () => {
   const assetText = await assetReq.text();
   const assetTrans = await transform({
     source: assetText,
-    importMap,
+    importMap: denoMap,
     root,
   });
   await Deno.writeTextFile(`./.ultra/assets.js`, assetTrans);
@@ -100,7 +121,7 @@ const build = async () => {
 
   const renderTrans = await transform({
     source: renderText,
-    importMap,
+    importMap: denoMap,
     root,
   });
   await Deno.writeTextFile(`./.ultra/render.js`, renderTrans);
@@ -112,7 +133,7 @@ const build = async () => {
   const envText = await envReq.text();
   const envTrans = await transform({
     source: envText,
-    importMap,
+    importMap: denoMap,
     root,
   });
   await Deno.writeTextFile(`./.ultra/env.js`, envTrans);
@@ -124,7 +145,7 @@ const build = async () => {
   const ultraText = await ultraReq.text();
   const ultraTrans = await transform({
     source: ultraText,
-    importMap,
+    importMap: denoMap,
     root,
   });
   await ensureDir("./.ultra/deno/");
@@ -143,5 +164,3 @@ const build = async () => {
 };
 
 export default build;
-
-await build();
