@@ -101,24 +101,24 @@ const server = (options: StartOptions) => {
     if (url.pathname.startsWith("/api")) {
       const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
         let path = `${sourceDirectory}${pathname}`;
-        const js = `${path + ".js"}`;
-        const ts = `${path + ".ts"}`;
-        if (raw.has(js)) path = `file://${Deno.cwd()}/${js}`;
-        else if (raw.has(ts)) path = `file://${Deno.cwd()}/${ts}`;
-        const apiHandler: { default: APIHandler } = await import(path);
-        return apiHandler.default;
+        if (raw.has(`${path}.js`)) {
+          path = `file://${Deno.cwd()}/${path}.js`;
+        } else if (raw.has(`${path}.ts`)) {
+          path = `file://${Deno.cwd()}/${path}.ts`;
+        } else if (raw.has(`${path}/index.js`)) {
+          path = `file://${Deno.cwd()}/${path}/index.js`;
+        } else if (raw.has(`${path}/index.ts`)) {
+          path = `file://${Deno.cwd()}/${path}/index.ts`;
+        }
+        return (await import(path)).default;
       };
       const pathname = url.pathname.endsWith("/")
         ? url.pathname.slice(0, -1)
         : url.pathname;
       try {
-        return (await importAPIRoute(pathname))(request);
+        return await (await importAPIRoute(pathname))(request);
       } catch (_error) {
-        try {
-          return (await importAPIRoute(`${pathname}/index`))(request);
-        } catch (_error) {
-          return new Response(`Not found`, { status: 404 });
-        }
+        return new Response(`Not found`, { status: 404 });
       }
     }
 
