@@ -1,10 +1,11 @@
-import { extname, mime, walk } from "./deps.ts";
+import { ensureDir, extname, mime, walk } from "./deps.ts";
 
 const assets = async (dir: string) => {
   const meta = {
     raw: new Map(),
     transpile: new Map(),
   };
+  await ensureDir(dir);
 
   for await (const file of walk(`./${dir}`)) {
     if (file.isFile) {
@@ -15,11 +16,11 @@ const assets = async (dir: string) => {
         const transpile = (contentType == "text/jsx" ||
           contentType == "text/tsx");
         const isScript = transpile ||
-          contentType === "application/javascript";
+          contentType === "text/javascript";
 
         meta[transpile ? "transpile" : "raw"].set(
           file.path,
-          isScript ? "application/javascript" : contentType,
+          isScript ? "text/javascript" : contentType,
         );
       }
     }

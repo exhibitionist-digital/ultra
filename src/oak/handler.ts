@@ -2,19 +2,24 @@ import { LRU, readableStreamFromReader } from "../deps.ts";
 import assets from "../assets.ts";
 import transform from "../transform.ts";
 import render from "../render.ts";
-import { jsxify, tsxify } from "../resolver.ts";
+import { jsxify, tsify, tsxify } from "../resolver.ts";
 import { isDev } from "../env.ts";
 
 import { OakOptions } from "../types.ts";
 
 const memory = new LRU(500);
 
+const sourceDirectory = Deno.env.get("source") || "src";
+const vendorDirectory = Deno.env.get("vendor") || "x";
+const configPath = Deno.env.get("config") || "./deno.json";
+const root = Deno.env.get("root") || "http://localhost:8000";
+const lang = Deno.env.get("lang") || "en";
+
+const config = JSON.parse(Deno.readTextFileSync(configPath));
+const importMap = JSON.parse(Deno.readTextFileSync(config?.importMap));
+
 const server = (
   {
-    importMap,
-    dir = "src",
-    root = "http://localhost:8000",
-    lang = "en",
     env,
     context,
   }: OakOptions,
@@ -24,12 +29,23 @@ const server = (
   const handler = async (request: Request) => {
     const requestStart = Math.ceil(+new Date() / 100);
     const cacheBuster = isDev ? requestStart : serverStart;
-    const { raw, transpile } = await assets(dir);
+    const { raw, transpile } = await assets(sourceDirectory);
+    const x = await assets(`.ultra/${vendorDirectory}`);
     const url = new URL(request.url);
 
+    // vendor map
+    if (x.raw.has(`.ultra${url.pathname}`)) {
+      const file = await Deno.open(
+        `./.ultra${url.pathname}`,
+      );
+      const body = readableStreamFromReader(file);
+      context.response.body = body;
+      return;
+    }
+
     // static assets
-    if (raw.has(`${dir}${url.pathname}`)) {
-      const file = await Deno.open(`./${dir}${url.pathname}`);
+    if (raw.has(`${sourceDirectory}${url.pathname}`)) {
+      const file = await Deno.open(`./${sourceDirectory}${url.pathname}`);
       const body = readableStreamFromReader(file);
       context.response.body = body;
       return;
@@ -49,7 +65,9 @@ const server = (
           env,
         });
         const t1 = performance.now();
-        console.log(`Transpile ${file.replace(dir, "")} in ${t1 - t0}ms`);
+        console.log(
+          `Transpile ${file.replace(sourceDirectory, "")} in ${t1 - t0}ms`,
+        );
         if (!isDev) memory.set(url.pathname, js);
       }
       context.response.type = "text/javascript";
@@ -59,15 +77,21 @@ const server = (
     };
 
     // jsx
-    const jsx = `${dir}${jsxify(url.pathname)}`;
+    const jsx = `${sourceDirectory}${jsxify(url.pathname)}`;
     if (transpile.has(jsx)) {
       return await transpilation(jsx);
     }
 
     // tsx
-    const tsx = `${dir}${tsxify(url.pathname)}`;
+    const tsx = `${sourceDirectory}${tsxify(url.pathname)}`;
     if (transpile.has(tsx)) {
       return await transpilation(tsx);
+    }
+
+    // ts
+    const ts = `${sourceDirectory}${tsify(url.pathname)}`;
+    if (transpile.has(ts)) {
+      return await transpilation(ts);
     }
 
     context.response.type = "text/html";
@@ -76,7 +100,6 @@ const server = (
       root,
       importMap,
       lang,
-      cacheBuster,
     });
   };
 

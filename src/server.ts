@@ -2,29 +2,32 @@ import { LRU, readableStreamFromReader, serve } from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
-import { jsxify, tsxify } from "./resolver.ts";
+import { jsxify, tsify, tsxify } from "./resolver.ts";
 import { isDev, port } from "./env.ts";
 
-import { APIHandler, StartOptions } from "./types.ts";
+import { APIHandler } from "./types.ts";
 
 const memory = new LRU(500);
 
-const server = (
-  {
-    importMap,
-    dir = "src",
-    root = "http://localhost:8000",
-    lang = "en",
-    env,
-  }: StartOptions,
-) => {
+const sourceDirectory = Deno.env.get("source") || "src";
+const vendorDirectory = Deno.env.get("vendor") || "x";
+const configPath = Deno.env.get("config") || "./deno.json";
+const root = Deno.env.get("root") || `http://localhost:${port}`;
+const lang = Deno.env.get("lang") || "en";
+const disableStreaming = Deno.env.get("disableStreaming") || 0;
+
+const config = JSON.parse(Deno.readTextFileSync(configPath));
+const importMap = JSON.parse(Deno.readTextFileSync(config?.importMap));
+
+const server = () => {
   const serverStart = Math.ceil(+new Date() / 100);
   const listeners = new Set<WebSocket>();
 
   const handler = async (request: Request) => {
     const requestStart = Math.ceil(+new Date() / 100);
     const cacheBuster = isDev ? requestStart : serverStart;
-    const { raw, transpile } = await assets(dir);
+    const { raw, transpile } = await assets(sourceDirectory);
+    const x = await assets(`.ultra/${vendorDirectory}`);
     const url = new URL(request.url);
 
     // web socket listener
@@ -39,14 +42,30 @@ const server = (
       }
     }
 
+    // vendor map
+    if (x.raw.has(`.ultra${url.pathname}`)) {
+      const headers = {
+        "content-type": "text/javascript",
+        "cache-control":
+          "public, max-age=604800, stale-while-revalidate=86400, stale-if-error=259200",
+      };
+
+      const file = await Deno.open(
+        `./.ultra${url.pathname}`,
+      );
+      const body = readableStreamFromReader(file);
+
+      return new Response(body, { headers });
+    }
+
     // static assets
-    if (raw.has(`${dir}${url.pathname}`)) {
-      const contentType = raw.get(`${dir}${url.pathname}`);
+    if (raw.has(`${sourceDirectory}${url.pathname}`)) {
+      const contentType = raw.get(`${sourceDirectory}${url.pathname}`);
       const headers = {
         "content-type": contentType,
       };
 
-      const file = await Deno.open(`./${dir}${url.pathname}`);
+      const file = await Deno.open(`./${sourceDirectory}${url.pathname}`);
       const body = readableStreamFromReader(file);
 
       return new Response(body, { headers });
@@ -54,7 +73,7 @@ const server = (
 
     const transpilation = async (file: string) => {
       const headers = {
-        "content-type": "application/javascript",
+        "content-type": "text/javascript",
       };
 
       let js = memory.get(url.pathname);
@@ -67,10 +86,11 @@ const server = (
           importMap,
           root,
           cacheBuster,
-          env,
         });
         const t1 = performance.now();
-        console.log(`Transpile ${file.replace(dir, "")} in ${t1 - t0}ms`);
+        console.log(
+          `Transpile ${file.replace(source, "")} in ${(t1 - t0).toFixed(2)}ms`,
+        );
         if (!isDev) memory.set(url.pathname, js);
       }
 
@@ -81,38 +101,44 @@ const server = (
     // API
     if (url.pathname.startsWith("/api")) {
       const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
-        let path = `${dir}${pathname}`;
-        const js = `${path + ".js"}`;
-        const ts = `${path + ".ts"}`;
-        if (raw.has(js)) path = `file://${Deno.cwd()}/${js}`;
-        else if (raw.has(ts)) path = `file://${Deno.cwd()}/${ts}`;
-        const apiHandler: { default: APIHandler } = await import(path);
-        return apiHandler.default;
+        let path = `${sourceDirectory}${pathname}`;
+        if (raw.has(`${path}.js`)) {
+          path = `file://${Deno.cwd()}/${path}.js`;
+        } else if (raw.has(`${path}.ts`)) {
+          path = `file://${Deno.cwd()}/${path}.ts`;
+        } else if (raw.has(`${path}/index.js`)) {
+          path = `file://${Deno.cwd()}/${path}/index.js`;
+        } else if (raw.has(`${path}/index.ts`)) {
+          path = `file://${Deno.cwd()}/${path}/index.ts`;
+        }
+        return (await import(path)).default;
       };
       const pathname = url.pathname.endsWith("/")
         ? url.pathname.slice(0, -1)
         : url.pathname;
       try {
-        return (await importAPIRoute(pathname))(request);
+        return await (await importAPIRoute(pathname))(request);
       } catch (_error) {
-        try {
-          return (await importAPIRoute(`${pathname}/index`))(request);
-        } catch (_error) {
-          return new Response(`Not found`, { status: 404 });
-        }
+        return new Response(`Not found`, { status: 404 });
       }
     }
 
     // jsx
-    const jsx = `${dir}${jsxify(url.pathname)}`;
+    const jsx = `${sourceDirectory}${jsxify(url.pathname)}`;
     if (transpile.has(jsx)) {
       return await transpilation(jsx);
     }
 
     // tsx
-    const tsx = `${dir}${tsxify(url.pathname)}`;
+    const tsx = `${sourceDirectory}${tsxify(url.pathname)}`;
     if (transpile.has(tsx)) {
       return await transpilation(tsx);
+    }
+
+    // ts
+    const ts = `${sourceDirectory}${tsify(url.pathname)}`;
+    if (transpile.has(ts)) {
+      return await transpilation(ts);
     }
 
     return new Response(
@@ -121,7 +147,7 @@ const server = (
         root,
         importMap,
         lang,
-        cacheBuster,
+        disableStreaming: !!disableStreaming,
       }),
       {
         headers: {
@@ -134,8 +160,10 @@ const server = (
   // async file watcher to send socket messages
   if (isDev) {
     (async () => {
-      for await (const { kind } of Deno.watchFs(dir, { recursive: true })) {
-        if (kind === "modify") {
+      for await (
+        const { kind } of Deno.watchFs(sourceDirectory, { recursive: true })
+      ) {
+        if (kind === "modify" || kind === "create") {
           for (const socket of listeners) {
             socket.send("reload");
           }

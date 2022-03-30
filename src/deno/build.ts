@@ -1,109 +1,174 @@
-import { createCache } from "../deps.ts";
 import assets from "./../assets.ts";
 import transform from "./../transform.ts";
-import { ultraloader } from "./../preloader.ts";
 import { jsify } from "../resolver.ts";
-import { emptyDir, ensureDir } from "https://deno.land/std/fs/mod.ts";
+import { basename, emptyDir, ensureDir, extname } from "./deps.ts";
+import vendor from "../vendor.ts";
+import { port } from "../env.ts";
+
+const ultra = "https://deno.land/x/ultra";
+
+const sourceDirectory = Deno.env.get("source") || "src";
+const vendorDirectory = Deno.env.get("vendor") || "x";
+const apiDirectory = Deno.env.get("api") || "src/api";
+const root = Deno.env.get("root") || `http://localhost:${port}`;
 
 await emptyDir("./.ultra");
-
-const root = Deno.env.get("root") || "http://localhost:8000";
-const dir = Deno.env.get("dir") || "src";
-const lang = Deno.env.get("lang") || "en";
-const importMapPath = Deno.env.get("importMap") || "./importMap.json";
-const importMap = JSON.parse(await Deno.readTextFile(importMapPath));
+await ensureDir(`./.ultra/${sourceDirectory}`);
+await ensureDir(`./.ultra/${vendorDirectory}`);
 
 const build = async () => {
-  const { transpile } = await assets(dir);
+  const vendorMap = await vendor();
+  Object.keys(vendorMap.imports)?.forEach((k) => {
+    // @ts-ignore any
+    const im: string = vendorMap.imports[k];
+    if (im.indexOf("http") < 0) {
+      // @ts-ignore any
+      vendorMap.imports[k] = jsify(im);
+    }
+  });
+  const { raw, transpile } = await assets(sourceDirectory);
+
+  const rawIterator = raw.keys();
+
+  for (let i = 0; i < raw.size; i++) {
+    const file = rawIterator.next().value;
+    const source = await Deno.readTextFile(file);
+
+    const directory = file.split("/");
+    const name = directory.pop();
+    await ensureDir(`./.ultra/${directory.join("/")}`);
+    await Deno.writeTextFile(`./.ultra/${directory.join("/")}/${name}`, source);
+  }
 
   const iterator = transpile.keys();
 
   for (let i = 0; i < transpile.size; i++) {
     const file = iterator.next().value;
     const source = await Deno.readTextFile(file);
+
+    let prefix = "./";
+    for (let x = 0; x < file.split("/").length; x++) {
+      if (x != 0) prefix = prefix + "../";
+    }
+
+    const localMap = { imports: {} };
+    Object.keys(vendorMap.imports)?.forEach((k) => {
+      // @ts-ignore any
+      const im: string = vendorMap.imports[k];
+      if (im.indexOf("http") < 0) {
+        // @ts-ignore any
+        localMap.imports[k] = `${prefix}${im.replace("./.ultra/", "")}`;
+      }
+    });
+
     const js = await transform({
       source,
-      importMap,
+      importMap: localMap,
       root,
     });
 
     const directory = file.split("/");
     let name = directory.pop();
-    name = name.replace(".jsx", ".js").replace(".tsx", ".js");
+    name = name.replace(".jsx", ".js").replace(".tsx", ".js").replace(
+      ".ts",
+      ".js",
+    );
     await ensureDir(`./.ultra/${directory.join("/")}`);
     await Deno.writeTextFile(`./.ultra/${directory.join("/")}/${name}`, js);
   }
 
-  // importMap
-  Object.keys(importMap.imports)?.forEach((k) => {
-    // @ts-ignore any
-    const im: string = importMap.imports[k];
-    if (im.indexOf("http") < 0) {
-      // @ts-ignore any
-      importMap.imports[k] = jsify(im);
-    }
-  });
   await Deno.writeTextFile(
     `./.ultra/importMap.json`,
-    JSON.stringify(importMap),
+    JSON.stringify(vendorMap),
   );
 
   // graph
-  const cache = createCache();
-  const ultraGraph = await ultraloader({ importMap, cache });
-  await Deno.writeTextFile(`./.ultra/graph.json`, JSON.stringify(ultraGraph));
+  // const cache = createCache();
+  // const ultraGraph = await ultraloader({ importMap, cache });
+  // await Deno.writeTextFile(`./.ultra/graph.json`, JSON.stringify(ultraGraph));
+
+  const denoMap = { imports: {} };
+  Object.keys(vendorMap.imports)?.forEach((k) => {
+    // @ts-ignore any
+    const im: string = vendorMap.imports[k];
+    if (im.indexOf("http") < 0) {
+      // @ts-ignore any
+      denoMap.imports[k] = `./${im.replace("./.ultra/", "")}`;
+    }
+  });
 
   // deps
   const depReq = await fetch(
-    "https://deno.land/x/ultra/src/deno/deps.ts",
+    `${ultra}/src/deno/deps.ts`,
   );
   const depText = await depReq.text();
   await Deno.writeTextFile(`./.ultra/deps.js`, depText);
 
   // assets
   const assetReq = await fetch(
-    "https://deno.land/x/ultra/src/assets.ts",
+    `${ultra}/src/assets.ts`,
   );
   const assetText = await assetReq.text();
+
   const assetTrans = await transform({
     source: assetText,
-    importMap,
+    importMap: denoMap,
     root,
   });
+
   await Deno.writeTextFile(`./.ultra/assets.js`, assetTrans);
 
   // render
   const renderReq = await fetch(
-    "https://deno.land/x/ultra/src/render.ts",
+    `${ultra}/src/render.ts`,
   );
   const renderText = await renderReq.text();
+
   const renderTrans = await transform({
     source: renderText,
-    importMap,
+    importMap: denoMap,
     root,
   });
   await Deno.writeTextFile(`./.ultra/render.js`, renderTrans);
 
   // env
   const envReq = await fetch(
-    "https://deno.land/x/ultra/src/env.ts",
+    `${ultra}/src/env.ts`,
   );
   const envText = await envReq.text();
   const envTrans = await transform({
     source: envText,
-    importMap,
+    importMap: denoMap,
     root,
   });
   await Deno.writeTextFile(`./.ultra/env.js`, envTrans);
 
+  // API
+  const api = await assets(apiDirectory);
+  const apiPaths = [...api.raw.keys(), ...api.transpile.keys()];
+
+  let apiImports = "";
+  let apiRoutes = "";
+  apiPaths.forEach((path) => {
+    const name = basename(path).replace(extname(path), "");
+    apiImports += `import ${name}_API from "./../${path}";`;
+    apiRoutes +=
+      `if (url?.pathname === "/api/${name}") return ${name}_API(request);`;
+  });
+
+  apiRoutes +=
+    `if (url?.pathname.startsWith("/api/")) return new Response('{"error":"Not Found"}', { headers: {"content-type": "application/json"}, status: ${404} });`;
+
   // ultra
   const ultraReq = await fetch(
-    "https://deno.land/x/ultra/src/deno/server.ts",
+    `${ultra}/src/deno/server.ts`,
   );
-  const ultraText = await ultraReq.text();
+  let ultraText = await ultraReq.text();
+  ultraText = apiImports + ultraText;
+  ultraText = ultraText.replace("//API//", apiRoutes);
   const ultraTrans = await transform({
     source: ultraText,
-    importMap,
+    importMap: denoMap,
     root,
   });
   await ensureDir("./.ultra/deno/");
@@ -112,12 +177,8 @@ const build = async () => {
   // server
   const server = `import ultra from "./deno/server.js";
   const importMap = await Deno.readTextFile("./importMap.json")
-  
-  await ultra({
-    importMap: JSON.parse(importMap),
-    root: "${root}",
-    lang: "${lang}"
-  });`;
+
+  await ultra();`;
 
   await Deno.writeTextFile(`./.ultra/ULTRA.js`, server);
 
@@ -126,5 +187,3 @@ const build = async () => {
 };
 
 export default build;
-
-await build();
