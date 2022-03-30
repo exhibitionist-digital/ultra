@@ -94,8 +94,7 @@ custom dockerfile.
 
 ### ✨ Wishlist
 
-As we await the official release of React 18, here some things we are interested
-in for the future of JS and/or Ultra:
+Here some things we are interested in for the future of JS and/or Ultra:
 
 - Better
   [Deno support in Vercel](https://github.com/vercel-community/deno/issues/95)
