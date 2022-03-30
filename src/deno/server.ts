@@ -8,8 +8,9 @@ const sourceDirectory = Deno.env.get("source") || "src";
 const vendorDirectory = Deno.env.get("vendor") || "x";
 const root = Deno.env.get("root") || "http://localhost:8000";
 const lang = Deno.env.get("lang") || "en";
+const disableStreaming = Deno.env.get("disableStreaming") || 0;
 
-const importMap = JSON.parse(Deno.readTextFileSync("importMap.json"));
+const importMap = JSON.parse(await Deno.readTextFile("importMap.json"));
 
 const deploy = async () => {
   const { raw } = await assets(sourceDirectory);
@@ -18,10 +19,14 @@ const deploy = async () => {
   const handler = async (request: Request) => {
     const url = new URL(request.url);
 
+    //API//
+
     // vendor
     if (x.raw.has(`${url.pathname.substring(1)}`)) {
       const headers = {
         "content-type": "text/javascript",
+        "cache-control":
+          "public, max-age=604800, stale-while-revalidate=86400, stale-if-error=259200",
       };
 
       const file = await Deno.open(
@@ -39,33 +44,10 @@ const deploy = async () => {
       return new Response(body, {
         headers: {
           "content-type": raw.get(`${sourceDirectory}${url.pathname}`),
+          "cache-control":
+            "public, max-age=86400, stale-while-revalidate=14400, stale-if-error=43200",
         },
       });
-    }
-
-    // API
-    if (url.pathname.startsWith("/api")) {
-      const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
-        let path = `${sourceDirectory}${pathname}`;
-        const js = `${path + ".js"}`;
-        const ts = `${path + ".ts"}`;
-        if (raw.has(js)) path = `file://${Deno.cwd()}/${js}`;
-        else if (raw.has(ts)) path = `file://${Deno.cwd()}/${ts}`;
-        const apiHandler: { default: APIHandler } = await import(path);
-        return apiHandler.default;
-      };
-      const pathname = url.pathname.endsWith("/")
-        ? url.pathname.slice(0, -1)
-        : url.pathname;
-      try {
-        return (await importAPIRoute(pathname))(request);
-      } catch (_error) {
-        try {
-          return (await importAPIRoute(`${pathname}/index`))(request);
-        } catch (_error) {
-          return new Response(`Not found`, { status: 404 });
-        }
-      }
     }
 
     // let link = await Deno.readTextFile(`./${transpiled}/graph.json`);
@@ -76,6 +58,7 @@ const deploy = async () => {
         root,
         importMap,
         lang,
+        disableStreaming: !!disableStreaming,
       }),
       {
         headers: {

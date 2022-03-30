@@ -1,17 +1,20 @@
 import assets from "./../assets.ts";
 import transform from "./../transform.ts";
 import { jsify } from "../resolver.ts";
-import { emptyDir, ensureDir } from "./deps.ts";
+import { basename, emptyDir, ensureDir, extname } from "./deps.ts";
 import vendor from "../vendor.ts";
 import { port } from "../env.ts";
 
-const ultra = "https://3511-2001-8004-5110-1990-1885-c8db-3d08-9c9f.ngrok.io";
-
-await ensureDir("./.ultra");
-await emptyDir("./.ultra");
+const ultra = "https://8337-2001-8004-14a0-2eaa-5962-1211-3b54-a3ea.ngrok.io";
 
 const sourceDirectory = Deno.env.get("source") || "src";
+const vendorDirectory = Deno.env.get("vendor") || "x";
+const apiDirectory = Deno.env.get("api") || "src/api";
 const root = Deno.env.get("root") || `http://localhost:${port}`;
+
+await emptyDir("./.ultra");
+await ensureDir(`./.ultra/${sourceDirectory}`);
+await ensureDir(`./.ultra/${vendorDirectory}`);
 
 const build = async () => {
   const vendorMap = await vendor();
@@ -106,11 +109,13 @@ const build = async () => {
     `${ultra}/src/assets.ts`,
   );
   const assetText = await assetReq.text();
+
   const assetTrans = await transform({
     source: assetText,
     importMap: denoMap,
     root,
   });
+
   await Deno.writeTextFile(`./.ultra/assets.js`, assetTrans);
 
   // render
@@ -138,11 +143,29 @@ const build = async () => {
   });
   await Deno.writeTextFile(`./.ultra/env.js`, envTrans);
 
+  // API
+  const api = await assets(apiDirectory);
+  const apiPaths = [...api.raw.keys(), ...api.transpile.keys()];
+
+  let apiImports = "";
+  let apiRoutes = "";
+  apiPaths.forEach((path) => {
+    const name = basename(path).replace(extname(path), "");
+    apiImports += `import ${name}_API from "./../${path}";`;
+    apiRoutes +=
+      `if (url?.pathname === "/api/${name}") return ${name}_API(request);`;
+  });
+
+  apiRoutes +=
+    `if (url?.pathname.startsWith("/api/")) return new Response('{"error":"Not Found"}', { headers: {"content-type": "application/json"}, status: ${404} });`;
+
   // ultra
   const ultraReq = await fetch(
     `${ultra}/src/deno/server.ts`,
   );
-  const ultraText = await ultraReq.text();
+  let ultraText = await ultraReq.text();
+  ultraText = apiImports + ultraText;
+  ultraText = ultraText.replace("//API//", apiRoutes);
   const ultraTrans = await transform({
     source: ultraText,
     importMap: denoMap,
@@ -154,7 +177,7 @@ const build = async () => {
   // server
   const server = `import ultra from "./deno/server.js";
   const importMap = await Deno.readTextFile("./importMap.json")
-  
+
   await ultra();`;
 
   await Deno.writeTextFile(`./.ultra/ULTRA.js`, server);
