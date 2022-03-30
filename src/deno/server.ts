@@ -42,8 +42,6 @@ const deploy = async () => {
       return new Response(body, {
         headers: {
           "content-type": raw.get(`${sourceDirectory}${url.pathname}`),
-          "cache-control":
-            "public, max-age=86400, stale-while-revalidate=14400, stale-if-error=43200",
         },
       });
     }
