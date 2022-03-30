@@ -53,8 +53,8 @@ Heaps of updates in v0.8.0! Because of these new features. Please ensure you are
 using at least Deno `v1.20.3`
 
 - **Vendored dependencies!** We have a script that can take your CDN deps and
-  make them local. (LINK 2 DOCS)
-- **API routes!** (Thanks @Industrial) (LINK 2 DOCS)
+  make them local.
+- **API routes!** (Thanks @Industrial)
 - Option to **disable streaming** 😱. Passing `disableStreaming: true` will force
   Ultra to use it's custom `renderToString` equivalent - returning a **fully
   resolved, suspense compatible**, html page!
