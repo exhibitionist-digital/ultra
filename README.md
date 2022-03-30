@@ -55,9 +55,9 @@ using at least Deno `v1.20.3`
 - **Vendored dependencies!** We have a script that can take your CDN deps and
   make them local.
 - **API routes!** (Thanks @Industrial)
-- Option to **disable streaming** 😱. Passing `disableStreaming: true` will force
-  Ultra to use it's custom `renderToString` equivalent - returning a **fully
-  resolved, suspense compatible**, html page!
+- Option to **disable streaming** 😱. Passing the env `disableStreaming=1` will
+  force Ultra to use a custom `renderToString` equivalent - returning a **fully
+  resolved, suspense compatible**, html page! (BETA)
 - **Websocket refresh** in dev mode. Ultra will restart on local changes.
 - Full support for
   [react@rc](https://github.com/reactjs/rfcs/blob/react-18/text/0000-react-18.md):
