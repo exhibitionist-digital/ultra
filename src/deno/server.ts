@@ -2,55 +2,64 @@ import assets from "./../assets.ts";
 import { readableStreamFromReader, serve } from "./../deps.ts";
 import render from "./../render.ts";
 
-import { StartOptions } from "../types.ts";
+const sourceDirectory = Deno.env.get("source") || "src";
+const vendorDirectory = Deno.env.get("vendor") || "x";
+const root = Deno.env.get("root") || "http://localhost:8000";
+const lang = Deno.env.get("lang") || "en";
+const disableStreaming = Deno.env.get("disableStreaming") || 0;
 
-const transpiled = ".ultra";
+const importMap = JSON.parse(await Deno.readTextFile("importMap.json"));
 
-const deploy = async (
-  { importMap, dir = "src", root = "http://localhost:8000", lang = "en" }:
-    StartOptions,
-) => {
-  const { raw } = await assets(dir);
-
-  const trans = await assets(`${transpiled}/${dir}`);
+const deploy = async () => {
+  const { raw } = await assets(sourceDirectory);
+  const x = await assets(vendorDirectory);
 
   const handler = async (request: Request) => {
     const url = new URL(request.url);
 
-    // static files
-    if (raw.has(`${dir}${url.pathname}`)) {
-      const file = await Deno.open(`./${dir}${url.pathname}`);
+    //API//
+
+    // vendor
+    if (x.raw.has(`${url.pathname.substring(1)}`)) {
+      const headers = {
+        "content-type": "text/javascript",
+        "cache-control":
+          "public, max-age=604800, stale-while-revalidate=86400, stale-if-error=259200",
+      };
+
+      const file = await Deno.open(
+        `./${url.pathname}`,
+      );
       const body = readableStreamFromReader(file);
-      return new Response(body, {
-        headers: {
-          "content-type": raw.get(`${dir}${url.pathname}`),
-        },
-      });
+
+      return new Response(body, { headers });
     }
-    // jsx/tsx
-    if (trans.raw.has(`${transpiled}/${dir}${url.pathname}`)) {
-      const file = await Deno.open(`./${transpiled}/${dir}${url.pathname}`);
+
+    // static files
+    if (raw.has(`${sourceDirectory}${url.pathname}`)) {
+      const file = await Deno.open(`./${sourceDirectory}${url.pathname}`);
       const body = readableStreamFromReader(file);
       return new Response(body, {
         headers: {
-          "content-type": "application/javascript",
+          "content-type": raw.get(`${sourceDirectory}${url.pathname}`),
         },
       });
     }
 
-    let link = await Deno.readTextFile(`./${transpiled}/graph.json`);
-    link = JSON.parse(link);
+    // let link = await Deno.readTextFile(`./${transpiled}/graph.json`);
+    // link = JSON.parse(link);
     return new Response(
       await render({
         url,
         root,
         importMap,
         lang,
+        disableStreaming: !!disableStreaming,
       }),
       {
         headers: {
           "content-type": "text/html; charset=utf-8",
-          link,
+          // link,
         },
       },
     );

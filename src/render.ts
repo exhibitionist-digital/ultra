@@ -1,4 +1,4 @@
-import { concat, join } from "./deps.ts";
+import { concat, extname, join } from "./deps.ts";
 import React from "react";
 import ReactDOM from "react-dom/server";
 import { BaseLocationHook, Router } from "wouter";
@@ -6,6 +6,8 @@ import { HelmetProvider } from "react-helmet";
 import app from "app";
 import { isDev } from "./env.ts";
 import type { Navigate, RenderOptions } from "./types.ts";
+
+const sourceDirectory = Deno.env.get("source") || "src";
 
 // FIXME: these react types are wrong now
 // renderToReadableStream not available yet in official types
@@ -26,17 +28,27 @@ const render = async (
     root,
     importMap,
     lang = "en",
-    cacheBuster,
-    streaming = true,
+    disableStreaming = false,
   }: RenderOptions,
 ) => {
   const chunkSize = defaultChunkSize;
-  // in dev we can dynamically import that app component
-  // in prod we use the import at the top of this file
-  // this is so changes to app can be seen in real time in dev
+
   let importedApp;
-  if (cacheBuster && isDev) {
-    importedApp = await import(join(root, `app.js?ts=${cacheBuster}`));
+  let transpiledApp = importMap?.imports?.app?.replace(
+    `./${sourceDirectory}/`,
+    "",
+  );
+  transpiledApp = transpiledApp?.replace(extname(transpiledApp), ".js");
+
+  // FIXME: when using vendor import maps, and in dev mode, the server render fails
+  // this will detect if using vendor map and disable dynamically imported app.
+  if (isDev && importMap?.imports?.["react"]?.indexOf(".ultra") < 0) {
+    importedApp = await import(
+      join(
+        root,
+        `${transpiledApp}?ts=${+new Date()}`,
+      )
+    );
   }
 
   // kickstart caches for react-helmet and swr
@@ -68,8 +80,14 @@ const render = async (
       },
     );
   } catch (error) {
-    console.error(error);
-    body = "<h1>Ultra error</h1>";
+    console.log({ error });
+    body = new ReadableStream({
+      start(controller) {
+        const chunk = new TextEncoder().encode(error);
+        controller.enqueue(chunk);
+        controller.close();
+      },
+    });
   }
 
   // head builder
@@ -81,16 +99,16 @@ const render = async (
           .map((i) => helmet[i].toString())
           .join("")
       }<script type="module" defer>${
-        isDev && socket(root)
+        isDev ? socket(root) : ""
       }import { createElement } from "${
-        importMap.imports["react"]
+        importMap.imports["react"]?.replace("./.ultra", "")
       }";import { hydrateRoot } from "${
-        importMap.imports["react-dom"]
+        importMap.imports["react-dom"]?.replace("./.ultra", "")
       }";import { Router } from "${
-        importMap.imports["wouter"]
+        importMap.imports["wouter"]?.replace("./.ultra", "")
       }";import { HelmetProvider } from "${
-        importMap.imports["react-helmet"]
-      }";import App from "/app.js";` +
+        importMap.imports["react-helmet"]?.replace("./.ultra", "")
+      }";import App from "/${transpiledApp}";` +
       `const root = hydrateRoot(document.getElementById("ultra"),` +
       `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +
       `</script></head><body><div id="ultra">`;
@@ -112,7 +130,7 @@ const render = async (
   const bodyReader = encodedStream.getReader();
 
   // if streaming is disabled, here is a renderToString equiv
-  if (!streaming) {
+  if (disableStreaming) {
     const renderToString = async () => {
       const html = await new Response(
         encodeStream(

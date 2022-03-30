@@ -1,0 +1,12 @@
+{
+  "lint": {
+    "files": {
+      "exclude": ["workspace/.ultra/"]
+    }
+  },
+  "fmt": {
+    "files": {
+      "exclude": ["workspace/.ultra/"]
+    }
+  }
+}
