@@ -40,4 +40,4 @@ export type RenderOptions = {
 
 export type Cache = Map<unknown, unknown>;
 
-export type APIHandler = (request: Request) => Response;
+export type APIHandler = (request: Request) => Response | Promise<Response>;
