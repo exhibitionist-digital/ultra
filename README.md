@@ -74,6 +74,24 @@ using at least Deno `v1.20.3`
 
 ---
 
+### Notes on using Deno Deploy
+
+We aim to support Deno Deploy as a first class target for Ultra, but there are a
+few things to consider before deploying:
+
+- [Dynamic imports are not supported](https://github.com/denoland/deploy_feedback/issues/1),
+  this means using React Lazy imports will not work. If you try to deploy
+  anything with dynamic imports, the project will fail.
+- [Recursive requests are not supported](https://github.com/denoland/deploy_feedback/issues/187),
+  if using API routes, there is a good chance any requests made in your
+  components may fail during SSR.
+
+NOTE: These above issues are not a limitation when deploying to a service like
+Fly.io, and if you require either of the above, we recommend using Fly.io with a
+custom dockerfile.
+
+---
+
 ### ✨ Wishlist
 
 As we await the official release of React 18, here some things we are interested
