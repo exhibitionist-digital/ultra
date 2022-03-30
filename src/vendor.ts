@@ -1,16 +1,14 @@
-import { createGraph, emptyDir, ensureDir } from "./deps.ts";
+import { createGraph } from "./deps.ts";
 import { vendor as vendorTransform } from "./transform.ts";
 import { hashFile, isValidURL } from "./resolver.ts";
 
 const vendorDirectory = Deno.env.get("vendor") || "x";
-const importMapPath = Deno.env.get("importMap") || "./importMap.json";
+const importMapPath = Deno.env.get("importMap") || "importMap.json";
 const importMap = JSON.parse(await Deno.readTextFile(importMapPath));
 
 const vendor = async () => {
   // setup directories
   const directory = `.ultra/${vendorDirectory}`;
-  await ensureDir(directory);
-  await emptyDir(directory);
 
   // create a new object for the vendor import map
   const vendorMap: Record<string, string> = {};

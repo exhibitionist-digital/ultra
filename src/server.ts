@@ -5,7 +5,7 @@ import render from "./render.ts";
 import { jsxify, tsify, tsxify } from "./resolver.ts";
 import { isDev, port } from "./env.ts";
 
-import { APIHandler, StartOptions } from "./types.ts";
+import { APIHandler } from "./types.ts";
 
 const memory = new LRU(500);
 
@@ -14,15 +14,14 @@ const vendorDirectory = Deno.env.get("vendor") || "x";
 const configPath = Deno.env.get("config") || "./deno.json";
 const root = Deno.env.get("root") || `http://localhost:${port}`;
 const lang = Deno.env.get("lang") || "en";
+const disableStreaming = Deno.env.get("disableStreaming") || 0;
 
 const config = JSON.parse(Deno.readTextFileSync(configPath));
 const importMap = JSON.parse(Deno.readTextFileSync(config?.importMap));
 
-const server = (options: StartOptions) => {
+const server = () => {
   const serverStart = Math.ceil(+new Date() / 100);
   const listeners = new Set<WebSocket>();
-  if (!options) options = {};
-  const { disableStreaming } = options;
 
   const handler = async (request: Request) => {
     const requestStart = Math.ceil(+new Date() / 100);
@@ -47,6 +46,8 @@ const server = (options: StartOptions) => {
     if (x.raw.has(`.ultra${url.pathname}`)) {
       const headers = {
         "content-type": "text/javascript",
+        "cache-control":
+          "public, max-age=604800, stale-while-revalidate=86400, stale-if-error=259200",
       };
 
       const file = await Deno.open(
@@ -146,7 +147,7 @@ const server = (options: StartOptions) => {
         root,
         importMap,
         lang,
-        disableStreaming,
+        disableStreaming: !!disableStreaming,
       }),
       {
         headers: {

@@ -10,6 +10,8 @@ import { hashFile } from "./resolver.ts";
 let offset = 0;
 let length = 0;
 
+const apiDirectory = Deno.env.get("api") || "src/api";
+
 const transform = async (
   { source, importMap, loader = "tsx", cacheBuster }: TransformOptions,
 ) => {
@@ -28,13 +30,14 @@ const transform = async (
     if (i.type == "ImportDeclaration") {
       const { value, span } = i.source;
       c += code.substring(offset - length, span.start - length);
-
       c += `"${
-        importMap?.imports?.[value]?.replace("./.ultra", "") ||
-        value.replace(
-          /\.(j|t)sx?/gi,
-          () => `.js${cacheBuster ? `?ts=${cacheBuster}` : ""}`,
-        )
+        importMap?.imports?.[value] ||
+        (value.indexOf(apiDirectory) < 0
+          ? value.replace(
+            /\.(j|t)sx?/gi,
+            () => `.js${cacheBuster ? `?ts=${cacheBuster}` : ""}`,
+          )
+          : value)
       }"`;
       offset = span.end;
     }
@@ -53,14 +56,14 @@ const transform = async (
               }) => {
                 const { value, span } = b?.expression;
                 c += code.substring(offset - length, span.start - length);
-                c += `"${
-                  value.replace(/\.(j|t)sx?/gi, () =>
+                c += `"${(value.indexOf(apiDirectory) < 0
+                  ? value.replace(/\.(j|t)sx?/gi, () =>
                     `.js${
                       cacheBuster
                         ? `?ts=${cacheBuster}`
                         : ""
                     }`)
-                }"`;
+                  : value)}"`;
                 offset = span.end;
               },
             );
@@ -78,14 +81,14 @@ const transform = async (
                 }) => {
                   const { value, span } = b?.expression;
                   c += code.substring(offset - length, span.start - length);
-                  c += `"${
-                    value.replace(/\.(j|t)sx?/gi, () =>
+                  c += `"${(value.indexOf(apiDirectory) < 0
+                    ? value.replace(/\.(j|t)sx?/gi, () =>
                       `.js${
                         cacheBuster
                           ? `?ts=${cacheBuster}`
                           : ""
                       }`)
-                  }"`;
+                    : value)}"`;
                   offset = span.end;
                 },
               );

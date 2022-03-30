@@ -12,11 +12,6 @@ type Context = {
   };
 };
 
-export type StartOptions = {
-  disableStreaming?: boolean;
-  env?: Record<string, string>;
-};
-
 export type OakOptions = {
   env?: Record<string, string>;
   context: Context;
