@@ -6,7 +6,7 @@
     "react-helmet": "https://esm.sh/react-helmet-async?deps=react@18",
     "wouter": "https://esm.sh/wouter?deps=react@18",
     "swr": "https://esm.sh/swr?deps=react@18",
-    "ultra/cache": "https://deno.land/x/ultra@v0.7.6/cache.js",
+    "ultra/cache": "https://deno.land/x/ultra@v0.8.0/cache.js",
     "app": "./src/app.jsx"
   }
 }

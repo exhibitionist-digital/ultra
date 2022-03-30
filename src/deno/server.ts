@@ -2,8 +2,6 @@ import assets from "./../assets.ts";
 import { readableStreamFromReader, serve } from "./../deps.ts";
 import render from "./../render.ts";
 
-import { APIHandler } from "../types.ts";
-
 const sourceDirectory = Deno.env.get("source") || "src";
 const vendorDirectory = Deno.env.get("vendor") || "x";
 const root = Deno.env.get("root") || "http://localhost:8000";
