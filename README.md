@@ -60,7 +60,7 @@ using at least Deno `v1.20.3`
   resolved, suspense compatible**, html page! (BETA)
 - **Websocket refresh** in dev mode. Ultra will restart on local changes.
 - Full support for
-  [react@rc](https://github.com/reactjs/rfcs/blob/react-18/text/0000-react-18.md):
+  [react@18](https://github.com/reactjs/rfcs/blob/react-18/text/0000-react-18.md):
   There were some updates to how
   [streams are handled](https://github.com/reactwg/react-18/discussions/122) in
   the latest `rc`.
