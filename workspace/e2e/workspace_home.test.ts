@@ -1,14 +1,11 @@
 import puppeteer from "puppeteer";
-import {
-  assertEquals,
-  fail,
-} from "asserts";
+import { assertEquals, fail } from "asserts";
 
 Deno.test("Should render home page of workspace example app with expected text", async () => {
   const expectations = [
-    {text: 'ULTRA', selector: 'h1'},
-    {text: 'component.jsx', selector: 'h2'}
-  ]
+    { text: "ULTRA", selector: "h1" },
+    { text: "component.jsx", selector: "h2" },
+  ];
 
   const browser = await puppeteer.launch({
     headless: true,
