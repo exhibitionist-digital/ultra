@@ -163,7 +163,7 @@ const server = () => {
       for await (
         const { kind } of Deno.watchFs(sourceDirectory, { recursive: true })
       ) {
-        if (kind === "modify") {
+        if (kind === "modify" || kind === "create") {
           for (const socket of listeners) {
             socket.send("reload");
           }

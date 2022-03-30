@@ -6,7 +6,7 @@
     "vendor": "importMap=importMap.json deno run -A --unstable ../vendor.ts",
     "build": "deno run -A ../build.ts"
   },
-  "importMap": "vendorMap.json",
+  "importMap": "importMap.json",
   "lint": {
     "files": {
       "exclude": [".ultra/"]
