@@ -31,7 +31,7 @@ const transform = async (
       const { value, span } = i.source;
       c += code.substring(offset - length, span.start - length);
       c += `"${
-        importMap?.imports?.[value] ||
+        importMap?.imports?.[value]?.replace("./.ultra", "") ||
         (value.indexOf(apiDirectory) < 0
           ? value.replace(
             /\.(j|t)sx?/gi,

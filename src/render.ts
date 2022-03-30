@@ -1,4 +1,4 @@
-import { concat } from "./deps.ts";
+import { concat, extname, join } from "./deps.ts";
 import React from "react";
 import ReactDOM from "react-dom/server";
 import { BaseLocationHook, Router } from "wouter";
@@ -6,6 +6,8 @@ import { HelmetProvider } from "react-helmet";
 import app from "app";
 import { isDev } from "./env.ts";
 import type { Navigate, RenderOptions } from "./types.ts";
+
+const sourceDirectory = Deno.env.get("source") || "src";
 
 // FIXME: these react types are wrong now
 // renderToReadableStream not available yet in official types
@@ -31,6 +33,24 @@ const render = async (
 ) => {
   const chunkSize = defaultChunkSize;
 
+  let importedApp;
+  let transpiledApp = importMap?.imports?.app?.replace(
+    `./${sourceDirectory}/`,
+    "",
+  );
+  transpiledApp = transpiledApp?.replace(extname(transpiledApp), ".js");
+
+  // FIXME: when using vendor import maps, and in dev mode, the server render fails
+  // this will detect if using vendor map and disable dynamically imported app.
+  if (isDev && importMap?.imports?.["react"]?.indexOf(".ultra") < 0) {
+    importedApp = await import(
+      join(
+        root,
+        `${transpiledApp}?ts=${+new Date()}`,
+      )
+    );
+  }
+
   // kickstart caches for react-helmet and swr
   const helmetContext: { helmet: Record<string, number> } = { helmet: {} };
   const cache = new Map();
@@ -48,7 +68,7 @@ const render = async (
           HelmetProvider,
           { context: helmetContext },
           React.createElement(
-            app,
+            importedApp?.default || app,
             { cache },
             null,
           ),
@@ -88,7 +108,7 @@ const render = async (
         importMap.imports["wouter"]?.replace("./.ultra", "")
       }";import { HelmetProvider } from "${
         importMap.imports["react-helmet"]?.replace("./.ultra", "")
-      }";import App from "/app.js";` +
+      }";import App from "/${transpiledApp}";` +
       `const root = hydrateRoot(document.getElementById("ultra"),` +
       `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +
       `</script></head><body><div id="ultra">`;
