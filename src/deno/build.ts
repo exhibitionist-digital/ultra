@@ -5,7 +5,7 @@ import { basename, emptyDir, ensureDir, extname } from "./deps.ts";
 import vendor from "../vendor.ts";
 import { port } from "../env.ts";
 
-const ultra = "https://8337-2001-8004-14a0-2eaa-5962-1211-3b54-a3ea.ngrok.io";
+const ultra = "https://deno.land/x/ultra";
 
 const sourceDirectory = Deno.env.get("source") || "src";
 const vendorDirectory = Deno.env.get("vendor") || "x";
