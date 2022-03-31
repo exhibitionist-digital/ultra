@@ -16,7 +16,14 @@ tests run the Chrome browser in headless mode.
 
 ### Running the puppeteer tests
 
-In a terminal go to the root folder of this repository and run:
+This tests are on a running app, so you need to run the sample app from the
+workspace folder using the following command:
+
+```
+deno task dev
+```
+
+In a separate terminal run the tests in the same folder with this command:
 
 ```
 deno task e2e
