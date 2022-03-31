@@ -1,7 +1,14 @@
 import assets from "./../assets.ts";
 import transform from "./../transform.ts";
 import { jsify } from "../resolver.ts";
-import { basename, emptyDir, ensureDir, extname } from "./deps.ts";
+import {
+  basename,
+  copy,
+  dirname,
+  emptyDir,
+  ensureDir,
+  extname,
+} from "./deps.ts";
 import vendor from "../vendor.ts";
 import { port } from "../env.ts";
 
@@ -28,16 +35,12 @@ const build = async () => {
   });
   const { raw, transpile } = await assets(sourceDirectory);
 
+  // copy static files
   const rawIterator = raw.keys();
-
   for (let i = 0; i < raw.size; i++) {
     const file = rawIterator.next().value;
-    const source = await Deno.readTextFile(file);
-
-    const directory = file.split("/");
-    const name = directory.pop();
-    await ensureDir(`./.ultra/${directory.join("/")}`);
-    await Deno.writeTextFile(`./.ultra/${directory.join("/")}/${name}`, source);
+    await ensureDir(dirname(`./.ultra/${file}`));
+    await copy(file, `./.ultra/${file}`);
   }
 
   const iterator = transpile.keys();
