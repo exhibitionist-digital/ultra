@@ -2,7 +2,7 @@ import { LRU, readableStreamFromReader, serve } from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
-import { jsxify, tsify, tsxify } from "./resolver.ts";
+import { ensureNoTrailingSlash, jsxify, tsify, tsxify } from "./resolver.ts";
 import { isDev, port } from "./env.ts";
 
 import { APIHandler } from "./types.ts";
@@ -113,13 +113,19 @@ const server = () => {
         }
         return (await import(path)).default;
       };
-      const pathname = url.pathname.endsWith("/")
-        ? url.pathname.slice(0, -1)
-        : url.pathname;
       try {
-        return await (await importAPIRoute(pathname))(request);
-      } catch (_error) {
-        return new Response(`Not found`, { status: 404 });
+        const pathname = ensureNoTrailingSlash(url.pathname);
+        const handler = await importAPIRoute(pathname);
+        const response = await handler(request);
+        return response;
+      } catch (error) {
+        console.error(error);
+        return new Response(`Internal Server Error`, {
+          status: 500,
+          headers: {
+            "content-type": "text/html; charset=utf-8",
+          },
+        });
       }
     }
 
