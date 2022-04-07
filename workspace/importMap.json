@@ -7,8 +7,6 @@
     "wouter": "https://esm.sh/wouter?deps=react@18",
     "swr": "https://esm.sh/swr?deps=react@18",
     "ultra/cache": "https://deno.land/x/ultra@v0.8.0/cache.js",
-    "puppeteer": "https://deno.land/x/puppeteer@9.0.2/mod.ts",
-    "asserts": "https://deno.land/std@0.130.0/testing/asserts.ts",
     "app": "./src/app.jsx"
   }
 }

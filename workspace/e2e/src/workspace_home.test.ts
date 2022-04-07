@@ -1,5 +1,8 @@
-import puppeteer from "puppeteer";
-import { assertEquals, fail } from "asserts";
+import puppeteer from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
+import {
+  assertEquals,
+  fail,
+} from "https://deno.land/std@0.130.0/testing/asserts.ts";
 
 Deno.test("Should render home page of workspace example app with expected text", async () => {
   const expectations = [
