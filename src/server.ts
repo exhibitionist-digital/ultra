@@ -120,7 +120,7 @@ const server = () => {
         return response;
       } catch (error) {
         console.error(error);
-        return new Response(`Internal Server Error`, {
+        return new Response("Internal Server Error", {
           status: 500,
           headers: {
             "content-type": "text/html; charset=utf-8",
