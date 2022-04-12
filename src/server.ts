@@ -2,7 +2,7 @@ import { LRU, readableStreamFromReader, serve } from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
-import { ensureNoTrailingSlash, jsxify, tsify, tsxify } from "./resolver.ts";
+import { jsxify, stripTrailingSlash, tsify, tsxify } from "./resolver.ts";
 import { isDev, port } from "./env.ts";
 
 import { APIHandler } from "./types.ts";
@@ -114,7 +114,7 @@ const server = () => {
         return (await import(path)).default;
       };
       try {
-        const pathname = ensureNoTrailingSlash(url.pathname);
+        const pathname = stripTrailingSlash(url.pathname);
         const handler = await importAPIRoute(pathname);
         const response = await handler(request);
         return response;

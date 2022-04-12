@@ -34,6 +34,6 @@ export const hashFile = (url: string) => {
   return hashHex;
 };
 
-export function ensureNoTrailingSlash(url: string) {
+export function stripTrailingSlash(url: string) {
   return url.endsWith("/") ? url.slice(0, -1) : url;
 }
