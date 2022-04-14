@@ -9,8 +9,7 @@ import {
 import { isDev } from "./env.ts";
 import { TransformOptions } from "./types.ts";
 import { hashFile } from "./resolver.ts";
-import { transformImportDeclaration } from "./ast/transformImportDeclaration.ts";
-import { transformVariableDeclaration } from "./ast/transformVariableDeclaration.ts";
+import { UltraVisitor } from "./ast/ultra.ts";
 
 await initSwc("https://cdn.esm.sh/@swc/wasm-web@1.2.165/wasm_bg.wasm");
 
@@ -23,42 +22,20 @@ const parserOptions: ParseOptions = {
 const transform = async (
   { source, importMap, cacheBuster }: TransformOptions,
 ) => {
+  const visitor = new UltraVisitor(importMap, cacheBuster);
+
   const transformResult = await transformSync(source, {
     jsc: {
-      parser: {
-        syntax: "typescript",
-        tsx: true,
-      },
-      target: "es2021",
+      parser: parserOptions,
+      target: "es2019",
       transform: {},
     },
   });
 
   const ast = await parseSync(transformResult.code, parserOptions) as Program;
+  const transformedAst = visitor.visitProgram(ast);
 
-  ast.body = ast.body.map((declaration) => {
-    switch (declaration.type) {
-      case "ImportDeclaration": {
-        return transformImportDeclaration(
-          declaration,
-          importMap,
-          cacheBuster,
-        );
-      }
-
-      case "VariableDeclaration": {
-        return transformVariableDeclaration(
-          declaration,
-          importMap,
-          cacheBuster,
-        );
-      }
-    }
-
-    return declaration;
-  });
-
-  const { code } = printSync(ast, {
+  const { code } = printSync(transformedAst, {
     minify: !isDev,
   });
 
