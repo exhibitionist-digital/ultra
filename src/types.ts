@@ -1,5 +1,3 @@
-import { TransformOptions as EsBuildTransformOptions } from "https://deno.land/x/esbuild@v0.12.24/mod.js";
-
 export type ImportMap = { imports: Record<string, string> };
 
 export type Navigate = (to: string, opts?: { replace?: boolean }) => void;
@@ -21,7 +19,6 @@ export type TransformOptions = {
   source: string;
   importMap: ImportMap;
   root: string;
-  loader?: EsBuildTransformOptions["loader"];
   cacheBuster?: number;
   env?: Record<string, unknown>;
 };
