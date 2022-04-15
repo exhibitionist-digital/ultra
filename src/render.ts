@@ -4,11 +4,9 @@ import ReactDOM from "react-dom/server";
 import { BaseLocationHook, Router } from "wouter";
 import { HelmetProvider } from "react-helmet";
 import app from "app";
-import { isDev } from "./env.ts";
+import { isDev, sourceDirectory } from "./env.ts";
 import type { Navigate, RenderOptions } from "./types.ts";
 import { ImportMapResolver } from "./importMapResolver.ts";
-
-const sourceDirectory = Deno.env.get("source") || "src";
 
 // FIXME: these react types are wrong now
 // renderToReadableStream not available yet in official types
