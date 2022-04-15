@@ -15,6 +15,10 @@ export class ImportMapResolver {
       scriptUrl,
     );
 
+    if (!resolvedImport.matched) {
+      throw new Error(`Failed to resolve "${specifier}" in importMap`);
+    }
+
     return resolvedImport;
   }
 }
