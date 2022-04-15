@@ -2,6 +2,10 @@ export type ImportMap = { imports: Record<string, string> };
 
 export type Navigate = (to: string, opts?: { replace?: boolean }) => void;
 
+export type Config = {
+  importMap?: string;
+};
+
 type Context = {
   request: Request;
   response: {

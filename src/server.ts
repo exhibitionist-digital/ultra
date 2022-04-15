@@ -1,10 +1,11 @@
-import { join, LRU, readableStreamFromReader, serve } from "./deps.ts";
+import { LRU, readableStreamFromReader, serve } from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
 import { jsxify, stripTrailingSlash, tsify, tsxify } from "./resolver.ts";
 import { isDev, port } from "./env.ts";
-import { APIHandler, ImportMap } from "./types.ts";
+import { APIHandler } from "./types.ts";
+import { resolveConfig, resolveImportMap } from "./config.ts";
 
 const memory = new LRU(500);
 
@@ -15,18 +16,8 @@ const root = Deno.env.get("root") || `http://localhost:${port}`;
 const lang = Deno.env.get("lang") || "en";
 const disableStreaming = Deno.env.get("disableStreaming") || 0;
 
-const configPath = join(cwd, Deno.env.get("config") || "./deno.json");
-const config = (await import(configPath, { assert: { type: "json" } })).default;
-
-const importMapPath = join(
-  cwd,
-  Deno.env.get("importMap") || config?.importMap ||
-    "./importMap.json",
-);
-
-const importMap = (await import(importMapPath, {
-  assert: { type: "json" },
-})).default as ImportMap;
+const config = await resolveConfig();
+const importMap = await resolveImportMap(config);
 
 const server = () => {
   const serverStart = Math.ceil(+new Date() / 100);
