@@ -21,7 +21,6 @@ Deno.test("importResolver", async (t) => {
   const resolver = new ImportMapResolver(importMap, baseUrl);
 
   await t.step("simple specifier", () => {
-    console.log(Deno.cwd());
     const react = resolver.resolve("react", new URL(import.meta.url));
     assertEquals(react.resolvedImport.href, "https://esm.sh/react");
 
