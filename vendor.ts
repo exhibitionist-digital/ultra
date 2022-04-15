@@ -2,5 +2,5 @@ import vendor from "./src/vendor.ts";
 
 await Deno.writeTextFile(
   `vendorMap.json`,
-  JSON.stringify(await vendor()),
+  JSON.stringify(await vendor(), null, 2),
 );

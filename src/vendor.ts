@@ -21,6 +21,7 @@ const vendor = async () => {
       vendorMap[key] = importMap?.imports[key];
       continue;
     }
+
     const p = new URL(importMap?.imports[key]);
     // these params force the 'browser' imports
     // these will work in BOTH deno and browser
@@ -28,7 +29,10 @@ const vendor = async () => {
     p.searchParams.append("no-check", "true");
 
     // create graph call
-    const graph = await createGraph(p.toString());
+    const graph = await createGraph(p.toString(), {
+      kind: "codeOnly",
+    });
+
     const { modules } = graph.toJSON();
 
     // loop through specifiers
