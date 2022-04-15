@@ -41,12 +41,12 @@ const render = async (
 ) => {
   const chunkSize = defaultChunkSize;
 
-  const httpResolver = new ImportMapResolver(
+  const importMapResolver = new ImportMapResolver(
     importMap,
     new URL(sourceDirectory, root),
   );
 
-  const resolvedAppImportUrl = httpResolver.resolve("app").resolvedImport;
+  const resolvedAppImportUrl = importMapResolver.resolve("app").resolvedImport;
 
   const transpiledAppImportUrl = new URL(
     `${resolvedAppImportUrl.origin}/${
@@ -105,15 +105,9 @@ const render = async (
     });
   }
 
-  const dependencyMap = new Map(requiredDependencies.map(
-    (dependency) => {
-      const resolvedDependency = httpResolver.resolve(dependency);
-      return [dependency, resolvedDependency.resolvedImport.href] as [
-        typeof requiredDependencies[number],
-        string,
-      ];
-    },
-  ));
+  const dependencyMap = importMapResolver.getDependencyMap(
+    requiredDependencies,
+  );
 
   // head builder
   const renderHead = () => {

@@ -17,4 +17,16 @@ export class ImportMapResolver {
 
     return resolvedImport;
   }
+
+  getDependencyMap<T extends Readonly<string[]>>(specifiers: T) {
+    return new Map(specifiers.map(
+      (dependency) => {
+        const resolvedDependency = this.resolve(dependency);
+        return [dependency, resolvedDependency.resolvedImport.href] as [
+          typeof specifiers[number],
+          string,
+        ];
+      },
+    ));
+  }
 }
