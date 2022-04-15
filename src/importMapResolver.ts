@@ -18,14 +18,16 @@ export class ImportMapResolver {
     return resolvedImport;
   }
 
+  /**
+   * Returns a Map with concrete keys based on the passed specifiers.
+   *
+   * @param specifiers An array of string import specifiers to be resolved from the importMap.
+   */
   getDependencyMap<T extends Readonly<string[]>>(specifiers: T) {
-    return new Map(specifiers.map(
+    return new Map<T[number], string>(specifiers.map(
       (dependency) => {
         const resolvedDependency = this.resolve(dependency);
-        return [dependency, resolvedDependency.resolvedImport.href] as [
-          typeof specifiers[number],
-          string,
-        ];
+        return [dependency, resolvedDependency.resolvedImport.href];
       },
     ));
   }

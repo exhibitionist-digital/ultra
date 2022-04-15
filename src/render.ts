@@ -28,6 +28,7 @@ const requiredDependencies = [
   "react-dom",
   "wouter",
   "react-helmet",
+  "app",
 ] as const;
 
 const render = async (
@@ -46,7 +47,11 @@ const render = async (
     new URL(sourceDirectory, root),
   );
 
-  const resolvedAppImportUrl = importMapResolver.resolve("app").resolvedImport;
+  const dependencyMap = importMapResolver.getDependencyMap(
+    requiredDependencies,
+  );
+
+  const resolvedAppImportUrl = new URL(dependencyMap.get("app")!);
 
   const transpiledAppImportUrl = new URL(
     `${resolvedAppImportUrl.origin}/${
@@ -104,10 +109,6 @@ const render = async (
       },
     });
   }
-
-  const dependencyMap = importMapResolver.getDependencyMap(
-    requiredDependencies,
-  );
 
   // head builder
   const renderHead = () => {
