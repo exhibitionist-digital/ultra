@@ -8,9 +8,9 @@ import {
 } from "./deps.ts";
 import { isDev } from "./env.ts";
 import { TransformOptions } from "./types.ts";
-import { hashFile } from "./resolver.ts";
 import { UltraVisitor } from "./ast/ultra.ts";
 import { ImportMapResolver } from "./importMapResolver.ts";
+import { VendorVisitor } from "./ast/vendor.ts";
 
 await initSwc("https://cdn.esm.sh/@swc/wasm-web@1.2.165/wasm_bg.wasm");
 
@@ -46,49 +46,19 @@ const transform = async (
 
 export default transform;
 
-let offset = 0;
-let length = 0;
-
 const vendor = async (
-  { source, root }: { source: string; root: string },
+  { source }: { source: string; root: string },
 ) => {
-  root;
-  let c = "";
+  const visitor = new VendorVisitor();
 
-  const code = source;
-  const ast = await parseSync(code, parserOptions) as Program;
+  const ast = await parseSync(source, parserOptions) as Program;
+  const transformedAst = visitor.visitProgram(ast);
 
-  ast.body.forEach((i) => {
-    const prefix = "./";
-    if (i.type == "ExportAllDeclaration") {
-      const { value, span } = i.source;
-      c += code.substring(offset - length, span.start - length);
-      const url = new URL(value);
-      c += `"${prefix + hashFile(value.replace(url.origin, ""))}.js"`;
-      offset = span.end;
-    }
-    if (i.type == "ExportNamedDeclaration") {
-      if (!i.source) return;
-      const { value, span } = i.source;
-      c += code.substring(offset - length, span.start - length);
-      const url = new URL(value);
-
-      c += `"${prefix + hashFile(value.replace(url.origin, ""))}.js"`;
-      offset = span.end;
-    }
-    if (i.type == "ImportDeclaration") {
-      const { value, span } = i.source;
-      c += code.substring(offset - length, span.start - length);
-
-      c += `"${prefix + hashFile(value)}.js"`;
-      offset = span.end;
-    }
+  const { code } = printSync(transformedAst, {
+    minify: !isDev,
   });
-  c += code.substring(offset - length, code.length + offset);
-  length += code.length + 1;
-  offset = length;
 
-  return c;
+  return code;
 };
 
 export { vendor };

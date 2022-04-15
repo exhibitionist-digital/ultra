@@ -48,11 +48,6 @@ export class UltraVisitor extends Visitor {
       ? resolvedImport.resolvedImport.href
       : value;
 
-    node.value = importMapResolved.replace(
-      "./.ultra",
-      "",
-    );
-
     const isCacheBustable = !isRemoteSource(importMapResolved) &&
       !isApiRoute(importMapResolved) && this.cacheTimestamp;
 

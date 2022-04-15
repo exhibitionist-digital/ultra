@@ -4,6 +4,7 @@
     "start": "deno run -A --unstable server.js",
     "cache": "deno cache --reload server.js",
     "vendor": "importMap=importMap.json deno run -A --unstable ../vendor.ts",
+    "vendor:dev": "importMap=vendorMap.json deno run -A --unstable --no-check --watch server.js",
     "e2e": "deno test --unstable -A",
     "build": "deno run -A ../build.ts"
   },
