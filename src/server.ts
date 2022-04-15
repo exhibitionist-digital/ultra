@@ -14,6 +14,7 @@ import {
 } from "./env.ts";
 import { APIHandler } from "./types.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
+import { resolveFileUrl } from "./utils/path.ts";
 
 const memory = new LRU(500);
 const cwd = Deno.cwd();
@@ -86,8 +87,9 @@ const server = () => {
       let js = memory.get(requestUrl.pathname);
 
       if (!js) {
-        const source = await Deno.readTextFile(`./${file}`);
+        const source = await Deno.readTextFile(resolveFileUrl(cwd, file));
         const t0 = performance.now();
+
         js = await transform({
           source,
           sourceUrl: requestUrl,
@@ -95,10 +97,12 @@ const server = () => {
           root,
           cacheBuster,
         });
+
         const t1 = performance.now();
-        console.log(
-          `Transpile ${file.replace(source, "")} in ${(t1 - t0).toFixed(2)}ms`,
-        );
+        const duration = (t1 - t0).toFixed(2);
+
+        console.log(`Transpile ${file} in ${duration}ms`);
+
         if (!isDev) memory.set(requestUrl.pathname, js);
       }
 
@@ -187,7 +191,7 @@ const server = () => {
   }
 
   console.log(`Ultra running ${root}`);
-  //@ts-ignore any
+
   return serve(handler, { port: +port });
 };
 

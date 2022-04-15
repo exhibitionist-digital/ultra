@@ -3,6 +3,7 @@ export { concat } from "https://deno.land/std@0.132.0/bytes/mod.ts";
 export {
   join,
   relative,
+  resolve,
   toFileUrl,
 } from "https://deno.land/std@0.132.0/path/mod.ts";
 export { Buffer } from "https://deno.land/std@0.132.0/io/mod.ts";
