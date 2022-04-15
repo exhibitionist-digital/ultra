@@ -4,20 +4,16 @@ import { ImportMap } from "./types.ts";
 export class ImportMapResolver {
   private parsedImportMap: ParsedImportMap;
 
-  constructor(importMap: ImportMap, baseUrl: URL) {
+  constructor(importMap: ImportMap, private baseUrl: URL) {
     this.parsedImportMap = parseImportMap(importMap, baseUrl);
   }
 
-  resolve(specifier: string, scriptUrl: URL) {
+  resolve(specifier: string, scriptUrl?: URL) {
     const resolvedImport = resolveImportMap(
       specifier,
       this.parsedImportMap,
-      scriptUrl,
+      scriptUrl || this.baseUrl,
     );
-
-    if (!resolvedImport.matched) {
-      throw new Error(`Failed to resolve "${specifier}" in importMap`);
-    }
 
     return resolvedImport;
   }

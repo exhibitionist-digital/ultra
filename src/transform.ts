@@ -10,6 +10,7 @@ import { isDev } from "./env.ts";
 import { TransformOptions } from "./types.ts";
 import { hashFile } from "./resolver.ts";
 import { UltraVisitor } from "./ast/ultra.ts";
+import { ImportMapResolver } from "./importMapResolver.ts";
 
 await initSwc("https://cdn.esm.sh/@swc/wasm-web@1.2.165/wasm_bg.wasm");
 
@@ -20,9 +21,10 @@ const parserOptions: ParseOptions = {
 };
 
 const transform = async (
-  { source, importMap, cacheBuster }: TransformOptions,
+  { source, importMap, root, cacheBuster }: TransformOptions,
 ) => {
-  const visitor = new UltraVisitor(importMap, cacheBuster);
+  const importMapResolver = new ImportMapResolver(importMap, new URL(root));
+  const visitor = new UltraVisitor(importMapResolver, cacheBuster);
 
   const transformResult = await transformSync(source, {
     jsc: {

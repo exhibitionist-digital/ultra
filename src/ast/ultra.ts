@@ -4,22 +4,17 @@ import {
   StringLiteral,
   Visitor,
 } from "../deps.ts";
-import { ImportMap } from "../types.ts";
 import { cacheBuster } from "../utils/cacheBuster.ts";
 import { isApiRoute } from "../utils/isApiRoute.ts";
 import { isRemoteSource } from "../utils/isRemoteSource.ts";
 import { ImportMapResolver } from "../importMapResolver.ts";
 
 export class UltraVisitor extends Visitor {
-  private importMapResolver: ImportMapResolver;
-
-  constructor(private importMap: ImportMap, private cacheTimestamp?: number) {
+  constructor(
+    private importMapResolver: ImportMapResolver,
+    private cacheTimestamp?: number,
+  ) {
     super();
-
-    this.importMapResolver = new ImportMapResolver(
-      importMap,
-      new URL(import.meta.url),
-    );
   }
 
   visitImportDeclaration(node: ImportDeclaration) {
@@ -44,7 +39,14 @@ export class UltraVisitor extends Visitor {
 
   private replaceImportStringLiteral(node: StringLiteral) {
     const { value } = node;
-    const importMapResolved = this.importMap.imports[value] || value;
+
+    const resolvedImport = this.importMapResolver.resolve(
+      value,
+    );
+
+    const importMapResolved = resolvedImport.matched
+      ? resolvedImport.resolvedImport.href
+      : value;
 
     node.value = importMapResolved.replace(
       "./.ultra",
@@ -65,12 +67,5 @@ export class UltraVisitor extends Visitor {
     node.raw = `"${node.value}"`;
 
     return node;
-  }
-
-  private resolveImport(specifier: string, scriptUrl: URL) {
-    return this.importMapResolver.resolve(
-      specifier,
-      scriptUrl,
-    );
   }
 }
