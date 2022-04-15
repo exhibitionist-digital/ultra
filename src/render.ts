@@ -1,4 +1,4 @@
-import { concat, extname, join } from "./deps.ts";
+import { concat, extname } from "./deps.ts";
 import React from "react";
 import ReactDOM from "react-dom/server";
 import { BaseLocationHook, Router } from "wouter";
@@ -6,6 +6,7 @@ import { HelmetProvider } from "react-helmet";
 import app from "app";
 import { isDev } from "./env.ts";
 import type { Navigate, RenderOptions } from "./types.ts";
+import { ImportMapResolver } from "./importMapResolver.ts";
 
 const sourceDirectory = Deno.env.get("source") || "src";
 
@@ -22,6 +23,13 @@ const sourceDirectory = Deno.env.get("source") || "src";
 // Size of the chunk to emit to the connection as the response streams:
 const defaultChunkSize = 8 * 1024;
 
+const requiredDependencies = [
+  "react",
+  "react-dom",
+  "wouter",
+  "react-helmet",
+] as const;
+
 const render = async (
   {
     url,
@@ -33,22 +41,29 @@ const render = async (
 ) => {
   const chunkSize = defaultChunkSize;
 
-  let importedApp;
-  let transpiledApp = importMap?.imports?.app?.replace(
-    `./${sourceDirectory}/`,
-    "",
+  const httpResolver = new ImportMapResolver(
+    importMap,
+    new URL(sourceDirectory, root),
   );
-  transpiledApp = transpiledApp?.replace(extname(transpiledApp), ".js");
+
+  const resolvedAppImportUrl = httpResolver.resolve("app").resolvedImport;
+
+  const transpiledAppImportUrl = new URL(
+    `${resolvedAppImportUrl.origin}/${
+      resolvedAppImportUrl.pathname.replace(`/${sourceDirectory}/`, "")
+    }`.replace(
+      extname(resolvedAppImportUrl.pathname),
+      ".js",
+    ),
+  );
+
+  let importedApp;
 
   // FIXME: when using vendor import maps, and in dev mode, the server render fails
   // this will detect if using vendor map and disable dynamically imported app.
   if (isDev && importMap?.imports?.["react"]?.indexOf(".ultra") < 0) {
-    importedApp = await import(
-      join(
-        root,
-        `${transpiledApp}?ts=${+new Date()}`,
-      )
-    );
+    transpiledAppImportUrl.searchParams.set("ts", String(+new Date()));
+    importedApp = await import(transpiledAppImportUrl.toString());
   }
 
   // kickstart caches for react-helmet and swr
@@ -90,6 +105,16 @@ const render = async (
     });
   }
 
+  const dependencyMap = new Map(requiredDependencies.map(
+    (dependency) => {
+      const resolvedDependency = httpResolver.resolve(dependency);
+      return [dependency, resolvedDependency.resolvedImport.href] as [
+        typeof requiredDependencies[number],
+        string,
+      ];
+    },
+  ));
+
   // head builder
   const renderHead = () => {
     const { helmet } = helmetContext;
@@ -101,14 +126,14 @@ const render = async (
       }<script type="module" defer>${
         isDev ? socket(root) : ""
       }import { createElement } from "${
-        importMap.imports["react"]?.replace("./.ultra", "")
+        dependencyMap.get("react")?.replace("./.ultra", "")
       }";import { hydrateRoot } from "${
-        importMap.imports["react-dom"]?.replace("./.ultra", "")
+        dependencyMap.get("react-dom")?.replace("./.ultra", "")
       }";import { Router } from "${
-        importMap.imports["wouter"]?.replace("./.ultra", "")
+        dependencyMap.get("wouter")?.replace("./.ultra", "")
       }";import { HelmetProvider } from "${
-        importMap.imports["react-helmet"]?.replace("./.ultra", "")
-      }";import App from "/${transpiledApp}";` +
+        dependencyMap.get("react-helmet")?.replace("./.ultra", "")
+      }";import App from "${transpiledAppImportUrl}";` +
       `const root = hydrateRoot(document.getElementById("ultra"),` +
       `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +
       `</script></head><body><div id="ultra">`;

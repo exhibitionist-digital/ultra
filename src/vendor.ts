@@ -43,7 +43,7 @@ const vendor = async () => {
         const hash = hashFile(url.pathname);
         await Deno.writeTextFile(
           `${directory}/${hash}.js`,
-          vendorTransform({
+          await vendorTransform({
             source: text,
             root: ".",
           }),

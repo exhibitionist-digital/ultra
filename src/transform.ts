@@ -54,8 +54,8 @@ const vendor = async (
 ) => {
   root;
   let c = "";
-  const code = source;
 
+  const code = source;
   const ast = await parseSync(code, parserOptions) as Program;
 
   ast.body.forEach((i) => {
