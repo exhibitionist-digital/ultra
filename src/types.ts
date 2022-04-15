@@ -23,9 +23,9 @@ export type TransformOptions = {
   source: string;
   sourceUrl: URL;
   importMap: ImportMap;
-  root: string;
   cacheBuster?: number;
   env?: Record<string, unknown>;
+  minify?: boolean;
 };
 
 export type Ultraloader = {

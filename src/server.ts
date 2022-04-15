@@ -94,7 +94,6 @@ const server = () => {
           source,
           sourceUrl: requestUrl,
           importMap,
-          root,
           cacheBuster,
         });
 

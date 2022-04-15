@@ -44,12 +44,12 @@ export class UltraVisitor extends Visitor {
       value,
     );
 
-    const importMapResolved = resolvedImport.matched
+    node.value = resolvedImport.matched
       ? resolvedImport.resolvedImport.href
       : value;
 
-    const isCacheBustable = !isRemoteSource(importMapResolved) &&
-      !isApiRoute(importMapResolved) && this.cacheTimestamp;
+    const isCacheBustable = !isRemoteSource(node.value) &&
+      !isApiRoute(node.value) && this.cacheTimestamp;
 
     if (isCacheBustable) {
       node.value = cacheBuster(

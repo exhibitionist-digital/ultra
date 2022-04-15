@@ -6,7 +6,6 @@ import {
   Program,
   transformSync,
 } from "./deps.ts";
-import { isDev } from "./env.ts";
 import { TransformOptions } from "./types.ts";
 import { UltraVisitor } from "./ast/ultra.ts";
 import { ImportMapResolver } from "./importMapResolver.ts";
@@ -20,9 +19,11 @@ const parserOptions: ParseOptions = {
   dynamicImport: true,
 };
 
-const transform = async (
-  { source, sourceUrl, importMap, cacheBuster }: TransformOptions,
-) => {
+export const transformSource = async (
+  options: TransformOptions,
+): Promise<string> => {
+  const { source, sourceUrl, importMap, cacheBuster, minify } = options;
+
   const importMapResolver = new ImportMapResolver(importMap, sourceUrl);
   const visitor = new UltraVisitor(importMapResolver, cacheBuster);
 
@@ -30,7 +31,6 @@ const transform = async (
     jsc: {
       parser: parserOptions,
       target: "es2019",
-      transform: {},
     },
   });
 
@@ -38,24 +38,24 @@ const transform = async (
   const transformedAst = visitor.visitProgram(ast);
 
   const { code } = printSync(transformedAst, {
-    minify: !isDev,
+    minify,
   });
 
   return code;
 };
 
-export default transform;
+export default transformSource;
 
 const vendor = async (
   { source }: { source: string; root: string },
-) => {
+): Promise<string> => {
   const visitor = new VendorVisitor();
 
   const ast = await parseSync(source, parserOptions) as Program;
   const transformedAst = visitor.visitProgram(ast);
 
   const { code } = printSync(transformedAst, {
-    minify: !isDev,
+    minify: true,
   });
 
   return code;
