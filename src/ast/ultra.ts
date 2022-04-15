@@ -8,10 +8,18 @@ import { ImportMap } from "../types.ts";
 import { cacheBuster } from "../utils/cacheBuster.ts";
 import { isApiRoute } from "../utils/isApiRoute.ts";
 import { isRemoteSource } from "../utils/isRemoteSource.ts";
+import { ImportMapResolver } from "../importMapResolver.ts";
 
 export class UltraVisitor extends Visitor {
+  private importMapResolver: ImportMapResolver;
+
   constructor(private importMap: ImportMap, private cacheTimestamp?: number) {
     super();
+
+    this.importMapResolver = new ImportMapResolver(
+      importMap,
+      new URL(import.meta.url),
+    );
   }
 
   visitImportDeclaration(node: ImportDeclaration) {
@@ -57,5 +65,12 @@ export class UltraVisitor extends Visitor {
     node.raw = `"${node.value}"`;
 
     return node;
+  }
+
+  private resolveImport(specifier: string, scriptUrl: URL) {
+    return this.importMapResolver.resolve(
+      specifier,
+      scriptUrl,
+    );
   }
 }

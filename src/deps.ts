@@ -25,3 +25,8 @@ export {
 } from "https://esm.sh/@swc/wasm-web@1.2.165/wasm.js";
 export { emptyDir, ensureDir } from "https://deno.land/std@0.132.0/fs/mod.ts";
 export { crypto } from "https://deno.land/std@0.132.0/crypto/mod.ts";
+export {
+  parse as parseImportMap,
+  resolve as resolveImportMap,
+} from "https://esm.sh/@import-maps/resolve@1.0.1";
+export type { ParsedImportMap } from "https://esm.sh/@import-maps/resolve@1.0.1";
