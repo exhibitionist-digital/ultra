@@ -17,6 +17,7 @@ export type OakOptions = {
 
 export type TransformOptions = {
   source: string;
+  sourceUrl: URL;
   importMap: ImportMap;
   root: string;
   cacheBuster?: number;

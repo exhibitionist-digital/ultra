@@ -83,6 +83,7 @@ const server = () => {
         const t0 = performance.now();
         js = await transform({
           source,
+          sourceUrl: url,
           importMap,
           root,
           cacheBuster,

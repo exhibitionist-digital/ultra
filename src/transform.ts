@@ -21,9 +21,9 @@ const parserOptions: ParseOptions = {
 };
 
 const transform = async (
-  { source, importMap, root, cacheBuster }: TransformOptions,
+  { source, sourceUrl, importMap, cacheBuster }: TransformOptions,
 ) => {
-  const importMapResolver = new ImportMapResolver(importMap, new URL(root));
+  const importMapResolver = new ImportMapResolver(importMap, sourceUrl);
   const visitor = new UltraVisitor(importMapResolver, cacheBuster);
 
   const transformResult = await transformSync(source, {
