@@ -1,9 +1,9 @@
 import { concat, extname } from "./deps.ts";
 import React from "react";
 import ReactDOM from "react-dom/server";
+import App from "app";
 import { BaseLocationHook, Router } from "wouter";
 import { HelmetProvider } from "react-helmet";
-import app from "app";
 import { isDev, sourceDirectory } from "./env.ts";
 import type { Navigate, RenderOptions } from "./types.ts";
 import { ImportMapResolver } from "./importMapResolver.ts";
@@ -76,6 +76,7 @@ const render = async (
   // this uses the new promisied react stream render available in rc.1
   const controller = new AbortController();
   let body;
+
   try {
     // @ts-ignore fix react stream types
     body = await ReactDOM.renderToReadableStream(
@@ -86,7 +87,7 @@ const render = async (
           HelmetProvider,
           { context: helmetContext },
           React.createElement(
-            importedApp?.default || app,
+            importedApp?.default || App,
             { cache },
             null,
           ),
@@ -119,13 +120,13 @@ const render = async (
       }<script type="module" defer>${
         isDev ? socket(root) : ""
       }import { createElement } from "${
-        dependencyMap.get("react")?.replace("./.ultra", "")
+        dependencyMap.get("react")
       }";import { hydrateRoot } from "${
-        dependencyMap.get("react-dom")?.replace("./.ultra", "")
+        dependencyMap.get("react-dom")
       }";import { Router } from "${
-        dependencyMap.get("wouter")?.replace("./.ultra", "")
+        dependencyMap.get("wouter")
       }";import { HelmetProvider } from "${
-        dependencyMap.get("react-helmet")?.replace("./.ultra", "")
+        dependencyMap.get("react-helmet")
       }";import App from "${transpiledAppImportUrl}";` +
       `const root = hydrateRoot(document.getElementById("ultra"),` +
       `createElement(Router, null, createElement(HelmetProvider, null, createElement(App))))` +
