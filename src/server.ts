@@ -3,18 +3,20 @@ import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
 import { jsxify, stripTrailingSlash, tsify, tsxify } from "./resolver.ts";
-import { isDev, port } from "./env.ts";
+import {
+  disableStreaming,
+  isDev,
+  lang,
+  port,
+  root,
+  sourceDirectory,
+  vendorDirectory,
+} from "./env.ts";
 import { APIHandler } from "./types.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
 
 const memory = new LRU(500);
-
 const cwd = Deno.cwd();
-const sourceDirectory = Deno.env.get("source") || "src";
-const vendorDirectory = Deno.env.get("vendor") || "x";
-const root = Deno.env.get("root") || `http://localhost:${port}`;
-const lang = Deno.env.get("lang") || "en";
-const disableStreaming = Deno.env.get("disableStreaming") || 0;
 
 const config = await resolveConfig();
 const importMap = await resolveImportMap(config);
