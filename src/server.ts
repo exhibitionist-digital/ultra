@@ -18,8 +18,8 @@ import { resolveConfig, resolveImportMap } from "./config.ts";
 const memory = new LRU(500);
 const cwd = Deno.cwd();
 
-const config = await resolveConfig();
-const importMap = await resolveImportMap(config);
+const config = await resolveConfig(cwd);
+const importMap = await resolveImportMap(cwd, config);
 
 const server = () => {
   const serverStart = Math.ceil(+new Date() / 100);
