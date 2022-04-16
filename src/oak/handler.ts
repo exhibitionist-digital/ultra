@@ -31,12 +31,12 @@ const server = (
     const cacheBuster = isDev ? requestStart : serverStart;
     const { raw, transpile } = await assets(sourceDirectory);
     const x = await assets(`.ultra/${vendorDirectory}`);
-    const url = new URL(request.url);
+    const requestUrl = new URL(request.url);
 
     // vendor map
-    if (x.raw.has(`.ultra${url.pathname}`)) {
+    if (x.raw.has(`.ultra${requestUrl.pathname}`)) {
       const file = await Deno.open(
-        `./.ultra${url.pathname}`,
+        `./.ultra${requestUrl.pathname}`,
       );
       const body = readableStreamFromReader(file);
       context.response.body = body;
@@ -44,23 +44,25 @@ const server = (
     }
 
     // static assets
-    if (raw.has(`${sourceDirectory}${url.pathname}`)) {
-      const file = await Deno.open(`./${sourceDirectory}${url.pathname}`);
+    if (raw.has(`${sourceDirectory}${requestUrl.pathname}`)) {
+      const file = await Deno.open(
+        `./${sourceDirectory}${requestUrl.pathname}`,
+      );
       const body = readableStreamFromReader(file);
       context.response.body = body;
       return;
     }
 
     const transpilation = async (file: string) => {
-      let js = memory.get(url.pathname);
+      let js = memory.get(requestUrl.pathname);
 
       if (!js) {
         const source = await Deno.readTextFile(`./${file}`);
         const t0 = performance.now();
         js = await transform({
           source,
+          sourceUrl: requestUrl,
           importMap,
-          root,
           cacheBuster,
           env,
         });
@@ -68,7 +70,7 @@ const server = (
         console.log(
           `Transpile ${file.replace(sourceDirectory, "")} in ${t1 - t0}ms`,
         );
-        if (!isDev) memory.set(url.pathname, js);
+        if (!isDev) memory.set(requestUrl.pathname, js);
       }
       context.response.type = "text/javascript";
       // @ts-ignore add js type
@@ -77,26 +79,26 @@ const server = (
     };
 
     // jsx
-    const jsx = `${sourceDirectory}${jsxify(url.pathname)}`;
+    const jsx = `${sourceDirectory}${jsxify(requestUrl.pathname)}`;
     if (transpile.has(jsx)) {
       return await transpilation(jsx);
     }
 
     // tsx
-    const tsx = `${sourceDirectory}${tsxify(url.pathname)}`;
+    const tsx = `${sourceDirectory}${tsxify(requestUrl.pathname)}`;
     if (transpile.has(tsx)) {
       return await transpilation(tsx);
     }
 
     // ts
-    const ts = `${sourceDirectory}${tsify(url.pathname)}`;
+    const ts = `${sourceDirectory}${tsify(requestUrl.pathname)}`;
     if (transpile.has(ts)) {
       return await transpilation(ts);
     }
 
     context.response.type = "text/html";
     context.response.body = await render({
-      url,
+      url: requestUrl,
       root,
       importMap,
       lang,
