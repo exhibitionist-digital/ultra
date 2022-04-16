@@ -1,4 +1,7 @@
 {
+  "tasks": {
+    "test": "deno test -A --unstable"
+  },
   "lint": {
     "files": {
       "exclude": ["workspace/.ultra/"]

@@ -39,7 +39,7 @@ Deno.test("resolvers", async (t) => {
   await t.step("tsxify", () => {
     assertEquals(tsxify("./app.jsx"), "./app.tsx");
   });
-  await t.step("strip trailing slach", () => {
+  await t.step("strip trailing slash", () => {
     assertEquals(
       stripTrailingSlash("https://ultrajs.dev/"),
       "https://ultrajs.dev",
