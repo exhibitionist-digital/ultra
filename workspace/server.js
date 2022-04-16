@@ -1,3 +1,3 @@
-import ultra from "../mod.ts";
+import ultra from "../ultra.ts";
 
 await ultra();

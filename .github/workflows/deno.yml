@@ -1,4 +1,4 @@
-name: fmt + lint
+name: fmt, lint + test
 
 on:
   push:
@@ -25,3 +25,6 @@ jobs:
 
       - name: Run linter
         run: deno lint
+      
+      - name: Run tests
+        run: deno test -A --unstable

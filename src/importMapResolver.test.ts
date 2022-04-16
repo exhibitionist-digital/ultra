@@ -14,7 +14,7 @@ Deno.test("importResolver", async (t) => {
   };
 
   function assertFileHrefEquals(href: string, expected: string) {
-    return assertEquals(href, `file://${Deno.cwd()}/tests/${expected}`);
+    return assertEquals(href, `file://${Deno.cwd()}/src/${expected}`);
   }
 
   const baseUrl = new URL(import.meta.url);

@@ -1,6 +1,6 @@
 import { createGraph, emptyDir, ensureDir } from "./deps.ts";
 import { vendor as vendorTransform } from "./transform.ts";
-import { hashFile, isValidURL } from "./resolver.ts";
+import { hashFile, isValidUrl } from "./resolver.ts";
 
 const vendorDirectory = Deno.env.get("vendor") || "x";
 const importMapPath = Deno.env.get("importMap") || "importMap.json";
@@ -17,7 +17,7 @@ const vendor = async () => {
 
   // for our original import map, loop through keys
   for (const key of Object.keys(importMap?.imports)) {
-    if (!isValidURL(importMap?.imports[key])) {
+    if (!isValidUrl(importMap?.imports[key])) {
       vendorMap[key] = importMap?.imports[key];
       continue;
     }
@@ -39,7 +39,7 @@ const vendor = async () => {
     for (const { specifier } of modules) {
       const path = specifier;
       if (path) {
-        if (!isValidURL(path)) continue;
+        if (!isValidUrl(path)) continue;
         const url = new URL(path);
         console.log(`Vendoring ${path}`);
         const file = await fetch(path);

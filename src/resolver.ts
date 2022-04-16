@@ -16,7 +16,7 @@ export const tsxify = (file: string) => {
   return file.replace(extname(file), ".tsx");
 };
 
-export const isValidURL = (url: string) => {
+export const isValidUrl = (url: string) => {
   try {
     return new URL(url);
   } catch (_e) {
@@ -36,6 +36,6 @@ export const hashFile = (url: string) => {
   return hashHex;
 };
 
-export function stripTrailingSlash(url: string) {
+export const stripTrailingSlash = (url: string) => {
   return url.endsWith("/") ? url.slice(0, -1) : url;
-}
+};
