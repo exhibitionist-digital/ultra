@@ -35,43 +35,21 @@ It's driven by the following hot-takes:
 
 ---
 
-### 👯 Community
+### 🌈 v1.0.0 @__@
+
+- Total overhaul of transforms, migration to brand new
+  [@swc/wasm-web](https://swc.rs/docs/usage/wasm)!
+- Esbuild removed!
+- Tests!
+- Integrations with [MDX](https://mdxjs.com)!
+- Improvements to API routes!
+- New [website](https://ultrajs.dev)!
+
+---
+
+### Community
 
 We now have a [Discord](https://discord.gg/9BMpE96CZt). Come say HI.
-
----
-
-### 🙌 next
-
-We are working towards the next milestone.
-[v1.0.0](https://github.com/exhibitionist-digital/ultra/milestone/2) 🗿
-
----
-
-### 🚧 v0.8.0
-
-Heaps of updates in v0.8.0! Because of these new features. Please ensure you are
-using at least Deno `v1.20.3`
-
-- **Vendored dependencies!** We have a script that can take your CDN deps and
-  make them local.
-- **API routes!** (Thanks @Industrial)
-- Option to **disable streaming** 😱. Passing the env `disableStreaming=1` will
-  force Ultra to use a custom `renderToString` equivalent - returning a **fully
-  resolved, suspense compatible**, html page! (BETA)
-- **Websocket refresh** in dev mode. Ultra will restart on local changes.
-- Full support for
-  [react@18](https://github.com/reactjs/rfcs/blob/react-18/text/0000-react-18.md):
-  There were some updates to how
-  [streams are handled](https://github.com/reactwg/react-18/discussions/122) in
-  the latest `rc`.
-- Tighter integration with
-  [Deno config file](https://deno.land/manual/getting_started/configuration_file).
-  Specifiying your `importMap` in `deno.json` is **required**
-- Removal of `makefile` in favour of
-  [deno task](https://deno.com/blog/v1.20#new-subcommand-deno-task)
-- **Legacy**: We also export an [Oak](https://deno.land/x/oak) compatible
-  `ultraHandler` for support inside of an pre-existing Oak project
 
 ---
 
