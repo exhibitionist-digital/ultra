@@ -40,8 +40,9 @@ It's driven by the following hot-takes:
 - Total overhaul of transforms, migration to brand new
   [@swc/wasm-web](https://swc.rs/docs/usage/wasm)!
 - Esbuild removed!
+- Unfettered support for React 18!
 - Tests!
-- Integrations with [MDX](https://mdxjs.com)!
+- Example integration with [@mdx-js/mdx](https://mdxjs.com)!
 - Improvements to API routes!
 - Updated [docs](https://ultrajs.dev/docs)!
 - New [website](https://ultrajs.dev)!
