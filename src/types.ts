@@ -26,6 +26,7 @@ export type TransformOptions = {
   cacheBuster?: number;
   env?: Record<string, unknown>;
   minify?: boolean;
+  relativePrefix?: string;
 };
 
 export type Ultraloader = {

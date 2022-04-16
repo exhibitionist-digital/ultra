@@ -5,14 +5,14 @@ import {
   Visitor,
 } from "../deps.ts";
 import { cacheBuster } from "../utils/cacheBuster.ts";
-import { isApiRoute } from "../utils/isApiRoute.ts";
-import { isRemoteSource } from "../utils/isRemoteSource.ts";
 import { ImportMapResolver } from "../importMapResolver.ts";
 
 export class UltraVisitor extends Visitor {
   constructor(
     private importMapResolver: ImportMapResolver,
     private cacheTimestamp?: number,
+    private relativePrefix?: string,
+    private sourceUrl?: URL,
   ) {
     super();
   }
@@ -48,15 +48,17 @@ export class UltraVisitor extends Visitor {
       ? resolvedImport.resolvedImport.href
       : value;
 
-    const isCacheBustable = !isRemoteSource(node.value) &&
-      !isApiRoute(node.value) && this.cacheTimestamp;
-
-    if (isCacheBustable) {
-      node.value = cacheBuster(
-        node.value,
-        this.cacheTimestamp,
+    if (this.relativePrefix) {
+      node.value = node.value.replace(
+        this?.sourceUrl?.href || "",
+        this.relativePrefix,
       );
     }
+
+    node.value = cacheBuster(
+      node.value,
+      this.cacheTimestamp,
+    );
 
     //@ts-ignore StringLiteral missing raw field
     node.raw = `"${node.value}"`;

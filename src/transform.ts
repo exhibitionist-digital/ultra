@@ -22,15 +22,21 @@ const parserOptions: ParseOptions = {
 export const transformSource = async (
   options: TransformOptions,
 ): Promise<string> => {
-  const { source, sourceUrl, importMap, cacheBuster, minify } = options;
+  const { source, sourceUrl, importMap, cacheBuster, minify, relativePrefix } =
+    options;
 
   const importMapResolver = new ImportMapResolver(importMap, sourceUrl);
-  const visitor = new UltraVisitor(importMapResolver, cacheBuster);
+  const visitor = new UltraVisitor(
+    importMapResolver,
+    cacheBuster,
+    relativePrefix,
+    sourceUrl,
+  );
 
   const transformResult = await transformSync(source, {
     jsc: {
       parser: parserOptions,
-      target: "es2019",
+      target: "es2021",
     },
   });
 

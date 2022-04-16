@@ -66,8 +66,9 @@ const build = async () => {
 
     const js = await transform({
       source,
+      sourceUrl: new URL(root),
       importMap: localMap,
-      root,
+      relativePrefix: prefix,
     });
 
     const directory = file.split("/");
@@ -115,8 +116,9 @@ const build = async () => {
 
   const assetTrans = await transform({
     source: assetText,
+    sourceUrl: new URL(root),
     importMap: denoMap,
-    root,
+    relativePrefix: "./",
   });
 
   await Deno.writeTextFile(`./.ultra/assets.js`, assetTrans);
@@ -129,8 +131,9 @@ const build = async () => {
 
   const renderTrans = await transform({
     source: renderText,
+    sourceUrl: new URL(root),
     importMap: denoMap,
-    root,
+    relativePrefix: "./",
   });
   await Deno.writeTextFile(`./.ultra/render.js`, renderTrans);
 
@@ -141,14 +144,18 @@ const build = async () => {
   const envText = await envReq.text();
   const envTrans = await transform({
     source: envText,
+    sourceUrl: new URL(root),
     importMap: denoMap,
-    root,
+    relativePrefix: "./",
   });
   await Deno.writeTextFile(`./.ultra/env.js`, envTrans);
 
   // API
   const api = await assets(apiDirectory);
-  const apiPaths = [...api.raw.keys(), ...api.transpile.keys()];
+  const apiPaths = [
+    ...(api?.raw?.keys() || []),
+    ...(api?.transpile?.keys() || []),
+  ];
 
   let apiImports = "";
   let apiRoutes = "";
@@ -171,16 +178,15 @@ const build = async () => {
   ultraText = ultraText.replace("//API//", apiRoutes);
   const ultraTrans = await transform({
     source: ultraText,
+    sourceUrl: new URL(root),
     importMap: denoMap,
-    root,
+    relativePrefix: "./",
   });
   await ensureDir("./.ultra/deno/");
   await Deno.writeTextFile(`./.ultra/deno/server.js`, ultraTrans);
 
   // server
   const server = `import ultra from "./deno/server.js";
-  const importMap = await Deno.readTextFile("./importMap.json")
-
   await ultra();`;
 
   await Deno.writeTextFile(`./.ultra/ULTRA.js`, server);
