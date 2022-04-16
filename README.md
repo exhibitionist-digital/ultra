@@ -35,7 +35,7 @@ It's driven by the following hot-takes:
 
 ---
 
-### 🌈 v1.0.0 @__@
+### ‼️ v1.0.0 @__@
 
 - Total overhaul of transforms, migration to brand new
   [@swc/wasm-web](https://swc.rs/docs/usage/wasm)!
