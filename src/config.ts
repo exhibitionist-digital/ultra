@@ -1,5 +1,5 @@
 import { Config, ImportMap } from "./types.ts";
-import { resolveFileUrl } from "./utils/path.ts";
+import { resolveFileUrl } from "./resolver.ts";
 
 const CONFIG_ENV = Deno.env.get("config");
 const IMPORT_MAP_ENV = Deno.env.get("importMap");

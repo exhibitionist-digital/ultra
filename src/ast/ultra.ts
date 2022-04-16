@@ -4,7 +4,7 @@ import {
   StringLiteral,
   Visitor,
 } from "../deps.ts";
-import { cacheBuster } from "../utils/cacheBuster.ts";
+import { cacheBuster } from "../resolver.ts";
 import { ImportMapResolver } from "../importMapResolver.ts";
 
 export class UltraVisitor extends Visitor {

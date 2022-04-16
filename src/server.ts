@@ -2,7 +2,13 @@ import { LRU, readableStreamFromReader, serve } from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
-import { jsxify, stripTrailingSlash, tsify, tsxify } from "./resolver.ts";
+import {
+  jsxify,
+  resolveFileUrl,
+  stripTrailingSlash,
+  tsify,
+  tsxify,
+} from "./resolver.ts";
 import {
   disableStreaming,
   isDev,
@@ -14,7 +20,6 @@ import {
 } from "./env.ts";
 import { APIHandler } from "./types.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
-import { resolveFileUrl } from "./utils/path.ts";
 
 const memory = new LRU(500);
 const cwd = Deno.cwd();
