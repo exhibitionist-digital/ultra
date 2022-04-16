@@ -37,7 +37,7 @@ It's driven by the following hot-takes:
 
 ### 👯 Community
 
-We now have a [Discord](https://discord.gg/gNDRMv8p). Come say HI.
+We now have a [Discord](https://discord.gg/9BMpE96CZt). Come say HI.
 
 ---
 
@@ -112,6 +112,6 @@ Here some things we are interested in for the future of JS and/or Ultra:
 [docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&color=000000&
 [docs]: https://ultrajs.dev/docs
 [discord-badge]: https://img.shields.io/discord/956480805088153620?logo=discord&label=Discord&color=000000&&logoColor=ffffff
-[discord]: https://ultrajs.dev/docs
+[discord]: https://discord.gg/9BMpE96CZt
 [actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?color=000000&logo=github&label=Tests
 [actions]: https://github.com/exhibitionist-digital/ultra/actions
