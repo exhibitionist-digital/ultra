@@ -43,6 +43,7 @@ It's driven by the following hot-takes:
 - Tests!
 - Integrations with [MDX](https://mdxjs.com)!
 - Improvements to API routes!
+- Updated [docs](https://ultrajs.dev/docs)!
 - New [website](https://ultrajs.dev)!
 
 ---
