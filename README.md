@@ -8,6 +8,7 @@
 
 [ultrajs.dev](https://ultrajs.dev)
 
+[![Discord][discord-badge]][discord]
 [![GitHub Workflow Status][actions-badge]][actions]
 [![deno module](https://shield.deno.dev/x/ultra)](https://deno.land/x/ultra)
 ![deno compatibility](https://shield.deno.dev/deno/^1.20.3)
@@ -36,7 +37,7 @@ It's driven by the following hot-takes:
 
 ### 👯 Community
 
-We now have a [Discord](https://discord.gg/gNDRMv8p). Come say HI.
+We now have a [Discord](https://discord.gg/9BMpE96CZt). Come say HI.
 
 ---
 
@@ -108,7 +109,9 @@ Here some things we are interested in for the future of JS and/or Ultra:
 
 **Thank you for going on this journey with us.**
 
-[docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&color=B06892&
-[docs]: https://ultrajs.dev/docs&
-[actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?color=000000&logo=github&label=
+[docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&color=000000&
+[docs]: https://ultrajs.dev/docs
+[discord-badge]: https://img.shields.io/discord/956480805088153620?logo=discord&label=Discord&color=000000&&logoColor=ffffff
+[discord]: https://discord.gg/9BMpE96CZt
+[actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?color=000000&logo=github&label=Tests
 [actions]: https://github.com/exhibitionist-digital/ultra/actions
