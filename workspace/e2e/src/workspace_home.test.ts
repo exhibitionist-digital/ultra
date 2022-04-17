@@ -6,8 +6,9 @@ import { launchLocalhostBrowser, startTestServer } from "./helpers.ts";
 
 Deno.test("e2e", async (t) => {
   const server = await startTestServer();
+  const browser = await launchLocalhostBrowser();
 
-  t.step(
+  await t.step(
     "Should render home page of workspace example app with expected text",
     async () => {
       const expectations = [
@@ -15,11 +16,7 @@ Deno.test("e2e", async (t) => {
         { text: "component.jsx", selector: "h2" },
       ];
 
-      let browser: Awaited<ReturnType<typeof launchLocalhostBrowser>>;
-
       try {
-        browser = await launchLocalhostBrowser();
-
         const page = await browser.newPage();
         await page.setViewport({ width: 979, height: 865 });
         await page.goto("http://localhost:8000/");
@@ -37,12 +34,13 @@ Deno.test("e2e", async (t) => {
           }
         }
       } catch (error) {
-        fail(error.message);
+        throw error;
       }
-
-      await browser.close();
     },
   );
 
+  await browser.close();
+  server?.stdout.close();
+  server?.stderr.close();
   server?.close();
 });

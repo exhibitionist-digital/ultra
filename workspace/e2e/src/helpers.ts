@@ -1,7 +1,6 @@
 import puppeteer from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
 import { join } from "https://deno.land/std@0.135.0/path/mod.ts";
 import { readLines } from "https://deno.land/std@0.135.0/io/mod.ts";
-import { fail } from "https://deno.land/std@0.135.0/testing/asserts.ts";
 
 export async function startTestServer() {
   const serverProcess = Deno.run({
@@ -30,10 +29,11 @@ export async function launchLocalhostBrowser() {
   try {
     const browser = await puppeteer.launch({
       headless: true,
+      args: ["--no-sandbox"],
     });
 
     return browser;
   } catch (error) {
-    fail(error);
+    throw error;
   }
 }

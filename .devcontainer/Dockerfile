@@ -57,7 +57,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     xdg-utils \
     libdrm2 \
     libxkbcommon0 \
-    libxshmfence1
+    libxshmfence1 \
+    libgbm-dev
 
 # [Testing] Installs chrome for running puppeteer and e2e test suites
 RUN su vscode -c "PUPPETEER_PRODUCT=chrome deno run -A --unstable https://deno.land/x/puppeteer@9.0.2/install.ts"
