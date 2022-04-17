@@ -1,10 +1,12 @@
 import { createGraph, emptyDir, ensureDir } from "./deps.ts";
 import { vendor as vendorTransform } from "./transform.ts";
 import { hashFile, isValidUrl } from "./resolver.ts";
+import { resolveConfig, resolveImportMap } from "./config.ts";
+import { vendorDirectory } from "./env.ts";
 
-const vendorDirectory = Deno.env.get("vendor") || "x";
-const importMapPath = Deno.env.get("importMap") || "importMap.json";
-const importMap = JSON.parse(await Deno.readTextFile(importMapPath));
+const cwd = Deno.cwd();
+const config = await resolveConfig(cwd);
+const importMap = await resolveImportMap(cwd, config);
 
 const vendor = async () => {
   // setup directories
