@@ -127,7 +127,7 @@ const server = () => {
         } else if (raw.has(`${path}/index.ts`)) {
           path = `file://${cwd}/${path}/index.ts`;
         }
-        return (await import(path)).default;
+        return (await import(`${path}?ts=${cacheBuster}`)).default;
       };
       try {
         const pathname = stripTrailingSlash(requestUrl.pathname);
