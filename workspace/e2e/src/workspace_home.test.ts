@@ -40,7 +40,5 @@ Deno.test("e2e", async (t) => {
   );
 
   await browser.close();
-  server?.stdout.close();
-  server?.stderr.close();
   server?.close();
 });

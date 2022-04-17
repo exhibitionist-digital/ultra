@@ -18,7 +18,14 @@ export async function startTestServer() {
   for await (const line of readLines(serverProcess.stdout)) {
     if (line.includes("Ultra running")) {
       console.log(line);
-      return serverProcess;
+
+      return {
+        close() {
+          serverProcess.stderr.close();
+          serverProcess.stdout.close();
+          serverProcess.close();
+        },
+      };
     }
   }
 
