@@ -19,6 +19,13 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
+      
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.deno
+            ~/.cache/deno
+          key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
 
       - name: Verify formatting
         run: deno fmt --check
@@ -28,3 +35,9 @@ jobs:
       
       - name: Run tests
         run: deno task test
+
+      - name: Install Chromium
+        run: PUPPETEER_PRODUCT=chrome deno run -A --unstable https://deno.land/x/puppeteer@9.0.2/install.ts
+
+      # - name: Run e2e tests
+      #   run: deno task test:e2e
