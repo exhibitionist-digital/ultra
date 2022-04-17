@@ -1,6 +1,7 @@
 {
   "tasks": {
-    "test": "deno test -A --unstable"
+    "test": "deno test -A --unstable src/",
+    "test:e2e": "deno test -A --unstable workspace/e2e/"
   },
   "lint": {
     "files": {
