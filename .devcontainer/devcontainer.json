@@ -1,0 +1,26 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.205.1/containers/deno
+{
+  "name": "Ultra.js",
+
+  "build": {
+    "dockerfile": "Dockerfile",
+    // Update 'VARIANT' to pick an Debian OS version: bullseye, buster
+    "args": {
+      "VARIANT": "bullseye"
+    }
+  },
+
+  // This will install the vscode-deno extension
+  "extensions": ["denoland.vscode-deno"],
+
+  "runArgs": [
+    "--network",
+    "host"
+  ],
+
+  "remoteUser": "vscode",
+  "features": {
+    "docker-from-docker": "latest"
+  }
+}

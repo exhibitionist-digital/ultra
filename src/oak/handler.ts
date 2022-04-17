@@ -3,20 +3,16 @@ import assets from "../assets.ts";
 import transform from "../transform.ts";
 import render from "../render.ts";
 import { jsxify, tsify, tsxify } from "../resolver.ts";
-import { isDev } from "../env.ts";
+import { isDev, lang, root, sourceDirectory, vendorDirectory } from "../env.ts";
+import { resolveConfig, resolveImportMap } from "../config.ts";
 
 import { OakOptions } from "../types.ts";
 
 const memory = new LRU(500);
+const cwd = Deno.cwd();
 
-const sourceDirectory = Deno.env.get("source") || "src";
-const vendorDirectory = Deno.env.get("vendor") || "x";
-const configPath = Deno.env.get("config") || "./deno.json";
-const root = Deno.env.get("root") || "http://localhost:8000";
-const lang = Deno.env.get("lang") || "en";
-
-const config = JSON.parse(Deno.readTextFileSync(configPath));
-const importMap = JSON.parse(Deno.readTextFileSync(config?.importMap));
+const config = await resolveConfig(cwd);
+const importMap = await resolveImportMap(cwd, config);
 
 const server = (
   {

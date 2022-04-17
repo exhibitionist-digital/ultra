@@ -15,7 +15,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup Deno
-        # uses: denoland/setup-deno@v1
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
@@ -36,8 +35,11 @@ jobs:
       - name: Run tests
         run: deno task test
 
-      - name: Install Chromium
-        run: PUPPETEER_PRODUCT=chrome deno run -A --unstable https://deno.land/x/puppeteer@9.0.2/install.ts
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
 
-      # - name: Run e2e tests
-      #   run: deno task test:e2e
+      - name: Verify chrome version
+        run: chrome --version
+
+      - name: Run e2e tests
+        run: deno task test:e2e
