@@ -2,9 +2,9 @@ import React, { ReactNode } from "react";
 
 export default function BigComponent({ children }: { children?: ReactNode }) {
   return (
-    <div>
+    <h3>
       This is a lazily loaded component
       {children}
-    </div>
+    </h3>
   );
 }

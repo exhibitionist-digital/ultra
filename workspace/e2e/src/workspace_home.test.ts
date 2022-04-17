@@ -14,12 +14,15 @@ Deno.test("e2e", async (t) => {
       const expectations = [
         { text: "ULTRA", selector: "h1" },
         { text: "component.jsx", selector: "h2" },
+        { text: "This is a lazily loaded component", selector: "h3" },
       ];
 
       try {
         const page = await browser.newPage();
         await page.setViewport({ width: 979, height: 865 });
-        await page.goto("http://localhost:8000/");
+        await page.goto("http://localhost:8000/", {
+          waitUntil: "networkidle0",
+        });
 
         for (const expected of expectations) {
           const selection = await page.waitForSelector(expected.selector);
