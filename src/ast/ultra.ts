@@ -4,7 +4,7 @@ import {
   StringLiteral,
   Visitor,
 } from "../deps.ts";
-import { cacheBuster } from "../resolver.ts";
+import { cacheBuster, isRemoteSource } from "../resolver.ts";
 import { ImportMapResolver } from "../importMapResolver.ts";
 
 export class UltraVisitor extends Visitor {
@@ -55,10 +55,12 @@ export class UltraVisitor extends Visitor {
       );
     }
 
-    node.value = cacheBuster(
-      node.value,
-      this.cacheTimestamp,
-    );
+    if (!isRemoteSource(node.value)) {
+      node.value = cacheBuster(
+        node.value,
+        this.cacheTimestamp,
+      );
+    }
 
     //@ts-ignore StringLiteral missing raw field
     node.raw = `"${node.value}"`;
