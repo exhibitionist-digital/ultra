@@ -10,14 +10,14 @@ import {
   extname,
 } from "./deps.ts";
 import vendor from "../vendor.ts";
-import { port } from "../env.ts";
+import {
+  apiDirectory,
+  root,
+  sourceDirectory,
+  vendorDirectory,
+} from "../env.ts";
 
 const ultra = "https://deno.land/x/ultra";
-
-const sourceDirectory = Deno.env.get("source") || "src";
-const vendorDirectory = Deno.env.get("vendor") || "x";
-const apiDirectory = Deno.env.get("api") || "src/api";
-const root = Deno.env.get("root") || `http://localhost:${port}`;
 
 await emptyDir("./.ultra");
 await ensureDir(`./.ultra/${sourceDirectory}`);

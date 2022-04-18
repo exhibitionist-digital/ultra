@@ -14,17 +14,11 @@ type Context = {
   };
 };
 
-export type OakOptions = {
-  env?: Record<string, string>;
-  context: Context;
-};
-
 export type TransformOptions = {
   source: string;
   sourceUrl: URL;
   importMap: ImportMap;
   cacheBuster?: number;
-  env?: Record<string, unknown>;
   minify?: boolean;
   relativePrefix?: string;
 };
