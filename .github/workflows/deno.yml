@@ -41,5 +41,5 @@ jobs:
       - name: Verify chrome version
         run: chrome --version
 
-      - name: Run e2e tests
-        run: deno task test:e2e
+      - name: Run puppeteer tests
+        run: deno task test:puppeteer

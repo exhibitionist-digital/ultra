@@ -4,7 +4,7 @@ import {
 } from "https://deno.land/std@0.135.0/testing/asserts.ts";
 import { launchLocalhostBrowser, startTestServer } from "./helpers.ts";
 
-Deno.test("e2e", async (t) => {
+Deno.test("puppeteer", async (t) => {
   const server = await startTestServer();
   const browser = await launchLocalhostBrowser();
 
@@ -12,8 +12,8 @@ Deno.test("e2e", async (t) => {
     "Should render home page of workspace example app with expected text",
     async () => {
       const expectations = [
-        { text: "ULTRA", selector: "h1" },
-        { text: "component.jsx", selector: "h2" },
+        { text: "Ultra", selector: "h1" },
+        { text: "un-bundle the web", selector: "h2" },
         { text: "This is a lazily loaded component", selector: "h3" },
       ];
 

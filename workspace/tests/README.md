@@ -1,11 +1,4 @@
-<div align="center">
-<br />
-<img src="https://ultrajs.dev/ultra.svg" height="250" />
-</div>
-
 ### Ultra end-to-end testing using Puppeteer
-
----
 
 End-to-end (e2e) testing files are found in this folder. They contain tests for
 a running Ultra application deployed from files in the `workspace/src` folder.
@@ -26,7 +19,7 @@ deno task dev
 In a separate terminal run the tests in the same folder with this command:
 
 ```
-deno task e2e
+deno task puppeteer
 ```
 
 These deno-puppeteer tests are run using the
