@@ -47,6 +47,13 @@ It's driven by the following hot-takes:
 - Updated [docs](https://ultrajs.dev/docs)!
 - New [website](https://ultrajs.dev)!
 
+Migration notes:
+
+The only change to previous v0.8.0 projects is to update your server import. We
+removed the `mod.ts` file for simplicity.
+
+`import ultra from 'https://deno.land/x/ultra/server.ts`
+
 ---
 
 ### Community
