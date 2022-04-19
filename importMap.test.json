@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "react": "https://esm.sh/react@18",
+    "react-dom": "https://esm.sh/react-dom@18",
+    "react-dom/server": "https://esm.sh/react-dom@18/server",
+    "react-helmet": "https://esm.sh/react-helmet-async?deps=react@18"
+  }
+}

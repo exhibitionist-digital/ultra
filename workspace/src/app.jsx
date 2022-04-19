@@ -23,6 +23,7 @@ const Ultra = ({ cache }) => {
   return (
     <SWRConfig value={options(cache)}>
       <Helmet>
+        <title>Ultra</title>
         <link rel="stylesheet" href="/style.css" />
       </Helmet>
 

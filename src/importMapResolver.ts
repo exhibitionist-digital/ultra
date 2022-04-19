@@ -18,6 +18,16 @@ export class ImportMapResolver {
     return resolvedImport;
   }
 
+  resolveUrl(specifier: string, scriptUrl?: URL) {
+    const resolvedImport = this.resolve(specifier, scriptUrl);
+    return resolvedImport?.resolvedImport;
+  }
+
+  resolveHref(specifier: string, scriptUrl?: URL) {
+    const resolvedImport = this.resolve(specifier, scriptUrl);
+    return resolvedImport?.resolvedImport?.href;
+  }
+
   /**
    * Returns a Map with concrete keys based on the passed specifiers.
    *
