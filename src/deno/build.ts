@@ -16,6 +16,7 @@ import {
   sourceDirectory,
   vendorDirectory,
 } from "../env.ts";
+import { ImportMap } from "./../types.ts";
 
 const ultra = "https://deno.land/x/ultra";
 
@@ -91,12 +92,10 @@ const build = async () => {
   // const ultraGraph = await ultraloader({ importMap, cache });
   // await Deno.writeTextFile(`./.ultra/graph.json`, JSON.stringify(ultraGraph));
 
-  const denoMap = { imports: {} };
+  const denoMap: ImportMap = { imports: {} };
   Object.keys(vendorMap.imports)?.forEach((k) => {
-    // @ts-ignore any
     const im: string = vendorMap.imports[k];
     if (im.indexOf("http") < 0) {
-      // @ts-ignore any
       denoMap.imports[k] = `./${im.replace("./.ultra/", "")}`;
     }
   });
