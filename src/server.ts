@@ -111,15 +111,16 @@ const server = () => {
 
     // API
     if (requestUrl.pathname.startsWith("/api")) {
+      const apiPaths = new Map([...raw, ...transpile]);
       const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
         let path = `${sourceDirectory}${pathname}`;
-        if (raw.has(`${path}.js`)) {
+        if (apiPaths.has(`${path}.js`)) {
           path = `file://${cwd}/${path}.js`;
-        } else if (raw.has(`${path}.ts`)) {
+        } else if (apiPaths.has(`${path}.ts`)) {
           path = `file://${cwd}/${path}.ts`;
-        } else if (raw.has(`${path}/index.js`)) {
+        } else if (apiPaths.has(`${path}/index.js`)) {
           path = `file://${cwd}/${path}/index.js`;
-        } else if (raw.has(`${path}/index.ts`)) {
+        } else if (apiPaths.has(`${path}/index.ts`)) {
           path = `file://${cwd}/${path}/index.ts`;
         }
         return (await import(`${path}?ts=${cacheBuster}`)).default;
