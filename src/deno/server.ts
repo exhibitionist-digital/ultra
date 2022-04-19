@@ -48,11 +48,22 @@ const deploy = async () => {
 
     // let link = await Deno.readTextFile(`./${transpiled}/graph.json`);
     // link = JSON.parse(link);
+
+    const denoMap = { imports: {} };
+    Object.keys(importMap.imports)?.forEach((k) => {
+      // @ts-ignore any
+      const im: string = importMap.imports[k];
+      if (im.indexOf("http") < 0) {
+        // @ts-ignore any
+        denoMap.imports[k] = `./${im.replace("./.ultra/", "")}`;
+      }
+    });
+
     return new Response(
       await render({
         url,
         root,
-        importMap,
+        importMap: denoMap,
         lang,
         disableStreaming: !!disableStreaming,
       }),
