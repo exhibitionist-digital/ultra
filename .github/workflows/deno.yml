@@ -36,12 +36,7 @@ jobs:
         run: deno task test
 
       - name: Setup Chrome
-        uses: browser-actions/setup-chrome@latest
-        with: 
-          chrome-version: stable
-
-      - name: Verify chrome version
-        run: chrome --version
+        run: PUPPETEER_PRODUCT=chrome deno run -A --unstable https://deno.land/x/puppeteer@9.0.2/install.ts
 
       - name: Run puppeteer tests
         run: deno task test:puppeteer
