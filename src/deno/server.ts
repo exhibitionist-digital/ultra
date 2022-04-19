@@ -64,6 +64,7 @@ const deploy = async () => {
       },
     );
   };
+  console.log("Ultra running");
   return serve(handler);
 };
 

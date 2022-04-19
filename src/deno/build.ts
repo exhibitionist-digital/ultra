@@ -137,6 +137,34 @@ const build = async () => {
   });
   await Deno.writeTextFile(`./.ultra/render.js`, renderTrans);
 
+  // resolver
+  const resolverReq = await fetch(
+    `${ultra}/src/importMapResolver.ts`,
+  );
+  const resolverText = await resolverReq.text();
+
+  const resolverTrans = await transform({
+    source: resolverText,
+    sourceUrl: new URL(root),
+    importMap: denoMap,
+    relativePrefix: "./",
+  });
+  await Deno.writeTextFile(`./.ultra/importMapResolver.js`, resolverTrans);
+
+  // stream
+  const streamReq = await fetch(
+    `${ultra}/src/stream.ts`,
+  );
+  const streamText = await streamReq.text();
+
+  const streamTrans = await transform({
+    source: streamText,
+    sourceUrl: new URL(root),
+    importMap: denoMap,
+    relativePrefix: "./",
+  });
+  await Deno.writeTextFile(`./.ultra/stream.js`, streamTrans);
+
   // env
   const envReq = await fetch(
     `${ultra}/src/env.ts`,
