@@ -27,10 +27,8 @@ await ensureDir(`./.ultra/${vendorDirectory}`);
 const build = async () => {
   const vendorMap = await vendor();
   Object.keys(vendorMap.imports)?.forEach((k) => {
-    // @ts-ignore any
     const im: string = vendorMap.imports[k];
     if (im.indexOf("http") < 0) {
-      // @ts-ignore any
       vendorMap.imports[k] = jsify(im);
     }
   });

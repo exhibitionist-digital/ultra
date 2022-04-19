@@ -27,8 +27,10 @@ const vendor = async () => {
     const p = new URL(importMap?.imports[key]);
     // these params force the 'browser' imports
     // these will work in BOTH deno and browser
-    p.searchParams.append("target", "es2021");
-    p.searchParams.append("no-check", "true");
+    if (p.hostname.toLowerCase() == "esm.sh") {
+      p.searchParams.append("target", "es2021");
+      p.searchParams.append("no-check", "1");
+    }
 
     // create graph call
     const graph = await createGraph(p.toString(), {
