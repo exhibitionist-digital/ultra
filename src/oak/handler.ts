@@ -1,5 +1,5 @@
 import { Context } from "https://deno.land/x/oak@v10.5.1/mod.ts";
-import { LRU, readableStreamFromReader } from "../deps.ts";
+import { extname, LRU, mime, readableStreamFromReader } from "../deps.ts";
 import assets from "../assets.ts";
 import transform from "../transform.ts";
 import render from "../render.ts";
@@ -36,7 +36,9 @@ export async function ultraHandler(context: Context) {
     const file = await Deno.open(
       `./${sourceDirectory}${requestUrl.pathname}`,
     );
+    const contentType = mime.lookup(extname(requestUrl.pathname));
     const body = readableStreamFromReader(file);
+    context.response.type = contentType || "application/octet-stream";
     context.response.body = body;
     return;
   }
