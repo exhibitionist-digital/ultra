@@ -1,10 +1,12 @@
 import { createGraph, emptyDir, ensureDir } from "./deps.ts";
 import { vendor as vendorTransform } from "./transform.ts";
-import { hashFile, isValidURL } from "./resolver.ts";
+import { hashFile, isValidUrl } from "./resolver.ts";
+import { resolveConfig, resolveImportMap } from "./config.ts";
+import { vendorDirectory } from "./env.ts";
 
-const vendorDirectory = Deno.env.get("vendor") || "x";
-const importMapPath = Deno.env.get("importMap") || "importMap.json";
-const importMap = JSON.parse(await Deno.readTextFile(importMapPath));
+const cwd = Deno.cwd();
+const config = await resolveConfig(cwd);
+const importMap = await resolveImportMap(cwd, config);
 
 const vendor = async () => {
   // setup directories
@@ -17,25 +19,31 @@ const vendor = async () => {
 
   // for our original import map, loop through keys
   for (const key of Object.keys(importMap?.imports)) {
-    if (!isValidURL(importMap?.imports[key])) {
+    if (!isValidUrl(importMap?.imports[key])) {
       vendorMap[key] = importMap?.imports[key];
       continue;
     }
+
     const p = new URL(importMap?.imports[key]);
     // these params force the 'browser' imports
     // these will work in BOTH deno and browser
-    p.searchParams.append("target", "es2021");
-    p.searchParams.append("no-check", "true");
+    if (p.hostname.toLowerCase() == "esm.sh") {
+      p.searchParams.append("target", "es2021");
+      p.searchParams.append("no-check", "1");
+    }
 
     // create graph call
-    const graph = await createGraph(p.toString());
+    const graph = await createGraph(p.toString(), {
+      kind: "codeOnly",
+    });
+
     const { modules } = graph.toJSON();
 
     // loop through specifiers
     for (const { specifier } of modules) {
       const path = specifier;
       if (path) {
-        if (!isValidURL(path)) continue;
+        if (!isValidUrl(path)) continue;
         const url = new URL(path);
         console.log(`Vendoring ${path}`);
         const file = await fetch(path);
@@ -43,7 +51,7 @@ const vendor = async () => {
         const hash = hashFile(url.pathname);
         await Deno.writeTextFile(
           `${directory}/${hash}.js`,
-          vendorTransform({
+          await vendorTransform({
             source: text,
             root: ".",
           }),

@@ -11,3 +11,7 @@ export {
   emptyDir,
   ensureDir,
 } from "https://deno.land/std@0.132.0/fs/mod.ts";
+export {
+  parse as parseImportMap,
+  resolve as resolveImportMap,
+} from "https://esm.sh/@import-maps/resolve@1.0.1";

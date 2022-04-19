@@ -2,22 +2,30 @@ import { LRU, readableStreamFromReader, serve } from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
-import { jsxify, stripTrailingSlash, tsify, tsxify } from "./resolver.ts";
-import { isDev, port } from "./env.ts";
-
+import {
+  jsxify,
+  resolveFileUrl,
+  stripTrailingSlash,
+  tsify,
+  tsxify,
+} from "./resolver.ts";
+import {
+  disableStreaming,
+  isDev,
+  lang,
+  port,
+  root,
+  sourceDirectory,
+  vendorDirectory,
+} from "./env.ts";
 import { APIHandler } from "./types.ts";
+import { resolveConfig, resolveImportMap } from "./config.ts";
 
 const memory = new LRU(500);
+const cwd = Deno.cwd();
 
-const sourceDirectory = Deno.env.get("source") || "src";
-const vendorDirectory = Deno.env.get("vendor") || "x";
-const configPath = Deno.env.get("config") || "./deno.json";
-const root = Deno.env.get("root") || `http://localhost:${port}`;
-const lang = Deno.env.get("lang") || "en";
-const disableStreaming = Deno.env.get("disableStreaming") || 0;
-
-const config = JSON.parse(Deno.readTextFileSync(configPath));
-const importMap = JSON.parse(Deno.readTextFileSync(config?.importMap));
+const config = await resolveConfig(cwd);
+const importMap = await resolveImportMap(cwd, config);
 
 const server = () => {
   const serverStart = Math.ceil(+new Date() / 100);
@@ -27,12 +35,12 @@ const server = () => {
     const requestStart = Math.ceil(+new Date() / 100);
     const cacheBuster = isDev ? requestStart : serverStart;
     const { raw, transpile } = await assets(sourceDirectory);
-    const x = await assets(`.ultra/${vendorDirectory}`);
-    const url = new URL(request.url);
+    const vendor = await assets(`.ultra/${vendorDirectory}`);
+    const requestUrl = new URL(request.url);
 
     // web socket listener
     if (isDev) {
-      if (url.pathname == "/_ultra_socket") {
+      if (requestUrl.pathname == "/_ultra_socket") {
         const { socket, response } = Deno.upgradeWebSocket(request);
         listeners.add(socket);
         socket.onclose = () => {
@@ -43,7 +51,10 @@ const server = () => {
     }
 
     // vendor map
-    if (x.raw.has(`.ultra${url.pathname}`)) {
+    // Remove the leading slash
+    const requestPathname = requestUrl.pathname.replace(/^\/+/g, "");
+
+    if (vendor.raw.has(requestPathname)) {
       const headers = {
         "content-type": "text/javascript",
         "cache-control":
@@ -51,7 +62,7 @@ const server = () => {
       };
 
       const file = await Deno.open(
-        `./.ultra${url.pathname}`,
+        `./${requestPathname}`,
       );
       const body = readableStreamFromReader(file);
 
@@ -59,13 +70,15 @@ const server = () => {
     }
 
     // static assets
-    if (raw.has(`${sourceDirectory}${url.pathname}`)) {
-      const contentType = raw.get(`${sourceDirectory}${url.pathname}`);
+    if (raw.has(`${sourceDirectory}${requestUrl.pathname}`)) {
+      const contentType = raw.get(`${sourceDirectory}${requestUrl.pathname}`);
       const headers = {
         "content-type": contentType,
       };
 
-      const file = await Deno.open(`./${sourceDirectory}${url.pathname}`);
+      const file = await Deno.open(
+        `./${sourceDirectory}${requestUrl.pathname}`,
+      );
       const body = readableStreamFromReader(file);
 
       return new Response(body, { headers });
@@ -76,22 +89,25 @@ const server = () => {
         "content-type": "text/javascript",
       };
 
-      let js = memory.get(url.pathname);
+      let js = memory.get(requestUrl.pathname);
 
       if (!js) {
-        const source = await Deno.readTextFile(`./${file}`);
+        const source = await Deno.readTextFile(resolveFileUrl(cwd, file));
         const t0 = performance.now();
+
         js = await transform({
           source,
+          sourceUrl: requestUrl,
           importMap,
-          root,
           cacheBuster,
         });
+
         const t1 = performance.now();
-        console.log(
-          `Transpile ${file.replace(source, "")} in ${(t1 - t0).toFixed(2)}ms`,
-        );
-        if (!isDev) memory.set(url.pathname, js);
+        const duration = (t1 - t0).toFixed(2);
+
+        console.log(`Transpile ${file} in ${duration}ms`);
+
+        if (!isDev) memory.set(requestUrl.pathname, js);
       }
 
       //@ts-ignore any
@@ -99,22 +115,22 @@ const server = () => {
     };
 
     // API
-    if (url.pathname.startsWith("/api")) {
+    if (requestUrl.pathname.startsWith("/api")) {
       const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
         let path = `${sourceDirectory}${pathname}`;
         if (raw.has(`${path}.js`)) {
-          path = `file://${Deno.cwd()}/${path}.js`;
+          path = `file://${cwd}/${path}.js`;
         } else if (raw.has(`${path}.ts`)) {
-          path = `file://${Deno.cwd()}/${path}.ts`;
+          path = `file://${cwd}/${path}.ts`;
         } else if (raw.has(`${path}/index.js`)) {
-          path = `file://${Deno.cwd()}/${path}/index.js`;
+          path = `file://${cwd}/${path}/index.js`;
         } else if (raw.has(`${path}/index.ts`)) {
-          path = `file://${Deno.cwd()}/${path}/index.ts`;
+          path = `file://${cwd}/${path}/index.ts`;
         }
-        return (await import(path)).default;
+        return (await import(`${path}?ts=${cacheBuster}`)).default;
       };
       try {
-        const pathname = stripTrailingSlash(url.pathname);
+        const pathname = stripTrailingSlash(requestUrl.pathname);
         const handler = await importAPIRoute(pathname);
         const response = await handler(request);
         return response;
@@ -130,26 +146,26 @@ const server = () => {
     }
 
     // jsx
-    const jsx = `${sourceDirectory}${jsxify(url.pathname)}`;
+    const jsx = `${sourceDirectory}${jsxify(requestUrl.pathname)}`;
     if (transpile.has(jsx)) {
       return await transpilation(jsx);
     }
 
     // tsx
-    const tsx = `${sourceDirectory}${tsxify(url.pathname)}`;
+    const tsx = `${sourceDirectory}${tsxify(requestUrl.pathname)}`;
     if (transpile.has(tsx)) {
       return await transpilation(tsx);
     }
 
     // ts
-    const ts = `${sourceDirectory}${tsify(url.pathname)}`;
+    const ts = `${sourceDirectory}${tsify(requestUrl.pathname)}`;
     if (transpile.has(ts)) {
       return await transpilation(ts);
     }
 
     return new Response(
       await render({
-        url,
+        url: requestUrl,
         root,
         importMap,
         lang,
@@ -179,7 +195,7 @@ const server = () => {
   }
 
   console.log(`Ultra running ${root}`);
-  //@ts-ignore any
+
   return serve(handler, { port: +port });
 };
 

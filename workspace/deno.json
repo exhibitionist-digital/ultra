@@ -1,10 +1,9 @@
 {
   "tasks": {
-    "dev": "mode=dev deno run -A --unstable server.js",
-    "start": "deno run -A --unstable server.js",
+    "dev": "mode=dev deno run -A --unstable --no-check server.js",
+    "start": "deno run -A --unstable --no-check server.js",
     "cache": "deno cache --reload server.js",
     "vendor": "importMap=importMap.json deno run -A --unstable ../vendor.ts",
-    "e2e": "deno test --unstable -A",
     "build": "deno run -A ../build.ts"
   },
   "importMap": "importMap.json",

@@ -1,4 +1,8 @@
 {
+  "tasks": {
+    "test": "deno test -A --unstable --jobs 3 --import-map=./importMap.test.json src/",
+    "test:puppeteer": "deno test -A --unstable workspace/tests/"
+  },
   "lint": {
     "files": {
       "exclude": ["workspace/.ultra/"]

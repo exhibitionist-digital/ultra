@@ -1,11 +1,12 @@
 html, body {
   text-align: center; 
-  font-family: system, -apple-system, "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", sans-serif;
+  font-family: monospace;
+  background:black;color:white;
 }
 
 img {
   display: block;
-  max-width: 300px;
+  max-width: 100px;
   height: auto;
   margin: 3em auto 0;
 }
@@ -15,4 +16,17 @@ h1 {
   font-size: clamp(2em, 10vw, 4em);
   margin: 0.25em auto;
   letter-spacing: 0.1em;
+}
+
+.ticker {
+  font-size:150%;
+  text-transform: uppercase;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ticker span {
+  display:inline-block;
+  margin-right:0.33em;
 }

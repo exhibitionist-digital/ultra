@@ -1,161 +1,70 @@
-import { esbuild, parse } from "./deps.ts";
-import { isDev } from "./env.ts";
-import type {
-  CallExpression,
-  HasSpan,
-} from "https://deno.land/x/swc@0.1.4/types/options.ts";
+import {
+  initSwc,
+  ParseOptions,
+  parseSync,
+  printSync,
+  Program,
+  transformSync,
+} from "./deps.ts";
 import { TransformOptions } from "./types.ts";
-import { hashFile } from "./resolver.ts";
+import { UltraVisitor } from "./ast/ultra.ts";
+import { ImportMapResolver } from "./importMapResolver.ts";
+import { VendorVisitor } from "./ast/vendor.ts";
 
-let offset = 0;
-let length = 0;
+await initSwc("https://cdn.esm.sh/@swc/wasm-web@1.2.165/wasm_bg.wasm");
 
-const apiDirectory = Deno.env.get("api") || "src/api";
-
-const transform = async (
-  { source, importMap, loader = "tsx", cacheBuster }: TransformOptions,
-) => {
-  const { code } = await esbuild.transform(source, {
-    loader,
-    target: ["esnext"],
-    minify: !isDev,
-  });
-  let c = "";
-  const ast = parse(code, {
-    syntax: "typescript",
-    tsx: true,
-    dynamicImport: true,
-  });
-  ast.body.forEach((i) => {
-    if (i.type == "ImportDeclaration") {
-      const { value, span } = i.source;
-      c += code.substring(offset - length, span.start - length);
-      c += `"${
-        importMap?.imports?.[value]?.replace("./.ultra", "") ||
-        (value.indexOf(apiDirectory) < 0
-          ? value.replace(
-            /\.(j|t)sx?/gi,
-            () => `.js${cacheBuster ? `?ts=${cacheBuster}` : ""}`,
-          )
-          : value)
-      }"`;
-      offset = span.end;
-    }
-    if (i.type == "VariableDeclaration") {
-      i.declarations?.forEach((o) =>
-        (o.init as CallExpression)!.arguments?.forEach(({ expression }) => {
-          // @ts-ignore deno_swc doesn't have generics
-          const expressionBody = expression.body;
-          // inline imports
-          if (expressionBody?.callee?.value?.toLowerCase() === "import") {
-            expressionBody?.arguments?.forEach(
-              (b: {
-                expression: {
-                  value: string;
-                } & HasSpan;
-              }) => {
-                const { value, span } = b?.expression;
-                c += code.substring(offset - length, span.start - length);
-                c += `"${(value.indexOf(apiDirectory) < 0
-                  ? value.replace(/\.(j|t)sx?/gi, () =>
-                    `.js${
-                      cacheBuster
-                        ? `?ts=${cacheBuster}`
-                        : ""
-                    }`)
-                  : value)}"`;
-                offset = span.end;
-              },
-            );
-          }
-          // function imports
-          const statements = expressionBody?.stmts || [];
-          // @ts-ignore add typings for swc argument
-          statements.forEach(({ argument }) => {
-            if (argument?.callee?.value?.toLowerCase() === "import") {
-              argument?.arguments?.forEach(
-                (b: {
-                  expression: {
-                    value: string;
-                  } & HasSpan;
-                }) => {
-                  const { value, span } = b?.expression;
-                  c += code.substring(offset - length, span.start - length);
-                  c += `"${(value.indexOf(apiDirectory) < 0
-                    ? value.replace(/\.(j|t)sx?/gi, () =>
-                      `.js${
-                        cacheBuster
-                          ? `?ts=${cacheBuster}`
-                          : ""
-                      }`)
-                    : value)}"`;
-                  offset = span.end;
-                },
-              );
-            }
-          });
-        })
-      );
-    }
-  });
-  c += code.substring(offset - length, code.length + offset);
-  length += code.length + 1;
-  offset = length;
-
-  // slug replacer
-  // Object.keys(env || {}).forEach((slug) => {
-  //   if (!slug) return;
-  //   // @ts-ignore any
-  //   c = c.replaceAll(slug, env[slug]);
-  // });
-
-  return c;
+const parserOptions: ParseOptions = {
+  syntax: "typescript",
+  tsx: true,
+  dynamicImport: true,
 };
 
-export default transform;
+export const transformSource = async (
+  options: TransformOptions,
+): Promise<string> => {
+  const { source, sourceUrl, importMap, cacheBuster, minify, relativePrefix } =
+    options;
 
-const vendor = (
-  { source, root }: { source: string; root: string },
-) => {
-  root;
-  let c = "";
-  const code = source;
-  const ast = parse(code, {
-    syntax: "typescript",
-    tsx: true,
-    dynamicImport: true,
+  const importMapResolver = new ImportMapResolver(importMap, sourceUrl);
+  const visitor = new UltraVisitor(
+    importMapResolver,
+    cacheBuster,
+    relativePrefix,
+    sourceUrl,
+  );
+
+  const transformResult = await transformSync(source, {
+    jsc: {
+      parser: parserOptions,
+      target: "es2021",
+    },
   });
-  ast.body.forEach((i) => {
-    const prefix = "./";
-    if (i.type == "ExportAllDeclaration") {
-      const { value, span } = i.source;
-      c += code.substring(offset - length, span.start - length);
-      const url = new URL(value);
-      c += `"${prefix + hashFile(value.replace(url.origin, ""))}.js"`;
-      offset = span.end;
-    }
-    if (i.type == "ExportNamedDeclaration") {
-      if (!i.source) return;
-      const { value, span } = i.source;
-      c += code.substring(offset - length, span.start - length);
-      const url = new URL(value);
 
-      c += `"${prefix + hashFile(value.replace(url.origin, ""))}.js"`;
-      offset = span.end;
-    }
-    if (i.type == "ImportDeclaration") {
-      const { value, span } = i.source;
-      c += code.substring(offset - length, span.start - length);
+  const ast = await parseSync(transformResult.code, parserOptions) as Program;
+  const transformedAst = visitor.visitProgram(ast);
 
-      c += `"${prefix + hashFile(value)}.js"`;
-      offset = span.end;
-    }
+  const { code } = printSync(transformedAst, {
+    minify,
   });
-  c += code.substring(offset - length, code.length + offset);
-  length += code.length + 1;
-  offset = length;
 
-  return c;
+  return code;
+};
+
+export default transformSource;
+
+const vendor = async (
+  { source }: { source: string; root: string },
+): Promise<string> => {
+  const visitor = new VendorVisitor();
+
+  const ast = await parseSync(source, parserOptions) as Program;
+  const transformedAst = visitor.visitProgram(ast);
+
+  const { code } = printSync(transformedAst, {
+    minify: true,
+  });
+
+  return code;
 };
 
 export { vendor };

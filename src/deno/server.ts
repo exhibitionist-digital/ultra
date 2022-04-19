@@ -1,6 +1,7 @@
 import assets from "./../assets.ts";
 import { readableStreamFromReader, serve } from "./../deps.ts";
 import render from "./../render.ts";
+import { ImportMap } from "./../types.ts";
 
 const sourceDirectory = Deno.env.get("source") || "src";
 const vendorDirectory = Deno.env.get("vendor") || "x";
@@ -46,13 +47,19 @@ const deploy = async () => {
       });
     }
 
-    // let link = await Deno.readTextFile(`./${transpiled}/graph.json`);
-    // link = JSON.parse(link);
+    const denoMap: ImportMap = { imports: {} };
+    Object.keys(importMap.imports)?.forEach((k) => {
+      const im: string = importMap.imports[k];
+      if (im.indexOf("http") < 0) {
+        denoMap.imports[k] = `./${im.replace("./.ultra/", "")}`;
+      }
+    });
+
     return new Response(
       await render({
         url,
         root,
-        importMap,
+        importMap: denoMap,
         lang,
         disableStreaming: !!disableStreaming,
       }),
@@ -64,6 +71,7 @@ const deploy = async () => {
       },
     );
   };
+  console.log("Ultra running");
   return serve(handler);
 };
 

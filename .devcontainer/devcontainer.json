@@ -14,5 +14,13 @@
   // This will install the vscode-deno extension
   "extensions": ["denoland.vscode-deno"],
 
-  "remoteUser": "vscode"
+  "runArgs": [
+    "--network",
+    "host"
+  ],
+
+  "remoteUser": "vscode",
+  "features": {
+    "docker-from-docker": "latest"
+  }
 }

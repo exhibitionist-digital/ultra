@@ -1,109 +1,95 @@
-import { LRU, readableStreamFromReader } from "../deps.ts";
+import { Context } from "https://deno.land/x/oak@v10.5.1/mod.ts";
+import { extname, LRU, mime, readableStreamFromReader } from "../deps.ts";
 import assets from "../assets.ts";
 import transform from "../transform.ts";
 import render from "../render.ts";
 import { jsxify, tsify, tsxify } from "../resolver.ts";
-import { isDev } from "../env.ts";
-
-import { OakOptions } from "../types.ts";
+import { isDev, lang, root, sourceDirectory, vendorDirectory } from "../env.ts";
+import { resolveConfig, resolveImportMap } from "../config.ts";
 
 const memory = new LRU(500);
+const cwd = Deno.cwd();
 
-const sourceDirectory = Deno.env.get("source") || "src";
-const vendorDirectory = Deno.env.get("vendor") || "x";
-const configPath = Deno.env.get("config") || "./deno.json";
-const root = Deno.env.get("root") || "http://localhost:8000";
-const lang = Deno.env.get("lang") || "en";
+const config = await resolveConfig(cwd);
+const importMap = await resolveImportMap(cwd, config);
+const serverStart = Math.ceil(+new Date() / 100);
 
-const config = JSON.parse(Deno.readTextFileSync(configPath));
-const importMap = JSON.parse(Deno.readTextFileSync(config?.importMap));
+export async function ultraHandler(context: Context) {
+  const requestStart = Math.ceil(+new Date() / 100);
+  const cacheBuster = isDev ? requestStart : serverStart;
+  const { raw, transpile } = await assets(sourceDirectory);
+  const x = await assets(`.ultra/${vendorDirectory}`);
+  const requestUrl = context.request.url;
 
-const server = (
-  {
-    env,
-    context,
-  }: OakOptions,
-) => {
-  const serverStart = Math.ceil(+new Date() / 100);
+  // vendor map
+  if (x.raw.has(`.ultra${requestUrl.pathname}`)) {
+    const file = await Deno.open(
+      `./.ultra${requestUrl.pathname}`,
+    );
+    const body = readableStreamFromReader(file);
+    context.response.body = body;
+    return;
+  }
 
-  const handler = async (request: Request) => {
-    const requestStart = Math.ceil(+new Date() / 100);
-    const cacheBuster = isDev ? requestStart : serverStart;
-    const { raw, transpile } = await assets(sourceDirectory);
-    const x = await assets(`.ultra/${vendorDirectory}`);
-    const url = new URL(request.url);
+  // static assets
+  if (raw.has(`${sourceDirectory}${requestUrl.pathname}`)) {
+    const file = await Deno.open(
+      `./${sourceDirectory}${requestUrl.pathname}`,
+    );
+    const contentType = mime.lookup(extname(requestUrl.pathname));
+    const body = readableStreamFromReader(file);
+    context.response.type = contentType || "application/octet-stream";
+    context.response.body = body;
+    return;
+  }
 
-    // vendor map
-    if (x.raw.has(`.ultra${url.pathname}`)) {
-      const file = await Deno.open(
-        `./.ultra${url.pathname}`,
+  const transpilation = async (file: string) => {
+    let js = memory.get(requestUrl.pathname);
+
+    if (!js) {
+      const source = await Deno.readTextFile(`./${file}`);
+      const t0 = performance.now();
+      js = await transform({
+        source,
+        sourceUrl: requestUrl,
+        importMap,
+        cacheBuster,
+      });
+      const t1 = performance.now();
+      console.log(
+        `Transpile ${file.replace(sourceDirectory, "")} in ${t1 - t0}ms`,
       );
-      const body = readableStreamFromReader(file);
-      context.response.body = body;
-      return;
+      if (!isDev) memory.set(requestUrl.pathname, js);
     }
-
-    // static assets
-    if (raw.has(`${sourceDirectory}${url.pathname}`)) {
-      const file = await Deno.open(`./${sourceDirectory}${url.pathname}`);
-      const body = readableStreamFromReader(file);
-      context.response.body = body;
-      return;
-    }
-
-    const transpilation = async (file: string) => {
-      let js = memory.get(url.pathname);
-
-      if (!js) {
-        const source = await Deno.readTextFile(`./${file}`);
-        const t0 = performance.now();
-        js = await transform({
-          source,
-          importMap,
-          root,
-          cacheBuster,
-          env,
-        });
-        const t1 = performance.now();
-        console.log(
-          `Transpile ${file.replace(sourceDirectory, "")} in ${t1 - t0}ms`,
-        );
-        if (!isDev) memory.set(url.pathname, js);
-      }
-      context.response.type = "text/javascript";
-      // @ts-ignore add js type
-      context.response.body = js;
-      return;
-    };
-
-    // jsx
-    const jsx = `${sourceDirectory}${jsxify(url.pathname)}`;
-    if (transpile.has(jsx)) {
-      return await transpilation(jsx);
-    }
-
-    // tsx
-    const tsx = `${sourceDirectory}${tsxify(url.pathname)}`;
-    if (transpile.has(tsx)) {
-      return await transpilation(tsx);
-    }
-
-    // ts
-    const ts = `${sourceDirectory}${tsify(url.pathname)}`;
-    if (transpile.has(ts)) {
-      return await transpilation(ts);
-    }
-
-    context.response.type = "text/html";
-    context.response.body = await render({
-      url,
-      root,
-      importMap,
-      lang,
-    });
+    context.response.type = "text/javascript";
+    // @ts-ignore add js type
+    context.response.body = js;
+    return;
   };
 
-  return handler(context.request);
-};
+  // jsx
+  const jsx = `${sourceDirectory}${jsxify(requestUrl.pathname)}`;
+  if (transpile.has(jsx)) {
+    return await transpilation(jsx);
+  }
 
-export default server;
+  // tsx
+  const tsx = `${sourceDirectory}${tsxify(requestUrl.pathname)}`;
+  if (transpile.has(tsx)) {
+    return await transpilation(tsx);
+  }
+
+  // ts
+  const ts = `${sourceDirectory}${tsify(requestUrl.pathname)}`;
+  if (transpile.has(ts)) {
+    return await transpilation(ts);
+  }
+
+  context.response.type = "text/html";
+  context.response.body = await render({
+    url: requestUrl,
+    root,
+    importMap,
+    lang,
+  });
+}

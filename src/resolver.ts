@@ -1,4 +1,5 @@
-import { crypto, extname } from "./deps.ts";
+import { crypto, extname, resolve, toFileUrl } from "./deps.ts";
+import { apiDirectory } from "./env.ts";
 
 export const jsify = (file: string) => {
   return file.replace(extname(file), ".js");
@@ -16,7 +17,7 @@ export const tsxify = (file: string) => {
   return file.replace(extname(file), ".tsx");
 };
 
-export const isValidURL = (url: string) => {
+export const isValidUrl = (url: string) => {
   try {
     return new URL(url);
   } catch (_e) {
@@ -36,6 +37,32 @@ export const hashFile = (url: string) => {
   return hashHex;
 };
 
-export function stripTrailingSlash(url: string) {
+export const stripTrailingSlash = (url: string) => {
   return url.endsWith("/") ? url.slice(0, -1) : url;
-}
+};
+
+export const resolveFileUrl = (from: string, to: string) => {
+  return new URL(toFileUrl(resolve(from, to)).toString());
+};
+
+export const cacheBuster = (source: string, timestamp?: number) => {
+  return source.replace(
+    /\.(j|t)sx?/gi,
+    () => {
+      return `.js${timestamp ? `?ts=${timestamp}` : ""}`;
+    },
+  );
+};
+
+export const isRemoteSource = (value: string) => {
+  return value.startsWith("https://") ||
+    value.startsWith("http://");
+};
+
+export const isVendorSource = (value: string, vendorDirectory: string) => {
+  return value.indexOf(`.ultra/${vendorDirectory}`) >= 0;
+};
+
+export const isApiRoute = (value: string) => {
+  return value.indexOf(apiDirectory) >= 0;
+};
