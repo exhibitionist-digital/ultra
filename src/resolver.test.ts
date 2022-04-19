@@ -1,6 +1,7 @@
 import {
   hashFile,
   isValidUrl,
+  isVendorSource,
   jsify,
   jsxify,
   stripTrailingSlash,
@@ -23,6 +24,15 @@ Deno.test("isValidUrl", async (t) => {
   });
   await t.step("invalid url", () => {
     assertEquals(isValidUrl("./app.jsx"), false);
+  });
+});
+
+Deno.test("isVendorSource", async (t) => {
+  await t.step("valid vendor", () => {
+    assertEquals(isVendorSource("./.ultra/x/react.js", "x"), true);
+  });
+  await t.step("invalid vendor", () => {
+    assertEquals(isVendorSource("./components/Heading.jsx", "x"), false);
   });
 });
 

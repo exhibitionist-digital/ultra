@@ -59,6 +59,10 @@ export const isRemoteSource = (value: string) => {
     value.startsWith("http://");
 };
 
+export const isVendorSource = (value: string, vendorDirectory: string) => {
+  return value.indexOf(`.ultra/${vendorDirectory}`) >= 0;
+};
+
 export const isApiRoute = (value: string) => {
   return value.indexOf(apiDirectory) >= 0;
 };
