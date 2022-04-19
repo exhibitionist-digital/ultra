@@ -5,19 +5,9 @@ import App from "app";
 import { BaseLocationHook, Router } from "wouter";
 import { HelmetProvider } from "react-helmet";
 import { isDev, sourceDirectory } from "./env.ts";
-import type { Navigate, RenderOptions } from "./types.ts";
+import type { ImportMap, Navigate, RenderOptions } from "./types.ts";
 import { ImportMapResolver } from "./importMapResolver.ts";
 import { encodeStream, pushBody } from "./stream.ts";
-
-// FIXME: these react types are wrong now
-// renderToReadableStream not available yet in official types
-// declare global {
-//   namespace ReactDOMServer {
-//     export const renderToReadableStream: (
-//       element: ReactElement,
-//     ) => ReadableStream<string | Uint8Array>;
-//   }
-// }
 
 // Size of the chunk to emit to the connection as the response streams:
 const defaultChunkSize = 8 * 1024;
@@ -41,8 +31,18 @@ const render = async (
 ) => {
   const chunkSize = defaultChunkSize;
 
+  const renderMap: ImportMap = { imports: {} };
+  Object.keys(importMap.imports)?.forEach((k) => {
+    const im: string = importMap.imports[k];
+    if (im.indexOf("http") < 0) {
+      renderMap.imports[k] = `./${im.replace("./.ultra/", "")}`;
+    } else {
+      renderMap.imports[k] = im;
+    }
+  });
+
   const importMapResolver = new ImportMapResolver(
-    importMap,
+    renderMap,
     new URL(sourceDirectory, root),
   );
 

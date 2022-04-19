@@ -3,6 +3,7 @@ import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
 import {
+  isVendorSource,
   jsxify,
   resolveFileUrl,
   stripTrailingSlash,
@@ -18,7 +19,7 @@ import {
   sourceDirectory,
   vendorDirectory,
 } from "./env.ts";
-import { APIHandler } from "./types.ts";
+import { APIHandler, ImportMap } from "./types.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
 
 const memory = new LRU(500);
@@ -51,18 +52,13 @@ const server = () => {
     }
 
     // vendor map
-    // Remove the leading slash
-    const requestPathname = requestUrl.pathname.replace(/^\/+/g, "");
-
-    if (vendor.raw.has(requestPathname)) {
+    if (vendor.raw.has(".ultra" + requestUrl.pathname)) {
       const headers = {
         "content-type": "text/javascript",
-        "cache-control":
-          "public, max-age=604800, stale-while-revalidate=86400, stale-if-error=259200",
       };
 
       const file = await Deno.open(
-        `./${requestPathname}`,
+        `./.ultra${requestUrl.pathname}`,
       );
       const body = readableStreamFromReader(file);
 
