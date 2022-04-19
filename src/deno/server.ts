@@ -47,9 +47,6 @@ const deploy = async () => {
       });
     }
 
-    // let link = await Deno.readTextFile(`./${transpiled}/graph.json`);
-    // link = JSON.parse(link);
-
     const denoMap: ImportMap = { imports: {} };
     Object.keys(importMap.imports)?.forEach((k) => {
       const im: string = importMap.imports[k];
