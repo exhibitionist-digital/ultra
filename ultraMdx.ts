@@ -1,7 +1,7 @@
 import * as UUV from "https://esm.sh/unist-util-visit";
-import { Root } from "https://esm.sh/@types/mdast";
 
 const ultraMdx = () => {
+  // @ts-ignore MDAST type needed
   return (tree: Root) => {
     return UUV.visit(tree, "mdxjsEsm", (node) => {
       node?.data?.estree?.body?.forEach((i: { source: { raw: string } }) => {
