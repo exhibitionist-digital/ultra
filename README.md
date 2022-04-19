@@ -49,7 +49,7 @@ It's driven by the following hot-takes:
 
 Migration notes:
 
-Previous v0.8.0 (and earlier) projects need to update your server import. We
+Previous v0.8.0 (and earlier) projects need to update the server import. We
 removed the `mod.ts` file for simplicity.
 
 `import ultra from 'https://deno.land/x/ultra/server.ts`
