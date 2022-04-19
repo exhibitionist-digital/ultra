@@ -10,6 +10,12 @@ Deno.test("importResolver", async (t) => {
       "./": "./",
       "app.tsx": "./src/app.tsx",
       "#/": "./src/",
+      "ultra/": "https://deno.land/x/ultra/src/",
+    },
+    scopes: {
+      "https://deno.land/x/ultra/": {
+        "ultra/react/root.tsx": "./src/root.tsx",
+      },
     },
   };
 
@@ -59,6 +65,38 @@ Deno.test("importResolver", async (t) => {
     assertEquals(
       colors.resolvedImport.href,
       "https://deno.land/std@0.134.0/fmt/colors.ts",
+    );
+  });
+
+  await t.step("resolves dependencies correctly", () => {
+    assertEquals(
+      resolver.resolveHref("app"),
+      "file:///workspaces/ultra/src/app.tsx",
+    );
+
+    assertEquals(resolver.resolveHref("react"), "https://esm.sh/react@18");
+
+    assertEquals(
+      resolver.resolveHref("ultra/server.ts"),
+      "https://deno.land/x/ultra/src/server.ts",
+    );
+  });
+
+  await t.step("can override ultra internals with importMap scopes", () => {
+    assertEquals(
+      resolver.resolveHref(
+        "ultra/react/context.tsx",
+        resolver.resolveUrl("ultra/render.tsx"),
+      ),
+      "https://deno.land/x/ultra/src/react/context.tsx",
+    );
+
+    assertEquals(
+      resolver.resolveHref(
+        "ultra/react/root.tsx",
+        resolver.resolveUrl("ultra/render.tsx"),
+      ),
+      "file:///workspaces/ultra/src/root.tsx",
     );
   });
 });
