@@ -219,7 +219,7 @@ const build = async () => {
 
   await Deno.writeTextFile(`./.ultra/ULTRA.js`, server);
 
-  console.log("Ultra build complete");
+  console.log("Build complete");
   Deno.exit();
 };
 
