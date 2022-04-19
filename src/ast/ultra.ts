@@ -4,8 +4,9 @@ import {
   StringLiteral,
   Visitor,
 } from "../deps.ts";
-import { cacheBuster, isRemoteSource } from "../resolver.ts";
+import { cacheBuster, isRemoteSource, isVendorSource } from "../resolver.ts";
 import { ImportMapResolver } from "../importMapResolver.ts";
+import { vendorDirectory } from "../env.ts";
 
 export class UltraVisitor extends Visitor {
   constructor(
@@ -53,6 +54,9 @@ export class UltraVisitor extends Visitor {
         this?.sourceUrl?.href || "",
         this.relativePrefix,
       );
+    } else if (isVendorSource(node.value, vendorDirectory)) {
+      node.value = this?.sourceUrl?.origin + `/.ultra/${vendorDirectory}/` +
+        node.value.split(`.ultra/${vendorDirectory}/`)[1];
     }
 
     if (!isRemoteSource(node.value)) {
