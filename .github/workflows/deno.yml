@@ -37,6 +37,8 @@ jobs:
 
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@latest
+        with: 
+          chrome-version: stable
 
       - name: Verify chrome version
         run: chrome --version
