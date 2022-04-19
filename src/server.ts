@@ -3,7 +3,6 @@ import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
 import {
-  isVendorSource,
   jsxify,
   resolveFileUrl,
   stripTrailingSlash,
@@ -19,7 +18,7 @@ import {
   sourceDirectory,
   vendorDirectory,
 } from "./env.ts";
-import { APIHandler, ImportMap } from "./types.ts";
+import { APIHandler } from "./types.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
 
 const memory = new LRU(500);
