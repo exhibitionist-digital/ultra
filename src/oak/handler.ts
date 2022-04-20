@@ -19,9 +19,12 @@ const requestHandler = createRequestHandler({
 });
 
 export async function ultraHandler(context: Context) {
+  const serverRequestBody = context.request.originalRequest.getBody();
+
   const request = new Request(context.request.url.toString(), {
     method: context.request.originalRequest.method,
     headers: context.request.originalRequest.headers,
+    body: serverRequestBody.body,
   });
 
   const response = await requestHandler(request);
