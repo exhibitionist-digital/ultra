@@ -35,6 +35,12 @@ It's driven by the following hot-takes:
 
 ---
 
+🏄 If you want to dive right in,
+[create-ultra-app](https://github.com/exhibitionist-digital/create-ultra-app) is
+the easiest way. Less words, more ESM.
+
+---
+
 ### ‼️ v1.0.0 @__@
 
 - Total overhaul of transforms, migration to brand new
