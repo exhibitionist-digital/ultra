@@ -2,9 +2,9 @@ import puppeteer from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
 import { join } from "https://deno.land/std@0.135.0/path/mod.ts";
 import { readLines } from "https://deno.land/std@0.135.0/io/mod.ts";
 
-export async function startTestServer() {
+export async function startTestServer(taskName = "start") {
   const serverProcess = Deno.run({
-    cmd: ["deno", "task", "start"],
+    cmd: ["deno", "task", taskName],
     cwd: join(Deno.cwd(), "./workspace"),
     stdout: "piped",
     stderr: "piped",

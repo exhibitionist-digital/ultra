@@ -19,5 +19,5 @@ app.use(router.allowedMethods());
 // other route matches
 app.use(ultraHandler);
 
-console.log(`Ultra + Oak listening on http://localhost:${port}`);
+console.log(`Ultra running on http://localhost:${port}`);
 await app.listen({ port });
