@@ -31,19 +31,27 @@ export const preloader = async (url, map) => {
   }
 };
 
+const preloadedImports = [
+  "react",
+  "react-dom",
+  "react-helmet",
+  "wouter",
+  "swr",
+  "ultra/cache",
+  // TODO: Allow users to add to this list,
+];
+
 export const ultraloader = async ({ importMap }) => {
-  const link = await preloader([
-    importMap.imports["react"],
-    importMap.imports["react-dom"],
-    importMap.imports["react-helmet"],
-    importMap.imports["wouter"],
-    importMap.imports["swr"],
-    importMap.imports["ultra/cache"],
-  ], (specifier) => {
-    if (extname(specifier) === ".js") {
-      return specifier;
-    }
-  });
+  const link = await preloader(
+    preloadedImports.map((name) => {
+      return importMap.imports[name];
+    }),
+    (specifier) => {
+      if (extname(specifier) === ".js") {
+        return specifier;
+      }
+    },
+  );
 
   return link;
 };
