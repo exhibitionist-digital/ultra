@@ -8,9 +8,7 @@ export const preloader = async (url, map) => {
   if (cache[url]) return cache[url];
 
   const graph = await createGraph(url);
-
   const { modules } = graph.toJSON();
-
   const attributes = [];
 
   for (const { specifier } of modules) {
@@ -24,7 +22,6 @@ export const preloader = async (url, map) => {
 
   if (attributes.length > 0) {
     const linkHeaders = attributes.join(", ");
-
     cache[url] = linkHeaders;
 
     return linkHeaders;
