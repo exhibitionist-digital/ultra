@@ -2,42 +2,49 @@
 
 import { createGraph, extname } from "./deps.ts";
 
-const preloader = async (path, map, cache) => {
-  const { cacheInfo, load } = cache;
+const cache = {};
 
-  const graph = await createGraph(path, {
-    cacheInfo,
-    load,
-  });
+export const preloader = async (url, map) => {
+  if (cache[url]) return cache[url];
+
+  const graph = await createGraph(url);
 
   const { modules } = graph.toJSON();
+
   const attributes = [];
 
   for (const { specifier } of modules) {
-    let path = map(specifier);
-    if (path) {
+    let url = map(specifier);
+    if (url) {
       // esm.sh fix for deno
-      path = path.replace("/deno/", "/es2021/");
-      attributes.push(`<${path}>; rel="modulepreload"`);
+      url = url.replace("/deno/", "/es2021/");
+      attributes.push(`<${url}>; rel="modulepreload"`);
     }
   }
 
-  return attributes.join(", ");
+  if (attributes.length > 0) {
+    const linkHeaders = attributes.join(", ");
+
+    cache[url] = linkHeaders;
+
+    return linkHeaders;
+  }
 };
 
-export const ultraloader = async ({ importMap, cache }) => {
+export const ultraloader = async ({ importMap }) => {
   const link = await preloader([
     importMap.imports["react"],
     importMap.imports["react-dom"],
+    importMap.imports["react-helmet"],
     importMap.imports["wouter"],
     importMap.imports["swr"],
-    importMap.imports["react-helmet"],
     importMap.imports["ultra/cache"],
   ], (specifier) => {
     if (extname(specifier) === ".js") {
       return specifier;
     }
-  }, cache);
+  });
+
   return link;
 };
 
