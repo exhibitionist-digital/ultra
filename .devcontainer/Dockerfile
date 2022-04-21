@@ -1,11 +1,10 @@
 # [Choice] Debian OS version: bullseye, buster
 ARG VARIANT=bullseye
-ARG DENO_VERSION=v1.20.6
 
 FROM --platform=linux/amd64 mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 
 ENV DENO_INSTALL=/deno
-ENV DENO_VERSION=${DENO_VERSION}
+ENV DENO_VERSION=v1.21.0
 
 RUN mkdir -p /deno \
     && curl -fsSL https://deno.land/x/install/install.sh | sh -s ${DENO_VERSION} \
