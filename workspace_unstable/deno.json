@@ -1,0 +1,20 @@
+{
+  "tasks": {
+    "dev": "mode=dev deno run -A --unstable --no-check server.ts",
+    "start": "deno run -A --unstable --no-check server.ts",
+    "cache": "deno cache --reload server.ts",
+    "vendor": "importMap=importMap.json deno run -A --unstable ../vendor.ts",
+    "build": "deno run -A ../build.ts"
+  },
+  "importMap": "./importMap.json",
+  "lint": {
+    "files": {
+      "exclude": [".ultra/"]
+    }
+  },
+  "fmt": {
+    "files": {
+      "exclude": [".ultra/"]
+    }
+  }
+}
