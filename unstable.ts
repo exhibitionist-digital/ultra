@@ -8,7 +8,7 @@ console.warn(
     bold(outdent`Hey now! Looks like you're using unstable Ultra features.
     File any issues you encounter at ${
       underline(
-        "https://github.com/exhibitionist-digital/ultra/issues/new?labels=unstable,bug",
+        "https://github.com/exhibitionist-digital/ultra/issues/new?labels=unstable",
       )
     }`),
   ),
