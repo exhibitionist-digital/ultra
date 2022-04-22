@@ -3,8 +3,11 @@ import { apiDirectory } from "./env.ts";
 
 export const replaceFileExt = (file: string, ext: string) => {
   const { dir, name } = parse(file);
-
-  return format({ root: "/", dir, name, ext });
+  const args = { root: "/", dir, name, ext };
+  if (dir) {
+    args.dir = dir;
+  }
+  return format(args);
 };
 
 export const jsify = (file: string) => {

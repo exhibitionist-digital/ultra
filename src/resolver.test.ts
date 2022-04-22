@@ -35,6 +35,7 @@ Deno.test("isVendorSource", async (t) => {
 
 Deno.test("resolvers", async (t) => {
   await t.step("replaceFileExt", () => {
+    assertEquals(replaceFileExt("a.tsx", ".js"), "/a.js");
     assertEquals(replaceFileExt("/a.ts", ".js"), "/a.js");
     assertEquals(replaceFileExt("/a/b/c.js", ".ts"), "/a/b/c.ts");
     assertEquals(replaceFileExt("./app.jsx", ".js"), "./app.js");
