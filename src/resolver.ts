@@ -1,20 +1,26 @@
-import { crypto, extname, resolve, toFileUrl } from "./deps.ts";
+import { crypto, format, parse, resolve, toFileUrl } from "./deps.ts";
 import { apiDirectory } from "./env.ts";
 
+export const replaceFileExt = (file: string, ext: string) => {
+  const { dir, name } = parse(file);
+
+  return format({ root: "/", dir, name, ext });
+};
+
 export const jsify = (file: string) => {
-  return file.replace(extname(file), ".js");
+  return replaceFileExt(file, ".js");
 };
 
 export const tsify = (file: string) => {
-  return file.replace(extname(file), ".ts");
+  return replaceFileExt(file, ".ts");
 };
 
 export const jsxify = (file: string) => {
-  return file.replace(extname(file), ".jsx");
+  return replaceFileExt(file, ".jsx");
 };
 
 export const tsxify = (file: string) => {
-  return file.replace(extname(file), ".tsx");
+  return replaceFileExt(file, ".tsx");
 };
 
 export const isValidUrl = (url: string) => {

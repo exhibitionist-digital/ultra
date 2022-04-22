@@ -2,11 +2,8 @@ import {
   hashFile,
   isValidUrl,
   isVendorSource,
-  jsify,
-  jsxify,
+  replaceFileExt,
   stripTrailingSlash,
-  tsify,
-  tsxify,
 } from "./resolver.ts";
 import { assertEquals } from "./deps.ts";
 
@@ -37,17 +34,14 @@ Deno.test("isVendorSource", async (t) => {
 });
 
 Deno.test("resolvers", async (t) => {
-  await t.step("jsify", () => {
-    assertEquals(jsify("./app.jsx"), "./app.js");
-  });
-  await t.step("jsxify", () => {
-    assertEquals(jsxify("./app.js"), "./app.jsx");
-  });
-  await t.step("tsify", () => {
-    assertEquals(tsify("./app.js"), "./app.ts");
-  });
-  await t.step("tsxify", () => {
-    assertEquals(tsxify("./app.jsx"), "./app.tsx");
+  await t.step("replaceFileExt", () => {
+    assertEquals(replaceFileExt("/a.ts", ".js"), "/a.js");
+    assertEquals(replaceFileExt("/a/b/c.js", ".ts"), "/a/b/c.ts");
+    assertEquals(replaceFileExt("./app.jsx", ".js"), "./app.js");
+    assertEquals(
+      replaceFileExt("/absolute/test.jsx.foo/app.jsx", ".js"),
+      "/absolute/test.jsx.foo/app.js",
+    );
   });
   await t.step("strip trailing slash", () => {
     assertEquals(
