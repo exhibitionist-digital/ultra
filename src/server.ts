@@ -1,8 +1,15 @@
-import { LRU, readableStreamFromReader, serve } from "./deps.ts";
+import {
+  LRU,
+  readableStreamFromReader,
+  resolve,
+  serve,
+  toFileUrl,
+} from "./deps.ts";
 import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
 import {
+  jsify,
   jsxify,
   resolveFileUrl,
   stripTrailingSlash,
@@ -20,6 +27,7 @@ import {
 } from "./env.ts";
 import { APIHandler } from "./types.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
+import { preloader, ultraloader } from "./preloader.ts";
 
 const memory = new LRU(500);
 const cwd = Deno.cwd();
@@ -64,6 +72,8 @@ const server = () => {
       return new Response(body, { headers });
     }
 
+    const fileRootUri = toFileUrl(resolve(cwd, sourceDirectory)).toString();
+
     // static assets
     if (raw.has(`${sourceDirectory}${requestUrl.pathname}`)) {
       const contentType = raw.get(`${sourceDirectory}${requestUrl.pathname}`);
@@ -71,8 +81,24 @@ const server = () => {
         "content-type": contentType,
       };
 
+      if (contentType === "application/javascript") {
+        const link = await preloader(
+          fileRootUri + requestUrl.pathname,
+          (specifier: string) => {
+            const path = specifier.replace(fileRootUri, "");
+            if (path !== requestUrl.pathname) {
+              return requestUrl.origin + path;
+            }
+          },
+        );
+
+        if (link) {
+          headers.link = link;
+        }
+      }
+
       const file = await Deno.open(
-        `./${sourceDirectory}${requestUrl.pathname}`,
+        "./" + sourceDirectory + requestUrl.pathname,
       );
       const body = readableStreamFromReader(file);
 
@@ -103,6 +129,21 @@ const server = () => {
         console.log(`Transpile ${file} in ${duration}ms`);
 
         if (!isDev) memory.set(requestUrl.pathname, js);
+      }
+
+      const link = await preloader(
+        resolveFileUrl(cwd, file).toString(),
+        (specifier: string) => {
+          const path = specifier.replace(fileRootUri, "");
+
+          if (jsify(path) !== requestUrl.pathname) {
+            return `${requestUrl.origin}${path}`;
+          }
+        },
+      );
+
+      if (link) {
+        headers.link = link;
       }
 
       //@ts-ignore any
@@ -170,6 +211,7 @@ const server = () => {
       {
         headers: {
           "content-type": "text/html; charset=utf-8",
+          link: await ultraloader({ importMap }),
         },
       },
     );
