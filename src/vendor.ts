@@ -28,6 +28,7 @@ const vendor = async () => {
     // these params force the 'browser' imports
     // these will work in BOTH deno and browser
     if (p.hostname.toLowerCase() == "esm.sh") {
+      p.searchParams.delete("dev");
       p.searchParams.append("target", "es2021");
       p.searchParams.append("no-check", "1");
     }
