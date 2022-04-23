@@ -1,20 +1,13 @@
-import { crypto, extname, resolve, toFileUrl } from "./deps.ts";
+import { crypto, format, parse, resolve, toFileUrl } from "./deps.ts";
 import { apiDirectory } from "./env.ts";
 
-export const jsify = (file: string): string => {
-  return file.replace(extname(file), ".js");
-};
+export type ValidExtensions = ".js" | ".jsx" | ".ts" | ".tsx";
 
-export const tsify = (file: string): string => {
-  return file.replace(extname(file), ".ts");
-};
-
-export const jsxify = (file: string): string => {
-  return file.replace(extname(file), ".jsx");
-};
-
-export const tsxify = (file: string): string => {
-  return file.replace(extname(file), ".tsx");
+export const replaceFileExt = (
+  file: string,
+  extension: ValidExtensions,
+): string => {
+  return format({ ...parse(file), base: "", ext: extension });
 };
 
 export const isValidUrl = (url: string): URL | false => {
@@ -59,10 +52,13 @@ export const isRemoteSource = (value: string): boolean => {
     value.startsWith("http://");
 };
 
-export const isVendorSource = (value: string, vendorDirectory: string): boolean => {
-  return value.indexOf(`.ultra/${vendorDirectory}`) >= 0;
+export const isVendorSource = (
+  value: string,
+  vendorDirectory: string,
+): boolean => {
+  return value.includes(`.ultra/${vendorDirectory}`);
 };
 
 export const isApiRoute = (value: string): boolean => {
-  return value.indexOf(apiDirectory) >= 0;
+  return value.includes(apiDirectory);
 };
