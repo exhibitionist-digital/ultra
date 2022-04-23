@@ -3,11 +3,9 @@ import { LRU, readableStreamFromReader } from "../deps.ts";
 import { disableStreaming, lang, root } from "../env.ts";
 import render from "../render.ts";
 import {
-  jsxify,
+  replaceFileExt,
   resolveFileUrl,
   stripTrailingSlash,
-  tsify,
-  tsxify,
 } from "../resolver.ts";
 import transform from "../transform.ts";
 import type { APIHandler, ImportMap } from "../types.ts";
@@ -160,19 +158,25 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
     }
 
     // jsx
-    const jsx = `${sourceDirectory}${jsxify(requestUrl.pathname)}`;
+    const jsx = `${sourceDirectory}${
+      replaceFileExt(requestUrl.pathname, ".jsx")
+    }`;
     if (transpile.has(jsx)) {
       return await transpilation(jsx);
     }
 
     // tsx
-    const tsx = `${sourceDirectory}${tsxify(requestUrl.pathname)}`;
+    const tsx = `${sourceDirectory}${
+      replaceFileExt(requestUrl.pathname, ".tsx")
+    }`;
     if (transpile.has(tsx)) {
       return await transpilation(tsx);
     }
 
     // ts
-    const ts = `${sourceDirectory}${tsify(requestUrl.pathname)}`;
+    const ts = `${sourceDirectory}${
+      replaceFileExt(requestUrl.pathname, ".ts")
+    }`;
     if (transpile.has(ts)) {
       return await transpilation(ts);
     }

@@ -17,7 +17,7 @@
 
 ---
 
-**Ultra** is a web framework that leans hard into your browser's native
+**Ultra** is a web-app framework that leans hard into your browser's native
 features. Embrace the future of **ES Modules**, **Import Maps**, and **Web
 Streams**. All while supporting some of the non-standards that many normal
 people love for some reason (**JSX** and **TypeScript**).
