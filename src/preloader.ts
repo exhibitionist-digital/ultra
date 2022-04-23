@@ -1,7 +1,6 @@
 // @ts-nocheck todo: add types
-
+import { replaceFileExt } from "./resolver.ts";
 import { createGraph, extname } from "./deps.ts";
-import { jsify } from "./resolver.ts";
 
 const cache = {};
 
@@ -17,7 +16,7 @@ export const preloader = async (url, map) => {
     if (url) {
       // esm.sh fix for deno
       url = url.replace("/deno/", "/es2021/");
-      attributes.push(`<${jsify(url)}>; rel="modulepreload"`);
+      attributes.push(`<${replaceFileExt(url, ".js")}>; rel="modulepreload"`);
     }
   }
 
