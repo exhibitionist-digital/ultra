@@ -1,11 +1,13 @@
 import {
   hashFile,
+  isRemoteSource,
   isValidUrl,
   isVendorSource,
   replaceFileExt,
+  resolveFileUrl,
   stripTrailingSlash,
 } from "./resolver.ts";
-import { assertEquals } from "./deps.ts";
+import { assert, assertEquals } from "./deps.ts";
 
 Deno.test("hashFile", () => {
   const hash = hashFile("https://esm.sh/react");
@@ -17,28 +19,44 @@ Deno.test("hashFile", () => {
 
 Deno.test("isValidUrl", async (t) => {
   await t.step("valid url", () => {
-    assertEquals(!!isValidUrl("https://ultrajs.dev"), true);
+    assert(isValidUrl("https://ultrajs.dev"));
   });
   await t.step("invalid url", () => {
-    assertEquals(isValidUrl("./app.jsx"), false);
+    assert(!isValidUrl("./app.jsx"));
   });
 });
 
 Deno.test("isVendorSource", async (t) => {
   await t.step("valid vendor", () => {
-    assertEquals(isVendorSource("./.ultra/x/react.js", "x"), true);
+    assert(isVendorSource("./.ultra/x/react.js", "x"));
   });
   await t.step("invalid vendor", () => {
-    assertEquals(isVendorSource("./components/Heading.jsx", "x"), false);
+    assert(!isVendorSource("./components/Heading.jsx", "x"));
+  });
+});
+
+Deno.test("isRemoteSource", async (t) => {
+  await t.step("valid remote", () => {
+    assert(isRemoteSource("https://deno.land/x/foo"));
+    assert(isRemoteSource("http://example.com"));
+  });
+  await t.step("invalid remote", () => {
+    assert(!isRemoteSource("file:///path/to/Heading.jsx"));
   });
 });
 
 Deno.test("resolvers", async (t) => {
-  await t.step("replaceFileExt", () => {
-    assertEquals(replaceFileExt("a.tsx", ".js"), "/a.js");
-    assertEquals(replaceFileExt("/a.ts", ".js"), "/a.js");
-    assertEquals(replaceFileExt("/a/b/c.js", ".ts"), "/a/b/c.ts");
+  await t.step("replace file extension", () => {
+    assertEquals(replaceFileExt("app.jsx", ".ts"), "app.ts");
     assertEquals(replaceFileExt("./app.jsx", ".js"), "./app.js");
+    assertEquals(replaceFileExt("./app.js", ".jsx"), "./app.jsx");
+    assertEquals(replaceFileExt("./app.jsx", ".tsx"), "./app.tsx");
+    assertEquals(replaceFileExt("app", ".ts"), "app.ts");
+    assertEquals(replaceFileExt("app.", ".ts"), "app.ts");
+    assertEquals(
+      replaceFileExt("/foo/bar/baz/app.js", ".ts"),
+      "/foo/bar/baz/app.ts",
+    );
     assertEquals(
       replaceFileExt("/absolute/test.jsx.foo/app.jsx", ".js"),
       "/absolute/test.jsx.foo/app.js",
@@ -49,5 +67,10 @@ Deno.test("resolvers", async (t) => {
       stripTrailingSlash("https://ultrajs.dev/"),
       "https://ultrajs.dev",
     );
+  });
+  await t.step("resolveFileUrl", () => {
+    const url = resolveFileUrl("foo", "bar");
+    assert(url.href.endsWith("/foo/bar"));
+    assert(url.href.startsWith("file:///"));
   });
 });

@@ -9,12 +9,9 @@ import assets from "./assets.ts";
 import transform from "./transform.ts";
 import render from "./render.ts";
 import {
-  jsify,
-  jsxify,
+  replaceFileExt,
   resolveFileUrl,
   stripTrailingSlash,
-  tsify,
-  tsxify,
 } from "./resolver.ts";
 import {
   disableStreaming,
@@ -136,7 +133,7 @@ const server = () => {
         (specifier: string) => {
           const path = specifier.replace(fileRootUri, "");
 
-          if (jsify(path) !== requestUrl.pathname) {
+          if (replaceFileExt(path, ".js") !== requestUrl.pathname) {
             return `${requestUrl.origin}${path}`;
           }
         },
@@ -183,19 +180,25 @@ const server = () => {
     }
 
     // jsx
-    const jsx = `${sourceDirectory}${jsxify(requestUrl.pathname)}`;
+    const jsx = `${sourceDirectory}${
+      replaceFileExt(requestUrl.pathname, ".jsx")
+    }`;
     if (transpile.has(jsx)) {
       return await transpilation(jsx);
     }
 
     // tsx
-    const tsx = `${sourceDirectory}${tsxify(requestUrl.pathname)}`;
+    const tsx = `${sourceDirectory}${
+      replaceFileExt(requestUrl.pathname, ".tsx")
+    }`;
     if (transpile.has(tsx)) {
       return await transpilation(tsx);
     }
 
     // ts
-    const ts = `${sourceDirectory}${tsify(requestUrl.pathname)}`;
+    const ts = `${sourceDirectory}${
+      replaceFileExt(requestUrl.pathname, ".ts")
+    }`;
     if (transpile.has(ts)) {
       return await transpilation(ts);
     }

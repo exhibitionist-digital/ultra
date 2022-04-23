@@ -1,6 +1,6 @@
 import assets from "./../assets.ts";
 import transform from "./../transform.ts";
-import { jsify } from "../resolver.ts";
+import { replaceFileExt } from "../resolver.ts";
 import {
   basename,
   copy,
@@ -29,7 +29,7 @@ const build = async () => {
   Object.keys(vendorMap.imports)?.forEach((k) => {
     const im: string = vendorMap.imports[k];
     if (im.indexOf("http") < 0) {
-      vendorMap.imports[k] = jsify(im);
+      vendorMap.imports[k] = replaceFileExt(im, ".js");
     }
   });
   const { raw, transpile } = await assets(sourceDirectory);
