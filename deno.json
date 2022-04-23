@@ -5,7 +5,7 @@
   },
   "lint": {
     "files": {
-      "exclude": ["workspace/.ultra/"]
+      "exclude": ["workspace/.ultra/", "src/unstable/"]
     }
   },
   "fmt": {
