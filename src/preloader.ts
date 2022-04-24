@@ -4,7 +4,7 @@ import { createGraph } from "./deps.ts";
 
 const cache = {};
 
-export const preloader = async (url, map) => {
+export const preloader = async (url, cacheBuster, map) => {
   if (cache[url]) return cache[url];
 
   const graph = await createGraph(url);
@@ -16,7 +16,10 @@ export const preloader = async (url, map) => {
     if (url) {
       // esm.sh fix for deno
       url = url.replace("/deno/", "/es2021/");
-      attributes.push(`<${replaceFileExt(url, ".js")}>; rel="modulepreload"`);
+      url = replaceFileExt(url, ".js");
+      attributes.push(
+        `<${url}?ts=${cacheBuster}>; rel="modulepreload"`,
+      );
     }
   }
 

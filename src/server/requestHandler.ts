@@ -1,5 +1,11 @@
 import assets from "../assets.ts";
-import { LRU, readableStreamFromReader, resolve, toFileUrl } from "../deps.ts";
+import {
+  join,
+  LRU,
+  readableStreamFromReader,
+  resolve,
+  toFileUrl,
+} from "../deps.ts";
 import { disableStreaming, lang, root } from "../env.ts";
 import render from "../render.ts";
 import {
@@ -11,8 +17,6 @@ import transform from "../transform.ts";
 import type { APIHandler, ImportMap } from "../types.ts";
 import { preloader } from "../preloader.ts";
 
-const enableLinkPreloadHeaders = true;
-
 type CreateRequestHandlerOptions = {
   cwd: string;
   importMap: ImportMap;
@@ -23,7 +27,12 @@ type CreateRequestHandlerOptions = {
   isDev?: boolean;
 };
 
-export function createRequestHandler(options: CreateRequestHandlerOptions) {
+// TODO: Remove.
+const enableLinkPreloadHeaders = true;
+
+export async function createRequestHandler(
+  options: CreateRequestHandlerOptions,
+) {
   const {
     cwd,
     importMap,
@@ -34,6 +43,11 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
   const memory = new LRU(500);
   const serverStart = Math.ceil(+new Date() / 100);
   const listeners = new Set<WebSocket>();
+
+  const { raw, transpile } = await assets([
+    sourceDirectory,
+    join(".ultra", vendorDirectory),
+  ]);
 
   // async file watcher to send socket messages
   if (isDev) {
@@ -53,8 +67,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
   return async function requestHandler(request: Request): Promise<Response> {
     const requestStart = Math.ceil(+new Date() / 100);
     const cacheBuster = isDev ? requestStart : serverStart;
-    const { raw, transpile } = await assets(sourceDirectory);
-    const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
     const fileSrcRootUri = toFileUrl(resolve(cwd, sourceDirectory)).toString();
 
@@ -70,63 +82,12 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
       }
     }
 
-    // vendor map
-    if (vendor.raw.has(".ultra" + requestUrl.pathname)) {
-      const headers = {
-        "content-type": "text/javascript",
-      };
-
-      if (enableLinkPreloadHeaders) {
-        const ultraUri = toFileUrl(resolve(cwd, ".ultra")).toString();
-
-        const link = await preloader(
-          ultraUri + requestUrl.pathname,
-          (specifier: string) => {
-            const path = specifier.replace(ultraUri, "");
-
-            if (path !== requestUrl.pathname) {
-              return requestUrl.origin + path;
-            }
-          },
-        );
-
-        if (link) {
-          headers.link = link;
-        }
-      }
-
-      const file = await Deno.open(
-        `./.ultra${requestUrl.pathname}`,
-      );
-      const body = readableStreamFromReader(file);
-
-      return new Response(body, { headers });
-    }
-
     // static assets
     if (raw.has(`${sourceDirectory}${requestUrl.pathname}`)) {
       const contentType = raw.get(`${sourceDirectory}${requestUrl.pathname}`);
       const headers = {
         "content-type": contentType,
       };
-
-      if (enableLinkPreloadHeaders) {
-        if (contentType === "application/javascript") {
-          const link = await preloader(
-            fileSrcRootUri + requestUrl.pathname,
-            (specifier: string) => {
-              const path = specifier.replace(fileSrcRootUri, "");
-              if (path !== requestUrl.pathname) {
-                return requestUrl.origin + path;
-              }
-            },
-          );
-
-          if (link) {
-            headers.link = link;
-          }
-        }
-      }
 
       const file = await Deno.open(
         `./${sourceDirectory}${requestUrl.pathname}`,
@@ -138,7 +99,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
 
     const transpilation = async (file: string) => {
       const headers = {
-        "content-type": "text/javascript",
+        "content-type": "application/javascript",
       };
 
       let js = memory.get(requestUrl.pathname);
@@ -165,6 +126,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
       if (enableLinkPreloadHeaders) {
         const link = await preloader(
           resolveFileUrl(cwd, file).toString(),
+          cacheBuster,
           (specifier: string) => {
             const path = specifier.replace(fileSrcRootUri, "");
             if (replaceFileExt(path, ".js") !== requestUrl.pathname) {
@@ -212,6 +174,19 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
           },
         });
       }
+    }
+
+    // js
+    const js = requestUrl.pathname.startsWith("/" + vendorDirectory)
+      // vendored?
+      ? join(
+        ".ultra",
+        requestUrl.pathname,
+      )
+      : sourceDirectory + requestUrl.pathname;
+
+    if (transpile.has(js)) {
+      return await transpilation(js);
     }
 
     // jsx
