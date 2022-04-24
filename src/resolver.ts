@@ -38,15 +38,6 @@ export const resolveFileUrl = (from: string, to: string) => {
   return new URL(toFileUrl(resolve(from, to)).toString());
 };
 
-export const cacheBuster = (source: string, timestamp?: number): string => {
-  return source.replace(
-    /\.(j|t)sx?/gi,
-    () => {
-      return `.js${timestamp ? `?ts=${timestamp}` : ""}`;
-    },
-  );
-};
-
 export const isRemoteSource = (value: string): boolean => {
   return value.startsWith("https://") ||
     value.startsWith("http://");

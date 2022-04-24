@@ -4,14 +4,13 @@ import {
   StringLiteral,
   Visitor,
 } from "../deps.ts";
-import { cacheBuster, isRemoteSource, isVendorSource } from "../resolver.ts";
+import { isRemoteSource, isVendorSource } from "../resolver.ts";
 import { ImportMapResolver } from "../importMapResolver.ts";
 import { root, vendorDirectory } from "../env.ts";
 
 export class UltraVisitor extends Visitor {
   constructor(
     private importMapResolver: ImportMapResolver,
-    private cacheTimestamp?: number,
     private relativePrefix?: string,
     private sourceUrl?: URL,
   ) {
@@ -60,9 +59,9 @@ export class UltraVisitor extends Visitor {
     }
 
     if (!isRemoteSource(node.value)) {
-      node.value = cacheBuster(
-        node.value,
-        this.cacheTimestamp,
+      node.value = node.value.replace(
+        /\.(j|t)sx?/gi,
+        ".js",
       );
     }
 

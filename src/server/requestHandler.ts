@@ -29,7 +29,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
   } = options;
 
   const memory = new LRU(500);
-  const serverStart = Math.ceil(+new Date() / 100);
   const listeners = new Set<WebSocket>();
 
   // async file watcher to send socket messages
@@ -48,8 +47,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
   }
 
   return async function requestHandler(request: Request): Promise<Response> {
-    const requestStart = Math.ceil(+new Date() / 100);
-    const cacheBuster = isDev ? requestStart : serverStart;
     const { raw, transpile } = await assets(sourceDirectory);
     const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
@@ -110,7 +107,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
           source,
           sourceUrl: requestUrl,
           importMap,
-          cacheBuster,
         });
 
         const t1 = performance.now();
@@ -139,7 +135,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
         } else if (apiPaths.has(`${path}/index.ts`)) {
           path = `file://${cwd}/${path}/index.ts`;
         }
-        return (await import(`${path}?ts=${cacheBuster}`)).default;
+        return (await import(path)).default;
       };
       try {
         const pathname = stripTrailingSlash(requestUrl.pathname);

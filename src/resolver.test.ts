@@ -1,6 +1,5 @@
 import {
   hashFile,
-  isRemoteSource,
   isValidUrl,
   isVendorSource,
   replaceFileExt,
@@ -32,16 +31,6 @@ Deno.test("isVendorSource", async (t) => {
   });
   await t.step("invalid vendor", () => {
     assert(!isVendorSource("./components/Heading.jsx", "x"));
-  });
-});
-
-Deno.test("isRemoteSource", async (t) => {
-  await t.step("valid remote", () => {
-    assert(isRemoteSource("https://deno.land/x/foo"));
-    assert(isRemoteSource("http://example.com"));
-  });
-  await t.step("invalid remote", () => {
-    assert(!isRemoteSource("file:///path/to/Heading.jsx"));
   });
 });
 
