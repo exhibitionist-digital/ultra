@@ -85,11 +85,6 @@ const build = async () => {
     JSON.stringify(vendorMap),
   );
 
-  // graph
-  // const cache = createCache();
-  // const ultraGraph = await ultraloader({ importMap, cache });
-  // await Deno.writeTextFile(`./.ultra/graph.json`, JSON.stringify(ultraGraph));
-
   const denoMap: ImportMap = { imports: {} };
   Object.keys(vendorMap.imports)?.forEach((k) => {
     const im: string = vendorMap.imports[k];

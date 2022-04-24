@@ -6,7 +6,7 @@ import {
   resolveFileUrl,
   stripTrailingSlash,
 } from "./resolver.ts";
-import { assert, assertEquals } from "./deps.ts";
+import { assert, assertEquals } from "./deps.dev.ts";
 
 Deno.test("hashFile", () => {
   const hash = hashFile("https://esm.sh/react");

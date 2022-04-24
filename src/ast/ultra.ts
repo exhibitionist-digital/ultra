@@ -4,7 +4,7 @@ import {
   StringLiteral,
   Visitor,
 } from "../deps.ts";
-import { isRemoteSource, isVendorSource } from "../resolver.ts";
+import { isRemoteSource, isVendorSource, replaceFileExt } from "../resolver.ts";
 import { ImportMapResolver } from "../importMapResolver.ts";
 import { root, vendorDirectory } from "../env.ts";
 
@@ -59,10 +59,7 @@ export class UltraVisitor extends Visitor {
     }
 
     if (!isRemoteSource(node.value)) {
-      node.value = node.value.replace(
-        /\.(j|t)sx?/gi,
-        ".js",
-      );
+      node.value = replaceFileExt(node.value, ".js");
     }
 
     //@ts-ignore StringLiteral missing raw field

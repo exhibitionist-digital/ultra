@@ -1,6 +1,6 @@
 // @ts-nocheck todo: add types
 
-import { createGraph, extname } from "./deps.ts";
+import { createGraph, extname } from "./deps.dev.ts";
 
 const preloader = async (path, map, cache) => {
   const { cacheInfo, load } = cache;
