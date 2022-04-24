@@ -70,4 +70,4 @@ serve((request: Request): Response => {
     listeners.delete(socket);
   };
   return response;
-}, { port: wsport });
+}, { port: Number(wsport) });
