@@ -11,7 +11,7 @@ import { UltraVisitor } from "./ast/ultra.ts";
 import { ImportMapResolver } from "./importMapResolver.ts";
 import { VendorVisitor } from "./ast/vendor.ts";
 
-await initSwc("https://cdn.esm.sh/@swc/wasm-web@1.2.165/wasm_bg.wasm");
+await initSwc("https://cdn.esm.sh/@swc/wasm-web@1.2.171/wasm-web_bg.wasm");
 
 const parserOptions: ParseOptions = {
   syntax: "typescript",
