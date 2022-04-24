@@ -2,6 +2,8 @@ import { sourceDirectory, wsport } from "./env.ts";
 import { readLines, serve } from "./deps.ts";
 
 const listeners = new Set<WebSocket>();
+let process;
+let options = {};
 
 const runServer = () => {
   const process = Deno.run({
@@ -11,7 +13,7 @@ const runServer = () => {
       "-A",
       "--unstable",
       "--no-check",
-      "./server.js",
+      options.server,
     ],
     stderr: "piped",
     stdout: "piped",
@@ -35,7 +37,6 @@ const output = async (process) => {
   }
 };
 
-let process = runServer();
 let reloading = false;
 
 const reloadServer = () => {
@@ -61,13 +62,20 @@ const watcher = async () => {
   }
 };
 
-watcher();
+const server = (userOptions = {}) => {
+  options.server = userOptions.server;
+  process = runServer();
 
-serve((request: Request): Response => {
-  const { socket, response } = Deno.upgradeWebSocket(request);
-  listeners.add(socket);
-  socket.onclose = () => {
-    listeners.delete(socket);
-  };
-  return response;
-}, { port: Number(wsport) });
+  watcher();
+
+  serve((request: Request): Response => {
+    const { socket, response } = Deno.upgradeWebSocket(request);
+    listeners.add(socket);
+    socket.onclose = () => {
+      listeners.delete(socket);
+    };
+    return response;
+  }, { port: Number(wsport) });
+};
+
+export default server;
