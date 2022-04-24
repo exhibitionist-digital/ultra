@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/server";
+import { isDev, root } from "../env.ts";
 import { encodeStream, pushBody } from "../stream.ts";
 
 import {
@@ -43,7 +44,7 @@ export function createRenderer(App: AppComponent) {
           Object.keys(helmet)
             .map((i) => helmet[i].toString())
             .join("")
-        }<script type="module" defer>
+        }<script type="module" defer>${isDev ? socket(root) : ""};
           import { createElement } from "${
           importMapResolver.resolveHref("react")
         }";
@@ -102,16 +103,14 @@ export function createRenderer(App: AppComponent) {
   };
 }
 
-function jsonStringify(value: any): string {
-  function replacer(key: string, value: any) {
-    if (value instanceof Map) {
-      return {
-        dataType: "Map",
-        value: Array.from(value.entries()),
-      };
-    } else {
-      return value;
-    }
-  }
-  return JSON.stringify(value, replacer);
-}
+const socket = (root: string) => {
+  const url = new URL(root);
+  return `
+    const _ultra_socket = new WebSocket("ws://${url.host}/_ultra_socket");
+    _ultra_socket.addEventListener("message", (e) => {
+      if (e.data === "reload") {
+        location.reload();
+      }
+    });
+  `;
+};
