@@ -62,7 +62,7 @@ const watcher = async () => {
   }
 };
 
-const server = (userOptions = {}) => {
+const devServer = (userOptions = {}) => {
   options.server = userOptions.server;
   process = runServer();
 
@@ -78,4 +78,4 @@ const server = (userOptions = {}) => {
   }, { port: Number(wsport) });
 };
 
-export default server;
+export default devServer;
