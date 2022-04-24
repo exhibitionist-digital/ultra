@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "mode=dev deno run -A --unstable --no-check server.js",
+    "dev": "mode=dev deno run -A --unstable --no-check ../src/devServer.ts",
     "dev:oak": "mode=dev deno run -A --unstable --no-check oak.ts",
     "start": "deno run -A --unstable --no-check server.js",
     "start:oak": "deno run -A --unstable --no-check oak.ts",

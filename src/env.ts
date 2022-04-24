@@ -1,5 +1,6 @@
 export const isDev = Deno.env.get("mode") === "dev";
 export const port = Deno.env.get("port") || 8000;
+export const wsport = Deno.env.get("wsport") || 8001;
 export const sourceDirectory = Deno.env.get("source") || "src";
 export const vendorDirectory = Deno.env.get("vendor") || "x";
 export const apiDirectory = Deno.env.get("api") || "src/api";

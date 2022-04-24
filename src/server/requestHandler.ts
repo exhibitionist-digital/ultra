@@ -29,39 +29,11 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
   } = options;
 
   const memory = new LRU(500);
-  const listeners = new Set<WebSocket>();
-
-  // async file watcher to send socket messages
-  if (isDev) {
-    (async () => {
-      for await (
-        const { kind } of Deno.watchFs(sourceDirectory, { recursive: true })
-      ) {
-        if (kind === "modify" || kind === "create") {
-          for (const socket of listeners) {
-            socket.send("reload");
-          }
-        }
-      }
-    })();
-  }
 
   return async function requestHandler(request: Request): Promise<Response> {
     const { raw, transpile } = await assets(sourceDirectory);
     const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
-
-    // web socket listener
-    if (isDev) {
-      if (requestUrl.pathname == "/_ultra_socket") {
-        const { socket, response } = Deno.upgradeWebSocket(request);
-        listeners.add(socket);
-        socket.onclose = () => {
-          listeners.delete(socket);
-        };
-        return response;
-      }
-    }
 
     // vendor map
     if (vendor.raw.has(".ultra" + requestUrl.pathname)) {

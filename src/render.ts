@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/server";
 import App from "app";
 import { BaseLocationHook, Router } from "wouter";
 import { HelmetProvider } from "react-helmet";
-import { isDev, sourceDirectory } from "./env.ts";
+import { isDev, sourceDirectory, wsport } from "./env.ts";
 import type { ImportMap, Navigate, RenderOptions } from "./types.ts";
 import { ImportMapResolver } from "./importMapResolver.ts";
 import { encodeStream, pushBody } from "./stream.ts";
@@ -61,15 +61,6 @@ const render = async (
     ),
   );
 
-  let importedApp;
-
-  // FIXME: when using vendor import maps, and in dev mode, the server render fails
-  // this will detect if using vendor map and disable dynamically imported app.
-  if (isDev && importMap?.imports?.["react"]?.indexOf(".ultra") < 0) {
-    transpiledAppImportUrl.searchParams.set("ts", String(+new Date()));
-    importedApp = await import(transpiledAppImportUrl.toString());
-  }
-
   // kickstart caches for react-helmet and swr
   const helmetContext: { helmet: Record<string, number> } = { helmet: {} };
   const cache = new Map();
@@ -88,7 +79,7 @@ const render = async (
           HelmetProvider,
           { context: helmetContext },
           React.createElement(
-            importedApp?.default || App,
+            App,
             { cache },
             null,
           ),
@@ -210,8 +201,9 @@ const staticLocationHook = (
 
 const socket = (root: string) => {
   const url = new URL(root);
+
   return `
-    const _ultra_socket = new WebSocket("ws://${url.host}/_ultra_socket");
+    const _ultra_socket = new WebSocket("ws://${url.hostname}:${wsport}");
     _ultra_socket.addEventListener("message", (e) => {
       if (e.data === "reload") {
         location.reload();

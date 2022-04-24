@@ -13,7 +13,7 @@ export {
   resolve,
   toFileUrl,
 } from "https://deno.land/std@0.135.0/path/mod.ts";
-export { Buffer } from "https://deno.land/std@0.135.0/io/mod.ts";
+export { Buffer, readLines } from "https://deno.land/std@0.135.0/io/mod.ts";
 export { serve } from "https://deno.land/std@0.135.0/http/server.ts";
 export { readableStreamFromReader } from "https://deno.land/std@0.135.0/streams/conversion.ts";
 export { createCache } from "https://deno.land/x/deno_cache@0.2.1/mod.ts";
