@@ -9,7 +9,7 @@ import {
 } from "../resolver.ts";
 import transform from "../transform.ts";
 import type { APIHandler, ImportMap } from "../types.ts";
-import { preloader, ultraloader } from "../preloader.ts";
+import { preloader } from "../preloader.ts";
 
 type CreateRequestHandlerOptions = {
   cwd: string;
@@ -224,7 +224,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
       {
         headers: {
           "content-type": "text/html; charset=utf-8",
-          link: await ultraloader({ importMap }),
         },
       },
     );

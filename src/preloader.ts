@@ -1,6 +1,6 @@
 // @ts-nocheck todo: add types
 import { replaceFileExt } from "./resolver.ts";
-import { createGraph, extname } from "./deps.ts";
+import { createGraph } from "./deps.ts";
 
 const cache = {};
 
@@ -26,31 +26,6 @@ export const preloader = async (url, map) => {
 
     return linkHeaders;
   }
-};
-
-const preloadedImports = [
-  "react",
-  "react-dom",
-  "react-helmet",
-  "wouter",
-  "swr",
-  "ultra/cache",
-  // TODO: Allow users to add to this list,
-];
-
-export const ultraloader = async ({ importMap }) => {
-  const link = await preloader(
-    preloadedImports.map((name) => {
-      return importMap.imports[name];
-    }),
-    (specifier) => {
-      if (extname(specifier) === ".js") {
-        return specifier;
-      }
-    },
-  );
-
-  return link;
 };
 
 export default preloader;
