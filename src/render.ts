@@ -66,7 +66,10 @@ const render = async (
   // FIXME: when using vendor import maps, and in dev mode, the server render fails
   // this will detect if using vendor map and disable dynamically imported app.
   if (isDev && importMap?.imports?.["react"]?.indexOf(".ultra") < 0) {
-    transpiledAppImportUrl.searchParams.set("ts", String(+new Date()));
+    transpiledAppImportUrl.searchParams.set(
+      "ts",
+      String(Math.ceil(+new Date() / 100)),
+    );
     importedApp = await import(transpiledAppImportUrl.toString());
   }
 

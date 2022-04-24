@@ -11,7 +11,6 @@ import { root, vendorDirectory } from "../env.ts";
 export class UltraVisitor extends Visitor {
   constructor(
     private importMapResolver: ImportMapResolver,
-    private cacheTimestamp?: number,
     private relativePrefix?: string,
     private sourceUrl?: URL,
   ) {

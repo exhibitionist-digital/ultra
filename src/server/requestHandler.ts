@@ -110,7 +110,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
           source,
           sourceUrl: requestUrl,
           importMap,
-          cacheBuster,
         });
 
         const t1 = performance.now();
