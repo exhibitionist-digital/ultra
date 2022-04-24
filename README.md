@@ -4,7 +4,7 @@
 
 ### ULTRA
 
-#### Modern Streaming React Framework
+#### Modern Streaming SSR React Framework in Deno
 
 [ultrajs.dev](https://ultrajs.dev)
 
