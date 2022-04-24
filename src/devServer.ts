@@ -3,7 +3,7 @@ import { readLines, serve } from "./deps.ts";
 
 const listeners = new Set<WebSocket>();
 let process;
-let options = {};
+const options = {};
 
 const runServer = () => {
   const process = Deno.run({
