@@ -1,5 +1,5 @@
 import assets from "../assets.ts";
-import { LRU, readableStreamFromReader } from "../deps.ts";
+import { LRU, readableStreamFromReader, resolve, toFileUrl } from "../deps.ts";
 import { disableStreaming, lang, root } from "../env.ts";
 import render from "../render.ts";
 import {
@@ -9,6 +9,7 @@ import {
 } from "../resolver.ts";
 import transform from "../transform.ts";
 import type { APIHandler, ImportMap } from "../types.ts";
+import { preloader, ultraloader } from "../preloader.ts";
 
 type CreateRequestHandlerOptions = {
   cwd: string;
@@ -53,6 +54,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
     const { raw, transpile } = await assets(sourceDirectory);
     const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
+    const fileRootUri = toFileUrl(resolve(cwd, sourceDirectory)).toString();
 
     // web socket listener
     if (isDev) {
@@ -87,6 +89,22 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
         "content-type": contentType,
       };
 
+      if (contentType === "application/javascript") {
+        const link = await preloader(
+          fileRootUri + requestUrl.pathname,
+          (specifier: string) => {
+            const path = specifier.replace(fileRootUri, "");
+            if (path !== requestUrl.pathname) {
+              return requestUrl.origin + path;
+            }
+          },
+        );
+
+        if (link) {
+          headers.link = link;
+        }
+      }
+
       const file = await Deno.open(
         `./${sourceDirectory}${requestUrl.pathname}`,
       );
@@ -119,6 +137,20 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
         console.log(`Transpile ${file} in ${duration}ms`);
 
         if (!isDev) memory.set(requestUrl.pathname, js);
+      }
+
+      const link = await preloader(
+        resolveFileUrl(cwd, file).toString(),
+        (specifier: string) => {
+          const path = specifier.replace(fileRootUri, "");
+          if (replaceFileExt(path, ".js") !== requestUrl.pathname) {
+            return requestUrl.origin + path;
+          }
+        },
+      );
+
+      if (link) {
+        headers.link = link;
       }
 
       //@ts-ignore any
@@ -192,6 +224,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
       {
         headers: {
           "content-type": "text/html; charset=utf-8",
+          link: await ultraloader({ importMap }),
         },
       },
     );
