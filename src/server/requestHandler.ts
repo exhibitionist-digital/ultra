@@ -11,6 +11,8 @@ import transform from "../transform.ts";
 import type { APIHandler, ImportMap } from "../types.ts";
 import { preloader } from "../preloader.ts";
 
+const enableLinkPreloadHeaders = true;
+
 type CreateRequestHandlerOptions = {
   cwd: string;
   importMap: ImportMap;
@@ -54,7 +56,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
     const { raw, transpile } = await assets(sourceDirectory);
     const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
-    const fileRootUri = toFileUrl(resolve(cwd, sourceDirectory)).toString();
+    const fileSrcRootUri = toFileUrl(resolve(cwd, sourceDirectory)).toString();
 
     // web socket listener
     if (isDev) {
@@ -74,6 +76,25 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
         "content-type": "text/javascript",
       };
 
+      if (enableLinkPreloadHeaders) {
+        const ultraUri = toFileUrl(resolve(cwd, ".ultra")).toString();
+
+        const link = await preloader(
+          ultraUri + requestUrl.pathname,
+          (specifier: string) => {
+            const path = specifier.replace(ultraUri, "");
+
+            if (path !== requestUrl.pathname) {
+              return requestUrl.origin + path;
+            }
+          },
+        );
+
+        if (link) {
+          headers.link = link;
+        }
+      }
+
       const file = await Deno.open(
         `./.ultra${requestUrl.pathname}`,
       );
@@ -89,19 +110,21 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
         "content-type": contentType,
       };
 
-      if (contentType === "application/javascript") {
-        const link = await preloader(
-          fileRootUri + requestUrl.pathname,
-          (specifier: string) => {
-            const path = specifier.replace(fileRootUri, "");
-            if (path !== requestUrl.pathname) {
-              return requestUrl.origin + path;
-            }
-          },
-        );
+      if (enableLinkPreloadHeaders) {
+        if (contentType === "application/javascript") {
+          const link = await preloader(
+            fileSrcRootUri + requestUrl.pathname,
+            (specifier: string) => {
+              const path = specifier.replace(fileSrcRootUri, "");
+              if (path !== requestUrl.pathname) {
+                return requestUrl.origin + path;
+              }
+            },
+          );
 
-        if (link) {
-          headers.link = link;
+          if (link) {
+            headers.link = link;
+          }
         }
       }
 
@@ -139,18 +162,20 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
         if (!isDev) memory.set(requestUrl.pathname, js);
       }
 
-      const link = await preloader(
-        resolveFileUrl(cwd, file).toString(),
-        (specifier: string) => {
-          const path = specifier.replace(fileRootUri, "");
-          if (replaceFileExt(path, ".js") !== requestUrl.pathname) {
-            return requestUrl.origin + path;
-          }
-        },
-      );
+      if (enableLinkPreloadHeaders) {
+        const link = await preloader(
+          resolveFileUrl(cwd, file).toString(),
+          (specifier: string) => {
+            const path = specifier.replace(fileSrcRootUri, "");
+            if (replaceFileExt(path, ".js") !== requestUrl.pathname) {
+              return requestUrl.origin + path;
+            }
+          },
+        );
 
-      if (link) {
-        headers.link = link;
+        if (link) {
+          headers.link = link;
+        }
       }
 
       //@ts-ignore any
