@@ -38,13 +38,13 @@ export const resolveFileUrl = (from: string, to: string) => {
   return new URL(toFileUrl(resolve(from, to)).toString());
 };
 
-export const cacheBuster = (source: string, timestamp?: number): string => {
-  return source.replace(
-    /\.(j|t)sx?/gi,
-    () => {
-      return `.js${timestamp ? `?ts=${timestamp}` : ""}`;
-    },
+export const cacheBuster = (url: URL): string => {
+  const buster = Math.ceil(+new Date() / 100);
+  url.searchParams.set(
+    "ts",
+    String(buster),
   );
+  return url.toString();
 };
 
 export const isRemoteSource = (value: string): boolean => {

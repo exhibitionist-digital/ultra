@@ -8,6 +8,7 @@ import { isDev, sourceDirectory } from "./env.ts";
 import type { ImportMap, Navigate, RenderOptions } from "./types.ts";
 import { ImportMapResolver } from "./importMapResolver.ts";
 import { encodeStream, pushBody } from "./stream.ts";
+import { cacheBuster } from "./resolver.ts";
 
 // Size of the chunk to emit to the connection as the response streams:
 const defaultChunkSize = 8 * 1024;
@@ -66,8 +67,7 @@ const render = async (
   // FIXME: when using vendor import maps, and in dev mode, the server render fails
   // this will detect if using vendor map and disable dynamically imported app.
   if (isDev && importMap?.imports?.["react"]?.indexOf(".ultra") < 0) {
-    transpiledAppImportUrl.searchParams.set("ts", String(+new Date()));
-    importedApp = await import(transpiledAppImportUrl.toString());
+    importedApp = await import(cacheBuster(transpiledAppImportUrl));
   }
 
   // kickstart caches for react-helmet and swr

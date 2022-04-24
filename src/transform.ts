@@ -27,13 +27,11 @@ const parserOptions: ParseOptions = {
 export const transformSource = async (
   options: TransformOptions,
 ): Promise<string> => {
-  const { source, sourceUrl, importMap, cacheBuster, minify, relativePrefix } =
-    options;
+  const { source, sourceUrl, importMap, minify, relativePrefix } = options;
 
   const importMapResolver = new ImportMapResolver(importMap, sourceUrl);
   const visitor = new UltraVisitor(
     importMapResolver,
-    cacheBuster,
     relativePrefix,
     sourceUrl,
   );

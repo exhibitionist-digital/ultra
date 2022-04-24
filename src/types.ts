@@ -18,7 +18,6 @@ export type TransformOptions = {
   source: string;
   sourceUrl: URL;
   importMap: ImportMap;
-  cacheBuster?: number;
   minify?: boolean;
   relativePrefix?: string;
 };
