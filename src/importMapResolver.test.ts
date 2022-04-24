@@ -1,5 +1,5 @@
 import { ImportMapResolver } from "../src/importMapResolver.ts";
-import { assertEquals } from "./deps.ts";
+import { assertEquals } from "./deps.dev.ts";
 
 Deno.test("importResolver", async (t) => {
   const importMap = {

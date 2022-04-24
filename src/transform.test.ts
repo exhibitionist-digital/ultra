@@ -1,5 +1,5 @@
 import { transformSource } from "../src/transform.ts";
-import { assertEquals } from "./deps.ts";
+import { assertEquals } from "./deps.dev.ts";
 
 Deno.test("transformSource", async (t) => {
   const importMap = {
