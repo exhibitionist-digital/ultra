@@ -1,11 +1,21 @@
 import React from "react";
-import type { AppProps } from "../../unstable.ts";
+import type { AppProps, ServerRequestContext } from "../../unstable.ts";
 
 export default function App({ requestContext }: AppProps) {
+  console.log(requestContext.state);
   return (
     <div>
       Hello World!
-      <pre>{JSON.stringify(requestContext, null, 2)}</pre>
     </div>
   );
+}
+
+export function createRequestContext(request: Request): ServerRequestContext {
+  return {
+    url: new URL(request.url),
+    state: new Map([["bar", "baz"]]),
+    helmetContext: {
+      helmet: {},
+    },
+  };
 }

@@ -43,10 +43,12 @@ export function createRenderer(App: AppComponent) {
             .map((i) => helmet[i].toString())
             .join("")
         }<script type="module" defer>
+          import { createElement } from "https://esm.sh/react@18?dev";
+          import { hydrateRoot } from "https://esm.sh/react-dom@18/client?dev";
           import App from "/app.js";
           const root = hydrateRoot(
             document.getElementById("ultra"),
-            createElement(App, { requestContext: self._ultra_request_context })
+            createElement(App, { requestContext: self.__ultra_request_context })
           )
         </script></head><body><div id="ultra">`;
         return head;
@@ -93,4 +95,18 @@ export function createRenderer(App: AppComponent) {
       throw error;
     }
   };
+}
+
+function jsonStringify(value: any): string {
+  function replacer(key: string, value: any) {
+    if (value instanceof Map) {
+      return {
+        dataType: "Map",
+        value: Array.from(value.entries()),
+      };
+    } else {
+      return value;
+    }
+  }
+  return JSON.stringify(value, replacer);
 }
