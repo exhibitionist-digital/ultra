@@ -1,8 +1,7 @@
 import React from "react";
 import type { AppProps, ServerRequestContext } from "../../unstable.ts";
 
-export default function App({ requestContext }: AppProps) {
-  console.log(requestContext.state);
+export default function App(props: AppProps) {
   return (
     <div>
       Hello World!

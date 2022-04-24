@@ -16,7 +16,8 @@ export function createRenderer(App: AppComponent) {
   return async function renderToStream(
     options: UnstableRenderOptions,
   ): Promise<Response> {
-    const { requestContext, chunkSize = defaultChunkSize } = options;
+    const { requestContext, chunkSize = defaultChunkSize, importMapResolver } =
+      options;
     const { locale = defaultLocale, renderStrategy = defaultRenderStrategy } =
       requestContext;
 
@@ -43,8 +44,12 @@ export function createRenderer(App: AppComponent) {
             .map((i) => helmet[i].toString())
             .join("")
         }<script type="module" defer>
-          import { createElement } from "https://esm.sh/react@18?dev";
-          import { hydrateRoot } from "https://esm.sh/react-dom@18/client?dev";
+          import { createElement } from "${
+          importMapResolver.resolveHref("react")
+        }";
+          import { hydrateRoot } from "${
+          importMapResolver.resolveHref("react-dom/client")
+        }";
           import App from "/app.js";
           const root = hydrateRoot(
             document.getElementById("ultra"),
@@ -61,7 +66,7 @@ export function createRenderer(App: AppComponent) {
         <script>self.__ultra = ${
           JSON.stringify(Array.from(state.entries()))
         }</script>
-        <script>self.__ultra_request_context = ${
+        <script type="application/json">${
           JSON.stringify(requestContext)
         }</script>
         </html>`;

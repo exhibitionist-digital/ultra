@@ -1,5 +1,6 @@
 import type { FunctionComponent } from "react";
 import type { HelmetServerState } from "react-helmet";
+import { ImportMapResolver } from "../importMapResolver.ts";
 
 export type ServerRequestContext = {
   url: URL;
@@ -26,6 +27,7 @@ export type ServerOptions = {
 
 export type RenderOptions = {
   requestContext: ServerRequestContext;
+  importMapResolver: ImportMapResolver;
   chunkSize?: number;
 };
 
