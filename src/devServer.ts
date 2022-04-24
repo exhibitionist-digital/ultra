@@ -1,4 +1,4 @@
-import { sourceDirectory } from "./env.ts";
+import { sourceDirectory, wsport } from "./env.ts";
 import { readLines, serve } from "./deps.ts";
 
 const listeners = new Set<WebSocket>();
@@ -70,4 +70,4 @@ serve((request: Request): Response => {
     listeners.delete(socket);
   };
   return response;
-}, { port: 8001 });
+}, { port: wsport });
