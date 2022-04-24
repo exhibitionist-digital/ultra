@@ -3,7 +3,6 @@ import { LRU, readableStreamFromReader } from "../deps.ts";
 import { disableStreaming, lang, root } from "../env.ts";
 import render from "../render.ts";
 import {
-  cacheBuster,
   replaceFileExt,
   resolveFileUrl,
   stripTrailingSlash,
