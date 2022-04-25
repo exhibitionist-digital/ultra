@@ -14,9 +14,7 @@ export default function App(props: AppProps) {
   );
 }
 
-export const createRequestContext: RequestContextFunction = (
-  request: Request,
-) => {
+export const createRequestContext: RequestContextFunction = (request) => {
   return {
     url: new URL(request.url),
     renderStrategy: "static",
