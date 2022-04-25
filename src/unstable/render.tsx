@@ -1,24 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/server";
 
-import {
-  AppComponent,
-  Renderer,
-  RenderStrategy,
-  RequestContext,
-} from "./types.ts";
+import { AppComponent, Renderer, RequestContext } from "./types.ts";
 
 const progressiveChunkSize = 8 * 1024;
-const defaultLocale = "en";
-const defaultRenderStrategy: RenderStrategy = "stream";
 
-export function createRenderer<T>(App: AppComponent<T>): Renderer {
+export function createRenderer(App: AppComponent): Renderer {
   return async function renderToStream(
     requestContext: RequestContext,
   ): Promise<Response> {
     const {
-      locale = defaultLocale,
-      renderStrategy = defaultRenderStrategy,
+      renderStrategy,
     } = requestContext;
 
     const controller = new AbortController();
@@ -27,7 +19,7 @@ export function createRenderer<T>(App: AppComponent<T>): Renderer {
     try {
       const stream = await ReactDOM
         .renderToReadableStream(
-          <App requestContext={requestContext} />,
+          <App />,
           {
             signal: controller.signal,
             progressiveChunkSize,

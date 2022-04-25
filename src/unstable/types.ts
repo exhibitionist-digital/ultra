@@ -9,17 +9,17 @@ export type RequestContext = {
   helmetContext: {
     helmet: HelmetServerState;
   };
-  locale?: string;
-  renderStrategy?: RenderStrategy;
+  locale: string;
+  renderStrategy: RenderStrategy;
 };
 
-export type RequestContextFactory = ((
+export type RequestContextFunction<T = Partial<RequestContext>> = ((
   request: Request,
-) => Promise<RequestContext> | RequestContext);
+) => Promise<T> | T);
 
 export type CreateRequestHandlerOptions = {
   render: Renderer;
-  createRequestContext: RequestContextFactory;
+  createRequestContext: RequestContextFunction<RequestContext>;
   cwd: string;
   importMap: ImportMap;
   paths: {
@@ -34,12 +34,10 @@ export type AppProps<P = {}> = P & {
   requestContext?: RequestContext;
 };
 
-export type AppComponent<T extends AppProps> = FunctionComponent<T>;
+export type AppComponent = FunctionComponent;
 
 export type ServerOptions = {
-  createRequestContext?: ((
-    request: Request,
-  ) => Promise<RequestContext> | RequestContext);
+  createRequestContext?: RequestContextFunction<Partial<RequestContext>>;
 };
 
 export type RenderOptions = {
