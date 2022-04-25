@@ -24,19 +24,27 @@ const runServer = (): Deno.Process => {
     stdout: "piped",
   });
 
+  stderr(process);
   output(process);
 
   return process;
 };
 
-const output = async (process: Deno.Process) => {
+const stderr = async (process: Deno.Process) => {
   // process.stderr/stdout types declare that they can return null for some reason.
-  if (process.stdout === null || process.stderr === null) {
-    throw new Error("Failed to initialize command streams");
+  if (process.stderr === null) {
+    throw new Error("Failed to initialize stderr stream!");
   }
 
   for await (const line of readLines(process.stderr)) {
     console.error(line);
+  }
+};
+
+const output = async (process: Deno.Process) => {
+  // process.stderr/stdout types declare that they can return null for some reason.
+  if (process.stdout === null) {
+    throw new Error("Failed to initialize stdout stream!");
   }
 
   for await (const line of readLines(process.stdout)) {
