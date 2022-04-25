@@ -2,7 +2,7 @@ import { sourceDirectory, wsport } from "./env.ts";
 import { readLines, serve } from "./deps.ts";
 
 export type DevServerOptions = {
-  /** Path to the file that initializes the server. eg. "./server.js" */
+  /** Path to a script that initializes the server. eg. "./server.js" */
   server: string;
 };
 
