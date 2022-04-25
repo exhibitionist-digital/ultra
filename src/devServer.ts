@@ -25,6 +25,9 @@ const runServer = () => {
 };
 
 const output = async (process) => {
+  for await (const line of readLines(process.stderr)) {
+    console.error(line);
+  }
   for await (const line of readLines(process.stdout)) {
     console.log(line);
     if (line.startsWith("Ultra running")) {
