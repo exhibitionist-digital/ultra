@@ -9,27 +9,24 @@ export function createRenderer(App: AppComponent): Renderer {
   return async function renderToStream(
     requestContext: RequestContext,
   ): Promise<Response> {
-    const {
-      renderStrategy,
-    } = requestContext;
+    const { renderStrategy } = requestContext;
 
     const controller = new AbortController();
     let didError = false;
 
     try {
-      const stream = await ReactDOM
-        .renderToReadableStream(
-          <App />,
-          {
-            signal: controller.signal,
-            progressiveChunkSize,
-            bootstrapModules: ["/client.entry.js"],
-            onError(error) {
-              didError = true;
-              console.log(error);
-            },
+      const stream = await ReactDOM.renderToReadableStream(
+        <App />,
+        {
+          signal: controller.signal,
+          progressiveChunkSize,
+          bootstrapModules: ["/client.entry.js"],
+          onError(error) {
+            didError = true;
+            console.log(error);
           },
-        );
+        },
+      );
 
       if (renderStrategy === "static") {
         await stream.allReady;
