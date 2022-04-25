@@ -1,11 +1,16 @@
 import { sourceDirectory, wsport } from "./env.ts";
 import { readLines, serve } from "./deps.ts";
 
-const listeners = new Set<WebSocket>();
-let process;
-const options = {};
+export type DevServerOptions = {
+  /** Path to the file that initializes the server. eg. "./server.js" */
+  server: string;
+};
 
-const runServer = () => {
+const listeners = new Set<WebSocket>();
+let process: Deno.Process;
+const options = {} as DevServerOptions;
+
+const runServer = (): Deno.Process => {
   const process = Deno.run({
     cmd: [
       "deno",
@@ -24,10 +29,16 @@ const runServer = () => {
   return process;
 };
 
-const output = async (process) => {
+const output = async (process: Deno.Process) => {
+  // process.stderr/stdout types declare that they can return null for some reason.
+  if (process.stdout === null || process.stderr === null) {
+    throw new Error("Failed to initialize command streams");
+  }
+
   for await (const line of readLines(process.stderr)) {
     console.error(line);
   }
+
   for await (const line of readLines(process.stdout)) {
     console.log(line);
     if (line.startsWith("Ultra running")) {
@@ -65,7 +76,7 @@ const watcher = async () => {
   }
 };
 
-const devServer = (userOptions = {}) => {
+const devServer = (userOptions: DevServerOptions) => {
   options.server = userOptions.server;
   process = runServer();
 
