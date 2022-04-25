@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/server";
-
 import { AppComponent, Renderer, RequestContext } from "./types.ts";
 
 const progressiveChunkSize = 8 * 1024;
@@ -16,6 +15,8 @@ export function createRenderer(App: AppComponent): Renderer {
 
     try {
       const stream = await ReactDOM.renderToReadableStream(
+        // Should pass an "app specific" context here as prop
+        // Or do we wrap in a context provider? RequestContextProvider?
         <App />,
         {
           signal: controller.signal,
