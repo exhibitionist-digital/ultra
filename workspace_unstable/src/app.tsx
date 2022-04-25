@@ -3,9 +3,14 @@ import type { AppProps, ServerRequestContext } from "../../unstable.ts";
 
 export default function App(props: AppProps) {
   return (
-    <div>
-      Hello World!
-    </div>
+    <html>
+      <head>
+        <title>Ultra</title>
+      </head>
+      <body>
+        Hello world!
+      </body>
+    </html>
   );
 }
 

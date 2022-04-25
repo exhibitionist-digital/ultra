@@ -7,6 +7,15 @@
     "build": "deno run -A ../build.ts"
   },
   "importMap": "./importMap.json",
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "dom.asynciterable",
+      "deno.ns",
+      "deno.unstable"
+    ]
+  },
   "lint": {
     "files": {
       "exclude": [".ultra/"]

@@ -4,7 +4,7 @@ import { resolveConfig, resolveImportMap } from "../config.ts";
 import { serve } from "../deps.ts";
 import { createRequestHandler } from "./server/requestHandler.ts";
 import type { ServerOptions, ServerRequestContext } from "./types.ts";
-import { createRenderer } from "./render.ts";
+import { createRenderer } from "./render.tsx";
 
 const cwd = Deno.cwd();
 const config = await resolveConfig(cwd);
