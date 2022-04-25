@@ -9,7 +9,16 @@ export type RequestContext = {
   helmetContext: {
     helmet: HelmetServerState;
   };
+  /**
+   * Locale of the current request
+   */
   locale: string;
+  /**
+   * A render strategy to use for this request, useful
+   * for serving bots or other services that don't support streaming.
+   *
+   * @default "stream"
+   */
   renderStrategy: RenderStrategy;
 };
 
