@@ -1,3 +1,4 @@
+import type { TransformConfig } from "./deps.ts";
 export type ImportMap = { imports: Record<string, string> };
 
 export type Navigate = (to: string, opts?: { replace?: boolean }) => void;
@@ -20,6 +21,7 @@ export type TransformOptions = {
   importMap: ImportMap;
   minify?: boolean;
   relativePrefix?: string;
+  transformConfig?: TransformConfig;
 };
 
 export type Ultraloader = {

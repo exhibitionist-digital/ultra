@@ -5,7 +5,6 @@ import {
   printSync,
   Program,
   toFileUrl,
-  TransformConfig,
   transformSync,
 } from "./deps.ts";
 import { cache } from "https://deno.land/x/cache@0.2.13/mod.ts";
@@ -25,12 +24,17 @@ const parserOptions: ParseOptions = {
   dynamicImport: true,
 };
 
-const transformConfig: TransformConfig = {};
-
 export const transformSource = async (
   options: TransformOptions,
 ): Promise<string> => {
-  const { source, sourceUrl, importMap, minify, relativePrefix } = options;
+  const {
+    source,
+    sourceUrl,
+    importMap,
+    minify,
+    relativePrefix,
+    transformConfig = {},
+  } = options;
 
   const importMapResolver = new ImportMapResolver(importMap, sourceUrl);
   const visitor = new UltraVisitor(

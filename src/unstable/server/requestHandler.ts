@@ -101,7 +101,12 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
           source,
           sourceUrl: requestUrl,
           importMap,
-          cacheBuster,
+          transformConfig: {
+            react: {
+              importSource: "react",
+              runtime: "automatic",
+            },
+          },
         });
 
         const t1 = performance.now();
