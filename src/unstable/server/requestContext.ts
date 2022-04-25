@@ -27,10 +27,7 @@ export const createRequestContextFactory = (
   createRequestContext?: RequestContextFunction,
 ) =>
   async (request: Request) => {
-    if (
-      !createRequestContext ||
-      createRequestContext === defaultCreateRequestContext
-    ) {
+    if (!createRequestContext) {
       return defaultCreateRequestContext(request);
     }
 

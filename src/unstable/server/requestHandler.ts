@@ -13,7 +13,6 @@ import { createRequestContextFactory } from "./requestContext.ts";
 export function createRequestHandler(options: CreateRequestHandlerOptions) {
   const {
     render,
-    createRequestContext: _createRequestContext,
     cwd,
     importMap,
     paths: { source: sourceDirectory, vendor: vendorDirectory },
@@ -21,7 +20,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
   } = options;
 
   const createRequestContext = createRequestContextFactory(
-    _createRequestContext,
+    options.createRequestContext,
   );
 
   const memory = new LRU(500);
