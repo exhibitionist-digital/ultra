@@ -11,6 +11,8 @@ export type RequestContext = {
   };
   /**
    * Locale of the current request
+   *
+   * @default "en"
    */
   locale: string;
   /**
