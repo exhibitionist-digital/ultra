@@ -1,16 +1,20 @@
-import type { FunctionComponent } from "react";
 import { isDev, port, root, sourceDirectory, vendorDirectory } from "../env.ts";
 import { resolveConfig, resolveImportMap } from "../config.ts";
 import { serve } from "../deps.ts";
 import { createRequestHandler } from "./server/requestHandler.ts";
-import type { ServerOptions, ServerRequestContext } from "./types.ts";
+import type {
+  AppComponent,
+  AppProps,
+  RequestContext,
+  ServerOptions,
+} from "./types.ts";
 import { createRenderer } from "./render.tsx";
 
 const cwd = Deno.cwd();
 const config = await resolveConfig(cwd);
 const importMap = await resolveImportMap(cwd, config);
 
-function defaultCreateRequestContext(request: Request): ServerRequestContext {
+function defaultCreateRequestContext(request: Request): RequestContext {
   return {
     url: new URL(request.url),
     state: new Map(),
@@ -20,8 +24,8 @@ function defaultCreateRequestContext(request: Request): ServerRequestContext {
   };
 }
 
-export function unstable_ultra(
-  App: FunctionComponent<{ requestContext: ServerRequestContext }>,
+export function unstable_ultra<T extends AppProps>(
+  App: AppComponent<T>,
   options?: ServerOptions,
 ): Promise<void> {
   const { createRequestContext = defaultCreateRequestContext } = options || {};

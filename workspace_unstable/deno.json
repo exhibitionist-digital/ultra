@@ -8,6 +8,8 @@
   },
   "importMap": "./importMap.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
     "lib": [
       "dom",
       "dom.iterable",

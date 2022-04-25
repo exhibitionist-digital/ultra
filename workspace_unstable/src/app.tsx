@@ -1,5 +1,5 @@
-import React from "react";
-import type { AppProps, ServerRequestContext } from "../../unstable.ts";
+/** @jsxImportSource react */
+import type { AppProps, RequestContext } from "../../unstable.ts";
 
 export default function App(props: AppProps) {
   return (
@@ -14,7 +14,7 @@ export default function App(props: AppProps) {
   );
 }
 
-export function createRequestContext(request: Request): ServerRequestContext {
+export function createRequestContext(request: Request): RequestContext {
   return {
     url: new URL(request.url),
     state: new Map([["bar", "baz"]]),

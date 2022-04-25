@@ -5,6 +5,7 @@ import {
   printSync,
   Program,
   toFileUrl,
+  TransformConfig,
   transformSync,
 } from "./deps.ts";
 import { cache } from "https://deno.land/x/cache@0.2.13/mod.ts";
@@ -24,6 +25,8 @@ const parserOptions: ParseOptions = {
   dynamicImport: true,
 };
 
+const transformConfig: TransformConfig = {};
+
 export const transformSource = async (
   options: TransformOptions,
 ): Promise<string> => {
@@ -41,6 +44,7 @@ export const transformSource = async (
   const transformResult = await transformSync(source, {
     jsc: {
       parser: parserOptions,
+      transform: transformConfig,
       target: "es2021",
     },
   });

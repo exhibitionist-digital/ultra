@@ -1,31 +1,13 @@
 import assets from "../../assets.ts";
 import { LRU, readableStreamFromReader } from "../../deps.ts";
-import { ImportMapResolver } from "../../importMapResolver.ts";
 import {
   replaceFileExt,
   resolveFileUrl,
   stripTrailingSlash,
 } from "../../resolver.ts";
 import transform from "../../transform.ts";
-import type { APIHandler, ImportMap } from "../../types.ts";
-import type {
-  RenderOptions as UnstableRenderOptions,
-  ServerRequestContext,
-} from "../types.ts";
-
-type CreateRequestHandlerOptions = {
-  render: ((options: UnstableRenderOptions) => Promise<Response>);
-  createRequestContext: ((
-    request: Request,
-  ) => Promise<ServerRequestContext> | ServerRequestContext);
-  cwd: string;
-  importMap: ImportMap;
-  paths: {
-    source: string;
-    vendor: string;
-  };
-  isDev?: boolean;
-};
+import type { APIHandler } from "../../types.ts";
+import type { CreateRequestHandlerOptions } from "../types.ts";
 
 export function createRequestHandler(options: CreateRequestHandlerOptions) {
   const {
@@ -40,11 +22,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
   const memory = new LRU(500);
   const serverStart = Math.ceil(+new Date() / 100);
   const listeners = new Set<WebSocket>();
-
-  const importMapResolver = new ImportMapResolver(
-    importMap,
-    new URL(Deno.mainModule),
-  );
 
   // async file watcher to send socket messages
   if (isDev) {
@@ -197,9 +174,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
 
     const requestContext = await createRequestContext(request);
 
-    return render({
-      requestContext,
-      importMapResolver,
-    });
+    return render(requestContext);
   };
 }

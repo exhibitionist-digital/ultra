@@ -1,8 +1,9 @@
 import type { FunctionComponent } from "react";
 import type { HelmetServerState } from "react-helmet";
 import { ImportMapResolver } from "../importMapResolver.ts";
+import type { ImportMap } from "../types.ts";
 
-export type ServerRequestContext = {
+export type RequestContext = {
   url: URL;
   state: Map<unknown, unknown>;
   helmetContext: {
@@ -12,23 +13,46 @@ export type ServerRequestContext = {
   renderStrategy?: RenderStrategy;
 };
 
-// deno-lint-ignore ban-types
-export type AppProps<P = {}> = P & {
-  requestContext: ServerRequestContext;
+export type RequestContextFactory = ((
+  request: Request,
+) => Promise<RequestContext> | RequestContext);
+
+export type CreateRequestHandlerOptions = {
+  render: Renderer;
+  createRequestContext: RequestContextFactory;
+  cwd: string;
+  importMap: ImportMap;
+  paths: {
+    source: string;
+    vendor: string;
+  };
+  isDev?: boolean;
 };
 
-export type AppComponent = FunctionComponent<AppProps>;
+// deno-lint-ignore ban-types
+export type AppProps<P = {}> = P & {
+  requestContext?: RequestContext;
+};
+
+export type AppComponent<T extends AppProps> = FunctionComponent<T>;
 
 export type ServerOptions = {
   createRequestContext?: ((
     request: Request,
-  ) => Promise<ServerRequestContext> | ServerRequestContext);
+  ) => Promise<RequestContext> | RequestContext);
 };
 
 export type RenderOptions = {
-  requestContext: ServerRequestContext;
+  requestContext: RequestContext;
   importMapResolver: ImportMapResolver;
   chunkSize?: number;
 };
+
+export type RenderContext = {
+  locale?: string;
+  strategy: RenderStrategy;
+};
+
+export type Renderer = ((context: RequestContext) => Promise<Response>);
 
 export type RenderStrategy = "stream" | "static";

@@ -28,6 +28,7 @@ export type {
   ParseOptions,
   Program,
   StringLiteral,
+  TransformConfig,
 } from "https://esm.sh/@swc/core@1.2.171/types.d.ts";
 export { Visitor } from "https://esm.sh/@swc/core@1.2.171/Visitor.js";
 export {

@@ -3,6 +3,15 @@
     "test": "deno test -A --unstable --jobs 3 --import-map=./importMap.test.json src/",
     "test:puppeteer": "deno test -A --unstable workspace/tests/"
   },
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "dom.asynciterable",
+      "deno.ns",
+      "deno.unstable"
+    ]
+  },
   "lint": {
     "files": {
       "exclude": ["workspace/.ultra/", "src/unstable/"]
