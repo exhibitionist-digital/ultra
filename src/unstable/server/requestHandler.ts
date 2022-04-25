@@ -7,17 +7,55 @@ import {
 } from "../../resolver.ts";
 import transform from "../../transform.ts";
 import type { APIHandler } from "../../types.ts";
-import type { CreateRequestHandlerOptions } from "../types.ts";
+import type {
+  CreateRequestHandlerOptions,
+  RenderStrategy,
+  RequestContext,
+  RequestContextFunction,
+} from "../types.ts";
+
+const defaultLocale = "en";
+const defaultRenderStrategy: RenderStrategy = "stream";
+
+const defaultCreateRequestContext: RequestContextFunction<RequestContext> = (
+  request,
+) => {
+  return {
+    url: new URL(request.url),
+    state: new Map(),
+    helmetContext: {
+      helmet: {},
+    },
+    locale: defaultLocale,
+    renderStrategy: defaultRenderStrategy,
+  };
+};
 
 export function createRequestHandler(options: CreateRequestHandlerOptions) {
   const {
     render,
-    createRequestContext,
+    createRequestContext: providedCreateRequestContext,
     cwd,
     importMap,
     paths: { source: sourceDirectory, vendor: vendorDirectory },
     isDev,
   } = options;
+
+  const createRequestContext = async (
+    request: Request,
+  ): Promise<RequestContext> => {
+    if (
+      !providedCreateRequestContext ||
+      providedCreateRequestContext === defaultCreateRequestContext
+    ) {
+      return defaultCreateRequestContext(request);
+    }
+
+    const defaultRequestContext = await defaultCreateRequestContext(request);
+    const requestContext = await providedCreateRequestContext(request);
+
+    return Object.assign(defaultRequestContext, requestContext);
+  };
 
   const memory = new LRU(500);
   const serverStart = Math.ceil(+new Date() / 100);

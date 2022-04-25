@@ -19,7 +19,7 @@ export type RequestContextFunction<T = Partial<RequestContext>> = ((
 
 export type CreateRequestHandlerOptions = {
   render: Renderer;
-  createRequestContext: RequestContextFunction<RequestContext>;
+  createRequestContext?: RequestContextFunction;
   cwd: string;
   importMap: ImportMap;
   paths: {
@@ -37,7 +37,7 @@ export type AppProps<P = {}> = P & {
 export type AppComponent = FunctionComponent;
 
 export type ServerOptions = {
-  createRequestContext?: RequestContextFunction<Partial<RequestContext>>;
+  createRequestContext?: RequestContextFunction;
 };
 
 export type RenderOptions = {
