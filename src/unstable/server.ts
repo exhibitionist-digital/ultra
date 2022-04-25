@@ -14,12 +14,10 @@ export function unstable_ultra<T extends FunctionComponent>(
   App: T,
   options?: ServerOptions,
 ): Promise<void> {
-  const { createRequestContext } = options || {};
   const render = createRenderer(App);
-
   const requestHandler = createRequestHandler({
+    ...options,
     render,
-    createRequestContext,
     cwd,
     importMap,
     paths: {

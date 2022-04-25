@@ -41,9 +41,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
     isDev,
   } = options;
 
-  const createRequestContext = async (
-    request: Request,
-  ): Promise<RequestContext> => {
+  const createRequestContext = async (request: Request) => {
     if (
       !providedCreateRequestContext ||
       providedCreateRequestContext === defaultCreateRequestContext
