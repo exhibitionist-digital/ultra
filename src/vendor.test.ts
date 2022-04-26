@@ -30,18 +30,3 @@ describe("vendor mapping", () => {
     assert(!vendorMap.imports.adfadf);
   });
 });
-
-// Deno.env.set("importMap", "./workspace/importMap.json");
-
-// Deno.test("vendor", async () => {
-//   try {
-
-//     const vendorMap = await vendor();
-//     // console.error("vendor map", vendorMap);
-//     assert(vendorMap.imports);
-
-//   } finally {
-//     await emptyDir("./.ultra");
-//   }
-
-// });
