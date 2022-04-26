@@ -4,12 +4,12 @@ const pathKey = Symbol("path");
 
 type Node = Record<string | symbol, unknown>;
 
-interface RouteHandler {
+interface ParsedRoute {
   path: string;
   params: Record<string, string>;
 }
 
-const DEFAULT_ROUTE_RESPONSE: RouteHandler = {
+const DEFAULT_PARSED_ROUTE: ParsedRoute = {
   path: "",
   params: {} as Record<string, string>,
 };
@@ -41,7 +41,7 @@ class RouteHandler {
     const file = parts.pop() ?? "";
 
     // index.[js|ts] not part of route, but dynamic route params are
-    if (file !== "index" && rxIsDynamic.test(file)) {
+    if (file !== "index") {
       parts.push(file);
     }
 
@@ -76,7 +76,7 @@ class RouteHandler {
           params[paramKey.substring(1, paramKey.length - 1)] = part;
           partKey = paramKey;
         } else {
-          return DEFAULT_ROUTE_RESPONSE;
+          return DEFAULT_PARSED_ROUTE;
         }
       }
 
@@ -85,10 +85,10 @@ class RouteHandler {
     });
 
     if (node[isRouteKey]) {
-      return { path: node[pathKey], params } as RouteHandler;
+      return { path: node[pathKey], params } as ParsedRoute;
     }
 
-    return DEFAULT_ROUTE_RESPONSE;
+    return DEFAULT_PARSED_ROUTE;
   }
 
   /** Temporarily move the root cursor to limit scope of route retrieval */

@@ -27,7 +27,10 @@ const assets = async (dir: string) => {
           isScript ? "text/javascript" : contentType,
         );
 
-        if (isScript && file.path.includes("/api/")) {
+        if (
+          file.path.includes("/api/") &&
+          [".js", ".ts"].includes(extname(file.path))
+        ) {
           meta.apiRoutes.addHandler(file.path);
         }
       }

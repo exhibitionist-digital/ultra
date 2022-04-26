@@ -1,4 +1,4 @@
-export default (request: Request, params: Record<string, string>) => {
+export default (request, params) => {
   const headers = {
     "content-type": "application/json",
   };
