@@ -4,7 +4,7 @@ import { createGraph } from "./deps.ts";
 
 const cache = {};
 
-export const preloader = async (url, cacheBuster, map) => {
+export const preloader = async (url, map) => {
   if (cache[url]) return cache[url];
 
   const graph = await createGraph(url);
@@ -18,7 +18,7 @@ export const preloader = async (url, cacheBuster, map) => {
       url = url.replace("/deno/", "/es2021/");
       url = replaceFileExt(url, ".js");
       attributes.push(
-        `<${url}?ts=${cacheBuster}>; rel="modulepreload"`,
+        `<${url}>; rel="modulepreload"`,
       );
     }
   }
