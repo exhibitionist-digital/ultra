@@ -36,4 +36,7 @@ export type RenderOptions = {
 
 export type Cache = Map<unknown, unknown>;
 
-export type APIHandler = (request: Request) => Response | Promise<Response>;
+export type APIHandler = (
+  request: Request,
+  params?: Record<string, string>,
+) => Response | Promise<Response>;

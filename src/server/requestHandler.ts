@@ -48,9 +48,12 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
   }
 
   return async function requestHandler(request: Request): Promise<Response> {
-    const { raw, transpile } = await assets(sourceDirectory);
+    const { apiRoutes, raw, transpile } = await assets(sourceDirectory);
     const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
+
+    // Set api root for route lookups
+    apiRoutes.setRoot("/src");
 
     // web socket listener
     if (isDev) {
@@ -124,24 +127,16 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
 
     // API
     if (requestUrl.pathname.startsWith("/api")) {
-      const apiPaths = new Map([...raw, ...transpile]);
       const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
-        let path = `${sourceDirectory}${pathname}`;
-        if (apiPaths.has(`${path}.js`)) {
-          path = `file://${cwd}/${path}.js`;
-        } else if (apiPaths.has(`${path}.ts`)) {
-          path = `file://${cwd}/${path}.ts`;
-        } else if (apiPaths.has(`${path}/index.js`)) {
-          path = `file://${cwd}/${path}/index.js`;
-        } else if (apiPaths.has(`${path}/index.ts`)) {
-          path = `file://${cwd}/${path}/index.ts`;
-        }
+        const path = `file://${cwd}/${pathname}`;
         return (await import(cacheBuster(new URL(path)))).default;
       };
+
       try {
         const pathname = stripTrailingSlash(requestUrl.pathname);
-        const handler = await importAPIRoute(pathname);
-        const response = await handler(request);
+        const routeHandler = apiRoutes.getHandler(pathname);
+        const handler = await importAPIRoute(routeHandler.path);
+        const response = await handler(request, routeHandler.params);
         return response;
       } catch (error) {
         console.error(error);

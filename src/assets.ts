@@ -1,7 +1,9 @@
 import { ensureDir, extname, mime, walk } from "./deps.ts";
+import RouteHandler from "./routeHandler.ts";
 
 const assets = async (dir: string) => {
   const meta = {
+    apiRoutes: RouteHandler,
     raw: new Map(),
     transpile: new Map(),
   };
@@ -24,6 +26,10 @@ const assets = async (dir: string) => {
           file.path,
           isScript ? "text/javascript" : contentType,
         );
+
+        if (isScript && file.path.includes("/api/")) {
+          meta.apiRoutes.addHandler(file.path);
+        }
       }
     }
   }
