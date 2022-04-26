@@ -17,9 +17,7 @@ export const preloader = async (url, map) => {
       // esm.sh fix for deno
       url = url.replace("/deno/", "/es2021/");
       url = replaceFileExt(url, ".js");
-      attributes.push(
-        `<${url}>; rel="modulepreload"`,
-      );
+      attributes.push(`<${url}>; rel="modulepreload"`);
     }
   }
 

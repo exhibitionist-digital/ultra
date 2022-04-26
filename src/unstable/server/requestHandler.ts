@@ -1,38 +1,18 @@
-import assets from "../assets.ts";
+import assets from "../../assets.ts";
+import { LRU, readableStreamFromReader } from "../../deps.ts";
 import {
-  join,
-  LRU,
-  readableStreamFromReader,
-  resolve,
-  toFileUrl,
-} from "../deps.ts";
-import { disableStreaming, lang, root } from "../env.ts";
-import render from "../render.ts";
-import {
-  cacheBuster,
   replaceFileExt,
   resolveFileUrl,
   stripTrailingSlash,
-} from "../resolver.ts";
-import transform from "../transform.ts";
-import type { APIHandler, ImportMap } from "../types.ts";
-import { preloader } from "../preloader.ts";
-
-type CreateRequestHandlerOptions = {
-  cwd: string;
-  importMap: ImportMap;
-  paths: {
-    source: string;
-    vendor: string;
-  };
-  isDev?: boolean;
-};
-
-// TODO: Remove.
-const enableLinkPreloadHeaders = true;
+} from "../../resolver.ts";
+import transform from "../../transform.ts";
+import type { APIHandler } from "../../types.ts";
+import type { CreateRequestHandlerOptions } from "../types.ts";
 
 export function createRequestHandler(options: CreateRequestHandlerOptions) {
   const {
+    render,
+    createRequestContext,
     cwd,
     importMap,
     paths: { source: sourceDirectory, vendor: vendorDirectory },
@@ -40,6 +20,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
   } = options;
 
   const memory = new LRU(500);
+  const serverStart = Math.ceil(+new Date() / 100);
   const listeners = new Set<WebSocket>();
 
   // async file watcher to send socket messages
@@ -58,10 +39,11 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
   }
 
   return async function requestHandler(request: Request): Promise<Response> {
+    const requestStart = Math.ceil(+new Date() / 100);
+    const cacheBuster = isDev ? requestStart : serverStart;
     const { raw, transpile } = await assets(sourceDirectory);
     const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
-    const fileSrcRootUri = toFileUrl(resolve(cwd, sourceDirectory)).toString();
 
     // web socket listener
     if (isDev) {
@@ -80,25 +62,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
       const headers = {
         "content-type": "text/javascript",
       };
-
-      if (enableLinkPreloadHeaders) {
-        const ultraUri = toFileUrl(resolve(cwd, ".ultra")).toString();
-
-        const link = await preloader(
-          ultraUri + requestUrl.pathname,
-          (specifier: string) => {
-            const path = specifier.replace(ultraUri, "");
-
-            if (path !== requestUrl.pathname) {
-              return requestUrl.origin + path;
-            }
-          },
-        );
-
-        if (link) {
-          headers.link = link;
-        }
-      }
 
       const file = await Deno.open(
         `./.ultra${requestUrl.pathname}`,
@@ -125,7 +88,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
 
     const transpilation = async (file: string) => {
       const headers = {
-        "content-type": "application/javascript",
+        "content-type": "text/javascript",
       };
 
       let js = memory.get(requestUrl.pathname);
@@ -138,6 +101,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
           source,
           sourceUrl: requestUrl,
           importMap,
+          cacheBuster,
         });
 
         const t1 = performance.now();
@@ -146,22 +110,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
         console.log(`Transpile ${file} in ${duration}ms`);
 
         if (!isDev) memory.set(requestUrl.pathname, js);
-      }
-
-      if (enableLinkPreloadHeaders) {
-        const link = await preloader(
-          resolveFileUrl(cwd, file).toString(),
-          (specifier: string) => {
-            const path = specifier.replace(fileSrcRootUri, "");
-            if (replaceFileExt(path, ".js") !== requestUrl.pathname) {
-              return requestUrl.origin + path;
-            }
-          },
-        );
-
-        if (link) {
-          headers.link = link;
-        }
       }
 
       //@ts-ignore any
@@ -182,7 +130,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
         } else if (apiPaths.has(`${path}/index.ts`)) {
           path = `file://${cwd}/${path}/index.ts`;
         }
-        return (await import(cacheBuster(new URL(path)))).default;
+        return (await import(`${path}?ts=${cacheBuster}`)).default;
       };
       try {
         const pathname = stripTrailingSlash(requestUrl.pathname);
@@ -224,19 +172,8 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
       return await transpilation(ts);
     }
 
-    return new Response(
-      await render({
-        url: requestUrl,
-        root,
-        importMap,
-        lang,
-        disableStreaming: !!disableStreaming,
-      }),
-      {
-        headers: {
-          "content-type": "text/html; charset=utf-8",
-        },
-      },
-    );
+    const requestContext = await createRequestContext(request);
+
+    return render(requestContext);
   };
 }

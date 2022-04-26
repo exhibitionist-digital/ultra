@@ -6,8 +6,7 @@ const IMPORT_MAP_ENV = Deno.env.get("importMap");
 
 export async function resolveConfig(cwd: string): Promise<Config> {
   const configPath = resolveFileUrl(cwd, CONFIG_ENV || "./deno.json");
-  const config =
-    (await import(String(configPath), { assert: { type: "json" } })).default;
+  const config = JSON.parse(await Deno.readTextFile(configPath));
 
   return config;
 }
