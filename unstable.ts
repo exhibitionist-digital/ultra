@@ -1,6 +1,7 @@
 import { bold, outdent, underline, yellow } from "./src/unstable/deps.ts";
 
 export { unstable_ultra } from "./src/unstable/server.ts";
+export { createUltraMiddleware as unstable_createUltraMiddleware } from "./src/unstable/oak/middleware.ts";
 export * from "./src/unstable/types.ts";
 
 console.warn(
