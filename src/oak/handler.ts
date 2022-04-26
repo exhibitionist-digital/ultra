@@ -29,5 +29,7 @@ export async function ultraHandler(context: Context) {
 
   const response = await requestHandler(request);
 
-  return context.request.originalRequest.respond(response);
+  context.response.status = response.status;
+  context.response.headers = response.headers;
+  context.response.body = response.body;
 }
