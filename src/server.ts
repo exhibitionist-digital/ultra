@@ -7,8 +7,8 @@ const cwd = Deno.cwd();
 const config = await resolveConfig(cwd);
 const importMap = await resolveImportMap(cwd, config);
 
-const server = () => {
-  const requestHandler = createRequestHandler({
+const server = async () => {
+  const requestHandler = await createRequestHandler({
     cwd,
     importMap,
     paths: {

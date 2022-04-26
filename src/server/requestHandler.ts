@@ -20,7 +20,9 @@ type CreateRequestHandlerOptions = {
   isDev?: boolean;
 };
 
-export function createRequestHandler(options: CreateRequestHandlerOptions) {
+export async function createRequestHandler(
+  options: CreateRequestHandlerOptions,
+) {
   const {
     cwd,
     importMap,
@@ -29,16 +31,18 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
   } = options;
 
   const memory = new LRU(500);
+  const [{ raw, transpile }, vendor] = await Promise.all([
+    assets(sourceDirectory),
+    assets(`.ultra/${vendorDirectory}`),
+  ]);
 
   return async function requestHandler(request: Request): Promise<Response> {
-    const { raw, transpile } = await assets(sourceDirectory);
-    const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
 
     // vendor map
     if (vendor.raw.has(".ultra" + requestUrl.pathname)) {
       const headers = {
-        "content-type": "text/javascript",
+        "content-type": "application/javascript",
       };
 
       const file = await Deno.open(
@@ -66,7 +70,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
 
     const transpilation = async (file: string) => {
       const headers = {
-        "content-type": "text/javascript",
+        "content-type": "application/javascript",
       };
 
       let js = memory.get(requestUrl.pathname);
