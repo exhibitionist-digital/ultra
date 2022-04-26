@@ -37,6 +37,9 @@ const assets = async (dir: string) => {
     }
   }
 
+  // Set api root for route lookups
+  meta.apiRoutes.setRoot("/src");
+
   return meta;
 };
 

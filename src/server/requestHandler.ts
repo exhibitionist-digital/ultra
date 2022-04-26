@@ -52,9 +52,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
     const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
 
-    // Set api root for route lookups
-    apiRoutes.setRoot("/src");
-
     // web socket listener
     if (isDev) {
       if (requestUrl.pathname == "/_ultra_socket") {
