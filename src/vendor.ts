@@ -5,11 +5,11 @@ import { hashFile, isValidUrl } from "./resolver.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
 import { vendorDirectory } from "./env.ts";
 
-const cwd = Deno.cwd();
-const config = await resolveConfig(cwd);
-const importMap = await resolveImportMap(cwd, config);
-
 const vendor = async () => {
+  const cwd = Deno.cwd();
+  const config = await resolveConfig(cwd);
+  const importMap = await resolveImportMap(cwd, config);
+
   // setup directories
   await emptyDir("./.ultra");
   await ensureDir(`./.ultra/${vendorDirectory}`);
