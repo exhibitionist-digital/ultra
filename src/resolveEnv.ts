@@ -25,7 +25,7 @@ export type UltraEnvironment = Infer<typeof envSchema>;
 
 export function resolveEnv(env?: { [index: string]: string }) {
   const mode = env?.ULTRA_MODE || env?.mode || null;
-  const port = Number(env?.PORT || env?.port) || 8000;
+  const port = Number(env?.PORT || env?.port) || undefined;
   const sourceDirectory = env?.ULTRA_SRC || env?.source;
   const vendorDirectory = env?.ULTRA_VENDOR || env?.vendor;
   const apiDirectory = env?.ULTRA_API_SRC || env?.api;
