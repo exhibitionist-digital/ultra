@@ -3,8 +3,14 @@ name: fmt, lint + test
 on:
   push:
     branches: [master]
+    paths-ignore:
+      - '.devcontainer/**'
+      - '.vscode/**'
   pull_request:
     branches: [master]
+    paths-ignore:
+      - '.devcontainer/**'
+      - '.vscode/**'
 
 jobs:
   test:
