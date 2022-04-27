@@ -18,6 +18,29 @@ Deno.test("resolveEnv", async (t) => {
     });
   });
 
+  await t.step("legacy", () => {
+    const env = resolveEnv({
+      root: "https://example.com",
+      mode: "test",
+      source: "source",
+      vendor: "vendor",
+      api: "cool/api",
+      lang: "simlish",
+    });
+
+    assertEquals(env, {
+      origin: "https://example.com",
+      root: "https://example.com",
+      mode: "test",
+      port: 8000,
+      disableStreaming: false,
+      sourceDirectory: "source",
+      vendorDirectory: "vendor",
+      apiDirectory: "cool/api",
+      lang: "simlish",
+    });
+  });
+
   await t.step("ULTRA_ prefixes", () => {
     const env = resolveEnv({
       ULTRA_ORIGIN: "https://example.com",
