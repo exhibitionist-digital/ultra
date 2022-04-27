@@ -90,6 +90,25 @@ export async function createRequestHandler(
         "content-type": contentType,
       };
 
+      if (
+        enableLinkPreloadHeaders && contentType === "application/javascript"
+      ) {
+        const link = await preloader(
+          fileSrcRootUri + requestUrl.pathname,
+          (specifier: string) => {
+            const path = specifier.replace(fileSrcRootUri, "");
+
+            if (path !== requestUrl.pathname) {
+              return requestUrl.origin + path;
+            }
+          },
+        );
+
+        if (link) {
+          headers.link = link;
+        }
+      }
+
       const file = await Deno.open(
         `./${sourceDirectory}${requestUrl.pathname}`,
       );
