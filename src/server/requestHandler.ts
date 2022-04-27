@@ -1,6 +1,6 @@
 import assets from "../assets.ts";
 import { LRU, readableStreamFromReader, resolve, toFileUrl } from "../deps.ts";
-import { disableStreaming, lang } from "../env.ts";
+import { disableStreaming, enableLinkPreloadHeaders, lang } from "../env.ts";
 import render from "../render.ts";
 import {
   replaceFileExt,
@@ -20,9 +20,6 @@ type CreateRequestHandlerOptions = {
   };
   isDev?: boolean;
 };
-
-// TODO: Remove.
-const enableLinkPreloadHeaders = true;
 
 export async function createRequestHandler(
   options: CreateRequestHandlerOptions,
