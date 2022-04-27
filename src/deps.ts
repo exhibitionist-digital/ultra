@@ -9,7 +9,7 @@ export {
   resolve,
   toFileUrl,
 } from "https://deno.land/std@0.135.0/path/mod.ts";
-export { Buffer } from "https://deno.land/std@0.135.0/io/mod.ts";
+export { Buffer, readLines } from "https://deno.land/std@0.135.0/io/mod.ts";
 export { serve } from "https://deno.land/std@0.135.0/http/server.ts";
 export { readableStreamFromReader } from "https://deno.land/std@0.135.0/streams/conversion.ts";
 export { default as mime } from "https://esm.sh/mime-types@2.1.35";

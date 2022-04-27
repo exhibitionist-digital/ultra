@@ -14,6 +14,7 @@ Deno.test("resolveEnv", async (t) => {
       port: 8000,
       sourceDirectory: "src",
       vendorDirectory: "x",
+      wsport: 8001,
     });
   });
 
@@ -35,6 +36,7 @@ Deno.test("resolveEnv", async (t) => {
       vendorDirectory: "vendor",
       apiDirectory: "cool/api",
       lang: "simlish",
+      wsport: 8001,
     });
   });
 
@@ -57,6 +59,7 @@ Deno.test("resolveEnv", async (t) => {
       vendorDirectory: "vendor",
       apiDirectory: "cool/api",
       lang: "simlish",
+      wsport: 8001,
     });
   });
 });
