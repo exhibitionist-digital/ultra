@@ -1,4 +1,3 @@
-export { createCache } from "https://deno.land/x/deno_cache@0.2.1/mod.ts";
 export {
   assert,
   assertEquals,
