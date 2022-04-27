@@ -30,9 +30,7 @@ const server = async () => {
     message += ` and ws://localhost:${wsport}`;
   }
 
-  console.log(
-    message,
-  );
+  console.log(message);
 
   return serve(requestHandler, { port: +port });
 };
