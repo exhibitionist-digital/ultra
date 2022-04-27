@@ -54,7 +54,7 @@ export class UltraVisitor extends Visitor {
         this.relativePrefix,
       );
     } else if (isVendorSource(node.value, vendorDirectory)) {
-      node.value = this?.sourceUrl?.host + `/${vendorDirectory}/` +
+      node.value = this?.sourceUrl?.origin + `/${vendorDirectory}/` +
         node.value.split(`.ultra/${vendorDirectory}/`)[1];
     }
 
