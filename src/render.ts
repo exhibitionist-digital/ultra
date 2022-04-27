@@ -4,11 +4,10 @@ import ReactDOM from "react-dom/server";
 import App from "app";
 import { BaseLocationHook, Router } from "wouter";
 import { HelmetProvider } from "react-helmet";
-import { isDev, sourceDirectory } from "./env.ts";
+import { isDev, sourceDirectory, wsport } from "./env.ts";
 import type { ImportMap, Navigate, RenderOptions } from "./types.ts";
 import { ImportMapResolver } from "./importMapResolver.ts";
 import { encodeStream, pushBody } from "./stream.ts";
-import { cacheBuster } from "./resolver.ts";
 
 // Size of the chunk to emit to the connection as the response streams:
 const defaultChunkSize = 8 * 1024;
@@ -24,7 +23,6 @@ const requiredDependencies = [
 const render = async (
   {
     url,
-    root,
     importMap,
     lang = "en",
     disableStreaming = false,
@@ -44,7 +42,7 @@ const render = async (
 
   const importMapResolver = new ImportMapResolver(
     renderMap,
-    new URL(sourceDirectory, root),
+    new URL(sourceDirectory, url.origin),
   );
 
   const dependencyMap = importMapResolver.getDependencyMap(
@@ -61,14 +59,6 @@ const render = async (
       ".js",
     ),
   );
-
-  let importedApp;
-
-  // FIXME: when using vendor import maps, and in dev mode, the server render fails
-  // this will detect if using vendor map and disable dynamically imported app.
-  if (isDev && importMap?.imports?.["react"]?.indexOf(".ultra") < 0) {
-    importedApp = await import(cacheBuster(transpiledAppImportUrl));
-  }
 
   // kickstart caches for react-helmet and swr
   const helmetContext: { helmet: Record<string, number> } = { helmet: {} };
@@ -88,7 +78,7 @@ const render = async (
           HelmetProvider,
           { context: helmetContext },
           React.createElement(
-            importedApp?.default || App,
+            App,
             { cache },
             null,
           ),
@@ -119,7 +109,7 @@ const render = async (
           .map((i) => helmet[i].toString())
           .join("")
       }<script type="module" defer>${
-        isDev ? socket(root) : ""
+        isDev ? socket(url) : ""
       }import { createElement } from "${
         dependencyMap.get("react")
       }";import { hydrateRoot } from "${
@@ -208,10 +198,9 @@ const staticLocationHook = (
   return hook;
 };
 
-const socket = (root: string) => {
-  const url = new URL(root);
+const socket = (url: URL) => {
   return `
-    const _ultra_socket = new WebSocket("ws://${url.host}/_ultra_socket");
+    const _ultra_socket = new WebSocket("ws://${url.hostname}:${wsport}");
     _ultra_socket.addEventListener("message", (e) => {
       if (e.data === "reload") {
         location.reload();
