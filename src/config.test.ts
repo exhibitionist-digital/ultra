@@ -1,4 +1,5 @@
 import { resolveConfig, resolveImportMap } from "./config.ts";
+import { Config } from "./types.ts";
 import { afterEach, assert, beforeEach, describe, it } from "./deps.dev.ts";
 
 describe("config.ts tests", () => {
@@ -13,20 +14,24 @@ describe("config.ts tests", () => {
     });
     it("should retrieve the deno config file", async () => {
       const config = await resolveConfig(cwd);
-      assert(config);
+      assert(config.importMap);
     });
   });
 
   describe("resolveImportMap", () => {
-    beforeEach(() => {
+    it("should resolve import map from env var", async () => {
       Deno.env.set("importMap", "./importMap.test.json");
-    });
-    afterEach(() => {
-      Deno.env.delete("importMap");
-    });
-    it("should resolve import map from map file", async () => {
       const importMap = await resolveImportMap(cwd);
-      assert(importMap);
+      Deno.env.delete("importMap");
+      assert(importMap.imports.react);
+      assert(!importMap.imports.asdffgg);
+    });
+    it("should resolve import map from config object", async () => {
+      Deno.env.delete("importMap");
+      const config: Config = { importMap: "./importMap.test.json" };
+      const importMap = await resolveImportMap(cwd, config);
+      assert(importMap.imports.react);
+      assert(!importMap.imports.asdffgg);
     });
   });
 });
