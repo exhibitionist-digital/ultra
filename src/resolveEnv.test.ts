@@ -12,7 +12,6 @@ Deno.test("resolveEnv", async (t) => {
       mode: null,
       origin: "http://localhost:8000",
       port: 8000,
-      root: "http://localhost:8000",
       sourceDirectory: "src",
       vendorDirectory: "x",
     });
@@ -20,7 +19,6 @@ Deno.test("resolveEnv", async (t) => {
 
   await t.step("legacy", () => {
     const env = resolveEnv({
-      root: "https://example.com",
       mode: "test",
       source: "source",
       vendor: "vendor",
@@ -29,8 +27,7 @@ Deno.test("resolveEnv", async (t) => {
     });
 
     assertEquals(env, {
-      origin: "https://example.com",
-      root: "https://example.com",
+      origin: "http://localhost:8000",
       mode: "test",
       port: 8000,
       disableStreaming: false,
@@ -53,7 +50,6 @@ Deno.test("resolveEnv", async (t) => {
 
     assertEquals(env, {
       origin: "https://example.com",
-      root: "https://example.com",
       mode: "test",
       port: 8000,
       disableStreaming: false,

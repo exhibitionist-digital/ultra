@@ -21,7 +21,6 @@ const portFromString = defaulted(
 
 const envSchema = object({
   origin: string(),
-  root: string(),
   lang: defaulted(string(), "en"),
   port: portFromString,
   mode: nullable(string()),
@@ -40,7 +39,7 @@ export function resolveEnv(env?: { [index: string]: string }) {
   const vendorDirectory = env?.ULTRA_VENDOR || env?.vendor;
   const apiDirectory = env?.ULTRA_API_SRC || env?.api;
 
-  const origin = env?.ULTRA_ORIGIN || env?.root ||
+  const origin = env?.ULTRA_ORIGIN ||
     `http://localhost:${port}`;
 
   const lang = env?.ULTRA_LOCALE || env?.lang;
@@ -48,7 +47,6 @@ export function resolveEnv(env?: { [index: string]: string }) {
 
   const data = {
     origin,
-    root: origin,
     port,
     mode,
     sourceDirectory,

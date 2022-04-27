@@ -4,7 +4,6 @@ const env = resolveEnv(Deno.env.toObject());
 
 export const isDev = env.mode === "dev";
 export const origin = env.origin;
-export const root = env.root;
 export const lang = env.lang;
 export const port = env.port;
 export const mode = env.mode;
