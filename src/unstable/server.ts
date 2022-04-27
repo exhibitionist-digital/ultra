@@ -1,4 +1,4 @@
-import { isDev, port, root, sourceDirectory, vendorDirectory } from "../env.ts";
+import { isDev, port, sourceDirectory, vendorDirectory } from "../env.ts";
 import { resolveConfig, resolveImportMap } from "../config.ts";
 import { serve } from "../deps.ts";
 import { createRequestHandler } from "./server/requestHandler.ts";
@@ -43,7 +43,7 @@ export function unstable_ultra<T extends AppProps>(
     isDev,
   });
 
-  console.log(`Ultra running ${root}`);
+  console.log(`Ultra running http://localhost:${port}`);
 
   return serve(requestHandler, { port: +port });
 }
