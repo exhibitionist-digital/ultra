@@ -5,7 +5,6 @@ import { ImportMap } from "./../types.ts";
 
 const sourceDirectory = Deno.env.get("source") || "src";
 const vendorDirectory = Deno.env.get("vendor") || "x";
-const root = Deno.env.get("root") || "http://localhost:8000";
 const lang = Deno.env.get("lang") || "en";
 const disableStreaming = Deno.env.get("disableStreaming") || 0;
 
@@ -17,6 +16,12 @@ const deploy = async () => {
 
   const handler = async (request: Request) => {
     const url = new URL(request.url);
+
+    const xForwardedProto = request.headers.get("x-forwarded-proto");
+    if (xForwardedProto) url.protocol = xForwardedProto + ":";
+
+    const xForwardedHost = request.headers.get("x-forwarded-host");
+    if (xForwardedHost) url.hostname = xForwardedHost;
 
     //API//
 
@@ -58,7 +63,6 @@ const deploy = async () => {
     return new Response(
       await render({
         url,
-        root,
         importMap: denoMap,
         lang,
         disableStreaming: !!disableStreaming,

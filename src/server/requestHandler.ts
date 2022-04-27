@@ -1,15 +1,8 @@
 import assets from "../assets.ts";
-import {
-  join,
-  LRU,
-  readableStreamFromReader,
-  resolve,
-  toFileUrl,
-} from "../deps.ts";
-import { disableStreaming, lang, root } from "../env.ts";
+import { LRU, readableStreamFromReader, resolve, toFileUrl } from "../deps.ts";
+import { disableStreaming, lang } from "../env.ts";
 import render from "../render.ts";
 import {
-  cacheBuster,
   replaceFileExt,
   resolveFileUrl,
   stripTrailingSlash,
@@ -31,7 +24,9 @@ type CreateRequestHandlerOptions = {
 // TODO: Remove.
 const enableLinkPreloadHeaders = true;
 
-export function createRequestHandler(options: CreateRequestHandlerOptions) {
+export async function createRequestHandler(
+  options: CreateRequestHandlerOptions,
+) {
   const {
     cwd,
     importMap,
@@ -40,45 +35,25 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
   } = options;
 
   const memory = new LRU(500);
-  const listeners = new Set<WebSocket>();
-
-  // async file watcher to send socket messages
-  if (isDev) {
-    (async () => {
-      for await (
-        const { kind } of Deno.watchFs(sourceDirectory, { recursive: true })
-      ) {
-        if (kind === "modify" || kind === "create") {
-          for (const socket of listeners) {
-            socket.send("reload");
-          }
-        }
-      }
-    })();
-  }
+  const [{ raw, transpile }, vendor] = await Promise.all([
+    assets(sourceDirectory),
+    assets(`.ultra/${vendorDirectory}`),
+  ]);
 
   return async function requestHandler(request: Request): Promise<Response> {
-    const { raw, transpile } = await assets(sourceDirectory);
-    const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
     const fileSrcRootUri = toFileUrl(resolve(cwd, sourceDirectory)).toString();
 
-    // web socket listener
-    if (isDev) {
-      if (requestUrl.pathname == "/_ultra_socket") {
-        const { socket, response } = Deno.upgradeWebSocket(request);
-        listeners.add(socket);
-        socket.onclose = () => {
-          listeners.delete(socket);
-        };
-        return response;
-      }
-    }
+    const xForwardedProto = request.headers.get("x-forwarded-proto");
+    if (xForwardedProto) requestUrl.protocol = xForwardedProto + ":";
+
+    const xForwardedHost = request.headers.get("x-forwarded-host");
+    if (xForwardedHost) requestUrl.hostname = xForwardedHost;
 
     // vendor map
     if (vendor.raw.has(".ultra" + requestUrl.pathname)) {
       const headers = {
-        "content-type": "text/javascript",
+        "content-type": "application/javascript",
       };
 
       if (enableLinkPreloadHeaders) {
@@ -182,7 +157,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
         } else if (apiPaths.has(`${path}/index.ts`)) {
           path = `file://${cwd}/${path}/index.ts`;
         }
-        return (await import(cacheBuster(new URL(path)))).default;
+        return (await import(path)).default;
       };
       try {
         const pathname = stripTrailingSlash(requestUrl.pathname);
@@ -227,7 +202,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
     return new Response(
       await render({
         url: requestUrl,
-        root,
         importMap,
         lang,
         disableStreaming: !!disableStreaming,
