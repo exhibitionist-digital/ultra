@@ -23,7 +23,6 @@ const requiredDependencies = [
 const render = async (
   {
     url,
-    root,
     importMap,
     lang = "en",
     disableStreaming = false,
@@ -43,7 +42,7 @@ const render = async (
 
   const importMapResolver = new ImportMapResolver(
     renderMap,
-    new URL(sourceDirectory, root),
+    new URL(sourceDirectory, url.origin),
   );
 
   const dependencyMap = importMapResolver.getDependencyMap(
@@ -110,7 +109,7 @@ const render = async (
           .map((i) => helmet[i].toString())
           .join("")
       }<script type="module" defer>${
-        isDev ? socket(root) : ""
+        isDev ? socket(url) : ""
       }import { createElement } from "${
         dependencyMap.get("react")
       }";import { hydrateRoot } from "${
@@ -199,9 +198,7 @@ const staticLocationHook = (
   return hook;
 };
 
-const socket = (root: string) => {
-  const url = new URL(root);
-
+const socket = (url: URL) => {
   return `
     const _ultra_socket = new WebSocket("ws://${url.hostname}:${wsport}");
     _ultra_socket.addEventListener("message", (e) => {

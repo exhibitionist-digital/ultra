@@ -1,5 +1,5 @@
 import { serve } from "./deps.ts";
-import { isDev, port, root, sourceDirectory, vendorDirectory } from "./env.ts";
+import { isDev, port, sourceDirectory, vendorDirectory } from "./env.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
 import { createRequestHandler } from "./server/requestHandler.ts";
 
@@ -18,7 +18,7 @@ const server = async () => {
     isDev,
   });
 
-  console.log(`Ultra running ${root}`);
+  console.log(`Ultra running http://localhost:${port}`);
 
   return serve(requestHandler, { port: +port });
 };

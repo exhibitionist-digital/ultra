@@ -1,29 +1,18 @@
-import assets from "../assets.ts";
-import { LRU, readableStreamFromReader } from "../deps.ts";
-import { disableStreaming, lang } from "../env.ts";
-import render from "../render.ts";
+import assets from "../../assets.ts";
+import { LRU, readableStreamFromReader } from "../../deps.ts";
 import {
   replaceFileExt,
   resolveFileUrl,
   stripTrailingSlash,
-} from "../resolver.ts";
-import transform from "../transform.ts";
-import type { APIHandler, ImportMap } from "../types.ts";
+} from "../../resolver.ts";
+import transform from "../../transform.ts";
+import type { APIHandler } from "../../types.ts";
+import type { CreateRequestHandlerOptions } from "../types.ts";
 
-type CreateRequestHandlerOptions = {
-  cwd: string;
-  importMap: ImportMap;
-  paths: {
-    source: string;
-    vendor: string;
-  };
-  isDev?: boolean;
-};
-
-export async function createRequestHandler(
-  options: CreateRequestHandlerOptions,
-) {
+export function createRequestHandler(options: CreateRequestHandlerOptions) {
   const {
+    render,
+    createRequestContext,
     cwd,
     importMap,
     paths: { source: sourceDirectory, vendor: vendorDirectory },
@@ -31,24 +20,47 @@ export async function createRequestHandler(
   } = options;
 
   const memory = new LRU(500);
-  const [{ raw, transpile }, vendor] = await Promise.all([
-    assets(sourceDirectory),
-    assets(`.ultra/${vendorDirectory}`),
-  ]);
+  const serverStart = Math.ceil(+new Date() / 100);
+  const listeners = new Set<WebSocket>();
+
+  // async file watcher to send socket messages
+  if (isDev) {
+    (async () => {
+      for await (
+        const { kind } of Deno.watchFs(sourceDirectory, { recursive: true })
+      ) {
+        if (kind === "modify" || kind === "create") {
+          for (const socket of listeners) {
+            socket.send("reload");
+          }
+        }
+      }
+    })();
+  }
 
   return async function requestHandler(request: Request): Promise<Response> {
+    const requestStart = Math.ceil(+new Date() / 100);
+    const cacheBuster = isDev ? requestStart : serverStart;
+    const { raw, transpile } = await assets(sourceDirectory);
+    const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
 
-    const xForwardedProto = request.headers.get("x-forwarded-proto");
-    if (xForwardedProto) requestUrl.protocol = xForwardedProto + ":";
-
-    const xForwardedHost = request.headers.get("x-forwarded-host");
-    if (xForwardedHost) requestUrl.hostname = xForwardedHost;
+    // web socket listener
+    if (isDev) {
+      if (requestUrl.pathname == "/_ultra_socket") {
+        const { socket, response } = Deno.upgradeWebSocket(request);
+        listeners.add(socket);
+        socket.onclose = () => {
+          listeners.delete(socket);
+        };
+        return response;
+      }
+    }
 
     // vendor map
     if (vendor.raw.has(".ultra" + requestUrl.pathname)) {
       const headers = {
-        "content-type": "application/javascript",
+        "content-type": "text/javascript",
       };
 
       const file = await Deno.open(
@@ -76,7 +88,7 @@ export async function createRequestHandler(
 
     const transpilation = async (file: string) => {
       const headers = {
-        "content-type": "application/javascript",
+        "content-type": "text/javascript",
       };
 
       let js = memory.get(requestUrl.pathname);
@@ -89,6 +101,7 @@ export async function createRequestHandler(
           source,
           sourceUrl: requestUrl,
           importMap,
+          cacheBuster,
         });
 
         const t1 = performance.now();
@@ -117,7 +130,7 @@ export async function createRequestHandler(
         } else if (apiPaths.has(`${path}/index.ts`)) {
           path = `file://${cwd}/${path}/index.ts`;
         }
-        return (await import(path)).default;
+        return (await import(`${path}?ts=${cacheBuster}`)).default;
       };
       try {
         const pathname = stripTrailingSlash(requestUrl.pathname);
@@ -159,18 +172,8 @@ export async function createRequestHandler(
       return await transpilation(ts);
     }
 
-    return new Response(
-      await render({
-        url: requestUrl,
-        importMap,
-        lang,
-        disableStreaming: !!disableStreaming,
-      }),
-      {
-        headers: {
-          "content-type": "text/html; charset=utf-8",
-        },
-      },
-    );
+    const requestContext = await createRequestContext(request);
+
+    return render(requestContext);
   };
 }
