@@ -1,0 +1,6 @@
+{
+  "recommendations": [
+    "denoland.vscode-deno",
+    "GitHub.vscode-pull-request-github"
+  ]
+}
