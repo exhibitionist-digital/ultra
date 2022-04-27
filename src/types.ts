@@ -27,7 +27,6 @@ export type Ultraloader = {
 };
 
 export type RenderOptions = {
-  root: string;
   importMap: ImportMap;
   url: URL;
   lang: string;

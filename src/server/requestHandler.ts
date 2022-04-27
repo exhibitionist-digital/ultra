@@ -1,6 +1,6 @@
 import assets from "../assets.ts";
 import { LRU, readableStreamFromReader } from "../deps.ts";
-import { disableStreaming, lang, root } from "../env.ts";
+import { disableStreaming, lang } from "../env.ts";
 import render from "../render.ts";
 import {
   cacheBuster,
@@ -51,6 +51,12 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
     const { raw, transpile } = await assets(sourceDirectory);
     const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
+
+    const xForwardedProto = request.headers.get("x-forwarded-proto");
+    if (xForwardedProto) requestUrl.protocol = xForwardedProto + ":";
+
+    const xForwardedHost = request.headers.get("x-forwarded-host");
+    if (xForwardedHost) requestUrl.hostname = xForwardedHost;
 
     // web socket listener
     if (isDev) {
@@ -181,7 +187,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
     return new Response(
       await render({
         url: requestUrl,
-        root,
         importMap,
         lang,
         disableStreaming: !!disableStreaming,
