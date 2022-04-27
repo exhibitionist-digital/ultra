@@ -1,6 +1,7 @@
 import {
-  assert,
   boolean,
+  create,
+  defaulted,
   Infer,
   nullable,
   number,
@@ -11,13 +12,13 @@ import {
 const envSchema = object({
   origin: string(),
   root: string(),
-  lang: string(),
-  port: number(),
+  lang: defaulted(string(), "en"),
+  port: defaulted(number(), 8000),
   mode: nullable(string()),
-  sourceDirectory: string(),
-  vendorDirectory: string(),
-  apiDirectory: string(),
-  disableStreaming: boolean(),
+  sourceDirectory: defaulted(string(), "src"),
+  vendorDirectory: defaulted(string(), "x"),
+  apiDirectory: defaulted(string(), "src/api"),
+  disableStreaming: defaulted(boolean(), false),
 });
 
 export type UltraEnvironment = Infer<typeof envSchema>;
@@ -27,15 +28,15 @@ export function resolveEnv() {
 
   const mode = denoEnv.ULTRA_MODE || denoEnv.mode || null;
   const port = Number(denoEnv.PORT || denoEnv.port) || 8000;
-  const sourceDirectory = denoEnv.ULTRA_SRC || denoEnv.source || "src";
-  const vendorDirectory = denoEnv.ULTRA_VENDOR || denoEnv.vendor || "x";
-  const apiDirectory = denoEnv.ULTRA_API_SRC || denoEnv.api || "src/api";
+  const sourceDirectory = denoEnv.ULTRA_SRC || denoEnv.source;
+  const vendorDirectory = denoEnv.ULTRA_VENDOR || denoEnv.vendor;
+  const apiDirectory = denoEnv.ULTRA_API_SRC || denoEnv.api;
 
   const origin = denoEnv.ULTRA_ORIGIN || denoEnv.root ||
     `http://localhost:${port}`;
 
-  const lang = denoEnv.ULTRA_LOCALE || denoEnv.lang || "en";
-  const disableStreaming = Boolean(denoEnv.disableStreaming);
+  const lang = denoEnv.ULTRA_LOCALE || denoEnv.lang;
+  const disableStreaming = denoEnv.disableStreaming;
 
   const env = {
     origin,
@@ -50,11 +51,9 @@ export function resolveEnv() {
   };
 
   /**
-   * Assert that the environment is valid
+   * Assert that the environment is valid and return the coerced/resolved value
    */
-  assert(env, envSchema);
-
-  return env;
+  return create(env, envSchema);
 }
 
 const env = resolveEnv();
