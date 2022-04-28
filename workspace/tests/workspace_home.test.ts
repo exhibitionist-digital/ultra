@@ -1,8 +1,9 @@
 import {
+  assert,
   assertEquals,
   fail,
 } from "https://deno.land/std@0.135.0/testing/asserts.ts";
-import { Page } from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
+import { Browser, Page } from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
 import { launchLocalhostBrowser, startTestServer } from "./helpers.ts";
 
 const expectations = [
@@ -26,8 +27,16 @@ async function assertExpectedPageElements(page: Page) {
   }
 }
 
-Deno.test("puppeteer: native server", async (t) => {
-  const server = await startTestServer();
+async function cleanup(
+  browser: Browser,
+  server: Awaited<ReturnType<typeof startTestServer>>,
+) {
+  await server.close();
+  await browser.close();
+}
+
+Deno.test({ name: "puppeteer: native server" }, async (t) => {
+  const server = await startTestServer("server.js");
   const browser = await launchLocalhostBrowser();
 
   await t.step(
@@ -47,12 +56,11 @@ Deno.test("puppeteer: native server", async (t) => {
     },
   );
 
-  await browser.close();
-  await server?.close();
+  await cleanup(browser, server);
 });
 
 Deno.test("puppeteer: oak server", async (t) => {
-  const server = await startTestServer("start:oak");
+  const server = await startTestServer("oak.ts");
   const browser = await launchLocalhostBrowser();
 
   await t.step(
@@ -72,6 +80,20 @@ Deno.test("puppeteer: oak server", async (t) => {
     },
   );
 
-  await browser.close();
-  await server?.close();
+  await t.step("Should handle custom-route", async () => {
+    try {
+      const page = await browser.newPage();
+      await page.setViewport({ width: 979, height: 865 });
+      await page.goto("http://localhost:8000/custom-route", {
+        waitUntil: "networkidle0",
+      });
+
+      const content = await page.content();
+      assert(content.includes("Oak custom route!"));
+    } catch (error) {
+      throw error;
+    }
+  });
+
+  await cleanup(browser, server);
 });

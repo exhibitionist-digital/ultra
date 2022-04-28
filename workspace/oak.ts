@@ -7,7 +7,7 @@ const app = new Application();
 const router = new Router();
 
 router.get("/custom-route", (context) => {
-  context.response.body = "#1";
+  context.response.body = "Oak custom route!";
 });
 
 app.use(router.routes());
@@ -19,5 +19,8 @@ app.use(router.allowedMethods());
 // other route matches
 app.use(ultraHandler);
 
-console.log(`Ultra running on http://localhost:${port}`);
+app.addEventListener("listen", ({ port }) => {
+  console.log(`Ultra running via Oak at http://localhost:${port}`);
+}, { once: true });
+
 await app.listen({ port });
