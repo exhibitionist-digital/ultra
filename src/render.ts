@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/server";
 import App from "app";
 import { BaseLocationHook, Router } from "wouter";
 import { HelmetProvider } from "react-helmet";
-import { isDev, sourceDirectory, wsport } from "./env.ts";
+import { devServerWebsocketPort, isDev, sourceDirectory } from "./env.ts";
 import type { ImportMap, Navigate, RenderOptions } from "./types.ts";
 import { ImportMapResolver } from "./importMapResolver.ts";
 import { encodeStream, pushBody } from "./stream.ts";
@@ -200,7 +200,7 @@ const staticLocationHook = (
 
 const socket = (url: URL) => {
   return `
-    const _ultra_socket = new WebSocket("ws://${url.hostname}:${wsport}");
+    const _ultra_socket = new WebSocket("ws://${url.hostname}:${devServerWebsocketPort}");
     _ultra_socket.addEventListener("message", (e) => {
       if (e.data === "reload") {
         location.reload();

@@ -22,13 +22,13 @@ function portFromString(defaultValue: number) {
 }
 
 const defaultPort = 8000;
-const defaultWsPort = 8001;
+const defaultDevServerWebsocketPort = 8001;
 
 const envSchema = object({
   origin: string(),
   lang: defaulted(string(), "en"),
   port: portFromString(defaultPort),
-  wsport: portFromString(defaultWsPort),
+  devServerWebsocketPort: portFromString(defaultDevServerWebsocketPort),
   mode: nullable(string()),
   sourceDirectory: defaulted(string(), "src"),
   vendorDirectory: defaulted(string(), "x"),
@@ -41,9 +41,9 @@ export type UltraEnvironment = Infer<typeof envSchema>;
 export function resolveEnv(env?: { [index: string]: string }) {
   const mode = env?.ULTRA_MODE || env?.mode || null;
   const port = create(env?.PORT || env?.port, portFromString(defaultPort));
-  const wsport = create(
-    env?.WSPORT || env?.wsport,
-    portFromString(defaultWsPort),
+  const devServerWebsocketPort = create(
+    env?.ULTRA_DEV_SERVER_WEBSOCKET_PORT || env?.devServerWebsocketPort,
+    portFromString(defaultDevServerWebsocketPort),
   );
   const sourceDirectory = env?.ULTRA_SRC || env?.source;
   const vendorDirectory = env?.ULTRA_VENDOR || env?.vendor;
@@ -58,7 +58,7 @@ export function resolveEnv(env?: { [index: string]: string }) {
   const data = {
     origin,
     port,
-    wsport,
+    devServerWebsocketPort,
     mode,
     sourceDirectory,
     vendorDirectory,
