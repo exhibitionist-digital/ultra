@@ -13,7 +13,7 @@ const options = {} as DevServerOptions;
 const runServer = (): Deno.Process => {
   const process = Deno.run({
     cmd: [
-      "deno",
+      Deno.execPath(),
       "run",
       "-A",
       "--unstable",
