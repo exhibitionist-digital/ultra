@@ -7,7 +7,7 @@ const app = new Application();
 const router = new Router();
 
 router.get("/custom-route", (context) => {
-  context.response.body = "#1";
+  context.response.body = "Oak custom route!";
 });
 
 app.use(router.routes());

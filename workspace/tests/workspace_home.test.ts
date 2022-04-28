@@ -1,4 +1,5 @@
 import {
+  assert,
   assertEquals,
   fail,
 } from "https://deno.land/std@0.135.0/testing/asserts.ts";
@@ -48,7 +49,7 @@ Deno.test("puppeteer: native server", async (t) => {
   );
 
   await browser.close();
-  server?.close();
+  await server.close();
 });
 
 Deno.test("puppeteer: oak server", async (t) => {
@@ -72,6 +73,21 @@ Deno.test("puppeteer: oak server", async (t) => {
     },
   );
 
+  await t.step("Should handle custom-route", async () => {
+    try {
+      const page = await browser.newPage();
+      await page.setViewport({ width: 979, height: 865 });
+      await page.goto("http://localhost:8000/custom-route", {
+        waitUntil: "networkidle0",
+      });
+
+      const content = await page.content();
+      assert(content.includes("Oak custom route!"));
+    } catch (error) {
+      throw error;
+    }
+  });
+
   await browser.close();
-  server?.close();
+  await server.close();
 });
