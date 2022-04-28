@@ -48,7 +48,7 @@ Deno.test("puppeteer: native server", async (t) => {
   );
 
   await browser.close();
-  server?.close();
+  await server?.close();
 });
 
 Deno.test("puppeteer: oak server", async (t) => {
@@ -73,5 +73,5 @@ Deno.test("puppeteer: oak server", async (t) => {
   );
 
   await browser.close();
-  server?.close();
+  await server?.close();
 });

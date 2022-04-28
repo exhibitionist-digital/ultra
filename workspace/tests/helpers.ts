@@ -23,13 +23,13 @@ export async function startTestServer(taskName = "start") {
         close() {
           serverProcess.stderr.close();
           serverProcess.stdout.close();
+          serverProcess.kill("SIGTERM");
           serverProcess.close();
+          return Promise.resolve();
         },
       };
     }
   }
-
-  serverProcess.close();
 }
 
 export async function launchLocalhostBrowser() {
