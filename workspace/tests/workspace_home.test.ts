@@ -27,7 +27,7 @@ async function assertExpectedPageElements(page: Page) {
 }
 
 Deno.test("puppeteer: native server", async (t) => {
-  const server = await startTestServer();
+  const server = await startTestServer("server.js");
   const browser = await launchLocalhostBrowser();
 
   await t.step(
@@ -52,7 +52,7 @@ Deno.test("puppeteer: native server", async (t) => {
 });
 
 Deno.test("puppeteer: oak server", async (t) => {
-  const server = await startTestServer("start:oak");
+  const server = await startTestServer("oak.ts");
   const browser = await launchLocalhostBrowser();
 
   await t.step(
