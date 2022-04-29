@@ -1,4 +1,4 @@
-import { sourceDirectory, wsport } from "./env.ts";
+import { devServerWebsocketPort, sourceDirectory } from "./env.ts";
 import { readLines, serve } from "./deps.ts";
 
 export type DevServerOptions = {
@@ -97,7 +97,7 @@ const devServer = (userOptions: DevServerOptions) => {
       listeners.delete(socket);
     };
     return response;
-  }, { port: Number(wsport) });
+  }, { port: Number(devServerWebsocketPort) });
 };
 
 export default devServer;
