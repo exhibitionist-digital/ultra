@@ -1,4 +1,4 @@
-import { ensureDir, extname, mime, walk } from "./deps.ts";
+import { ensureDir, extname, join, mime, walk } from "./deps.ts";
 
 const assets = async (dir: string) => {
   const meta = {
@@ -7,7 +7,7 @@ const assets = async (dir: string) => {
   };
   await ensureDir(dir);
 
-  for await (const file of walk(`./${dir}`)) {
+  for await (const file of walk(join(".", dir))) {
     if (file.isFile) {
       let contentType = mime.lookup(extname(file.path));
 
