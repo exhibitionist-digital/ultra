@@ -12,6 +12,11 @@ const expectations = [
   { text: "This is a lazily loaded component", selector: "h3" },
 ];
 
+// NOTES: (OM)
+// Puppeteer tests, when split into async steps, can fail
+// over and over on windows specifically. I split out steps
+// into their own tests for this reason.
+
 async function assertExpectedPageElements(page: Page) {
   for (const expected of expectations) {
     const selection = await page.waitForSelector(expected.selector);
