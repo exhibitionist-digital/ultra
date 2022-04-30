@@ -1,6 +1,8 @@
 import { transformCss } from "./css.ts";
 import { assertEquals } from "../deps.dev.ts";
 
+const decoder = new TextDecoder();
+
 Deno.test({ name: "transformCss", only: true }, () => {
   const code = transformCss(
     `
@@ -21,7 +23,7 @@ Deno.test({ name: "transformCss", only: true }, () => {
   );
 
   assertEquals(
-    code.toString(),
+    decoder.decode(code),
     `body{color:#00f;background-color:red}body div{color:green}`,
   );
 });
