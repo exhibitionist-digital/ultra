@@ -3,7 +3,7 @@ import { assertEquals } from "../deps.dev.ts";
 
 const decoder = new TextDecoder();
 
-Deno.test({ name: "transformCss", only: true }, () => {
+Deno.test("transformCss", () => {
   const code = transformCss(
     `
     body {
