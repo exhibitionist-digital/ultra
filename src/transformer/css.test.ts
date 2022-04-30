@@ -21,7 +21,7 @@ Deno.test({ name: "transformCss", only: true }, () => {
   );
 
   assertEquals(
-    code,
+    code.toString(),
     `body{color:#00f;background-color:red}body div{color:green}`,
   );
 });
