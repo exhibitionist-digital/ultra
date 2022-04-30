@@ -2,9 +2,8 @@ import init, {
   browserslistToTargets,
   transform,
 } from "https://unpkg.com/@parcel/css-wasm@1.8.1/index.js";
-import { cache } from "https://deno.land/x/cache@0.2.13/mod.ts";
 import browserslist from "https://esm.sh/browserslist@4.20.3/browserslist.js";
-import { toFileUrl } from "../deps.ts";
+import { cache, toFileUrl } from "../deps.ts";
 
 const wasmFilepath = await cache(
   "https://unpkg.com/@parcel/css-wasm@1.8.1/parcel_css_node_bg.wasm",

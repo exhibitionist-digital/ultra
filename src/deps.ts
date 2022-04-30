@@ -1,5 +1,6 @@
 export { walk } from "https://deno.land/std@0.135.0/fs/mod.ts";
 export { concat } from "https://deno.land/std@0.135.0/bytes/mod.ts";
+export { cache } from "https://deno.land/x/cache@0.2.13/mod.ts";
 export {
   extname,
   format,
@@ -11,7 +12,11 @@ export {
 } from "https://deno.land/std@0.135.0/path/mod.ts";
 export { Buffer, readLines } from "https://deno.land/std@0.135.0/io/mod.ts";
 export { serve } from "https://deno.land/std@0.135.0/http/server.ts";
-export { readableStreamFromReader } from "https://deno.land/std@0.135.0/streams/conversion.ts";
+export {
+  readableStreamFromReader,
+  readAll,
+  readerFromStreamReader,
+} from "https://deno.land/std@0.135.0/streams/conversion.ts";
 export { default as mime } from "https://esm.sh/mime-types@2.1.35";
 export { default as LRU } from "https://deno.land/x/lru@1.0.2/mod.ts";
 export type {

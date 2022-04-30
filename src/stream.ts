@@ -1,4 +1,12 @@
-import { concat } from "./deps.ts";
+import { concat, readAll, readerFromStreamReader } from "./deps.ts";
+
+export function isReadableStream(value: unknown): value is ReadableStream {
+  return value instanceof ReadableStream;
+}
+
+export function readAllFromReadableStream(readableStream: ReadableStream) {
+  return readAll(readerFromStreamReader(readableStream.getReader()));
+}
 
 export function encodeStream(readable: ReadableStream<string | Uint8Array>) {
   return new ReadableStream({
