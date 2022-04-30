@@ -16,6 +16,7 @@ export const cssTransformMiddleware: Middleware = async (
         minify: true,
       },
     });
+
     response.body = new Blob([transformed]);
 
     const t1 = performance.now();
@@ -23,5 +24,6 @@ export const cssTransformMiddleware: Middleware = async (
 
     console.log(`Transformed CSS ${request.url.pathname} in ${duration}ms`);
   }
+
   await next();
 };

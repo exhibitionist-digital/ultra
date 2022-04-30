@@ -17,8 +17,10 @@ type TransformerOptions = {
   };
 };
 
+const encoder = new TextEncoder();
+
 export function transformCss(
-  source: Uint8Array,
+  source: string | Uint8Array,
   options?: TransformerOptions,
 ): Uint8Array {
   // TODO: Allow this to be configurable
@@ -32,7 +34,7 @@ export function transformCss(
 
   const { code } = transform({
     filename: "style.css",
-    code: source,
+    code: typeof source === "string" ? encoder.encode(source) : source,
     minify: options?.output?.minify,
     targets,
     drafts: {
