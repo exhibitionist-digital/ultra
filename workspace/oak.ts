@@ -1,7 +1,6 @@
 import { Application, Router } from "https://deno.land/x/oak@v10.5.1/mod.ts";
 import { ultraHandler } from "../src/oak/handler.ts";
-import { transformCss } from "../src/transformer/css.ts";
-import { isReadableStream, readAllFromReadableStream } from "../src/stream.ts";
+import { cssTransformMiddleware } from "../src/oak/middleware/cssTransform.ts";
 
 const port = 8000;
 
@@ -20,21 +19,7 @@ app.use(router.allowedMethods());
 // it acts as the final catch all when no
 // other route matches
 app.use(ultraHandler);
-
-app.use(async ({ request, response }, next) => {
-  if (
-    request.url.pathname.endsWith(".css") && isReadableStream(response.body)
-  ) {
-    const source = await readAllFromReadableStream(response.body);
-    const transformed = transformCss(source, {
-      output: {
-        minify: true,
-      },
-    });
-    response.body = new Blob([transformed]);
-  }
-  await next();
-});
+app.use(cssTransformMiddleware);
 
 console.log(`Ultra running on http://localhost:${port}`);
 await app.listen({ port });
