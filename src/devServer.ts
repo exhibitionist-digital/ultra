@@ -67,7 +67,7 @@ const reloadServer = () => {
   reloading = true;
   console.log("Reloading server...");
 
-  process.kill("SIGINT");
+  process.kill("SIGTERM");
   process = runServer();
 
   output(process);
