@@ -7,7 +7,10 @@ export const replaceFileExt = (
   file: string,
   extension: ValidExtensions,
 ): string => {
-  return format({ ...parse(file), base: "", ext: extension });
+  return format({ ...parse(file), base: "", ext: extension }).replace(
+    /\\/g,
+    "/",
+  );
 };
 
 export const isValidUrl = (url: string): URL | false => {

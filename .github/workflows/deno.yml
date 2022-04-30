@@ -42,10 +42,10 @@ jobs:
         run: deno lint
       
       - name: Run tests
-        run: deno task test
+        run: deno task test 
 
       - name: Setup Chrome
-        run: PUPPETEER_PRODUCT=chrome deno run -A --unstable https://deno.land/x/puppeteer@9.0.2/install.ts
+        run: deno run -A --unstable https://deno.land/x/puppeteer@9.0.2/install.ts
 
       - name: Run puppeteer tests
         run: deno task test:puppeteer
