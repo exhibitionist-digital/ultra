@@ -7,10 +7,8 @@ export const replaceFileExt = (
   file: string,
   extension: ValidExtensions,
 ): string => {
-  return format({ ...parse(file), base: "", ext: extension }).replace(
-    /\\/g,
-    "/",
-  );
+  file = format({ ...parse(file), base: "", ext: extension });
+  return file.replaceAll("\\", "/");
 };
 
 export const isValidUrl = (url: string): URL | false => {
