@@ -22,7 +22,7 @@ const assets = async (dir: string) => {
         ].includes(contentType);
 
         meta[transpile ? "transpile" : "raw"].set(
-          file.path,
+          file.path.replaceAll("\\", "/"),
           contentType,
         );
       }
