@@ -57,6 +57,11 @@ Deno.test("resolvers", async (t) => {
       replaceFileExt("/foo/bar/baz/app.js", ".ts"),
       "/foo/bar/baz/app.ts",
     );
+    assertEquals(
+      replaceFileExt("/absolute/test.jsx.foo/app.jsx", ".js"),
+      "/absolute/test.jsx.foo/app.js",
+    );
+    assertEquals(replaceFileExt("app.js", ".js"), "app.js");
   });
   await t.step("strip trailing slash", () => {
     assertEquals(
