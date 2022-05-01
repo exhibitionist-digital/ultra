@@ -27,13 +27,10 @@ export type Ultraloader = {
 };
 
 export type RenderOptions = {
-  root: string;
   importMap: ImportMap;
   url: URL;
   lang: string;
   disableStreaming?: boolean;
 };
-
-export type Cache = Map<unknown, unknown>;
 
 export type APIHandler = (request: Request) => Response | Promise<Response>;

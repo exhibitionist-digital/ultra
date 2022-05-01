@@ -1,5 +1,4 @@
 import {
-  hashFile,
   isRemoteSource,
   isValidUrl,
   isVendorSource,
@@ -7,6 +6,7 @@ import {
   resolveFileUrl,
   stripTrailingSlash,
 } from "./resolver.ts";
+import { hashFile } from "./hashFile.ts";
 import { assert, assertEquals } from "./deps.dev.ts";
 
 Deno.test("hashFile", () => {
@@ -57,6 +57,11 @@ Deno.test("resolvers", async (t) => {
       replaceFileExt("/foo/bar/baz/app.js", ".ts"),
       "/foo/bar/baz/app.ts",
     );
+    assertEquals(
+      replaceFileExt("/absolute/test.jsx.foo/app.jsx", ".js"),
+      "/absolute/test.jsx.foo/app.js",
+    );
+    assertEquals(replaceFileExt("app.js", ".js"), "app.js");
   });
   await t.step("strip trailing slash", () => {
     assertEquals(

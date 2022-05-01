@@ -1,4 +1,4 @@
-import { ensureDir, extname, mime, walk } from "./deps.ts";
+import { ensureDir, extname, join, mime, walk } from "./deps.ts";
 
 const assets = async (dir: string) => {
   const meta = {
@@ -7,7 +7,7 @@ const assets = async (dir: string) => {
   };
   await ensureDir(dir);
 
-  for await (const file of walk(`./${dir}`)) {
+  for await (const file of walk(join(".", dir))) {
     if (file.isFile) {
       let contentType = mime.lookup(extname(file.path));
 
@@ -15,14 +15,15 @@ const assets = async (dir: string) => {
       if (extname(file.path) == ".ts") contentType = "text/ts";
 
       if (contentType) {
-        const transpile = (contentType == "text/jsx" ||
-          contentType == "text/tsx" || contentType == "text/ts");
-        const isScript = transpile ||
-          contentType === "text/javascript";
+        const transpile = [
+          "text/jsx",
+          "text/tsx",
+          "text/ts",
+        ].includes(contentType);
 
         meta[transpile ? "transpile" : "raw"].set(
-          file.path,
-          isScript ? "text/javascript" : contentType,
+          file.path.replaceAll("\\", "/"),
+          contentType,
         );
       }
     }

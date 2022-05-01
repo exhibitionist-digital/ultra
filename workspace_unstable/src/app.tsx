@@ -1,11 +1,25 @@
-import React from "react";
-import type { AppProps } from "../../unstable.ts";
+/** @jsxImportSource react */
+import type { AppProps, RequestContext } from "../../unstable.ts";
 
-export default function App({ requestContext }: AppProps) {
+export default function App(props: AppProps) {
   return (
-    <div>
-      Hello World!
-      <pre>{JSON.stringify(requestContext, null, 2)}</pre>
-    </div>
+    <html>
+      <head>
+        <title>Ultra</title>
+      </head>
+      <body>
+        Hello world!
+      </body>
+    </html>
   );
+}
+
+export function createRequestContext(request: Request): RequestContext {
+  return {
+    url: new URL(request.url),
+    state: new Map([["bar", "baz"]]),
+    helmetContext: {
+      helmet: {},
+    },
+  };
 }

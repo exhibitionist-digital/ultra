@@ -3,12 +3,21 @@ name: fmt, lint + test
 on:
   push:
     branches: [master]
+    paths-ignore:
+      - '.devcontainer/**'
+      - '.vscode/**'
   pull_request:
     branches: [master]
+    paths-ignore:
+      - '.devcontainer/**'
+      - '.vscode/**'
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Setup repo
@@ -24,7 +33,7 @@ jobs:
           path: |
             ~/.deno
             ~/.cache/deno
-          key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
+          key: ${{ runner.os }}-deno-v1-${{ hashFiles('**/deps.ts') }}
 
       - name: Verify formatting
         run: deno fmt --check
@@ -33,10 +42,10 @@ jobs:
         run: deno lint
       
       - name: Run tests
-        run: deno task test
+        run: deno task test 
 
       - name: Setup Chrome
-        run: PUPPETEER_PRODUCT=chrome deno run -A --unstable https://deno.land/x/puppeteer@9.0.2/install.ts
+        run: deno run -A --unstable https://deno.land/x/puppeteer@9.0.2/install.ts
 
       - name: Run puppeteer tests
         run: deno task test:puppeteer

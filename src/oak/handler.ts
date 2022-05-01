@@ -8,7 +8,7 @@ const cwd = Deno.cwd();
 const config = await resolveConfig(cwd);
 const importMap = await resolveImportMap(cwd, config);
 
-const requestHandler = createRequestHandler({
+const requestHandler = await createRequestHandler({
   cwd,
   importMap,
   paths: {
@@ -29,5 +29,7 @@ export async function ultraHandler(context: Context) {
 
   const response = await requestHandler(request);
 
-  return context.request.originalRequest.respond(response);
+  context.response.status = response.status;
+  context.response.headers = response.headers;
+  context.response.body = response.body;
 }

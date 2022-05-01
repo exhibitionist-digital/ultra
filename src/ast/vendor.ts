@@ -5,7 +5,7 @@ import {
   StringLiteral,
   Visitor,
 } from "../deps.ts";
-import { hashFile } from "../resolver.ts";
+import { hashFile } from "../hashFile.ts";
 
 const prefix = "./";
 

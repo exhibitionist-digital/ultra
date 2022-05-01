@@ -11,8 +11,10 @@
     }
   },
 
-  // This will install the vscode-deno extension
-  "extensions": ["denoland.vscode-deno"],
+  "extensions": [
+    "denoland.vscode-deno",
+    "GitHub.vscode-pull-request-github"
+  ],
 
   "runArgs": [
     "--network",

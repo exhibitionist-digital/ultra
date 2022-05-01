@@ -10,22 +10,19 @@ import {
   extname,
 } from "./deps.ts";
 import vendor from "../vendor.ts";
-import {
-  apiDirectory,
-  root,
-  sourceDirectory,
-  vendorDirectory,
-} from "../env.ts";
+import { apiDirectory, sourceDirectory, vendorDirectory } from "../env.ts";
 import { ImportMap } from "./../types.ts";
 
-const ultra = "https://deno.land/x/ultra";
+const root = Deno.env.get("root") || "http://localhost:8000";
+
+const ultra = "http://localhost:8080";
 
 await emptyDir("./.ultra");
 await ensureDir(`./.ultra/${sourceDirectory}`);
 await ensureDir(`./.ultra/${vendorDirectory}`);
 
 const build = async () => {
-  const vendorMap = await vendor();
+  const vendorMap = await vendor({ dir: ".ultra" });
   Object.keys(vendorMap.imports)?.forEach((k) => {
     const im: string = vendorMap.imports[k];
     if (im.indexOf("http") < 0) {
@@ -122,6 +119,16 @@ const build = async () => {
   await transformFile({
     inputFile: `${ultra}/src/render.ts`,
     outputFile: `./.ultra/render.js`,
+  });
+
+  await transformFile({
+    inputFile: `${ultra}/src/resolveEnv.ts`,
+    outputFile: `./.ultra/resolveEnv.js`,
+  });
+
+  await transformFile({
+    inputFile: `${ultra}/src/resolver.ts`,
+    outputFile: `./.ultra/resolver.js`,
   });
 
   await transformFile({

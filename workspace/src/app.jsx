@@ -3,6 +3,7 @@ import { SWRConfig } from "swr";
 import { Helmet } from "react-helmet";
 import ultraCache from "ultra/cache";
 import Ticker from "./components/Ticker.tsx";
+import message from "./lib/a.js";
 
 import Component from "./component.jsx";
 
@@ -31,6 +32,7 @@ const Ultra = ({ cache }) => {
       <Component />
       <Ticker label="Hydrated" ticked={mounted} />
       <BigLazyComponent />
+      {message}
     </SWRConfig>
   );
 };

@@ -1,78 +1,63 @@
-import assets from "../assets.ts";
-import { join, readableStreamFromReader, resolve, toFileUrl } from "../deps.ts";
-import { disableStreaming, enableLinkPreloadHeaders, lang } from "../env.ts";
-import render from "../render.ts";
+import assets from "../../assets.ts";
+import { readableStreamFromReader } from "../../deps.ts";
 import {
   replaceFileExt,
   resolveFileUrl,
   stripTrailingSlash,
-} from "../resolver.ts";
-import transform from "../transform.ts";
-import type { APIHandler, ImportMap } from "../types.ts";
-import { preloader } from "../preloader.ts";
+} from "../../resolver.ts";
+import transform from "../../transform.ts";
+import type { APIHandler } from "../../types.ts";
+import type { CreateRequestHandlerOptions } from "../types.ts";
 
-type CreateRequestHandlerOptions = {
-  cwd: string;
-  importMap: ImportMap;
-  paths: {
-    source: string;
-    vendor: string;
-  };
-  isDev?: boolean;
-};
-
-// Reference object for storing transpiled esm
-const TranspileObj: Record<string, string> = {};
-
-export async function createRequestHandler(
-  options: CreateRequestHandlerOptions,
-) {
+export function createRequestHandler(options: CreateRequestHandlerOptions) {
   const {
+    render,
+    createRequestContext,
     cwd,
     importMap,
     paths: { source: sourceDirectory, vendor: vendorDirectory },
     isDev,
   } = options;
 
-  const [{ raw, transpile }, vendor] = await Promise.all([
-    assets(sourceDirectory),
-    assets(`.ultra/${vendorDirectory}`),
-  ]);
+  const listeners = new Set<WebSocket>();
+
+  // async file watcher to send socket messages
+  if (isDev) {
+    (async () => {
+      for await (
+        const { kind } of Deno.watchFs(sourceDirectory, { recursive: true })
+      ) {
+        if (kind === "modify" || kind === "create") {
+          for (const socket of listeners) {
+            socket.send("reload");
+          }
+        }
+      }
+    })();
+  }
 
   return async function requestHandler(request: Request): Promise<Response> {
+    const { raw, transpile } = await assets(sourceDirectory);
+    const vendor = await assets(`.ultra/${vendorDirectory}`);
     const requestUrl = new URL(request.url);
-    const fileSrcRootUri = toFileUrl(resolve(cwd, sourceDirectory)).toString();
 
-    const xForwardedProto = request.headers.get("x-forwarded-proto");
-    if (xForwardedProto) requestUrl.protocol = xForwardedProto + ":";
-
-    const xForwardedHost = request.headers.get("x-forwarded-host");
-    if (xForwardedHost) requestUrl.hostname = xForwardedHost;
+    // web socket listener
+    if (isDev) {
+      if (requestUrl.pathname == "/_ultra_socket") {
+        const { socket, response } = Deno.upgradeWebSocket(request);
+        listeners.add(socket);
+        socket.onclose = () => {
+          listeners.delete(socket);
+        };
+        return response;
+      }
+    }
 
     // vendor map
     if (vendor.raw.has(".ultra" + requestUrl.pathname)) {
       const headers = {
-        "content-type": "application/javascript",
+        "content-type": "text/javascript",
       };
-
-      if (enableLinkPreloadHeaders) {
-        const ultraUri = toFileUrl(resolve(cwd, ".ultra")).toString();
-
-        const link = await preloader(
-          ultraUri + requestUrl.pathname,
-          (specifier: string) => {
-            const path = specifier.replace(ultraUri, "");
-
-            if (path !== requestUrl.pathname) {
-              return requestUrl.origin + path;
-            }
-          },
-        );
-
-        if (link) {
-          headers.link = link;
-        }
-      }
 
       const file = await Deno.open(
         `./.ultra${requestUrl.pathname}`,
@@ -89,27 +74,8 @@ export async function createRequestHandler(
         "content-type": contentType,
       };
 
-      if (
-        enableLinkPreloadHeaders && contentType === "application/javascript"
-      ) {
-        const link = await preloader(
-          fileSrcRootUri + requestUrl.pathname,
-          (specifier: string) => {
-            const path = specifier.replace(fileSrcRootUri, "");
-
-            if (path !== requestUrl.pathname) {
-              return requestUrl.origin + path;
-            }
-          },
-        );
-
-        if (link) {
-          headers.link = link;
-        }
-      }
-
       const file = await Deno.open(
-        join(".", sourceDirectory, requestUrl.pathname),
+        `./${sourceDirectory}${requestUrl.pathname}`,
       );
       const body = readableStreamFromReader(file);
 
@@ -118,10 +84,10 @@ export async function createRequestHandler(
 
     const transpilation = async (file: string) => {
       const headers = {
-        "content-type": "application/javascript",
+        "content-type": "text/javascript",
       };
 
-      let js = TranspileObj[requestUrl.pathname];
+      let js = sessionStorage.getItem(requestUrl.pathname);
 
       if (!js) {
         const source = await Deno.readTextFile(resolveFileUrl(cwd, file));
@@ -138,23 +104,7 @@ export async function createRequestHandler(
 
         console.log(`Transpile ${file} in ${duration}ms`);
 
-        if (!isDev) TranspileObj[requestUrl.pathname] = js;
-      }
-
-      if (enableLinkPreloadHeaders) {
-        const link = await preloader(
-          resolveFileUrl(cwd, file).toString(),
-          (specifier: string) => {
-            const path = specifier.replace(fileSrcRootUri, "");
-            if (replaceFileExt(path, ".js") !== requestUrl.pathname) {
-              return requestUrl.origin + path;
-            }
-          },
-        );
-
-        if (link) {
-          headers.link = link;
-        }
+        if (!isDev) sessionStorage.setItem(requestUrl.pathname, js);
       }
 
       //@ts-ignore any
@@ -175,7 +125,7 @@ export async function createRequestHandler(
         } else if (apiPaths.has(`${path}/index.ts`)) {
           path = `file://${cwd}/${path}/index.ts`;
         }
-        return (await import(path)).default;
+        return (await import(`${path}`)).default;
       };
       try {
         const pathname = stripTrailingSlash(requestUrl.pathname);
@@ -217,18 +167,8 @@ export async function createRequestHandler(
       return await transpilation(ts);
     }
 
-    return new Response(
-      await render({
-        url: requestUrl,
-        importMap,
-        lang,
-        disableStreaming: !!disableStreaming,
-      }),
-      {
-        headers: {
-          "content-type": "text/html; charset=utf-8",
-        },
-      },
-    );
+    const requestContext = await createRequestContext(request);
+
+    return render(requestContext);
   };
 }
