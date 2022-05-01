@@ -1,4 +1,4 @@
-import { serve } from "./deps.ts";
+import { Server } from "./deps.ts";
 import {
   devServerWebsocketPort,
   isDev,
@@ -30,9 +30,15 @@ const server = async () => {
     message += ` and ws://localhost:${devServerWebsocketPort}`;
   }
 
-  console.log(message);
+  const server = new Server({
+    hostname: "0.0.0.0",
+    port,
+    handler: requestHandler,
+  });
 
-  return serve(requestHandler, { port: +port });
+  const s = server.listenAndServe();
+  console.log(message);
+  return await s;
 };
 
 export default server;
