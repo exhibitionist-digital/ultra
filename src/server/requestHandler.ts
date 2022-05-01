@@ -139,7 +139,6 @@ export async function createRequestHandler(
         console.log(`Transpile ${file} in ${duration}ms`);
 
         if (!isDev) TranspileObj[requestUrl.pathname] = js;
-        console.log({ TranspileObj });
       }
 
       if (enableLinkPreloadHeaders) {
