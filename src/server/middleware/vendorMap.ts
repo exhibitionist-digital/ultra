@@ -1,8 +1,12 @@
-import { Assets, Middleware } from "../../types.ts";
+import assets from "../../assets.ts";
+import { Middleware } from "../../types.ts";
 import { createURL } from "../request.ts";
 import { readableStreamFromReader } from "../../deps.ts";
+import { vendorDirectory } from "../../env.ts";
 
-export default function vendorMap(vendor: Assets): Middleware {
+export default async function vendorMap(): Promise<Middleware> {
+  const vendor = await assets(`.ultra/${vendorDirectory}`);
+
   return async ({ request, response }, next) => {
     const url = createURL(request);
 

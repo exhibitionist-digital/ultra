@@ -1,6 +1,7 @@
+import assets from "../../assets.ts";
 import transform from "../../transform.ts";
-import { Assets, ImportMap, Middleware } from "../../types.ts";
 import { LRU } from "../../deps.ts";
+import { Middleware } from "../../types.ts";
 import { createURL } from "../request.ts";
 import { isDev, sourceDirectory } from "../../env.ts";
 import {
@@ -8,14 +9,14 @@ import {
   resolveFileUrl,
   ValidExtensions,
 } from "../../resolver.ts";
+import { resolveConfig, resolveImportMap } from "../../config.ts";
 
-const cwd = Deno.cwd();
-
-export default function transpileSource(
-  rawAssets: Assets,
-  importMap: ImportMap,
-): Middleware {
+export default async function transpileSource(): Promise<Middleware> {
+  const cwd = Deno.cwd();
+  const config = await resolveConfig(cwd);
+  const importMap = await resolveImportMap(cwd, config);
   const memory = new LRU<string>(500);
+  const rawAssets = await assets(sourceDirectory);
 
   return async (context, next) => {
     const url = createURL(context.request);

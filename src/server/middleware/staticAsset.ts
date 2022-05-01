@@ -1,9 +1,12 @@
-import { Assets, Middleware } from "../../types.ts";
+import { Middleware } from "../../types.ts";
 import { createURL } from "../request.ts";
 import { readableStreamFromReader } from "../../deps.ts";
 import { sourceDirectory } from "../../env.ts";
+import assets from "../../assets.ts";
 
-export default function staticAsset(rawAssets: Assets): Middleware {
+export default async function staticAsset(): Promise<Middleware> {
+  const rawAssets = await assets(sourceDirectory);
+
   return async ({ request, response }, next) => {
     const url = createURL(request);
 
