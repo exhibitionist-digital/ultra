@@ -51,9 +51,9 @@ export async function createRequestHandler(
 
     // vendor map
     if (vendor.raw.has(".ultra" + requestUrl.pathname)) {
-      const headers = {
+      const headers = new Headers({
         "content-type": "application/javascript",
-      };
+      });
 
       if (enableLinkPreloadHeaders) {
         const ultraUri = toFileUrl(resolve(cwd, ".ultra")).toString();
@@ -70,7 +70,7 @@ export async function createRequestHandler(
         );
 
         if (link) {
-          headers.link = link;
+          headers.set("link", link);
         }
       }
 
@@ -85,9 +85,9 @@ export async function createRequestHandler(
     // static assets
     if (raw.has(`${sourceDirectory}${requestUrl.pathname}`)) {
       const contentType = raw.get(`${sourceDirectory}${requestUrl.pathname}`);
-      const headers = {
+      const headers = new Headers({
         "content-type": contentType,
-      };
+      });
 
       if (
         enableLinkPreloadHeaders && contentType === "application/javascript"
@@ -104,7 +104,7 @@ export async function createRequestHandler(
         );
 
         if (link) {
-          headers.link = link;
+          headers.set("link", link);
         }
       }
 
@@ -117,9 +117,9 @@ export async function createRequestHandler(
     }
 
     const transpilation = async (file: string) => {
-      const headers = {
+      const headers = new Headers({
         "content-type": "application/javascript",
-      };
+      });
 
       let js = TranspileObj[requestUrl.pathname];
 
@@ -153,7 +153,7 @@ export async function createRequestHandler(
         );
 
         if (link) {
-          headers.link = link;
+          headers.set("link", link);
         }
       }
 
