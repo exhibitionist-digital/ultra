@@ -1,5 +1,5 @@
 import assets from "../assets.ts";
-import { join, LRU, readableStreamFromReader } from "../deps.ts";
+import { join, readableStreamFromReader } from "../deps.ts";
 import { disableStreaming, lang } from "../env.ts";
 import render from "../render.ts";
 import {
@@ -30,7 +30,6 @@ export async function createRequestHandler(
     isDev,
   } = options;
 
-  const memory = new LRU(500);
   const [{ raw, transpile }, vendor] = await Promise.all([
     assets(sourceDirectory),
     assets(`.ultra/${vendorDirectory}`),
@@ -79,7 +78,7 @@ export async function createRequestHandler(
         "content-type": "application/javascript",
       };
 
-      let js = memory.get(requestUrl.pathname);
+      let js = sessionStorage.getItem(requestUrl.pathname);
 
       if (!js) {
         const source = await Deno.readTextFile(resolveFileUrl(cwd, file));
@@ -96,7 +95,7 @@ export async function createRequestHandler(
 
         console.log(`Transpile ${file} in ${duration}ms`);
 
-        if (!isDev) memory.set(requestUrl.pathname, js);
+        if (!isDev) sessionStorage.setItem(requestUrl.pathname, js);
       }
 
       //@ts-ignore any
