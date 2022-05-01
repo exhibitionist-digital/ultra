@@ -24,12 +24,6 @@ const server = async () => {
     isDev,
   });
 
-  let message = `Ultra running http://localhost:${port}`;
-
-  if (isDev) {
-    message += ` and ws://localhost:${devServerWebsocketPort}`;
-  }
-
   const server = new Server({
     hostname: "0.0.0.0",
     port,
@@ -37,7 +31,7 @@ const server = async () => {
   });
 
   const s = server.listenAndServe();
-  console.log(message);
+  console.log(`Ultra running http://localhost:${port}`);
   return await s;
 };
 

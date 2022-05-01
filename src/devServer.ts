@@ -106,6 +106,9 @@ const devServer = (userOptions: DevServerOptions) => {
   });
 
   server.listenAndServe();
+  console.log(
+    `Ultra development server running ws://localhost:${devServerWebsocketPort}`,
+  );
 };
 
 export default devServer;
