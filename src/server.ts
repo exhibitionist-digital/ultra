@@ -1,11 +1,5 @@
-import { serve } from "./deps.ts";
-import {
-  devServerWebsocketPort,
-  isDev,
-  port,
-  sourceDirectory,
-  vendorDirectory,
-} from "./env.ts";
+import { Server } from "./deps.ts";
+import { isDev, port, sourceDirectory, vendorDirectory } from "./env.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
 import { createRequestHandler } from "./server/requestHandler.ts";
 
@@ -24,15 +18,15 @@ const server = async () => {
     isDev,
   });
 
-  let message = `Ultra running http://localhost:${port}`;
+  const server = new Server({
+    hostname: "0.0.0.0",
+    port,
+    handler: requestHandler,
+  });
 
-  if (isDev) {
-    message += ` and ws://localhost:${devServerWebsocketPort}`;
-  }
-
-  console.log(message);
-
-  return serve(requestHandler, { port: +port });
+  const s = server.listenAndServe();
+  console.log(`Ultra running http://localhost:${port}`);
+  return await s;
 };
 
 export default server;
