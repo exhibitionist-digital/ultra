@@ -1,5 +1,4 @@
 import {
-  hashFile,
   isRemoteSource,
   isValidUrl,
   isVendorSource,
@@ -7,6 +6,7 @@ import {
   resolveFileUrl,
   stripTrailingSlash,
 } from "./resolver.ts";
+import { hashFile } from "./hashFile.ts";
 import { assert, assertEquals } from "./deps.dev.ts";
 
 Deno.test("hashFile", () => {

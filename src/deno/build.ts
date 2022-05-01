@@ -10,22 +10,19 @@ import {
   extname,
 } from "./deps.ts";
 import vendor from "../vendor.ts";
-import {
-  apiDirectory,
-  root,
-  sourceDirectory,
-  vendorDirectory,
-} from "../env.ts";
+import { apiDirectory, sourceDirectory, vendorDirectory } from "../env.ts";
 import { ImportMap } from "./../types.ts";
 
-const ultra = "https://deno.land/x/ultra";
+const root = Deno.env.get("root") || "http://localhost:8000";
+
+const ultra = "http://localhost:8080";
 
 await emptyDir("./.ultra");
 await ensureDir(`./.ultra/${sourceDirectory}`);
 await ensureDir(`./.ultra/${vendorDirectory}`);
 
 const build = async () => {
-  const vendorMap = await vendor();
+  const vendorMap = await vendor({ dir: ".ultra" });
   Object.keys(vendorMap.imports)?.forEach((k) => {
     const im: string = vendorMap.imports[k];
     if (im.indexOf("http") < 0) {
@@ -93,82 +90,61 @@ const build = async () => {
     }
   });
 
-  // deps
-  const depReq = await fetch(
-    `${ultra}/src/deno/deps.ts`,
-  );
-  const depText = await depReq.text();
-  await Deno.writeTextFile(`./.ultra/deps.js`, depText);
+  const transformFile = async (
+    { inputFile, outputFile }: { inputFile: string; outputFile: string },
+  ) => {
+    const req = await fetch(inputFile);
+    const text = await req.text();
 
-  // assets
-  const assetReq = await fetch(
-    `${ultra}/src/assets.ts`,
-  );
-  const assetText = await assetReq.text();
+    const trans = await transform({
+      source: text,
+      sourceUrl: new URL(root),
+      importMap: denoMap,
+      relativePrefix: "./",
+    });
 
-  const assetTrans = await transform({
-    source: assetText,
-    sourceUrl: new URL(root),
-    importMap: denoMap,
-    relativePrefix: "./",
+    await Deno.writeTextFile(outputFile, trans);
+  };
+
+  await transformFile({
+    inputFile: `${ultra}/src/deno/deps.ts`,
+    outputFile: `./.ultra/deps.js`,
   });
 
-  await Deno.writeTextFile(`./.ultra/assets.js`, assetTrans);
-
-  // render
-  const renderReq = await fetch(
-    `${ultra}/src/render.ts`,
-  );
-  const renderText = await renderReq.text();
-
-  const renderTrans = await transform({
-    source: renderText,
-    sourceUrl: new URL(root),
-    importMap: denoMap,
-    relativePrefix: "./",
+  await transformFile({
+    inputFile: `${ultra}/src/assets.ts`,
+    outputFile: `./.ultra/assets.js`,
   });
-  await Deno.writeTextFile(`./.ultra/render.js`, renderTrans);
 
-  // resolver
-  const resolverReq = await fetch(
-    `${ultra}/src/importMapResolver.ts`,
-  );
-  const resolverText = await resolverReq.text();
-
-  const resolverTrans = await transform({
-    source: resolverText,
-    sourceUrl: new URL(root),
-    importMap: denoMap,
-    relativePrefix: "./",
+  await transformFile({
+    inputFile: `${ultra}/src/render.ts`,
+    outputFile: `./.ultra/render.js`,
   });
-  await Deno.writeTextFile(`./.ultra/importMapResolver.js`, resolverTrans);
 
-  // stream
-  const streamReq = await fetch(
-    `${ultra}/src/stream.ts`,
-  );
-  const streamText = await streamReq.text();
-
-  const streamTrans = await transform({
-    source: streamText,
-    sourceUrl: new URL(root),
-    importMap: denoMap,
-    relativePrefix: "./",
+  await transformFile({
+    inputFile: `${ultra}/src/resolveEnv.ts`,
+    outputFile: `./.ultra/resolveEnv.js`,
   });
-  await Deno.writeTextFile(`./.ultra/stream.js`, streamTrans);
 
-  // env
-  const envReq = await fetch(
-    `${ultra}/src/env.ts`,
-  );
-  const envText = await envReq.text();
-  const envTrans = await transform({
-    source: envText,
-    sourceUrl: new URL(root),
-    importMap: denoMap,
-    relativePrefix: "./",
+  await transformFile({
+    inputFile: `${ultra}/src/resolver.ts`,
+    outputFile: `./.ultra/resolver.js`,
   });
-  await Deno.writeTextFile(`./.ultra/env.js`, envTrans);
+
+  await transformFile({
+    inputFile: `${ultra}/src/importMapResolver.ts`,
+    outputFile: `./.ultra/importMapResolver.js`,
+  });
+
+  await transformFile({
+    inputFile: `${ultra}/src/stream.ts`,
+    outputFile: `./.ultra/stream.js`,
+  });
+
+  await transformFile({
+    inputFile: `${ultra}/src/env.ts`,
+    outputFile: `./.ultra/env.js`,
+  });
 
   // API
   const api = await assets(apiDirectory);
