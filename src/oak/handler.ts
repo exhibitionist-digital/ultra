@@ -1,4 +1,4 @@
-import { Context } from "https://deno.land/x/oak@v10.5.1/mod.ts";
+import { Context, Middleware } from "https://deno.land/x/oak@v10.5.1/mod.ts";
 import { isDev, sourceDirectory, vendorDirectory } from "../env.ts";
 import { resolveConfig, resolveImportMap } from "../config.ts";
 import { createRequestHandler } from "../server/requestHandler.ts";
@@ -18,7 +18,7 @@ const requestHandler = await createRequestHandler({
   isDev,
 });
 
-export async function ultraHandler(context: Context) {
+export const ultraHandler: Middleware = async (context: Context, next) => {
   const serverRequestBody = context.request.originalRequest.getBody();
 
   const request = new Request(context.request.url.toString(), {
@@ -32,4 +32,6 @@ export async function ultraHandler(context: Context) {
   context.response.status = response.status;
   context.response.headers = response.headers;
   context.response.body = response.body;
-}
+
+  await next();
+};
