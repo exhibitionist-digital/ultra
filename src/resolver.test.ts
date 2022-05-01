@@ -10,10 +10,29 @@ import { hashFile } from "./hashFile.ts";
 import { assert, assertEquals } from "./deps.dev.ts";
 
 Deno.test("hashFile", () => {
-  const hash = hashFile("https://esm.sh/react");
+  const react = hashFile("https://esm.sh/react");
+  const react18 = hashFile("https://esm.sh/react@18");
+  const react18Dev = hashFile("https://esm.sh/react@18?dev");
+  const react18JsxRuntime = hashFile("https://esm.sh/react@18/jsx-runtime.js");
+
   assertEquals(
-    hash,
+    react,
     `react.8ca2952001a498bd`,
+  );
+
+  assertEquals(
+    react18,
+    "react@18.fb4824b7e80dc85c",
+  );
+
+  assertEquals(
+    react18Dev,
+    "react@18.fb4824b7e80dc85c",
+  );
+
+  assertEquals(
+    react18JsxRuntime,
+    "jsx-runtime.js.072132c59a25b214",
   );
 });
 
