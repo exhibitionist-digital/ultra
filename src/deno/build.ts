@@ -8,6 +8,7 @@ import {
   emptyDir,
   ensureDir,
   extname,
+  resolve,
 } from "./deps.ts";
 import vendor from "../vendor.ts";
 import { apiDirectory, sourceDirectory, vendorDirectory } from "../env.ts";
@@ -15,7 +16,16 @@ import { ImportMap } from "./../types.ts";
 
 const root = Deno.env.get("root") || "http://localhost:8000";
 
-const ultra = "http://localhost:8080";
+/**
+ * This will either be a file://path/to/build.ts or https://deno.land/x/ultra@version/build.ts
+ * depending on how it's run
+ *
+ * So we just do some path manipulation to get the path to "src"
+ */
+const mainModule = Deno.mainModule;
+const mainModuleUrl = new URL(mainModule);
+mainModuleUrl.pathname = resolve(dirname(mainModuleUrl.pathname), "src");
+const ultraSrc = mainModuleUrl.toString();
 
 await emptyDir("./.ultra");
 await ensureDir(`./.ultra/${sourceDirectory}`);
@@ -107,42 +117,42 @@ const build = async () => {
   };
 
   await transformFile({
-    inputFile: `${ultra}/src/deno/deps.ts`,
+    inputFile: `${ultraSrc}/deno/deps.ts`,
     outputFile: `./.ultra/deps.js`,
   });
 
   await transformFile({
-    inputFile: `${ultra}/src/assets.ts`,
+    inputFile: `${ultraSrc}/assets.ts`,
     outputFile: `./.ultra/assets.js`,
   });
 
   await transformFile({
-    inputFile: `${ultra}/src/render.ts`,
+    inputFile: `${ultraSrc}/render.ts`,
     outputFile: `./.ultra/render.js`,
   });
 
   await transformFile({
-    inputFile: `${ultra}/src/resolveEnv.ts`,
+    inputFile: `${ultraSrc}/resolveEnv.ts`,
     outputFile: `./.ultra/resolveEnv.js`,
   });
 
   await transformFile({
-    inputFile: `${ultra}/src/resolver.ts`,
+    inputFile: `${ultraSrc}/resolver.ts`,
     outputFile: `./.ultra/resolver.js`,
   });
 
   await transformFile({
-    inputFile: `${ultra}/src/importMapResolver.ts`,
+    inputFile: `${ultraSrc}/importMapResolver.ts`,
     outputFile: `./.ultra/importMapResolver.js`,
   });
 
   await transformFile({
-    inputFile: `${ultra}/src/stream.ts`,
+    inputFile: `${ultraSrc}/stream.ts`,
     outputFile: `./.ultra/stream.js`,
   });
 
   await transformFile({
-    inputFile: `${ultra}/src/env.ts`,
+    inputFile: `${ultraSrc}/env.ts`,
     outputFile: `./.ultra/env.js`,
   });
 
@@ -167,7 +177,7 @@ const build = async () => {
 
   // ultra
   const ultraReq = await fetch(
-    `${ultra}/src/deno/server.ts`,
+    `${ultraSrc}/deno/server.ts`,
   );
   let ultraText = await ultraReq.text();
   ultraText = apiImports + ultraText;
