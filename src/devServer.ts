@@ -13,7 +13,7 @@ const options = {} as DevServerOptions;
 const runServer = (): Deno.Process => {
   const process = Deno.run({
     cmd: [
-      "deno",
+      Deno.execPath(),
       "run",
       "-A",
       "--unstable",
@@ -67,7 +67,7 @@ const reloadServer = () => {
   reloading = true;
   console.log("Reloading server...");
 
-  process.kill("SIGINT");
+  process.kill("SIGTERM");
   process = runServer();
 
   output(process);

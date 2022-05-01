@@ -1,4 +1,4 @@
-import { extname } from "./deps.ts";
+import { replaceFileExt } from "./resolver.ts";
 import React from "react";
 import ReactDOM from "react-dom/server";
 import App from "app";
@@ -52,10 +52,10 @@ const render = async (
   const resolvedAppImportUrl = new URL(dependencyMap.get("app")!);
 
   const transpiledAppImportUrl = new URL(
-    `${resolvedAppImportUrl.origin}/${
-      resolvedAppImportUrl.pathname.replace(`/${sourceDirectory}/`, "")
-    }`.replace(
-      extname(resolvedAppImportUrl.pathname),
+    replaceFileExt(
+      `${resolvedAppImportUrl.origin}/${
+        resolvedAppImportUrl.pathname.replace(`/${sourceDirectory}/`, "")
+      }`,
       ".js",
     ),
   );
