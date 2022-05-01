@@ -1,11 +1,5 @@
 import { Server } from "./deps.ts";
-import {
-  devServerWebsocketPort,
-  isDev,
-  port,
-  sourceDirectory,
-  vendorDirectory,
-} from "./env.ts";
+import { isDev, port, sourceDirectory, vendorDirectory } from "./env.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
 import { createRequestHandler } from "./server/requestHandler.ts";
 
