@@ -25,7 +25,7 @@ export const port = env.port;
  * The port the development websocket server will listen on.
  * @default 8001
  */
-export const wsport = env.wsport;
+export const devServerWebsocketPort = env.devServerWebsocketPort;
 /**
  * The runtime mode of Ultra.
  * @default null

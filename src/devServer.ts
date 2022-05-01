@@ -1,10 +1,12 @@
-import { sourceDirectory, wsport } from "./env.ts";
+import { devServerWebsocketPort, sourceDirectory } from "./env.ts";
 import { readLines, serve } from "./deps.ts";
 
 export type DevServerOptions = {
   /** Path to a script that initializes the server. eg. "./server.js" */
   server: string;
 };
+
+Deno.env.set("mode", "dev");
 
 const listeners = new Set<WebSocket>();
 let process: Deno.Process;
@@ -13,7 +15,7 @@ const options = {} as DevServerOptions;
 const runServer = (): Deno.Process => {
   const process = Deno.run({
     cmd: [
-      "deno",
+      Deno.execPath(),
       "run",
       "-A",
       "--unstable",
@@ -67,7 +69,7 @@ const reloadServer = () => {
   reloading = true;
   console.log("Reloading server...");
 
-  process.kill("SIGINT");
+  process.kill("SIGTERM");
   process = runServer();
 
   output(process);
@@ -97,7 +99,7 @@ const devServer = (userOptions: DevServerOptions) => {
       listeners.delete(socket);
     };
     return response;
-  }, { port: Number(wsport) });
+  }, { port: Number(devServerWebsocketPort) });
 };
 
 export default devServer;
