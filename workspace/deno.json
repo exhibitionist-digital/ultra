@@ -6,7 +6,7 @@
     "start:oak": "deno run -A --unstable --no-check oak.ts",
     "cache": "deno cache --reload server.js",
     "vendor": "importMap=importMap.json deno run -A --unstable ../vendor.ts",
-    "build": "deno run -A ../build.ts"
+    "build": "deno run -A --reload ../build.ts"
   },
   "importMap": "importMap.json",
   "lint": {

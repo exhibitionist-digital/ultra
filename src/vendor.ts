@@ -13,9 +13,13 @@ const vendor = async (
   { dir = ".ultra", outputDir }: { dir: string; outputDir?: string },
 ) => {
   // setup directories
-  // await emptyDir(`./${dir}`);
-  await ensureDir(`./${dir}/${outputDir && outputDir + "/"}${vendorDirectory}`);
-  const directory = `${dir}/${outputDir && outputDir + "/"}${vendorDirectory}`;
+  await emptyDir(`./${dir}`);
+  await ensureDir(
+    `./${dir}/${outputDir ? outputDir + "/" : ""}${vendorDirectory}`,
+  );
+  const directory = `${dir}/${
+    outputDir ? outputDir + "/" : ""
+  }${vendorDirectory}`;
 
   // create a new object for the vendor import map
   const vendorMap: Record<string, string> = {};
