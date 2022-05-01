@@ -1,7 +1,8 @@
-export { walk } from "https://deno.land/std@0.137.0/fs/mod.ts";
-export { concat } from "https://deno.land/std@0.137.0/bytes/mod.ts";
+export { walk } from "https://deno.land/std@0.136.0/fs/mod.ts";
+export { concat } from "https://deno.land/std@0.136.0/bytes/mod.ts";
 export { cache } from "https://deno.land/x/cache@0.2.13/mod.ts";
 export {
+  basename,
   extname,
   format,
   join,
@@ -9,10 +10,10 @@ export {
   relative,
   resolve,
   toFileUrl,
-} from "https://deno.land/std@0.137.0/path/mod.ts";
-export { Buffer, readLines } from "https://deno.land/std@0.137.0/io/mod.ts";
-export { serve } from "https://deno.land/std@0.137.0/http/server.ts";
-export { readableStreamFromReader } from "https://deno.land/std@0.137.0/streams/conversion.ts";
+} from "https://deno.land/std@0.136.0/path/mod.ts";
+export { Buffer, readLines } from "https://deno.land/std@0.136.0/io/mod.ts";
+export { serve } from "https://deno.land/std@0.136.0/http/server.ts";
+export { readableStreamFromReader } from "https://deno.land/std@0.136.0/streams/conversion.ts";
 export { default as mime } from "https://esm.sh/mime-types@2.1.35";
 export type {
   CallExpression,
@@ -31,8 +32,8 @@ export {
   printSync,
   transformSync,
 } from "https://esm.sh/@swc/wasm-web@1.2.171/wasm-web.js";
-export { emptyDir, ensureDir } from "https://deno.land/std@0.137.0/fs/mod.ts";
-export { crypto } from "https://deno.land/std@0.137.0/crypto/mod.ts";
+export { emptyDir, ensureDir } from "https://deno.land/std@0.136.0/fs/mod.ts";
+export { crypto } from "https://deno.land/std@0.136.0/crypto/mod.ts";
 export {
   parse as parseImportMap,
   resolve as resolveImportMap,

@@ -3,4 +3,4 @@ export {
   bold,
   underline,
   yellow,
-} from "https://deno.land/std@0.137.0/fmt/colors.ts";
+} from "https://deno.land/std@0.136.0/fmt/colors.ts";
