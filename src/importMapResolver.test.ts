@@ -5,7 +5,7 @@ Deno.test("importResolver", async (t) => {
   const importMap = {
     imports: {
       "react": "https://esm.sh/react",
-      "fmt/": "https://deno.land/std@0.134.0/fmt/",
+      "fmt/": "https://deno.land/std@0.137.0/fmt/",
       "/": "./",
       "./": "./",
       "app.tsx": "./src/app.tsx",
@@ -64,7 +64,7 @@ Deno.test("importResolver", async (t) => {
 
     assertEquals(
       colors.resolvedImport.href,
-      "https://deno.land/std@0.134.0/fmt/colors.ts",
+      "https://deno.land/std@0.137.0/fmt/colors.ts",
     );
   });
 

@@ -7,7 +7,7 @@ import {
   beforeEach,
   describe,
   it,
-} from "https://deno.land/std@0.136.0/testing/bdd.ts";
+} from "https://deno.land/std@0.137.0/testing/bdd.ts";
 
 const ENV_VAR = {
   name: "importMap",
