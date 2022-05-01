@@ -13,7 +13,7 @@ Deno.test("hashFile", () => {
   const hash = hashFile("https://esm.sh/react");
   assertEquals(
     hash,
-    `8ca2952001a498bd682ddd3c98f70920ce4fdaa3b326d23d5d66a6d338c6efdd`,
+    `react.8ca2952001a498bd`,
   );
 });
 
