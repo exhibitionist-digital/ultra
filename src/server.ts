@@ -17,13 +17,11 @@ const importMap = await resolveImportMap(cwd, config);
 export default async function () {
   const middleware: Middleware[] = [];
   const requestHandler = await createRequestHandler({
-    cwd,
     importMap,
     paths: {
       source: sourceDirectory,
       vendor: vendorDirectory,
     },
-    isDev,
     middleware,
   });
 

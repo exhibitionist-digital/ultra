@@ -35,8 +35,8 @@ export const stripTrailingSlash = (url: string): string => {
   return url.endsWith("/") ? url.slice(0, -1) : url;
 };
 
-export const resolveFileUrl = (from: string, to: string) => {
-  return new URL(toFileUrl(resolve(from, to)).toString());
+export const resolveFileUrl = (directoryPath: string, fileName: string) => {
+  return new URL(toFileUrl(resolve(directoryPath, fileName)).toString());
 };
 
 export const isRemoteSource = (value: string): boolean => {

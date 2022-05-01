@@ -1,22 +1,20 @@
 import assets from "../assets.ts";
 import type { Context, ImportMap, Middleware } from "../types.ts";
-import { Handler, LRU } from "../deps.ts";
+import { Handler } from "../deps.ts";
 import { createResponse } from "./response.ts";
 import { handleMiddleware } from "./middleware.ts";
 import { lang } from "../env.ts";
 import vendorMap from "./middleware/vendorMap.ts";
 import staticAsset from "./middleware/staticAsset.ts";
 import transpileSource from "./middleware/transpileSource.ts";
-import handleRequest from "./middleware/handleRequest.ts";
+import renderPage from "./middleware/renderPage.ts";
 
 export type CreateRequestHandlerOptions = {
-  cwd: string;
   importMap: ImportMap;
   paths: {
     source: string;
     vendor: string;
   };
-  isDev?: boolean;
   middleware?: Middleware[];
 };
 
@@ -24,15 +22,15 @@ export async function createRequestHandler(
   options: CreateRequestHandlerOptions,
 ): Promise<Handler> {
   const {
-    cwd,
     importMap,
-    paths: { source: sourceDirectory, vendor: vendorDirectory },
+    paths: {
+      source: sourceDirectory,
+      vendor: vendorDirectory,
+    },
   } = options;
   const middleware = options.middleware ?? [];
-  const isDev = Boolean(options.isDev);
 
-  const memory = new LRU<string>(500);
-  const [{ raw, transpile }, vendor] = await Promise.all([
+  const [raw, vendor] = await Promise.all([
     assets(sourceDirectory),
     assets(`.ultra/${vendorDirectory}`),
   ]);
@@ -43,12 +41,9 @@ export async function createRequestHandler(
     0,
     0,
     transpileSource(
-      memory,
-      transpile,
+      raw,
       importMap,
       sourceDirectory,
-      cwd,
-      isDev,
     ),
   );
   middleware.splice(0, 0, staticAsset(raw, sourceDirectory));
@@ -58,10 +53,9 @@ export async function createRequestHandler(
     // This is after server.use() has happened. This one should go last as a
     // catch-all. TODO: Add a not found if the URL isn't `/`?
     middleware.push(
-      handleRequest(
+      renderPage(
         lang,
         importMap,
-        isDev,
       ),
     );
 

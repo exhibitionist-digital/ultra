@@ -1,21 +1,23 @@
 import transform from "../../transform.ts";
-import { ImportMap, Middleware } from "../../types.ts";
+import { Assets, ImportMap, Middleware } from "../../types.ts";
 import { LRU } from "../../deps.ts";
 import { createURL } from "../request.ts";
+import { isDev } from "../../env.ts";
 import {
   replaceFileExt,
   resolveFileUrl,
   ValidExtensions,
 } from "../../resolver.ts";
 
+const cwd = Deno.cwd();
+
 export default function transpileSource(
-  memory: LRU<string>,
-  transpile: Map<string, string>,
+  rawAssets: Assets,
   importMap: ImportMap,
   sourceDirectory: string,
-  cwd: string,
-  isDev: boolean,
 ): Middleware {
+  const memory = new LRU<string>(500);
+
   return async (context, next) => {
     const url = createURL(context.request);
 
@@ -50,7 +52,7 @@ export default function transpileSource(
       const filePath = `${sourceDirectory}${
         replaceFileExt(url.pathname, fileType)
       }`;
-      if (transpile.has(filePath)) {
+      if (rawAssets.transpile.has(filePath)) {
         context.response.body = await transpilation(filePath);
         context.response.headers = {
           ...context.response.headers,
