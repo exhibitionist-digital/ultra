@@ -20,6 +20,9 @@ type CreateRequestHandlerOptions = {
   isDev?: boolean;
 };
 
+// Reference object for storing transpiled esm
+const TranspileObj: Record<string, string> = {};
+
 export async function createRequestHandler(
   options: CreateRequestHandlerOptions,
 ) {
@@ -78,7 +81,7 @@ export async function createRequestHandler(
         "content-type": "application/javascript",
       };
 
-      let js = sessionStorage.getItem(requestUrl.pathname);
+      let js = TranspileObj[requestUrl.pathname];
 
       if (!js) {
         const source = await Deno.readTextFile(resolveFileUrl(cwd, file));
@@ -95,7 +98,8 @@ export async function createRequestHandler(
 
         console.log(`Transpile ${file} in ${duration}ms`);
 
-        if (!isDev) sessionStorage.setItem(requestUrl.pathname, js);
+        if (!isDev) TranspileObj[requestUrl.pathname] = js;
+        console.log({ TranspileObj });
       }
 
       //@ts-ignore any
