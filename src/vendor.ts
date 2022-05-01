@@ -9,11 +9,13 @@ const cwd = Deno.cwd();
 const config = await resolveConfig(cwd);
 const importMap = await resolveImportMap(cwd, config);
 
-const vendor = async () => {
+const vendor = async (
+  { dir = ".ultra", outputDir }: { dir: string; outputDir?: string },
+) => {
   // setup directories
-  await emptyDir("./.ultra");
-  await ensureDir(`./.ultra/${vendorDirectory}`);
-  const directory = `.ultra/${vendorDirectory}`;
+  // await emptyDir(`./${dir}`);
+  await ensureDir(`./${dir}/${outputDir && outputDir + "/"}${vendorDirectory}`);
+  const directory = `${dir}/${outputDir && outputDir + "/"}${vendorDirectory}`;
 
   // create a new object for the vendor import map
   const vendorMap: Record<string, string> = {};
@@ -58,7 +60,7 @@ const vendor = async () => {
             root: ".",
           }),
         );
-        vendorMap[key] = `./.ultra/${vendorDirectory}/${hash}.js`;
+        vendorMap[key] = `./${dir}/${vendorDirectory}/${hash}.js`;
       }
     }
   }
