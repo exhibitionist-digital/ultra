@@ -37,3 +37,4 @@ export {
   resolve as resolveImportMap,
 } from "https://esm.sh/@import-maps/resolve@1.0.1";
 export type { ParsedImportMap } from "https://esm.sh/@import-maps/resolve@1.0.1";
+export { createGraph } from "https://deno.land/x/deno_graph@0.25.0/mod.ts";

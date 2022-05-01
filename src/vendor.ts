@@ -1,5 +1,5 @@
 import { emptyDir, ensureDir } from "./deps.ts";
-import { createGraph } from "./deps.dev.ts";
+import { createGraph } from "./deps.ts";
 import { vendor as vendorTransform } from "./transform.ts";
 import { hashFile, isValidUrl } from "./resolver.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
