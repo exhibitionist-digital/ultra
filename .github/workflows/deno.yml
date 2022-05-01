@@ -33,7 +33,10 @@ jobs:
           path: |
             ~/.deno
             ~/.cache/deno
-          key: ${{ runner.os }}-deno-v1-${{ hashFiles('**/deps.ts', '**/deps.dev.ts') }}
+          key: ${{ runner.os }}-deno-v2-${{ hashFiles('**/deps.ts', '**/deps.dev.ts', '**/deps.wasm.ts') }}
+
+      - name: Cache WASM
+        run: deno run -A ./src/deps.wasm.ts
 
       - name: Verify formatting
         run: deno fmt --check

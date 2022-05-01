@@ -1,5 +1,6 @@
 export { walk } from "https://deno.land/std@0.135.0/fs/mod.ts";
 export { concat } from "https://deno.land/std@0.135.0/bytes/mod.ts";
+export { cache } from "https://deno.land/x/cache@0.2.13/mod.ts";
 export {
   extname,
   format,
