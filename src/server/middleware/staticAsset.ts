@@ -1,11 +1,9 @@
 import { Assets, Middleware } from "../../types.ts";
 import { createURL } from "../request.ts";
 import { readableStreamFromReader } from "../../deps.ts";
+import { sourceDirectory } from "../../env.ts";
 
-export default function staticAsset(
-  rawAssets: Assets,
-  sourceDirectory: string,
-): Middleware {
+export default function staticAsset(rawAssets: Assets): Middleware {
   return async ({ request, response }, next) => {
     const url = createURL(request);
 

@@ -1,19 +1,16 @@
 import render from "../../render.ts";
 import { ImportMap, Middleware } from "../../types.ts";
 import { createURL } from "../request.ts";
-import { disableStreaming } from "../../env.ts";
+import { disableStreaming, lang } from "../../env.ts";
 
-export default function renderPage(
-  language: string,
-  importMap: ImportMap,
-): Middleware {
+export default function renderPage(importMap: ImportMap): Middleware {
   return async (context, next) => {
     const url = createURL(context.request);
 
     const body = await render({
       url,
       importMap,
-      lang: language,
+      lang,
       disableStreaming,
     });
 

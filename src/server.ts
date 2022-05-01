@@ -1,12 +1,6 @@
 import { Middleware } from "./types.ts";
 import { createRequestHandler } from "./server/requestHandler.ts";
-import {
-  devServerWebsocketPort,
-  isDev,
-  port,
-  sourceDirectory,
-  vendorDirectory,
-} from "./env.ts";
+import { devServerWebsocketPort, isDev, port } from "./env.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
 import { serve } from "./deps.ts";
 
@@ -18,10 +12,6 @@ export default async function () {
   const middleware: Middleware[] = [];
   const requestHandler = await createRequestHandler({
     importMap,
-    paths: {
-      source: sourceDirectory,
-      vendor: vendorDirectory,
-    },
     middleware,
   });
 

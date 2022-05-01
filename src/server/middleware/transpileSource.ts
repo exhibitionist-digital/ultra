@@ -2,7 +2,7 @@ import transform from "../../transform.ts";
 import { Assets, ImportMap, Middleware } from "../../types.ts";
 import { LRU } from "../../deps.ts";
 import { createURL } from "../request.ts";
-import { isDev } from "../../env.ts";
+import { isDev, sourceDirectory } from "../../env.ts";
 import {
   replaceFileExt,
   resolveFileUrl,
@@ -14,7 +14,6 @@ const cwd = Deno.cwd();
 export default function transpileSource(
   rawAssets: Assets,
   importMap: ImportMap,
-  sourceDirectory: string,
 ): Middleware {
   const memory = new LRU<string>(500);
 
