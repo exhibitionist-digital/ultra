@@ -1,21 +1,11 @@
 import { Context } from "https://deno.land/x/oak@v10.5.1/mod.ts";
-import { isDev, sourceDirectory, vendorDirectory } from "../env.ts";
-import { resolveConfig, resolveImportMap } from "../config.ts";
 import { createRequestHandler } from "../server/requestHandler.ts";
+import requestHandlerMiddleware from "../server/middleware/requestHandler.ts";
 
-const cwd = Deno.cwd();
-
-const config = await resolveConfig(cwd);
-const importMap = await resolveImportMap(cwd, config);
-
-const requestHandler = await createRequestHandler({
-  cwd,
-  importMap,
-  paths: {
-    source: sourceDirectory,
-    vendor: vendorDirectory,
-  },
-  isDev,
+const requestHandler = createRequestHandler({
+  middleware: [
+    requestHandlerMiddleware(),
+  ],
 });
 
 export async function ultraHandler(context: Context) {

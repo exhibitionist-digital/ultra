@@ -1,5 +1,4 @@
-import type { Context, Middleware } from "../types.ts";
-import { Handler } from "../deps.ts";
+import type { Context, Middleware, RequestHandler } from "../types.ts";
 import { createResponse } from "./response.ts";
 import { handleMiddleware } from "./middleware.ts";
 
@@ -9,7 +8,7 @@ export type CreateRequestHandlerOptions = {
 
 export function createRequestHandler(
   { middleware }: CreateRequestHandlerOptions,
-): Handler {
+): RequestHandler {
   return async (request: Request) => {
     const context: Context = {
       request,

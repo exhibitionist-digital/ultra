@@ -42,6 +42,8 @@ export type Assets = {
   transpile: Map<string, string>;
 };
 
+export type RequestHandler = (request: Request) => Promise<Response>;
+
 export type MiddlewareNextFunction = (shortCircuit?: boolean) => Promise<void>;
 
 export type Middleware<C extends Context = Context> = (
