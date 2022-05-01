@@ -6,6 +6,8 @@ export type DevServerOptions = {
   server: string;
 };
 
+Deno.env.set("mode", "dev");
+
 const listeners = new Set<WebSocket>();
 let process: Deno.Process;
 const options = {} as DevServerOptions;
