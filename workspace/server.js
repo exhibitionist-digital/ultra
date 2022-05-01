@@ -11,6 +11,6 @@ server.use(async (context, next) => {
   );
 });
 
-server.use(await requestHandler());
+server.use(requestHandler());
 
 server.start();
