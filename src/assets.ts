@@ -1,7 +1,8 @@
+import { Assets } from "./types.ts";
 import { ensureDir, extname, join, mime, walk } from "./deps.ts";
 
-const assets = async (dir: string) => {
-  const meta = {
+export default async function assets(dir: string) {
+  const meta: Assets = {
     raw: new Map(),
     transpile: new Map(),
   };
@@ -30,6 +31,4 @@ const assets = async (dir: string) => {
   }
 
   return meta;
-};
-
-export default assets;
+}

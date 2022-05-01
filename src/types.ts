@@ -35,4 +35,14 @@ export type RenderOptions = {
 
 export type Cache = Map<unknown, unknown>;
 
-export type APIHandler = (request: Request) => Response | Promise<Response>;
+export type Assets = {
+  raw: Map<string, string>;
+  transpile: Map<string, string>;
+};
+
+export type MiddlewareNextFunction = (shortCircuit?: boolean) => Promise<void>;
+
+export type Middleware<C extends Context = Context> = (
+  context: C,
+  next: MiddlewareNextFunction,
+) => Promise<void>;

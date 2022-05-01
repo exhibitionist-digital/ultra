@@ -11,6 +11,7 @@ export {
 } from "https://deno.land/std@0.135.0/path/mod.ts";
 export { Buffer, readLines } from "https://deno.land/std@0.135.0/io/mod.ts";
 export { serve } from "https://deno.land/std@0.135.0/http/server.ts";
+export type { Handler } from "https://deno.land/std@0.135.0/http/server.ts";
 export { readableStreamFromReader } from "https://deno.land/std@0.135.0/streams/conversion.ts";
 export { default as mime } from "https://esm.sh/mime-types@2.1.35";
 export { default as LRU } from "https://deno.land/x/lru@1.0.2/mod.ts";

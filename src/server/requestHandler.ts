@@ -1,16 +1,15 @@
 import assets from "../assets.ts";
-import { join, LRU, readableStreamFromReader } from "../deps.ts";
-import { disableStreaming, lang } from "../env.ts";
-import render from "../render.ts";
-import {
-  replaceFileExt,
-  resolveFileUrl,
-  stripTrailingSlash,
-} from "../resolver.ts";
-import transform from "../transform.ts";
-import type { APIHandler, ImportMap } from "../types.ts";
+import type { Context, ImportMap, Middleware } from "../types.ts";
+import { Handler, LRU } from "../deps.ts";
+import { createResponse } from "./response.ts";
+import { handleMiddleware } from "./middleware.ts";
+import { lang } from "../env.ts";
+import vendorMap from "./middleware/vendorMap.ts";
+import staticAsset from "./middleware/staticAsset.ts";
+import transpileSource from "./middleware/transpileSource.ts";
+import handleRequest from "./middleware/handleRequest.ts";
 
-type CreateRequestHandlerOptions = {
+export type CreateRequestHandlerOptions = {
   cwd: string;
   importMap: ImportMap;
   paths: {
@@ -22,7 +21,7 @@ type CreateRequestHandlerOptions = {
 
 export async function createRequestHandler(
   options: CreateRequestHandlerOptions,
-) {
+): Promise<Handler> {
   const {
     cwd,
     importMap,
@@ -36,54 +35,43 @@ export async function createRequestHandler(
     assets(`.ultra/${vendorDirectory}`),
   ]);
 
-  return async function requestHandler(request: Request): Promise<Response> {
-    const requestUrl = new URL(request.url);
+  // Use splice to keep the reference to the same array. Otherwise, server.use
+  // won't work. These are in reverse order.
+  middleware.splice(
+    0,
+    0,
+    transpileSource(
+      memory,
+      transpile,
+      importMap,
+      sourceDirectory,
+      cwd,
+      isDev,
+    ),
+  );
+  middleware.splice(0, 0, staticAsset(raw, sourceDirectory));
+  middleware.splice(0, 0, vendorMap(vendor));
 
-    const xForwardedProto = request.headers.get("x-forwarded-proto");
-    if (xForwardedProto) requestUrl.protocol = xForwardedProto + ":";
+  return async (request: Request) => {
+    // This is after server.use() has happened. This one should go last as a
+    // catch-all. TODO: Add a not found if the URL isn't `/`?
+    middleware.push(
+      handleRequest(
+        lang,
+        importMap,
+        isDev,
+      ),
+    );
 
-    const xForwardedHost = request.headers.get("x-forwarded-host");
-    if (xForwardedHost) requestUrl.hostname = xForwardedHost;
+    const context: Context = {
+      request,
+      response: {
+        status: 200,
+        headers: {},
+      },
+    };
 
-    // vendor map
-    if (vendor.raw.has(".ultra" + requestUrl.pathname)) {
-      const headers = {
-        "content-type": "application/javascript",
-      };
-
-      const file = await Deno.open(
-        `./.ultra${requestUrl.pathname}`,
-      );
-      const body = readableStreamFromReader(file);
-
-      return new Response(body, { headers });
-    }
-
-    // static assets
-    if (raw.has(`${sourceDirectory}${requestUrl.pathname}`)) {
-      const contentType = raw.get(`${sourceDirectory}${requestUrl.pathname}`);
-      const headers = {
-        "content-type": contentType,
-      };
-
-      const file = await Deno.open(
-        join(".", sourceDirectory, requestUrl.pathname),
-      );
-      const body = readableStreamFromReader(file);
-
-      return new Response(body, { headers });
-    }
-
-    const transpilation = async (file: string) => {
-      const headers = {
-        "content-type": "application/javascript",
-      };
-
-      let js = memory.get(requestUrl.pathname);
-
-      if (!js) {
-        const source = await Deno.readTextFile(resolveFileUrl(cwd, file));
-        const t0 = performance.now();
+    await handleMiddleware(middleware, context);
 
         js = await transform({
           source,
