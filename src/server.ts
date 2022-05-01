@@ -3,9 +3,9 @@ import { createRequestHandler } from "./server/requestHandler.ts";
 import { devServerWebsocketPort, isDev, port } from "./env.ts";
 import { serve } from "./deps.ts";
 
-export default async function () {
+export default function () {
   const middleware: Middleware[] = [];
-  const requestHandler = await createRequestHandler({
+  const requestHandler = createRequestHandler({
     middleware,
   });
 
