@@ -17,6 +17,7 @@ export type CreateRequestHandlerOptions = {
     vendor: string;
   };
   isDev?: boolean;
+  middleware?: Middleware[];
 };
 
 export async function createRequestHandler(
@@ -26,10 +27,11 @@ export async function createRequestHandler(
     cwd,
     importMap,
     paths: { source: sourceDirectory, vendor: vendorDirectory },
-    isDev,
   } = options;
+  const middleware = options.middleware ?? [];
+  const isDev = Boolean(options.isDev);
 
-  const memory = new LRU(500);
+  const memory = new LRU<string>(500);
   const [{ raw, transpile }, vendor] = await Promise.all([
     assets(sourceDirectory),
     assets(`.ultra/${vendorDirectory}`),
@@ -73,92 +75,6 @@ export async function createRequestHandler(
 
     await handleMiddleware(middleware, context);
 
-        js = await transform({
-          source,
-          sourceUrl: requestUrl,
-          importMap,
-        });
-
-        const t1 = performance.now();
-        const duration = (t1 - t0).toFixed(2);
-
-        console.log(`Transpile ${file} in ${duration}ms`);
-
-        if (!isDev) memory.set(requestUrl.pathname, js);
-      }
-
-      //@ts-ignore any
-      return new Response(js, { headers });
-    };
-
-    // API
-    if (requestUrl.pathname.startsWith("/api")) {
-      const apiPaths = new Map([...raw, ...transpile]);
-      const importAPIRoute = async (pathname: string): Promise<APIHandler> => {
-        let path = `${sourceDirectory}${pathname}`;
-        if (apiPaths.has(`${path}.js`)) {
-          path = `file://${cwd}/${path}.js`;
-        } else if (apiPaths.has(`${path}.ts`)) {
-          path = `file://${cwd}/${path}.ts`;
-        } else if (apiPaths.has(`${path}/index.js`)) {
-          path = `file://${cwd}/${path}/index.js`;
-        } else if (apiPaths.has(`${path}/index.ts`)) {
-          path = `file://${cwd}/${path}/index.ts`;
-        }
-        return (await import(path)).default;
-      };
-      try {
-        const pathname = stripTrailingSlash(requestUrl.pathname);
-        const handler = await importAPIRoute(pathname);
-        const response = await handler(request);
-        return response;
-      } catch (error) {
-        console.error(error);
-        return new Response("Internal Server Error", {
-          status: 500,
-          headers: {
-            "content-type": "text/html; charset=utf-8",
-          },
-        });
-      }
-    }
-
-    // jsx
-    const jsx = `${sourceDirectory}${
-      replaceFileExt(requestUrl.pathname, ".jsx")
-    }`;
-    if (transpile.has(jsx)) {
-      return await transpilation(jsx);
-    }
-
-    // tsx
-    const tsx = `${sourceDirectory}${
-      replaceFileExt(requestUrl.pathname, ".tsx")
-    }`;
-    if (transpile.has(tsx)) {
-      return await transpilation(tsx);
-    }
-
-    // ts
-    const ts = `${sourceDirectory}${
-      replaceFileExt(requestUrl.pathname, ".ts")
-    }`;
-    if (transpile.has(ts)) {
-      return await transpilation(ts);
-    }
-
-    return new Response(
-      await render({
-        url: requestUrl,
-        importMap,
-        lang,
-        disableStreaming: !!disableStreaming,
-      }),
-      {
-        headers: {
-          "content-type": "text/html; charset=utf-8",
-        },
-      },
-    );
+    return createResponse(context);
   };
 }

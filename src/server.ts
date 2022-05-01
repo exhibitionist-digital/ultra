@@ -1,4 +1,5 @@
-import { serve } from "./deps.ts";
+import { Middleware } from "./types.ts";
+import { createRequestHandler } from "./server/requestHandler.ts";
 import {
   devServerWebsocketPort,
   isDev,
@@ -7,13 +8,14 @@ import {
   vendorDirectory,
 } from "./env.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
-import { createRequestHandler } from "./server/requestHandler.ts";
+import { serve } from "./deps.ts";
 
 const cwd = Deno.cwd();
 const config = await resolveConfig(cwd);
 const importMap = await resolveImportMap(cwd, config);
 
-const server = async () => {
+export default async function () {
+  const middleware: Middleware[] = [];
   const requestHandler = await createRequestHandler({
     cwd,
     importMap,
@@ -22,6 +24,7 @@ const server = async () => {
       vendor: vendorDirectory,
     },
     isDev,
+    middleware,
   });
 
   let message = `Ultra running http://localhost:${port}`;
@@ -32,7 +35,14 @@ const server = async () => {
 
   console.log(message);
 
-  return serve(requestHandler, { port: +port });
-};
-
-export default server;
+  return {
+    start: () => {
+      serve(requestHandler, {
+        port: Number(port),
+      });
+    },
+    use: (middlewareFunction: Middleware) => {
+      middleware.push(middlewareFunction);
+    },
+  };
+}
