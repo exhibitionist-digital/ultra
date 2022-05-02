@@ -1,16 +1,11 @@
 import render from "../../render.ts";
-import { Middleware } from "../../types.ts";
+import { ImportMap, Middleware } from "../../types.ts";
 import { createURL } from "../request.ts";
 import { disableStreaming, lang } from "../../env.ts";
-import { resolveConfig, resolveImportMap } from "../../config.ts";
 
-export default async function createRenderPageMiddleware(): Promise<
-  Middleware
-> {
-  const cwd = Deno.cwd();
-  const config = await resolveConfig(cwd);
-  const importMap = await resolveImportMap(cwd, config);
-
+export default function createRenderPageMiddleware(
+  importMap: ImportMap,
+): Middleware {
   return async function renderPageMiddleware(context, next) {
     const url = createURL(context.request);
 

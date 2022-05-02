@@ -5,6 +5,7 @@ import createTranspileSourceMiddleware from "./createTranspileSourceMiddleware.t
 import createVendorMapMiddleware from "./createVendorMapMiddleware.ts";
 import { Middleware } from "../../types.ts";
 import { sourceDirectory, vendorDirectory } from "../../env.ts";
+import { resolveConfig, resolveImportMap } from "../../config.ts";
 
 function createNextResolver(fn: () => Promise<void>) {
   return async (shortCircuit?: boolean) => {
@@ -22,12 +23,19 @@ export default async function createRequestHandlerMiddleware(): Promise<
   const rawAssets = await assets(sourceDirectory);
   const vendorAssets = await assets(`.ultra/${vendorDirectory}`);
 
-  const transpileMiddleware = await createTranspileSourceMiddleware(rawAssets);
+  const cwd = Deno.cwd();
+  const config = await resolveConfig(cwd);
+  const importMap = await resolveImportMap(cwd, config);
+
+  const transpileMiddleware = createTranspileSourceMiddleware(
+    rawAssets,
+    importMap,
+  );
   const staticAssetMiddleware = createStaticAssetMiddleware(rawAssets);
   const vendorMapMiddleware = createVendorMapMiddleware(
     vendorAssets,
   );
-  const renderPageMiddleware = await createRenderPageMiddleware();
+  const renderPageMiddleware = createRenderPageMiddleware(importMap);
 
   // Oh no, callback hell all over again! :D
   return async function requestHandlerMiddleware(context, next) {

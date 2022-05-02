@@ -1,6 +1,6 @@
 import transform from "../../transform.ts";
 import { LRU } from "../../deps.ts";
-import { Assets, Middleware } from "../../types.ts";
+import { Assets, ImportMap, Middleware } from "../../types.ts";
 import { createURL } from "../request.ts";
 import { isDev, sourceDirectory } from "../../env.ts";
 import {
@@ -8,16 +8,11 @@ import {
   resolveFileUrl,
   ValidExtensions,
 } from "../../resolver.ts";
-import { resolveConfig, resolveImportMap } from "../../config.ts";
 
-export default async function createTranspileSourceMiddleware(
+export default function createTranspileSourceMiddleware(
   rawAssets: Assets,
-): Promise<
-  Middleware
-> {
-  const cwd = Deno.cwd();
-  const config = await resolveConfig(cwd);
-  const importMap = await resolveImportMap(cwd, config);
+  importMap: ImportMap,
+): Middleware {
   const memory = new LRU<string>(500);
 
   return async function transpileSourceMiddleware(context, next) {
@@ -27,7 +22,9 @@ export default async function createTranspileSourceMiddleware(
       let js = memory.get(url.pathname);
 
       if (!js) {
-        const source = await Deno.readTextFile(resolveFileUrl(cwd, file));
+        const source = await Deno.readTextFile(
+          resolveFileUrl(Deno.cwd(), file),
+        );
         const t0 = performance.now();
 
         js = await transform({
