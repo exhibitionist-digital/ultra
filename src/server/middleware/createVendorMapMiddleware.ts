@@ -7,7 +7,7 @@ import { vendorDirectory } from "../../env.ts";
 export default async function createVendorMapMiddleware(): Promise<Middleware> {
   const vendor = await assets(`.ultra/${vendorDirectory}`);
 
-  return async ({ request, response }, next) => {
+  return async function vendorMapMiddleware({ request, response }, next) {
     const url = createURL(request);
 
     if (!vendor.raw.has(`.ultra${url.pathname}`)) {

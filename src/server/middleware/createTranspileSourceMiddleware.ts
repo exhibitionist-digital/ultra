@@ -20,7 +20,7 @@ export default async function createTranspileSourceMiddleware(): Promise<
   const memory = new LRU<string>(500);
   const rawAssets = await assets(sourceDirectory);
 
-  return async (context, next) => {
+  return async function transpileSourceMiddleware(context, next) {
     const url = createURL(context.request);
 
     const transpilation = async (file: string) => {

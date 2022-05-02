@@ -21,7 +21,7 @@ export default function createRequestHandlerMiddleware(): Middleware {
   const renderPageMiddlewarePromise = createRenderPageMiddleware();
 
   // Oh no, callback hell all over again! :D
-  return async (context, next) => {
+  return async function requestHandlerMiddleware(context, next) {
     const [
       transpileMiddleware,
       staticAssetMiddleware,

@@ -11,7 +11,7 @@ export default async function createRenderPageMiddleware(): Promise<
   const config = await resolveConfig(cwd);
   const importMap = await resolveImportMap(cwd, config);
 
-  return async (context, next) => {
+  return async function renderPageMiddleware(context, next) {
     const url = createURL(context.request);
 
     const body = await render({

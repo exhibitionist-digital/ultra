@@ -9,7 +9,7 @@ export default async function createStaticAssetMiddleware(): Promise<
 > {
   const rawAssets = await assets(sourceDirectory);
 
-  return async ({ request, response }, next) => {
+  return async function staticAssetMiddleware({ request, response }, next) {
     const url = createURL(request);
 
     const filePath = `${sourceDirectory}${url.pathname}`;
