@@ -1,10 +1,10 @@
 import { Context } from "https://deno.land/x/oak@v10.5.1/mod.ts";
 import { createRequestHandler } from "../server/requestHandler.ts";
-import requestHandlerMiddleware from "../server/middleware/requestHandler.ts";
+import createRequestHandlerMiddleware from "../server/middleware/createRequestHandlerMiddleware.ts";
 
 const requestHandler = createRequestHandler({
   middleware: [
-    requestHandlerMiddleware(),
+    await createRequestHandlerMiddleware(),
   ],
 });
 
