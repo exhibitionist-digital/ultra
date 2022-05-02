@@ -11,6 +11,6 @@ server.use(async (context, next) => {
   );
 });
 
-server.use(createRequestHandlerMiddleware());
+server.use(await createRequestHandlerMiddleware());
 
 server.start();

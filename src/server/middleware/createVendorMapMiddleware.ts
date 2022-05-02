@@ -1,16 +1,14 @@
-import assets from "../../assets.ts";
-import { Middleware } from "../../types.ts";
+import { Assets, Middleware } from "../../types.ts";
 import { createURL } from "../request.ts";
 import { readableStreamFromReader } from "../../deps.ts";
-import { vendorDirectory } from "../../env.ts";
 
-export default async function createVendorMapMiddleware(): Promise<Middleware> {
-  const vendor = await assets(`.ultra/${vendorDirectory}`);
-
+export default function createVendorMapMiddleware(
+  vendorAssets: Assets,
+): Middleware {
   return async function vendorMapMiddleware({ request, response }, next) {
     const url = createURL(request);
 
-    if (!vendor.raw.has(`.ultra${url.pathname}`)) {
+    if (!vendorAssets.raw.has(`.ultra${url.pathname}`)) {
       await next();
       return;
     }

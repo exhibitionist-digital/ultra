@@ -1,8 +1,10 @@
+import assets from "../../assets.ts";
 import createRenderPageMiddleware from "./createRenderPageMiddleware.ts";
 import createStaticAssetMiddleware from "./createStaticAssetMiddleware.ts";
 import createTranspileSourceMiddleware from "./createTranspileSourceMiddleware.ts";
 import createVendorMapMiddleware from "./createVendorMapMiddleware.ts";
 import { Middleware } from "../../types.ts";
+import { sourceDirectory, vendorDirectory } from "../../env.ts";
 
 function createNextResolver(fn: () => Promise<void>) {
   return async (shortCircuit?: boolean) => {
@@ -14,26 +16,21 @@ function createNextResolver(fn: () => Promise<void>) {
   };
 }
 
-export default function createRequestHandlerMiddleware(): Middleware {
-  const transpileMiddlewarePromise = createTranspileSourceMiddleware();
-  const staticAssetMiddlewarePromise = createStaticAssetMiddleware();
-  const vendorMapMiddlewarePromise = createVendorMapMiddleware();
-  const renderPageMiddlewarePromise = createRenderPageMiddleware();
+export default async function createRequestHandlerMiddleware(): Promise<
+  Middleware
+> {
+  const rawAssets = await assets(sourceDirectory);
+  const vendorAssets = await assets(`.ultra/${vendorDirectory}`);
+
+  const transpileMiddleware = await createTranspileSourceMiddleware(rawAssets);
+  const staticAssetMiddleware = createStaticAssetMiddleware(rawAssets);
+  const vendorMapMiddleware = createVendorMapMiddleware(
+    vendorAssets,
+  );
+  const renderPageMiddleware = await createRenderPageMiddleware();
 
   // Oh no, callback hell all over again! :D
   return async function requestHandlerMiddleware(context, next) {
-    const [
-      transpileMiddleware,
-      staticAssetMiddleware,
-      vendorMapMiddleware,
-      renderPageMiddleware,
-    ] = await Promise.all([
-      transpileMiddlewarePromise,
-      staticAssetMiddlewarePromise,
-      vendorMapMiddlewarePromise,
-      renderPageMiddlewarePromise,
-    ]);
-
     await transpileMiddleware(
       context,
       createNextResolver(async () => {

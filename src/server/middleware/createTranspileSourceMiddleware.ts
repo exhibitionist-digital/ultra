@@ -1,7 +1,6 @@
-import assets from "../../assets.ts";
 import transform from "../../transform.ts";
 import { LRU } from "../../deps.ts";
-import { Middleware } from "../../types.ts";
+import { Assets, Middleware } from "../../types.ts";
 import { createURL } from "../request.ts";
 import { isDev, sourceDirectory } from "../../env.ts";
 import {
@@ -11,14 +10,15 @@ import {
 } from "../../resolver.ts";
 import { resolveConfig, resolveImportMap } from "../../config.ts";
 
-export default async function createTranspileSourceMiddleware(): Promise<
+export default async function createTranspileSourceMiddleware(
+  rawAssets: Assets,
+): Promise<
   Middleware
 > {
   const cwd = Deno.cwd();
   const config = await resolveConfig(cwd);
   const importMap = await resolveImportMap(cwd, config);
   const memory = new LRU<string>(500);
-  const rawAssets = await assets(sourceDirectory);
 
   return async function transpileSourceMiddleware(context, next) {
     const url = createURL(context.request);
