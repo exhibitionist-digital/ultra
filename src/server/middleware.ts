@@ -1,11 +1,11 @@
-import { Context, Middleware, MiddlewareNextFunction } from "../types.ts";
+import { Context, Middleware, Next } from "../types.ts";
 
-export function createNextFunction(
-  middleware: Middleware[],
-  context: Context,
+export function dispatch<C extends Context = Context>(
+  middlewares: Middleware<C>[],
+  context: C,
   index = 0,
-): MiddlewareNextFunction {
-  const nextMiddlewareFunction = middleware[index];
+): Next {
+  const nextMiddlewareFunction = middlewares[index];
   if (!nextMiddlewareFunction) {
     return async () => {};
   }
@@ -16,17 +16,26 @@ export function createNextFunction(
 
     await nextMiddlewareFunction(
       context,
-      createNextFunction(middleware, context, index + 1),
+      dispatch(middlewares, context, index + 1),
     );
   };
 }
 
-export async function handleMiddleware(
-  middleware: Middleware[],
-  context: Context,
+export function compose<C extends Context = Context>(
+  ...middlewares: Middleware<C>[]
+): Middleware<C> {
+  return async function composedMiddleware(
+    context: C,
+    next: Next,
+  ) {
+    await dispatch(middlewares, context)();
+    await next();
+  };
+}
+
+export async function handleMiddleware<C extends Context = Context>(
+  middlewares: Middleware<C>[],
+  context: C,
 ): Promise<void> {
-  if (middleware.length === 0) {
-    return;
-  }
-  await createNextFunction(middleware, context)();
+  await compose(...middlewares)(context, async () => {});
 }

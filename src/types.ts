@@ -44,9 +44,9 @@ export type Assets = {
 
 export type RequestHandler = (request: Request) => Promise<Response>;
 
-export type MiddlewareNextFunction = (shortCircuit?: boolean) => Promise<void>;
+export type Next = (shortCircuit?: boolean) => Promise<void>;
 
 export type Middleware<C extends Context = Context> = (
   context: C,
-  next: MiddlewareNextFunction,
+  next: Next,
 ) => Promise<void>;

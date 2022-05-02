@@ -4,18 +4,9 @@ import createStaticAssetMiddleware from "./createStaticAssetMiddleware.ts";
 import createTranspileSourceMiddleware from "./createTranspileSourceMiddleware.ts";
 import createVendorMapMiddleware from "./createVendorMapMiddleware.ts";
 import { Middleware } from "../../types.ts";
-import { sourceDirectory, vendorDirectory } from "../../env.ts";
+import { compose } from "../middleware.ts";
 import { resolveConfig, resolveImportMap } from "../../config.ts";
-
-function createNextResolver(fn: () => Promise<void>) {
-  return async (shortCircuit?: boolean) => {
-    if (shortCircuit) {
-      return;
-    }
-
-    await fn();
-  };
-}
+import { sourceDirectory, vendorDirectory } from "../../env.ts";
 
 export default async function createRequestHandlerMiddleware(): Promise<
   Middleware
@@ -35,36 +26,13 @@ export default async function createRequestHandlerMiddleware(): Promise<
     })(),
   ]);
 
-  const transpileMiddleware = createTranspileSourceMiddleware(
-    rawAssets,
-    importMap,
+  return compose(
+    createTranspileSourceMiddleware(
+      rawAssets,
+      importMap,
+    ),
+    createStaticAssetMiddleware(rawAssets),
+    createVendorMapMiddleware(vendorAssets),
+    createRenderPageMiddleware(importMap),
   );
-  const staticAssetMiddleware = createStaticAssetMiddleware(rawAssets);
-  const vendorMapMiddleware = createVendorMapMiddleware(
-    vendorAssets,
-  );
-  const renderPageMiddleware = createRenderPageMiddleware(importMap);
-
-  // Oh no, callback hell all over again! :D
-  return async function requestHandlerMiddleware(context, next) {
-    await transpileMiddleware(
-      context,
-      createNextResolver(async () => {
-        await staticAssetMiddleware(
-          context,
-          createNextResolver(async () => {
-            await vendorMapMiddleware(
-              context,
-              createNextResolver(async () => {
-                await renderPageMiddleware(
-                  context,
-                  next,
-                );
-              }),
-            );
-          }),
-        );
-      }),
-    );
-  };
 }
