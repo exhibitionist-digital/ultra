@@ -20,12 +20,20 @@ function createNextResolver(fn: () => Promise<void>) {
 export default async function createRequestHandlerMiddleware(): Promise<
   Middleware
 > {
-  const rawAssets = await assets(sourceDirectory);
-  const vendorAssets = await assets(`.ultra/${vendorDirectory}`);
-
-  const cwd = Deno.cwd();
-  const config = await resolveConfig(cwd);
-  const importMap = await resolveImportMap(cwd, config);
+  const [
+    rawAssets,
+    vendorAssets,
+    importMap,
+  ] = await Promise.all([
+    assets(sourceDirectory),
+    assets(`.ultra/${vendorDirectory}`),
+    (async () => {
+      const cwd = Deno.cwd();
+      const config = await resolveConfig(cwd);
+      const importMap = await resolveImportMap(cwd, config);
+      return importMap;
+    })(),
+  ]);
 
   const transpileMiddleware = createTranspileSourceMiddleware(
     rawAssets,
