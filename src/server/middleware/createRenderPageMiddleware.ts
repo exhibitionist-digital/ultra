@@ -4,7 +4,9 @@ import { createURL } from "../request.ts";
 import { disableStreaming, lang } from "../../env.ts";
 import { resolveConfig, resolveImportMap } from "../../config.ts";
 
-export default async function renderPage(): Promise<Middleware> {
+export default async function createRenderPageMiddleware(): Promise<
+  Middleware
+> {
   const cwd = Deno.cwd();
   const config = await resolveConfig(cwd);
   const importMap = await resolveImportMap(cwd, config);

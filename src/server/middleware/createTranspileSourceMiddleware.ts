@@ -11,7 +11,9 @@ import {
 } from "../../resolver.ts";
 import { resolveConfig, resolveImportMap } from "../../config.ts";
 
-export default async function transpileSource(): Promise<Middleware> {
+export default async function createTranspileSourceMiddleware(): Promise<
+  Middleware
+> {
   const cwd = Deno.cwd();
   const config = await resolveConfig(cwd);
   const importMap = await resolveImportMap(cwd, config);

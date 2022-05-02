@@ -1,5 +1,5 @@
+import createRequestHandlerMiddleware from "../src/server/middleware/createRequestHandlerMiddleware.ts";
 import ultra from "../server.ts";
-import requestHandler from "../src/server/middleware/requestHandler.ts";
 
 const server = ultra();
 
@@ -11,6 +11,6 @@ server.use(async (context, next) => {
   );
 });
 
-server.use(requestHandler());
+server.use(createRequestHandlerMiddleware());
 
 server.start();

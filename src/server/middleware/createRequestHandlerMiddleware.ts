@@ -1,7 +1,7 @@
-import renderPage from "./renderPage.ts";
-import staticAsset from "./staticAsset.ts";
-import transpileSource from "./transpileSource.ts";
-import vendorMap from "./vendorMap.ts";
+import createRenderPageMiddleware from "./createRenderPageMiddleware.ts";
+import createStaticAssetMiddleware from "./createStaticAssetMiddleware.ts";
+import createTranspileSourceMiddleware from "./createTranspileSourceMiddleware.ts";
+import createVendorMapMiddleware from "./createVendorMapMiddleware.ts";
 import { Middleware } from "../../types.ts";
 
 function createNextResolver(fn: () => Promise<void>) {
@@ -14,11 +14,11 @@ function createNextResolver(fn: () => Promise<void>) {
   };
 }
 
-export default function requestHandler(): Middleware {
-  const transpileMiddlewarePromise = transpileSource();
-  const staticAssetMiddlewarePromise = staticAsset();
-  const vendorMapMiddlewarePromise = vendorMap();
-  const renderPageMiddlewarePromise = renderPage();
+export default function createRequestHandlerMiddleware(): Middleware {
+  const transpileMiddlewarePromise = createTranspileSourceMiddleware();
+  const staticAssetMiddlewarePromise = createStaticAssetMiddleware();
+  const vendorMapMiddlewarePromise = createVendorMapMiddleware();
+  const renderPageMiddlewarePromise = createRenderPageMiddleware();
 
   // Oh no, callback hell all over again! :D
   return async (context, next) => {

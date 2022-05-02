@@ -4,7 +4,9 @@ import { readableStreamFromReader } from "../../deps.ts";
 import { sourceDirectory } from "../../env.ts";
 import assets from "../../assets.ts";
 
-export default async function staticAsset(): Promise<Middleware> {
+export default async function createStaticAssetMiddleware(): Promise<
+  Middleware
+> {
   const rawAssets = await assets(sourceDirectory);
 
   return async ({ request, response }, next) => {

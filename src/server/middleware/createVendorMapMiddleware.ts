@@ -4,7 +4,7 @@ import { createURL } from "../request.ts";
 import { readableStreamFromReader } from "../../deps.ts";
 import { vendorDirectory } from "../../env.ts";
 
-export default async function vendorMap(): Promise<Middleware> {
+export default async function createVendorMapMiddleware(): Promise<Middleware> {
   const vendor = await assets(`.ultra/${vendorDirectory}`);
 
   return async ({ request, response }, next) => {
