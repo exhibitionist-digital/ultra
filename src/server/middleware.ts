@@ -6,19 +6,18 @@ export function dispatch<C extends Context = Context>(
   index = 0,
 ): Next {
   const nextMiddlewareFunction = middlewares[index];
-  if (!nextMiddlewareFunction) {
-    return async () => {};
-  }
-  return async (shortCircuit?: boolean) => {
-    if (shortCircuit) {
-      return;
-    }
+  return nextMiddlewareFunction
+    ? async (shortCircuit?: boolean) => {
+      if (shortCircuit) {
+        return;
+      }
 
-    await nextMiddlewareFunction(
-      context,
-      dispatch(middlewares, context, index + 1),
-    );
-  };
+      await nextMiddlewareFunction(
+        context,
+        dispatch(middlewares, context, index + 1),
+      );
+    }
+    : async () => {};
 }
 
 export function compose<C extends Context = Context>(
