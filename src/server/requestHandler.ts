@@ -1,6 +1,6 @@
 import type { Context, Middleware, RequestHandler } from "../types.ts";
 import { createResponse } from "./response.ts";
-import { handleMiddleware } from "./middleware.ts";
+import { compose } from "./middleware.ts";
 
 export type CreateRequestHandlerOptions = {
   middleware: Middleware[];
@@ -18,7 +18,7 @@ export function createRequestHandler(
       },
     };
 
-    await handleMiddleware(middleware, context);
+    await compose(...middleware)(context, async () => {});
 
     return createResponse(context);
   };

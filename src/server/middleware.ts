@@ -31,10 +31,3 @@ export function compose<C extends Context = Context>(
     await next();
   };
 }
-
-export async function handleMiddleware<C extends Context = Context>(
-  middlewares: Middleware<C>[],
-  context: C,
-): Promise<void> {
-  await compose(...middlewares)(context, async () => {});
-}
