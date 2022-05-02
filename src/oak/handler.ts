@@ -8,7 +8,7 @@ const requestHandler = createRequestHandler({
   ],
 });
 
-export async function ultraHandler(context: Context) {
+export async function ultraHandler(context: Context): Promise<void> {
   const serverRequestBody = context.request.originalRequest.getBody();
 
   const request = new Request(context.request.url.toString(), {

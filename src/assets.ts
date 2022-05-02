@@ -1,7 +1,7 @@
 import { Assets } from "./types.ts";
 import { ensureDir, extname, join, mime, walk } from "./deps.ts";
 
-export default async function assets(dir: string) {
+export default async function assets(dir: string): Promise<Assets> {
   const meta: Assets = {
     raw: new Map(),
     transpile: new Map(),
