@@ -1,5 +1,5 @@
 import assets from "../assets.ts";
-import { LRU, readableStreamFromReader } from "../deps.ts";
+import { join, LRU, readableStreamFromReader } from "../deps.ts";
 import { disableStreaming, lang } from "../env.ts";
 import render from "../render.ts";
 import {
@@ -69,7 +69,7 @@ export async function createRequestHandler(
       };
 
       const file = await Deno.open(
-        `./${sourceDirectory}${requestUrl.pathname}`,
+        join(".", sourceDirectory, requestUrl.pathname),
       );
       const body = readableStreamFromReader(file);
 
