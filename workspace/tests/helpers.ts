@@ -1,8 +1,15 @@
 import puppeteer from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
+import type { Browser } from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
 import { join } from "https://deno.land/std@0.135.0/path/mod.ts";
 import { readLines } from "https://deno.land/std@0.135.0/io/mod.ts";
 
-export async function startTestServer(entrypoint: string) {
+type StartServerReturn = {
+  close: () => Promise<void>;
+};
+
+export async function startTestServer(
+  entrypoint: string,
+): Promise<StartServerReturn> {
   const serverProcess = Deno.run({
     cmd: ["deno", "run", "-A", "--unstable", "--no-check", entrypoint],
     cwd: join(Deno.cwd(), "./workspace"),
@@ -23,7 +30,7 @@ export async function startTestServer(entrypoint: string) {
   }
 
   return {
-    async close() {
+    async close(): Promise<void> {
       await serverProcess.stdout.close();
       await serverProcess.stderr.close();
       await serverProcess.close();
@@ -31,7 +38,7 @@ export async function startTestServer(entrypoint: string) {
   };
 }
 
-export async function launchLocalhostBrowser() {
+export async function launchLocalhostBrowser(): Promise<Browser> {
   try {
     const browser = await puppeteer.launch({
       headless: true,

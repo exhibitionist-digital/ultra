@@ -5,7 +5,7 @@
   },
   "lint": {
     "files": {
-      "exclude": ["workspace/.ultra/", "src/unstable/"]
+      "exclude": ["workspace/.ultra/", "workspace_unstable/", "src/unstable/"]
     },
     "rules": {
       "tags": ["recommended"],
