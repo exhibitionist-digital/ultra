@@ -11,8 +11,8 @@ const assets = async (dir: string) => {
     if (file.isFile) {
       let contentType = mime.lookup(extname(file.path));
 
-      if (extname(file.path) == ".tsx") contentType = "text/jsx";
-      if (extname(file.path) == ".ts") contentType = "text/ts";
+      if (extname(file.path) === ".tsx") contentType = "text/jsx";
+      if (extname(file.path) === ".ts") contentType = "text/ts";
 
       if (contentType) {
         const transpile = [

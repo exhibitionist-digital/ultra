@@ -20,9 +20,11 @@ type CreateRequestHandlerOptions = {
   isDev?: boolean;
 };
 
+type RequestHandler = ((request: Request) => Promise<Response>);
+
 export async function createRequestHandler(
   options: CreateRequestHandlerOptions,
-) {
+): Promise<RequestHandler> {
   const {
     cwd,
     importMap,

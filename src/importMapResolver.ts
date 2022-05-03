@@ -8,7 +8,10 @@ export class ImportMapResolver {
     this.parsedImportMap = parseImportMap(importMap, baseUrl);
   }
 
-  resolve(specifier: string, scriptUrl?: URL) {
+  resolve(specifier: string, scriptUrl?: URL): {
+    resolvedImport: URL;
+    matched: boolean;
+  } {
     const resolvedImport = resolveImportMap(
       specifier,
       this.parsedImportMap,
@@ -18,12 +21,12 @@ export class ImportMapResolver {
     return resolvedImport;
   }
 
-  resolveUrl(specifier: string, scriptUrl?: URL) {
+  resolveUrl(specifier: string, scriptUrl?: URL): URL | undefined {
     const resolvedImport = this.resolve(specifier, scriptUrl);
     return resolvedImport?.resolvedImport;
   }
 
-  resolveHref(specifier: string, scriptUrl?: URL) {
+  resolveHref(specifier: string, scriptUrl?: URL): string | undefined {
     const resolvedImport = this.resolve(specifier, scriptUrl);
     return resolvedImport?.resolvedImport?.href;
   }
@@ -33,7 +36,9 @@ export class ImportMapResolver {
    *
    * @param specifiers An array of string import specifiers to be resolved from the importMap.
    */
-  getDependencyMap<T extends Readonly<string[]>>(specifiers: T) {
+  getDependencyMap<T extends Readonly<string[]>>(
+    specifiers: T,
+  ): Map<T[number], string> {
     return new Map<T[number], string>(specifiers.map(
       (dependency) => {
         const resolvedDependency = this.resolve(dependency);

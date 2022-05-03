@@ -27,7 +27,7 @@ const render = async (
     lang = "en",
     disableStreaming = false,
   }: RenderOptions,
-) => {
+): Promise<ReadableStream | string> => {
   const chunkSize = defaultChunkSize;
 
   const renderMap: ImportMap = { imports: {} };
@@ -92,7 +92,7 @@ const render = async (
   } catch (error) {
     console.log({ error });
     body = new ReadableStream({
-      start(controller) {
+      start(controller): void {
         const chunk = new TextEncoder().encode(error);
         controller.enqueue(chunk);
         controller.close();
@@ -144,7 +144,7 @@ const render = async (
       const html = await new Response(
         encodeStream(
           new ReadableStream({
-            start(controller) {
+            start(controller): void {
               Promise.resolve()
                 .then(() => pushBody(bodyReader, controller, chunkSize))
                 .then(() => controller.close());
@@ -161,8 +161,8 @@ const render = async (
 
   return encodeStream(
     new ReadableStream({
-      start(controller) {
-        const queue = (part: string | Uint8Array) => {
+      start(controller): void {
+        const queue = (part: string | Uint8Array): Promise<void> => {
           return Promise.resolve(controller.enqueue(part));
         };
 
@@ -198,7 +198,7 @@ const staticLocationHook = (
   return hook;
 };
 
-const socket = (url: URL) => {
+const socket = (url: URL): string => {
   return `
     const _ultra_socket = new WebSocket("ws://${url.hostname}:${devServerWebsocketPort}");
     _ultra_socket.addEventListener("message", (e) => {

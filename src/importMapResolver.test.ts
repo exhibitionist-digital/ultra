@@ -19,7 +19,7 @@ Deno.test("importResolver", async (t) => {
     },
   };
 
-  function assertFileHrefEquals(href: string, expected: string) {
+  function assertFileHrefEquals(href: string, expected: string): void {
     return assertEquals(href, `file://${Deno.cwd()}/src/${expected}`);
   }
 
@@ -81,7 +81,7 @@ Deno.test("importResolver", async (t) => {
       resolver.resolveHref(
         "ultra/react/root.tsx",
         resolver.resolveUrl("ultra/render.tsx"),
-      ),
+      )!,
       "src/root.tsx",
     );
   });

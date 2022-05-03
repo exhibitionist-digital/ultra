@@ -1,5 +1,6 @@
 import {
   CallExpression,
+  Expression,
   ImportDeclaration,
   StringLiteral,
   Visitor,
@@ -17,12 +18,12 @@ export class UltraVisitor extends Visitor {
     super();
   }
 
-  visitImportDeclaration(node: ImportDeclaration) {
+  visitImportDeclaration(node: ImportDeclaration): ImportDeclaration {
     node.source = this.replaceImportStringLiteral(node.source);
     return super.visitImportDeclaration(node);
   }
 
-  visitCallExpression(node: CallExpression) {
+  visitCallExpression(node: CallExpression): Expression {
     if (node.callee.type === "Import") {
       node.arguments = node.arguments.map((argument) => {
         if (argument.expression.type === "StringLiteral") {
@@ -37,7 +38,7 @@ export class UltraVisitor extends Visitor {
     return super.visitCallExpression(node);
   }
 
-  private replaceImportStringLiteral(node: StringLiteral) {
+  private replaceImportStringLiteral(node: StringLiteral): StringLiteral {
     const { value } = node;
 
     const resolvedImport = this.importMapResolver.resolve(

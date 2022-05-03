@@ -50,7 +50,7 @@ const build = async () => {
 
     let prefix = "./";
     for (let x = 0; x < file.split("/").length; x++) {
-      if (x != 0) prefix = prefix + "../";
+      if (x !== 0) prefix = prefix + "../";
     }
 
     const localMap = { imports: {} };

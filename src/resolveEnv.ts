@@ -9,8 +9,9 @@ import {
   object,
   string,
 } from "https://esm.sh/superstruct@0.15.4";
+import type { Struct } from "https://esm.sh/superstruct@0.15.4";
 
-function portFromString(defaultValue: number) {
+function portFromString(defaultValue: number): Struct<number, null> {
   return defaulted(
     coerce(
       number(),
@@ -38,7 +39,9 @@ const envSchema = object({
 
 export type UltraEnvironment = Infer<typeof envSchema>;
 
-export function resolveEnv(env?: { [index: string]: string }) {
+export function resolveEnv(
+  env?: { [index: string]: string },
+): UltraEnvironment {
   const mode = env?.ULTRA_MODE || env?.mode || null;
   const port = create(env?.PORT || env?.port, portFromString(defaultPort));
   const devServerWebsocketPort = create(

@@ -12,6 +12,10 @@ export const isDev = env.mode === "dev";
  */
 export const origin = env.origin;
 /**
+ * @deprecated use origin instead
+ */
+export const root = env.origin;
+/**
  * The default lang/locale.
  * @default "en"
  */

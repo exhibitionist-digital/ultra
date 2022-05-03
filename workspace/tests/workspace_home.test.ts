@@ -12,7 +12,7 @@ const expectations = [
   { text: "This is a lazily loaded component", selector: "h3" },
 ];
 
-async function assertExpectedPageElements(page: Page) {
+async function assertExpectedPageElements(page: Page): Promise<void> {
   for (const expected of expectations) {
     const selection = await page.waitForSelector(expected.selector);
     if (selection) {
