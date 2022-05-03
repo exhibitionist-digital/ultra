@@ -11,7 +11,7 @@ export async function startTestServer(
   entrypoint: string,
 ): Promise<StartServerReturn> {
   const serverProcess = Deno.run({
-    cmd: ["deno", "run", "-A", "--unstable", "--no-check", entrypoint],
+    cmd: [Deno.execPath(), "run", "-A", "--unstable", "--no-check", entrypoint],
     cwd: join(Deno.cwd(), "./workspace"),
     stdout: "piped",
     stderr: "piped",

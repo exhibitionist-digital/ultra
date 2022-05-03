@@ -12,6 +12,10 @@ const expectations = [
   { text: "This is a lazily loaded component", selector: "h3" },
 ];
 
+// NOTES: (OM)
+// Puppeteer tests, when split into async steps, can fail
+// over and over on windows specifically. I split out steps
+// into their own tests for this reason.
 async function assertExpectedPageElements(page: Page): Promise<void> {
   for (const expected of expectations) {
     const selection = await page.waitForSelector(expected.selector);
@@ -27,66 +31,59 @@ async function assertExpectedPageElements(page: Page): Promise<void> {
   }
 }
 
-Deno.test("puppeteer: native server", async (t) => {
+Deno.test("puppeteer: native server", async () => {
   const server = await startTestServer("server.js");
   const browser = await launchLocalhostBrowser();
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 979, height: 865 });
+    await page.goto("http://localhost:8000/", {
+      waitUntil: "networkidle0",
+    });
+    await assertExpectedPageElements(page);
+  } catch (error) {
+    throw error;
+  }
+  await browser.close();
+  await server.close();
+});
 
-  await t.step(
-    "Should render home page of workspace example app with expected text",
-    async () => {
-      try {
-        const page = await browser.newPage();
-        await page.setViewport({ width: 979, height: 865 });
-        await page.goto("http://localhost:8000/", {
-          waitUntil: "networkidle0",
-        });
+Deno.test("puppeteer: oak server", async () => {
+  const server = await startTestServer("oak.ts");
+  const browser = await launchLocalhostBrowser();
 
-        await assertExpectedPageElements(page);
-      } catch (error) {
-        throw error;
-      }
-    },
-  );
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 979, height: 865 });
+    await page.goto("http://localhost:8000/", {
+      waitUntil: "networkidle0",
+    });
+
+    await assertExpectedPageElements(page);
+  } catch (error) {
+    throw error;
+  }
 
   await browser.close();
   await server.close();
 });
 
-Deno.test("puppeteer: oak server", async (t) => {
+Deno.test("puppeteer: oak server custom route", async () => {
   const server = await startTestServer("oak.ts");
   const browser = await launchLocalhostBrowser();
 
-  await t.step(
-    "Should render home page of workspace example app with expected text",
-    async () => {
-      try {
-        const page = await browser.newPage();
-        await page.setViewport({ width: 979, height: 865 });
-        await page.goto("http://localhost:8000/", {
-          waitUntil: "networkidle0",
-        });
+  try {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 979, height: 865 });
+    await page.goto("http://localhost:8000/custom-route", {
+      waitUntil: "networkidle0",
+    });
 
-        await assertExpectedPageElements(page);
-      } catch (error) {
-        throw error;
-      }
-    },
-  );
-
-  await t.step("Should handle custom-route", async () => {
-    try {
-      const page = await browser.newPage();
-      await page.setViewport({ width: 979, height: 865 });
-      await page.goto("http://localhost:8000/custom-route", {
-        waitUntil: "networkidle0",
-      });
-
-      const content = await page.content();
-      assert(content.includes("Oak custom route!"));
-    } catch (error) {
-      throw error;
-    }
-  });
+    const content = await page.content();
+    assert(content.includes("Oak custom route!"));
+  } catch (error) {
+    throw error;
+  }
 
   await browser.close();
   await server.close();
