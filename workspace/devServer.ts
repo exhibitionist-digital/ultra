@@ -1,3 +1,3 @@
 import ultra from "../devServer.ts";
 
-ultra({ server: "./server.js" });
+ultra({ server: "./server.ts" });
