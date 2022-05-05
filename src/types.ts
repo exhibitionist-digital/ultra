@@ -6,11 +6,13 @@ export type Config = {
   importMap?: string;
 };
 
-type Context = {
+export type Context = {
   request: Request;
   response: {
-    body: string | ReadableStream<Uint8Array>;
-    type: string;
+    body?: BodyInit;
+    headers?: Record<string, string>;
+    status?: number;
+    statusText?: string;
   };
 };
 
@@ -34,5 +36,3 @@ export type RenderOptions = {
 };
 
 export type Cache = Map<unknown, unknown>;
-
-export type APIHandler = (request: Request) => Response | Promise<Response>;
