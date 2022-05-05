@@ -1,10 +1,10 @@
 import { Context } from "https://deno.land/x/oak@v10.5.1/mod.ts";
 import { createRequestHandler } from "../server/requestHandler.ts";
-import createRequestHandlerMiddleware from "../server/middleware/createRequestHandlerMiddleware.ts";
+import { requestHandler } from "../server/middleware.ts";
 
-const requestHandler = createRequestHandler({
+const ultraRequestHandler = createRequestHandler({
   middleware: [
-    await createRequestHandlerMiddleware(),
+    requestHandler,
   ],
 });
 
@@ -17,7 +17,7 @@ export async function ultraHandler(context: Context): Promise<void> {
     body: serverRequestBody.body,
   });
 
-  const response = await requestHandler(request);
+  const response = await ultraRequestHandler(request);
 
   context.response.status = response.status;
   context.response.headers = response.headers;
