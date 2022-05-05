@@ -38,3 +38,4 @@ export {
   resolve as resolveImportMap,
 } from "https://esm.sh/@import-maps/resolve@1.0.1";
 export type { ParsedImportMap } from "https://esm.sh/@import-maps/resolve@1.0.1";
+export type { Middleware } from "https://deno.land/x/oak@v10.5.1/mod.ts";

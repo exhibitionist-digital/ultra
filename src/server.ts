@@ -1,7 +1,6 @@
 import assets from "./assets.ts";
 import render from "./render.ts";
-import { Middleware } from "https://deno.land/x/oak@v10.5.1/mod.ts";
-import { LRU, readableStreamFromReader } from "./deps.ts";
+import { LRU, Middleware, readableStreamFromReader } from "./deps.ts";
 import {
   disableStreaming,
   lang,

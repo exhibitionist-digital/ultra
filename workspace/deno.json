@@ -1,9 +1,7 @@
 {
   "tasks": {
     "dev": "mode=dev deno run -A --unstable --no-check devServer.ts",
-    "dev:oak": "mode=dev deno run -A --unstable --no-check oak.ts",
     "start": "deno run -A --unstable --no-check server.ts",
-    "start:oak": "deno run -A --unstable --no-check oak.ts",
     "cache": "deno cache --reload server.ts",
     "vendor": "importMap=importMap.json deno run -A --unstable ../vendor.ts",
     "build": "deno run -A ../build.ts"
