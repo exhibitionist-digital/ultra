@@ -27,6 +27,7 @@ export default function App({ state }: AppProps) {
         <head>
           <Helmet>
             <title>Ultra</title>
+            <link rel="icon" type="image/x-icon" href="/public/favicon.ico" />
             <link rel="stylesheet" href="/public/style.css" />
           </Helmet>
         </head>
