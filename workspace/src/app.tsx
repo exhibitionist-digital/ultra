@@ -8,7 +8,11 @@ const BigLazyComponent = lazy(() => import("./components/BigComponent.tsx"));
 
 export const CTX = React.createContext(`un-bundle the web`);
 
-export default function App({ state }: State) {
+type AppProps = {
+  state: State;
+};
+
+export default function App({ state }: AppProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);

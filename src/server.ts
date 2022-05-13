@@ -16,7 +16,7 @@ export default async function createServer(
     mode = "production",
     publicPath = "public",
     rootUrl = toFileUrl(Deno.cwd()),
-    compilerPath = "/@compiler/",
+    compilerPath = "/@ultra/compiler/",
   } = options;
 
   const importMap = await resolveImportMap(rootUrl.pathname);
