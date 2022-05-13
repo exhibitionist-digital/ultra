@@ -10,6 +10,11 @@ import { readFileAndDecode } from "./utils.ts";
 const extensions = [".tsx", ".ts", ".jsx", ".js"];
 const globPattern = `**/*+(${extensions.join("|")})`;
 
+/**
+ * Ultra specific Application
+ *
+ * @see https://deno.land/x/lean
+ */
 export class Application extends BaseApplication {
   async resolveSources() {
     const sources = new Map<string, string>();
@@ -28,6 +33,10 @@ export class Application extends BaseApplication {
           "vendor",
           "tests",
           ".ultra",
+          /**
+           * Note[deckchairlabs]: Deno.mainModule is undefined on Deno Deploy
+           * At least, the last time I checked...
+           */
           basename(Deno.mainModule),
         ],
       };
