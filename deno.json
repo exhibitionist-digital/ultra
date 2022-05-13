@@ -5,12 +5,7 @@
   },
   "compilerOptions": {
     "jsx": "react-jsxdev",
-    "jsxImportSource": "react",
-    "lib": [
-      "deno.ns",
-      "deno.unstable",
-      "dom"
-    ]
+    "jsxImportSource": "react"
   },
   "lint": {
     "files": {

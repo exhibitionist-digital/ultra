@@ -2,7 +2,7 @@ export {
   Application,
   Context,
   Router,
-} from "https://deno.land/x/lean@0.0.5/mod.ts";
+} from "https://deno.land/x/lean@0.0.6/mod.ts";
 export { serveDir } from "https://deno.land/std@0.138.0/http/file_server.ts";
 export type {
   Mode,
@@ -10,7 +10,7 @@ export type {
   RequestHandler,
   ResponseTransformer,
   State,
-} from "https://deno.land/x/lean@0.0.5/types.ts";
+} from "https://deno.land/x/lean@0.0.6/types.ts";
 export { walk } from "https://deno.land/std@0.135.0/fs/mod.ts";
 export { concat } from "https://deno.land/std@0.135.0/bytes/mod.ts";
 export {
