@@ -22,10 +22,7 @@ export function getReferringScriptUrl(request: Request) {
 
 export function toLocalPathname(pathname: string, pathPrefix: string) {
   const extension = extname(pathname);
-  return pathname.replace(pathPrefix, "").replace(
-    extension,
-    "",
-  );
+  return pathname.replace(pathPrefix, "").slice(0, -extension.length);
 }
 
 const decoder = new TextDecoder();

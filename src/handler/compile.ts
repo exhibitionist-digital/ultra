@@ -1,5 +1,5 @@
 import { join } from "../deps.ts";
-import { getReferringScriptUrl, toLocalPathname } from "../utils.ts";
+import { toLocalPathname } from "../utils.ts";
 import { LinkHeader } from "../links.ts";
 import type { RequestHandler } from "../deps.ts";
 import { Application } from "../app.ts";
@@ -9,14 +9,13 @@ export function createCompileHandler(
   pathPrefix: string,
 ) {
   const compileHandler: RequestHandler<Application> = async (
-    { app, request, pathname },
+    { app, pathname },
   ) => {
     const sources = await app.resolveSources();
 
     try {
       pathname = toLocalPathname(pathname, pathPrefix);
 
-      const referrer = getReferringScriptUrl(request);
       const url = new URL(join(rootUrl.toString(), pathname));
       const input = sources.get(url.toString());
 
@@ -27,7 +26,6 @@ export function createCompileHandler(
       const output = app.compiler.compile({
         input,
         url,
-        // referrer,
       });
 
       const links = new LinkHeader();

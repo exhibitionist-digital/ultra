@@ -8,7 +8,7 @@ import { readFileAndDecode } from "./utils.ts";
 
 const extensions = [".tsx", ".ts", ".jsx", ".js"];
 const globPattern = `**/*+(${extensions.join("|")})`;
-const exclude = ["vendor"];
+const exclude = ["vendor", "tests", ".ultra"];
 
 export class Application extends BaseApplication {
   async resolveSources() {

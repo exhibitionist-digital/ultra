@@ -19,6 +19,7 @@ export default function App({ state }: State) {
       <html lang="en">
         <head>
           <Helmet>
+            <title>Ultra</title>
             <link rel="stylesheet" href="/public/style.css" />
           </Helmet>
         </head>

@@ -1,11 +1,12 @@
 import { createElement } from "react";
 import { Application } from "./app.ts";
-import { devServerWebsocketPort, isDev } from "./env.ts";
 import { ServerAppComponent, ServerOptions } from "./types.ts";
 import { toCompilerUrl } from "./utils.ts";
-import { RequestHandler, toFileUrl } from "./deps.ts";
+import { parseImportMap, RequestHandler, toFileUrl } from "./deps.ts";
 import { createRouter } from "./router.ts";
 import { render } from "./render.ts";
+import { resolveImportMap } from "./config.ts";
+import { ImportVisitor } from "./ast/import.ts";
 
 export default async function createServer(
   app: ServerAppComponent,
@@ -17,6 +18,9 @@ export default async function createServer(
     rootUrl = toFileUrl(Deno.cwd()),
     compilerPath = "/@compiler/",
   } = options;
+
+  const importMap = await resolveImportMap(rootUrl.pathname);
+  const parsedImportMap = parseImportMap(importMap, rootUrl);
 
   let { bootstrapModules = [] } = options;
 
@@ -30,7 +34,7 @@ export default async function createServer(
     });
   };
 
-  const router = createRouter({
+  const router = await createRouter({
     renderHandler,
     rootUrl,
     publicPath,
@@ -43,16 +47,14 @@ export default async function createServer(
     rootUrl,
   });
 
+  server.compiler.addVisitor(new ImportVisitor(parsedImportMap));
+
   await server.compiler.init(
     "https://cdn.esm.sh/@swc/wasm-web@1.2.182/wasm-web_bg.wasm",
   );
 
   server.addEventListener("listening", (event) => {
-    let message = `Ultra running http://localhost:${event.detail.port}`;
-
-    if (isDev) {
-      message += ` and ws://localhost:${devServerWebsocketPort}`;
-    }
+    const message = `Ultra running on http://localhost:${event.detail.port}`;
     console.log(message);
   });
 
