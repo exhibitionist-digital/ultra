@@ -29,7 +29,7 @@ export function createCompileHandler(
 
       return new Response(output, {
         headers: {
-          "content-type": "application/javascript",
+          "content-type": "application/javascript; charset=utf-8",
         },
       });
     } catch (error) {

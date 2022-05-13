@@ -48,15 +48,17 @@ server.get("/api/hello", helloWorldHandler);
  * Middleware
  */
 server.use((next) => {
-  const startTime = performance.now();
   return async function requestHandler(context) {
+    const startTime = performance.now();
     const response = await next(context);
     const endTime = performance.now();
+
     console.log(
-      `[${context.request.method}]: ${context.url.pathname} duration ${
+      `[${context.request.method}]: ${context.url.toString()} duration ${
         (endTime - startTime).toFixed(2)
       }ms`,
     );
+
     return response;
   };
 });
