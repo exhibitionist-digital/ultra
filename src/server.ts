@@ -13,6 +13,7 @@ import { render } from "./render.ts";
 import { resolveImportMap } from "./config.ts";
 import { ImportVisitor } from "./ast/import.ts";
 import { createCompileHandler } from "./handler/compile.ts";
+import { ultraPlugin } from "./internal/plugins/ultra.ts";
 
 export default async function createServer(
   app: ServerAppComponent,
@@ -55,30 +56,12 @@ export default async function createServer(
     serveDir(request, { fsRoot: publicUrl, urlRoot: publicPath });
 
   /**
-   * Setup Ultra routes
+   * Setup Ultra
    */
+  server.register(ultraPlugin);
   server.add("GET", `/${publicPath}/*`, publicHandler);
   server.add("GET", `${compilerPath}*.(tsx|ts|js|jsx).js`, compileHandler);
   server.add("GET", "/*", renderHandler);
-
-  /**
-   * Inject the request State once we see the end body tag
-   */
-  server.addResponseTransformer((_response, context, rewriter) => {
-    rewriter.on("body", {
-      element(element) {
-        element.onEndTag((body) => {
-          body.before(
-            `<script id="__ultra_state">window.__ultra_state = ${
-              JSON.stringify(context.state)
-            }</script>`,
-            { html: true },
-          );
-        });
-      },
-    });
-  });
-
   server.compiler.addVisitor(new ImportVisitor(parsedImportMap));
 
   await server.compiler.init(

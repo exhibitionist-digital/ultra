@@ -1,5 +1,6 @@
 import {
   Application as BaseApplication,
+  basename,
   expandGlob,
   ExpandGlobOptions,
   toFileUrl,
@@ -27,10 +28,7 @@ export class Application extends BaseApplication {
           "vendor",
           "tests",
           ".ultra",
-          "server.tsx",
-          "server.ts",
-          "server.jsx",
-          "server.js",
+          basename(Deno.mainModule),
         ],
       };
 
@@ -40,6 +38,8 @@ export class Application extends BaseApplication {
 
         sources.set(String(filepath), source);
       }
+
+      console.log(sources);
 
       return sources;
     } catch (error) {

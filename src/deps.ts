@@ -14,6 +14,7 @@ export type {
 export { walk } from "https://deno.land/std@0.135.0/fs/mod.ts";
 export { concat } from "https://deno.land/std@0.135.0/bytes/mod.ts";
 export {
+  basename,
   extname,
   format,
   join,
