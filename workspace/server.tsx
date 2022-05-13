@@ -2,9 +2,16 @@ import { Router } from "wouter";
 import createServer from "../server.ts";
 import { reactHelmetPlugin } from "../src/plugins/react-helmet.ts";
 import { ServerAppProps } from "../src/types.ts";
-import helloWorldHandler from "./api/example.js";
 import App from "./src/app.tsx";
 
+/**
+ * API handlers
+ */
+import helloWorldHandler from "./api/example.js";
+
+/**
+ * This is the component that will be rendered server side.
+ */
 function ServerApp({ state }: ServerAppProps) {
   return (
     <Router hook={staticLocationHook(state.url.pathname)}>
@@ -18,11 +25,41 @@ const server = await createServer(ServerApp, {
   bootstrapModules: ["./client.tsx"],
 });
 
+/**
+ * Custom routes
+ */
 server.get("/api/hello", helloWorldHandler);
 
+/**
+ * Middleware
+ */
+server.use((next) => {
+  const startTime = performance.now();
+  return async function requestHandler(context) {
+    const response = await next(context);
+    const endTime = performance.now();
+    console.log(
+      `[${context.request.method}]: ${context.url.pathname} duration ${
+        (endTime - startTime).toFixed(2)
+      }ms`,
+    );
+    return response;
+  };
+});
+
+/**
+ * Register server plugins
+ */
 server.register(reactHelmetPlugin);
+
+/**
+ * Start the server!
+ */
 server.start({ port: 8000 });
 
+/**
+ * Server side wouter
+ */
 type Navigate = (to: string, opts?: { replace?: boolean }) => void;
 
 function staticLocationHook(

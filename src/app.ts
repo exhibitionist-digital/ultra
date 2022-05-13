@@ -16,7 +16,22 @@ export class Application extends BaseApplication {
     try {
       const globOptions: ExpandGlobOptions = {
         root: this.rootUrl.pathname,
-        exclude: ["vendor", "tests", ".ultra"],
+        /**
+         * Might need a better way of defining this... maybe configurable?
+         *
+         * This excludes certain directories/files from being considered
+         * valid compile targets and preventing a request for
+         * http://localhost/@compiler/ultra/server.tsx.js and being sent the compiled source.
+         */
+        exclude: [
+          "vendor",
+          "tests",
+          ".ultra",
+          "server.tsx",
+          "server.ts",
+          "server.jsx",
+          "server.js",
+        ],
       };
 
       for await (const file of expandGlob(globPattern, globOptions)) {
