@@ -14,6 +14,7 @@ const Ultra = () => {
   }, []);
   return (
     <>
+      <link rel="stylesheet" href="/public/style.css" />
       <img src="/public/ultra.svg" />
       <Component />
       <Ticker label="Hydrated" ticked={mounted} />
