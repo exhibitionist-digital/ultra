@@ -8,7 +8,6 @@ import { readFileAndDecode } from "./utils.ts";
 
 const extensions = [".tsx", ".ts", ".jsx", ".js"];
 const globPattern = `**/*+(${extensions.join("|")})`;
-const exclude = ["vendor", "tests", ".ultra"];
 
 export class Application extends BaseApplication {
   async resolveSources() {
@@ -17,7 +16,7 @@ export class Application extends BaseApplication {
     try {
       const globOptions: ExpandGlobOptions = {
         root: this.rootUrl.pathname,
-        exclude,
+        exclude: ["vendor", "tests", ".ultra"],
       };
 
       for await (const file of expandGlob(globPattern, globOptions)) {

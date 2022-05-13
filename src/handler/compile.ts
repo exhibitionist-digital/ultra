@@ -1,6 +1,5 @@
 import { join } from "../deps.ts";
 import { toLocalPathname } from "../utils.ts";
-import { LinkHeader } from "../links.ts";
 import type { RequestHandler } from "../deps.ts";
 import { Application } from "../app.ts";
 
@@ -28,18 +27,9 @@ export function createCompileHandler(
         url,
       });
 
-      const links = new LinkHeader();
-
-      for (const preload of app.compiler.modules) {
-        if (preload.host === "esm.sh" || preload.pathname.endsWith(".js")) {
-          links.preloadModule(preload);
-        }
-      }
-
       return new Response(output, {
         headers: {
           "content-type": "application/javascript",
-          "link": links.toString(),
         },
       });
     } catch (error) {

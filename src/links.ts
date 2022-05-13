@@ -13,10 +13,21 @@ function isModulePreloadLink(link: Link): link is ModulePreload {
   return link.rel === "modulepreload";
 }
 
+function toString(string: string | URL): string {
+  return typeof string === "string" ? string : string.toString();
+}
+
 export class LinkHeader extends Map<string, Link> {
   preloadModule(href: string | URL) {
-    this.set(typeof href === "string" ? href : href.toString(), {
+    this.set(toString(href), {
       rel: "modulepreload",
+    });
+  }
+
+  preloadScript(href: string | URL) {
+    this.set(toString(href), {
+      rel: "preload",
+      as: "script",
     });
   }
 
