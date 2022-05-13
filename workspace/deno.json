@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "mode=dev deno run -A --unstable --no-check devServer.js",
+    "dev": "mode=dev deno run -A --unstable --no-check --watch server.tsx",
     "dev:oak": "mode=dev deno run -A --unstable --no-check oak.ts",
     "start": "deno run -A --unstable --no-check server.js",
     "start:oak": "deno run -A --unstable --no-check oak.ts",
@@ -8,7 +8,15 @@
     "vendor": "importMap=importMap.json deno run -A --unstable ../vendor.ts",
     "build": "deno run -A ../build.ts"
   },
-  "importMap": "importMap.json",
+  "compilerOptions": {
+    "jsx": "react-jsxdev",
+    "jsxImportSource": "react",
+    "lib": [
+      "deno.ns",
+      "dom"
+    ]
+  },
+  "importMap": "./importMap.json",
   "lint": {
     "files": {
       "exclude": [".ultra/"]

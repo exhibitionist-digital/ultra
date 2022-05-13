@@ -3,6 +3,15 @@
     "test": "deno test -A --unstable --jobs 3 --import-map=./importMap.test.json src/",
     "test:puppeteer": "deno test -A --unstable workspace/tests/"
   },
+  "compilerOptions": {
+    "jsx": "react-jsxdev",
+    "jsxImportSource": "react",
+    "lib": [
+      "deno.ns",
+      "deno.unstable",
+      "dom"
+    ]
+  },
   "lint": {
     "files": {
       "exclude": ["workspace/.ultra/", "src/unstable/"]

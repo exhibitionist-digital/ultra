@@ -1,4 +1,10 @@
-export { Application } from "https://deno.land/x/lean@0.0.4/mod.ts";
+export { Application, Router } from "https://deno.land/x/lean@0.0.5/mod.ts";
+export { serveDir } from "https://deno.land/std@0.138.0/http/file_server.ts";
+export type {
+  Mode,
+  RequestHandler,
+  State,
+} from "https://deno.land/x/lean@0.0.5/types.ts";
 export { walk } from "https://deno.land/std@0.135.0/fs/mod.ts";
 export { concat } from "https://deno.land/std@0.135.0/bytes/mod.ts";
 export {
@@ -10,6 +16,8 @@ export {
   resolve,
   toFileUrl,
 } from "https://deno.land/std@0.135.0/path/mod.ts";
+export { expandGlob } from "https://deno.land/std@0.138.0/fs/expand_glob.ts";
+export type { ExpandGlobOptions } from "https://deno.land/std@0.138.0/fs/expand_glob.ts";
 export { Buffer, readLines } from "https://deno.land/std@0.135.0/io/mod.ts";
 export { serve } from "https://deno.land/std@0.135.0/http/server.ts";
 export { readableStreamFromReader } from "https://deno.land/std@0.135.0/streams/conversion.ts";
@@ -36,6 +44,6 @@ export { emptyDir, ensureDir } from "https://deno.land/std@0.135.0/fs/mod.ts";
 export { crypto } from "https://deno.land/std@0.135.0/crypto/mod.ts";
 export {
   parse as parseImportMap,
-  resolve as resolveImportMap,
+  resolve as resolveSpecifier,
 } from "https://esm.sh/@import-maps/resolve@1.0.1";
 export type { ParsedImportMap } from "https://esm.sh/@import-maps/resolve@1.0.1";
