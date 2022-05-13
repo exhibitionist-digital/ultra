@@ -1,4 +1,4 @@
-import { serve } from "./deps.ts";
+import { Application } from "./app.ts";
 import {
   devServerWebsocketPort,
   isDev,
@@ -13,26 +13,22 @@ const cwd = Deno.cwd();
 const config = await resolveConfig(cwd);
 const importMap = await resolveImportMap(cwd, config);
 
-const server = async () => {
-  const requestHandler = await createRequestHandler({
-    cwd,
-    importMap,
-    paths: {
-      source: sourceDirectory,
-      vendor: vendorDirectory,
-    },
-    isDev,
+const server = () => {
+  const server = new Application({
+    mode: isDev ? "development" : "production",
+    rootUrl: cwd,
   });
 
-  let message = `Ultra running http://localhost:${port}`;
+  server.addEventListener("listening", (event) => {
+    let message = `Ultra running http://localhost:${event.detail.port}`;
 
-  if (isDev) {
-    message += ` and ws://localhost:${devServerWebsocketPort}`;
-  }
+    if (isDev) {
+      message += ` and ws://localhost:${devServerWebsocketPort}`;
+    }
+    console.log(message);
+  });
 
-  console.log(message);
-
-  return serve(requestHandler, { port: +port });
+  return server;
 };
 
 export default server;

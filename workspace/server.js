@@ -1,3 +1,4 @@
 import ultra from "../server.ts";
 
-ultra();
+const server = ultra();
+server.start({ port: 8000 });
