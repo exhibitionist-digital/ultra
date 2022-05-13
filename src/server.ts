@@ -2,11 +2,17 @@ import { createElement } from "react";
 import { Application } from "./app.ts";
 import { ServerAppComponent, ServerOptions } from "./types.ts";
 import { toCompilerUrl } from "./utils.ts";
-import { parseImportMap, RequestHandler, toFileUrl } from "./deps.ts";
-import { createRouter } from "./router.ts";
+import {
+  join,
+  parseImportMap,
+  RequestHandler,
+  serveDir,
+  toFileUrl,
+} from "./deps.ts";
 import { render } from "./render.ts";
 import { resolveImportMap } from "./config.ts";
 import { ImportVisitor } from "./ast/import.ts";
+import { createCompileHandler } from "./handler/compile.ts";
 
 export default async function createServer(
   app: ServerAppComponent,
@@ -21,6 +27,7 @@ export default async function createServer(
 
   const importMap = await resolveImportMap(rootUrl.pathname);
   const parsedImportMap = parseImportMap(importMap, rootUrl);
+  const publicUrl = join(rootUrl.pathname, publicPath);
 
   let { bootstrapModules = [] } = options;
 
@@ -34,17 +41,42 @@ export default async function createServer(
     });
   };
 
-  const router = await createRouter({
-    renderHandler,
-    rootUrl,
-    publicPath,
-    compilerPath,
-  });
-
   const server = new Application({
     mode,
-    router,
     rootUrl,
+  });
+
+  const compileHandler = createCompileHandler(
+    rootUrl,
+    compilerPath,
+  );
+
+  const publicHandler: RequestHandler<Application> = ({ request }) =>
+    serveDir(request, { fsRoot: publicUrl, urlRoot: publicPath });
+
+  /**
+   * Setup Ultra routes
+   */
+  server.add("GET", `/${publicPath}/*`, publicHandler);
+  server.add("GET", `${compilerPath}*.(tsx|ts|js|jsx).js`, compileHandler);
+  server.add("GET", "/*", renderHandler);
+
+  /**
+   * Inject the request State once we see the end body tag
+   */
+  server.addResponseTransformer((_response, context, rewriter) => {
+    rewriter.on("body", {
+      element(element) {
+        element.onEndTag((body) => {
+          body.before(
+            `<script id="__ultra_state">window.__ultra_state = ${
+              JSON.stringify(context.state)
+            }</script>`,
+            { html: true },
+          );
+        });
+      },
+    });
   });
 
   server.compiler.addVisitor(new ImportVisitor(parsedImportMap));
