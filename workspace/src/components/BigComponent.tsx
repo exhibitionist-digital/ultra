@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 
 export default function BigComponent({ children }: { children?: ReactNode }) {
   return (

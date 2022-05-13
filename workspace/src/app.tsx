@@ -1,12 +1,12 @@
 import { Helmet, HelmetProvider } from "react-helmet";
-import React, { lazy, useEffect, useState } from "react";
+import { createContext, lazy, useEffect, useState } from "react";
 import Ticker from "./components/Ticker.tsx";
 import Component from "./component.jsx";
 import type { State } from "../../server.ts";
 
 const BigLazyComponent = lazy(() => import("./components/BigComponent.tsx"));
 
-export const CTX = React.createContext(`un-bundle the web`);
+export const CTX = createContext(`un-bundle the web`);
 
 type AppProps = {
   state: State;

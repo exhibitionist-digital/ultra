@@ -2,6 +2,7 @@ import { Router } from "wouter";
 import createServer from "../server.ts";
 import { reactHelmetPlugin } from "../src/plugins/react-helmet.ts";
 import { ServerAppProps } from "../src/types.ts";
+import helloWorldHandler from "./api/example.js";
 import App from "./src/app.tsx";
 
 function ServerApp({ state }: ServerAppProps) {
@@ -16,6 +17,8 @@ const server = await createServer(ServerApp, {
   mode: "development",
   bootstrapModules: ["./client.tsx"],
 });
+
+server.get("/api/hello", helloWorldHandler);
 
 server.register(reactHelmetPlugin);
 server.start({ port: 8000 });
