@@ -11,7 +11,6 @@ import {
 } from "./deps.ts";
 import { render } from "./render.ts";
 import { resolveImportMap } from "./config.ts";
-import { ImportVisitor } from "./ast/import.ts";
 import { createCompileHandler } from "./handler/compile.ts";
 import { ultraPlugin } from "./internal/plugins/ultra.ts";
 
@@ -58,11 +57,10 @@ export default async function createServer(
   /**
    * Setup Ultra
    */
-  server.register(ultraPlugin);
+  server.register(ultraPlugin, { importMap: parsedImportMap });
   server.add("GET", `/${publicPath}/*`, publicHandler);
   server.add("GET", `${compilerPath}*.(tsx|ts|js|jsx).js`, compileHandler);
   server.add("GET", "/*", renderHandler);
-  server.compiler.addVisitor(new ImportVisitor(parsedImportMap));
 
   await server.compiler.init(
     "https://cdn.esm.sh/@swc/wasm-web@1.2.182/wasm-web_bg.wasm",

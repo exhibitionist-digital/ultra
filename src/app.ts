@@ -39,8 +39,6 @@ export class Application extends BaseApplication {
         sources.set(String(filepath), source);
       }
 
-      console.log(sources);
-
       return sources;
     } catch (error) {
       throw error;

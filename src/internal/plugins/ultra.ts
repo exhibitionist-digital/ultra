@@ -1,7 +1,15 @@
-import type { Plugin, ResponseTransformer } from "../../deps.ts";
+import { ImportVisitor } from "../../ast/import.ts";
+import type {
+  ParsedImportMap,
+  Plugin,
+  ResponseTransformer,
+} from "../../deps.ts";
 import { isGetRequest, isHtmlResponse } from "../../utils.ts";
 
-export const ultraPlugin: Plugin = (app) => {
+type PluginOptions = { importMap: ParsedImportMap };
+
+export const ultraPlugin: Plugin<PluginOptions> = (app, { importMap }) => {
+  app.compiler.addVisitor(new ImportVisitor(importMap));
   app.addResponseTransformer(
     responseTransformer,
   );
