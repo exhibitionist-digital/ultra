@@ -1,4 +1,4 @@
-import { Cache, SWRConfig } from "swr";
+import { SWRConfig } from "swr";
 import { Router } from "wouter";
 import createServer from "../server.ts";
 import { reactHelmetPlugin } from "../src/plugins/react-helmet.ts";
@@ -13,16 +13,18 @@ import helloWorldHandler from "./api/example.js";
 /**
  * This is the component that will be rendered server side.
  */
+const cache = new Map<string, any>();
+
 function ServerApp({ state }: ServerAppProps) {
   return (
     <SWRConfig
       value={{
         suspense: true,
         provider: () => {
-          state.cache = new Map();
-          return state.cache as Cache<any>;
+          return state.cache = cache;
         },
         fetcher: (resource, init) => {
+          console.log(`Server fetching: ${resource}`);
           return fetch(resource, init).then((res) => res.json());
         },
       }}
