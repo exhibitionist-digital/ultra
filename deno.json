@@ -7,6 +7,7 @@
     "jsx": "react-jsxdev",
     "jsxImportSource": "react"
   },
+  "importMap": "./importMap.test.json",
   "lint": {
     "files": {
       "exclude": ["workspace/.ultra/", "src/unstable/"]
