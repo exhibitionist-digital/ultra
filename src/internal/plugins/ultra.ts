@@ -15,6 +15,14 @@ export const ultraPlugin: Plugin<PluginOptions> = (app, { importMap }) => {
   );
 };
 
+function replacer(_key: string, value: unknown) {
+  if (value instanceof Map) {
+    return Array.from(value.entries());
+  } else {
+    return value;
+  }
+}
+
 const responseTransformer: ResponseTransformer = (
   response,
   context,
@@ -26,7 +34,7 @@ const responseTransformer: ResponseTransformer = (
         element.onEndTag((body) => {
           body.before(
             `<script id="__ultra_state">window.__ultra_state = ${
-              JSON.stringify(context.state)
+              JSON.stringify(context.state, replacer)
             }</script>`,
             { html: true },
           );

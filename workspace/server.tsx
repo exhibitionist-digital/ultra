@@ -1,3 +1,4 @@
+import { Cache, SWRConfig } from "swr";
 import { Router } from "wouter";
 import createServer from "../server.ts";
 import { reactHelmetPlugin } from "../src/plugins/react-helmet.ts";
@@ -14,9 +15,22 @@ import helloWorldHandler from "./api/example.js";
  */
 function ServerApp({ state }: ServerAppProps) {
   return (
-    <Router hook={staticLocationHook(state.url.pathname)}>
-      <App state={state} />
-    </Router>
+    <SWRConfig
+      value={{
+        suspense: true,
+        provider: () => {
+          state.cache = new Map();
+          return state.cache as Cache<any>;
+        },
+        fetcher: (resource, init) => {
+          return fetch(resource, init).then((res) => res.json());
+        },
+      }}
+    >
+      <Router hook={staticLocationHook(state.url.pathname)}>
+        <App state={state} />
+      </Router>
+    </SWRConfig>
   );
 }
 
