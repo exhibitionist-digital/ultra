@@ -1,5 +1,5 @@
 import React from "react";
-import { CTX } from "./app.jsx";
+import { CTX } from "./app.tsx";
 
 export default () => {
   const getCtx = React.useContext(CTX);

@@ -1,5 +1,5 @@
 import { hydrateRoot } from "react-dom/client";
-import App from "./src/app.jsx";
+import App from "./src/app.tsx";
 
 function BrowserApp() {
   return <App />;

@@ -1,5 +1,17 @@
 import { extname, join } from "./deps.ts";
 
+export function isHtmlResponse(
+  response: Response,
+) {
+  return response.headers.get("content-type")?.includes(
+    "text/html",
+  ) || false;
+}
+
+export function isGetRequest(request: Request) {
+  return request.method === "GET";
+}
+
 export function toCompilerUrl(path: string, pathPrefix: string) {
   return join(pathPrefix, `${path}.js`);
 }
