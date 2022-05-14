@@ -1,9 +1,12 @@
 import {
   Application as BaseApplication,
   basename,
+  dirname,
   expandGlob,
   ExpandGlobOptions,
-  resolve,
+  fromFileUrl,
+  join,
+  normalize,
   toFileUrl,
 } from "./deps.ts";
 import { readFileAndDecode } from "./utils.ts";
@@ -47,11 +50,20 @@ export class Application extends BaseApplication {
        * and served to a browser client.
        */
       const ultraSources = [
-        resolve("..", "react.ts"),
+        join("..", "react.ts"),
+        join(".", "react", "client.ts"),
+        join(".", "react", "useAsync.ts"),
+        join(".", "react", "useSsrData.ts"),
+        join(".", "react", "useStream.ts"),
+        join(".", "react", "utils.ts"),
       ];
 
       for (const ultra of ultraSources) {
-        const url = toFileUrl(ultra);
+        const path = join(
+          dirname(fromFileUrl(import.meta.url)),
+          normalize(ultra),
+        );
+        const url = toFileUrl(path);
         sources.set(String(url), await readFileAndDecode(url));
       }
 

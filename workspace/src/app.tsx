@@ -1,6 +1,5 @@
 import { Helmet, HelmetProvider } from "react-helmet";
-import { createContext, lazy, useEffect, useState } from "react";
-import Ticker from "./components/Ticker.tsx";
+import { createContext, lazy, Suspense } from "react";
 import Component from "./component.jsx";
 import type { State } from "../../server.ts";
 
@@ -13,12 +12,6 @@ type AppProps = {
 };
 
 export default function App({ state }: AppProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
     <HelmetProvider context={state}>
       <html lang="en">
@@ -30,10 +23,11 @@ export default function App({ state }: AppProps) {
           </Helmet>
         </head>
         <body>
-          <img src="/public/ultra.svg" />
-          <Component />
-          <Ticker label="Hydrated" ticked={mounted} />
-          <BigLazyComponent />
+          <Suspense>
+            <img src="/public/ultra.svg" />
+            <Component />
+            <BigLazyComponent />
+          </Suspense>
         </body>
       </html>
     </HelmetProvider>

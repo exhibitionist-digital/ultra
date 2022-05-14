@@ -1,4 +1,10 @@
-import { common, resolveSpecifier, Visitor } from "../deps.ts";
+import {
+  common,
+  ExportAllDeclaration,
+  ExportNamedDeclaration,
+  resolveSpecifier,
+  Visitor,
+} from "../deps.ts";
 import type {
   CallExpression,
   ImportDeclaration,
@@ -14,15 +20,28 @@ export class ImportVisitor extends Visitor {
   }
 
   visitImportDeclaration(node: ImportDeclaration) {
-    node.source = this.replaceImportStringLiteral(node.source);
+    node.source = this.replaceStringLiteralSpecifier(node.source);
     return super.visitImportDeclaration(node);
+  }
+
+  visitExportAllDeclaration(node: ExportAllDeclaration) {
+    node.source = this.replaceStringLiteralSpecifier(node.source);
+    return super.visitExportAllDeclaration(node);
+  }
+
+  visitExportNamedDeclaration(node: ExportNamedDeclaration) {
+    if (node.source) {
+      node.source = this.replaceStringLiteralSpecifier(node.source);
+    }
+
+    return super.visitExportNamedDeclaration(node);
   }
 
   visitCallExpression(node: CallExpression) {
     if (node.callee.type === "Import") {
       node.arguments = node.arguments.map((argument) => {
         if (argument.expression.type === "StringLiteral") {
-          argument.expression = this.replaceImportStringLiteral(
+          argument.expression = this.replaceStringLiteralSpecifier(
             argument.expression,
           );
         }
@@ -33,7 +52,7 @@ export class ImportVisitor extends Visitor {
     return super.visitCallExpression(node);
   }
 
-  private replaceImportStringLiteral(node: StringLiteral) {
+  private replaceStringLiteralSpecifier(node: StringLiteral) {
     const { value } = node;
 
     const resolvedSpecifier = resolveSpecifier(

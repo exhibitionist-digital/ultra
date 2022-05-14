@@ -17,9 +17,12 @@ export { concat } from "https://deno.land/std@0.135.0/bytes/mod.ts";
 export {
   basename,
   common,
+  dirname,
   extname,
   format,
+  fromFileUrl,
   join,
+  normalize,
   parse,
   relative,
   resolve,
