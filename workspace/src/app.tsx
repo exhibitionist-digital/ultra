@@ -1,14 +1,14 @@
 import { Helmet, HelmetProvider } from "react-helmet";
 import { createContext, lazy, Suspense } from "react";
 import Component from "./component.jsx";
-import type { State } from "../../server.ts";
+import type { RenderState } from "../../server.ts";
 
 const BigLazyComponent = lazy(() => import("./components/BigComponent.tsx"));
 
 export const CTX = createContext(`un-bundle the web`);
 
 type AppProps = {
-  state: State;
+  state: RenderState;
 };
 
 export default function App({ state }: AppProps) {

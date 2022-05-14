@@ -1,9 +1,6 @@
 import { ImportVisitor } from "../../ast/import.ts";
-import type {
-  ParsedImportMap,
-  Plugin,
-  ResponseTransformer,
-} from "../../deps.ts";
+import type { ParsedImportMap } from "../../deps.ts";
+import type { Plugin, ResponseTransformer } from "../../types.ts";
 import { isGetRequest, isHtmlResponse } from "../../utils.ts";
 
 type PluginOptions = { importMap: ParsedImportMap };
@@ -33,7 +30,7 @@ const responseTransformer: ResponseTransformer = (
       element(element) {
         element.onEndTag((body) => {
           body.before(
-            `<script id="__ultra_state">window.__ultra_state = ${
+            `<script id="__ultra_renderState">window.__ultra_renderState = ${
               JSON.stringify(context.state, replacer)
             }</script>`,
             { html: true },

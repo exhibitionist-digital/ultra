@@ -6,7 +6,7 @@ import type { HTMLRewriter, ParseOptions } from "./deps.ts";
 export type ImportMap = { imports: Record<string, string> };
 
 export type ServerAppProps = {
-  state: State;
+  state: RenderState;
 };
 
 export type ServerAppComponent = FunctionComponent<ServerAppProps>;
@@ -28,7 +28,12 @@ export type RenderStrategy = "stream" | "static";
 
 export type RenderStateFactory = ((
   request: Request,
-) => Promise<State> | State);
+) => Promise<RenderState> | RenderState);
+
+export type RenderState = {
+  [key: string]: unknown;
+  url: URL;
+};
 
 export type CreateRouterOptions = {
   renderHandler: RequestHandler;
@@ -52,11 +57,6 @@ export type ApplicationOptions = {
 export type ContextOptions = {
   app: Application;
   request: Request;
-};
-
-export type State = {
-  [key: string]: unknown;
-  url: URL;
 };
 
 export type CompilerOptions = {

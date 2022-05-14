@@ -1,10 +1,10 @@
-import { State } from "./src/deps.ts";
+import { RenderState } from "./src/types.ts";
 
 export { default } from "./src/server.ts";
-export type { State } from "./src/deps.ts";
+export type { RenderState } from "./src/types.ts";
 
 declare global {
   interface Window {
-    __ultra_state: State;
+    __ultra_renderState: RenderState;
   }
 }

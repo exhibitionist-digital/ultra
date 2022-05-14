@@ -5,7 +5,7 @@ import App from "./src/app.tsx";
 function BrowserApp() {
   return (
     <Ultra>
-      <App state={window.__ultra_state} />
+      <App state={window.__ultra_renderState} />
     </Ultra>
   );
 }
