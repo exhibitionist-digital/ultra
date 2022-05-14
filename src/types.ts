@@ -17,6 +17,7 @@ export type ServerOptions = {
   publicPath?: string;
   compilerPath?: string;
   context?: RenderStateFactory;
+  renderStrategy?: RenderStrategy;
   /**
    * The modules provided here are injected into the HTML response.
    * You ususally want to include the module that hydrates your application.

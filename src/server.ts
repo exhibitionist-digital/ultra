@@ -21,6 +21,7 @@ export default async function createServer(
     publicPath = "public",
     rootUrl = toFileUrl(Deno.cwd()),
     compilerPath = "/@ultra/compiler/",
+    renderStrategy,
   } = options;
 
   const publicUrl = join(rootUrl.pathname, publicPath);
@@ -39,6 +40,7 @@ export default async function createServer(
 
   const renderHandler: RequestHandler = (context) => {
     return render(createElement(app, { state: context.state }), {
+      strategy: renderStrategy,
       bootstrapModules,
     });
   };

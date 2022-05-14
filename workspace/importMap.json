@@ -8,7 +8,6 @@
     "react-dom/server": "https://esm.sh/react-dom@18/server?dev",
     "react-helmet": "https://esm.sh/react-helmet-async?deps=react@18&dev",
     "wouter": "https://esm.sh/wouter?deps=react@18&dev",
-    "swr": "https://esm.sh/swr@2.0.0-beta.2?deps=react@18&dev",
     "@ultra/react": "../react.ts"
   }
 }
