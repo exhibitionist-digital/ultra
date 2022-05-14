@@ -1,10 +1,5 @@
-import type { Plugin, ResponseTransformer, State } from "../types.ts";
+import type { Plugin, ResponseTransformer } from "../types.ts";
 import { isGetRequest, isHtmlResponse } from "../utils.ts";
-
-type StateWithHelmet = State & {
-  // deno-lint-ignore no-explicit-any
-  helmet: Record<string, any>;
-};
 
 export const reactHelmetPlugin: Plugin = (app) => {
   app.addResponseTransformer(responseTransformer);
@@ -18,7 +13,7 @@ const responseTransformer: ResponseTransformer = (
   if (isGetRequest(context.request) && isHtmlResponse(response)) {
     rewriter.on("head", {
       element(element) {
-        const { helmet } = context.state as StateWithHelmet;
+        const { helmet } = context.state;
 
         if (helmet) {
           const head = [

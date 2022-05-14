@@ -20,7 +20,8 @@ export type ServerOptions = {
   renderStrategy?: RenderStrategy;
   /**
    * The modules provided here are injected into the HTML response.
-   * You ususally want to include the module that hydrates your application.
+   * You will definitely want to include the module that hydrates
+   * your application. eg. ["/client.tsx"]
    */
   bootstrapModules?: string[];
 };
@@ -33,6 +34,8 @@ export type RenderStateFactory = ((
 
 export type RenderState = {
   [key: string]: unknown;
+  // deno-lint-ignore no-explicit-any
+  helmet: Record<string, any>;
   url: URL;
 };
 
