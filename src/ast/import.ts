@@ -65,7 +65,6 @@ export class ImportVisitor extends Visitor {
       node.value = resolvedSpecifier.resolvedImport.href;
     }
 
-    const isExternalSpecifier = node.value.startsWith("http");
     const isUltraSpecifier = Boolean(common([node.value, import.meta.url]));
 
     /**
@@ -74,6 +73,8 @@ export class ImportVisitor extends Visitor {
     if (resolvedSpecifier.matched && isUltraSpecifier) {
       node.value = `/@ultra/compiler/${node.value}`;
     }
+
+    const isExternalSpecifier = node.value.startsWith("http");
 
     if (!isExternalSpecifier) {
       if (
