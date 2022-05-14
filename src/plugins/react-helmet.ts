@@ -1,4 +1,4 @@
-import type { Plugin, ResponseTransformer, State } from "../deps.ts";
+import type { Plugin, ResponseTransformer, State } from "../types.ts";
 import { isGetRequest, isHtmlResponse } from "../utils.ts";
 
 type StateWithHelmet = State & {

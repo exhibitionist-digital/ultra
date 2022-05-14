@@ -1,4 +1,4 @@
-import type { Plugin, ResponseTransformer } from "../deps.ts";
+import type { Plugin, ResponseTransformer } from "../types.ts";
 import { isGetRequest, isHtmlResponse } from "../utils.ts";
 
 type PluginOptions = {
