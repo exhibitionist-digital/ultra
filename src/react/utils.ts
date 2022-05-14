@@ -1,3 +1,11 @@
+/**
+ * All of this has been taken from {@link https://github.com/brillout/react-streaming}
+ * and modified to work within Deno
+ *
+ * If we can get a Deno native module {@link https://github.com/brillout/react-streaming/issues/3}
+ * we should be able to just use it as a dependency
+ */
+
 export function isServerSide() {
   return !isClientSide();
 }

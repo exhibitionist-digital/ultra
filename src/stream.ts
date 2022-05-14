@@ -2,6 +2,13 @@ import type { ReactNode } from "react";
 import { renderToReadableStream } from "react-dom/server";
 import { assert } from "./react/utils.ts";
 
+/**
+ * All of this has been taken from {@link https://github.com/brillout/react-streaming}
+ * and modified to work within Deno
+ *
+ * If we can get a Deno native module {@link https://github.com/brillout/react-streaming/issues/3}
+ * we should be able to just use it as a dependency
+ */
 type RenderToStreamOptions = {
   disable?: boolean;
   bootstrapModules: string[];
