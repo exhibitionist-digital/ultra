@@ -1,14 +1,17 @@
 import { ReactNode } from "react";
-import { useAsync } from "@ultra/react";
+import { useSsrData } from "@ultra/react";
 
 export default function BigComponent({ children }: { children?: ReactNode }) {
-  const data = useAsync(() => {
-    return Promise.resolve("test");
+  const data = useSsrData("post", () => {
+    return fetch("https://jsonplaceholder.typicode.com/posts/1").then(
+      (response) => response.json(),
+    );
   });
+
   return (
     <h3>
       This is a lazily loaded component
-      {data}
+      <pre>{JSON.stringify(data, null, 2)}</pre>
       {children}
     </h3>
   );

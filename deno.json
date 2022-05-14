@@ -5,7 +5,11 @@
   },
   "compilerOptions": {
     "jsx": "react-jsxdev",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "lib": [
+      "deno.ns",
+      "dom"
+    ]
   },
   "importMap": "./importMap.test.json",
   "lint": {
