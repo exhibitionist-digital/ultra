@@ -1,13 +1,12 @@
 import { join } from "../deps.ts";
 import { toLocalPathname } from "../utils.ts";
-import type { RequestHandler } from "../deps.ts";
-import { Application } from "../app.ts";
+import type { RequestHandler } from "../types.ts";
 
 export function createCompileHandler(
   rootUrl: URL,
   pathPrefix: string,
 ) {
-  const compileHandler: RequestHandler<Application> = async (
+  const compileHandler: RequestHandler = async (
     { app, pathname },
   ) => {
     const sources = await app.resolveSources();
