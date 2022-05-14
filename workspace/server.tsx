@@ -13,6 +13,7 @@ import helloWorldHandler from "./api/example.js";
 /**
  * This is the component that will be rendered server side.
  */
+// deno-lint-ignore no-explicit-any
 const cache = new Map<string, any>();
 
 function ServerApp({ state }: ServerAppProps) {

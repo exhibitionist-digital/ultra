@@ -8,7 +8,7 @@
       "request": "launch",
       "name": "Debug Workspace",
       "type": "pwa-node",
-      "program": "${workspaceFolder}/workspace/server.js",
+      "program": "${workspaceFolder}/workspace/server.tsx",
       "cwd": "${workspaceFolder}/workspace",
       "runtimeExecutable": "deno",
       "runtimeArgs": [
