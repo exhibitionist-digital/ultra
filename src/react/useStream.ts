@@ -4,6 +4,7 @@ import { isClientSide } from "./utils.ts";
 type StreamUtils = {
   injectToStream: (htmlChunk: string) => void;
 };
+
 const StreamContext = createContext<StreamUtils | null>(null);
 export const StreamProvider = StreamContext.Provider;
 

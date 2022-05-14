@@ -52,7 +52,6 @@ export class Application extends BaseApplication {
       const ultraSources = [
         join("..", "react.ts"),
         join(".", "react", "client.ts"),
-        join(".", "react", "useAsync.ts"),
         join(".", "react", "useSsrData.ts"),
         join(".", "react", "useStream.ts"),
         join(".", "react", "utils.ts"),
