@@ -1,4 +1,11 @@
-import { extname, join } from "./deps.ts";
+import { dirname, extname, fromFileUrl, join, normalize } from "./deps.ts";
+
+export function relativeImportMetaPath(path: string, importMetaUrl: string) {
+  return join(
+    dirname(fromFileUrl(importMetaUrl)),
+    normalize(path),
+  );
+}
 
 export function hasTrailingSlash(input: string): boolean {
   if (input.length > 1 && input[input.length - 1] === "/") {

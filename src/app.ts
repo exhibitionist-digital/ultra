@@ -2,14 +2,11 @@ import { Compiler } from "./compiler.ts";
 import { Context } from "./context.ts";
 import {
   basename,
-  dirname,
   expandGlob,
   ExpandGlobOptions,
-  fromFileUrl,
   Handler,
   HTMLRewriter,
   join,
-  normalize,
   Server,
   toFileUrl,
 } from "./deps.ts";
@@ -23,7 +20,7 @@ import {
   ResponseTransformer,
 } from "./types.ts";
 import { ApplicationEvents, ListeningEvent } from "./events.ts";
-import { readFileAndDecode } from "./utils.ts";
+import { readFileAndDecode, relativeImportMetaPath } from "./utils.ts";
 
 const extensions = [".tsx", ".ts", ".jsx", ".js"];
 const globPattern = `**/*+(${extensions.join("|")})`;
@@ -154,7 +151,7 @@ export class Application extends ApplicationEvents {
       };
 
       /**
-       * An array of Ultra sources that can be compiled
+       * An array of Ultra paths sources that can be compiled
        * and served to a browser client.
        */
       const ultraSources = [
@@ -166,11 +163,7 @@ export class Application extends ApplicationEvents {
       ];
 
       for (const ultra of ultraSources) {
-        const path = join(
-          dirname(fromFileUrl(import.meta.url)),
-          normalize(ultra),
-        );
-        const url = toFileUrl(path);
+        const url = toFileUrl(relativeImportMetaPath(ultra, import.meta.url));
         sources.set(String(url), await readFileAndDecode(url));
       }
 
