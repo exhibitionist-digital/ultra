@@ -5,9 +5,6 @@ import type { HTMLRewriter, ParseOptions } from "./deps.ts";
 
 export type ImportMap = { imports: Record<string, string> };
 
-export type Navigate = (to: string, opts?: { replace?: boolean }) => void;
-export type RenderStrategy = "stream" | "static";
-
 export type ServerAppProps = {
   state: State;
 };
@@ -26,6 +23,8 @@ export type ServerOptions = {
    */
   bootstrapModules?: string[];
 };
+
+export type RenderStrategy = "stream" | "static";
 
 export type RenderStateFactory = ((
   request: Request,
@@ -70,13 +69,8 @@ export type CompileOptions = {
   url: URL;
 };
 
-export type RequestHandler = (
-  context: Context,
-) => Promise<unknown> | unknown;
-
-export type Middleware = (
-  next: RequestHandler,
-) => RequestHandler;
+export type RequestHandler = (context: Context) => Promise<unknown> | unknown;
+export type Middleware = (next: RequestHandler) => RequestHandler;
 
 export type ResponseTransformer = ((
   response: Response,
