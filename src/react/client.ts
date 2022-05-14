@@ -1,1 +1,4 @@
-export { SsrDataProvider as Ultra, useSsrData } from "./useSsrData.ts";
+export {
+  SsrDataProvider as Ultra,
+  useSsrData as useAsync,
+} from "./useSsrData.ts";

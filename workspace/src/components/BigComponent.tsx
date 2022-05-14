@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
-import { useSsrData } from "@ultra/react";
+import { useAsync } from "@ultra/react";
 
 export default function BigComponent({ children }: { children?: ReactNode }) {
-  const data = useSsrData("post", () => {
+  const data = useAsync("post", () => {
     return fetch("https://jsonplaceholder.typicode.com/posts/1").then(
       (response) => response.json(),
     );
