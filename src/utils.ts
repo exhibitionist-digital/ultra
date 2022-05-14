@@ -1,5 +1,20 @@
 import { extname, join } from "./deps.ts";
 
+export function hasTrailingSlash(input: string): boolean {
+  if (input.length > 1 && input[input.length - 1] === "/") {
+    return true;
+  }
+
+  return false;
+}
+
+export function removeTrailingSlash(input: string): string {
+  if (hasTrailingSlash(input)) {
+    input = input.slice(0, input.length - 1);
+  }
+  return input;
+}
+
 export function isHtmlResponse(
   response: Response,
 ) {

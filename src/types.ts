@@ -1,6 +1,7 @@
 import type { FunctionComponent } from "react";
-import type { Mode, RequestHandler, State } from "./deps.ts";
 import { Application } from "./app.ts";
+import { Context } from "./context.ts";
+import type { HTMLRewriter, ParseOptions } from "./deps.ts";
 
 export type ImportMap = { imports: Record<string, string> };
 
@@ -29,8 +30,9 @@ export type ServerOptions = {
 export type RenderStateFactory = ((
   request: Request,
 ) => Promise<State> | State);
+
 export type CreateRouterOptions = {
-  renderHandler: RequestHandler<Application>;
+  renderHandler: RequestHandler;
   rootUrl: URL;
   publicPath: string;
   compilerPath: string;
@@ -40,6 +42,62 @@ export type RenderOptions = {
   strategy?: RenderStrategy;
   bootstrapModules: string[];
 };
+
+export type Mode = "development" | "debug" | "production";
+
+export type ApplicationOptions = {
+  rootUrl: URL | string;
+  mode: Mode;
+};
+
+export type ContextOptions = {
+  app: Application;
+  request: Request;
+};
+
+export type State = {
+  [key: string]: unknown;
+  url: URL;
+};
+
+export type CompilerOptions = {
+  mode: Mode;
+  parserOptions?: ParseOptions;
+};
+
+export type CompileOptions = {
+  input: string;
+  url: URL;
+};
+
+export type RequestHandler = (
+  context: Context,
+) => Promise<unknown> | unknown;
+
+export type Middleware = (
+  next: RequestHandler,
+) => RequestHandler;
+
+export type ResponseTransformer = ((
+  response: Response,
+  context: Context,
+  rewriter: HTMLRewriter,
+) => void | Promise<void>);
+
+// deno-lint-ignore no-explicit-any
+export type PluginOptions = Record<string, any>;
+
+export interface Register<T = void> {
+  <Options extends PluginOptions>(
+    plugin: Plugin<Options>,
+    options?: Options,
+  ): T;
+}
+
+export type Plugin<Options extends PluginOptions = Record<never, never>> = (
+  instance: Application,
+  options: Options,
+) => Promise<void> | void;
 
 export type Config = {
   importMap?: string;

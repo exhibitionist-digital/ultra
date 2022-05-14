@@ -1,14 +1,12 @@
 import { createElement } from "react";
 import { Application } from "./app.ts";
-import { ServerAppComponent, ServerOptions } from "./types.ts";
-import { toCompilerUrl } from "./utils.ts";
-import {
-  join,
-  parseImportMap,
+import type {
   RequestHandler,
-  serveDir,
-  toFileUrl,
-} from "./deps.ts";
+  ServerAppComponent,
+  ServerOptions,
+} from "./types.ts";
+import { toCompilerUrl } from "./utils.ts";
+import { join, parseImportMap, serveDir, toFileUrl } from "./deps.ts";
 import { render } from "./render.ts";
 import { resolveImportMap } from "./config.ts";
 import { createCompileHandler } from "./handler/compile.ts";
@@ -25,12 +23,13 @@ export default async function createServer(
     compilerPath = "/@ultra/compiler/",
   } = options;
 
+  const publicUrl = join(rootUrl.pathname, publicPath);
   const importMap = await resolveImportMap(rootUrl.pathname);
+
   const parsedImportMap = parseImportMap(
     importMap,
     new URL("", import.meta.url),
   );
-  const publicUrl = join(rootUrl.pathname, publicPath);
 
   let { bootstrapModules = [] } = options;
 
@@ -38,7 +37,7 @@ export default async function createServer(
     (bootstrapModule) => toCompilerUrl(bootstrapModule, compilerPath),
   );
 
-  const renderHandler: RequestHandler<Application> = (context) => {
+  const renderHandler: RequestHandler = (context) => {
     return render(createElement(app, { state: context.state }), {
       bootstrapModules,
     });
@@ -54,7 +53,7 @@ export default async function createServer(
     compilerPath,
   );
 
-  const publicHandler: RequestHandler<Application> = ({ request }) =>
+  const publicHandler: RequestHandler = ({ request }) =>
     serveDir(request, { fsRoot: publicUrl, urlRoot: publicPath });
 
   /**
