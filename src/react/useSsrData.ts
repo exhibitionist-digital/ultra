@@ -3,6 +3,14 @@ import { useStream } from "./useStream.ts";
 import { assert, isClientSide, isServerSide } from "./utils.ts";
 import { parse, stringify } from "https://esm.sh/@brillout/json-s";
 
+/**
+ * All of this has been taken from {@link https://github.com/brillout/react-streaming}
+ * and modified to work within Deno
+ *
+ * If we can get a Deno native module {@link https://github.com/brillout/react-streaming/issues/3}
+ * we should be able to just use it as a dependency
+ */
+
 // deno-lint-ignore no-explicit-any
 const Context = createContext<Data>(undefined as any);
 
