@@ -3,7 +3,6 @@ import { createContext, lazy, useEffect, useState } from "react";
 import Ticker from "./components/Ticker.tsx";
 import Component from "./component.jsx";
 import type { State } from "../../server.ts";
-import useSWR from "swr";
 
 const BigLazyComponent = lazy(() => import("./components/BigComponent.tsx"));
 
@@ -15,7 +14,6 @@ type AppProps = {
 
 export default function App({ state }: AppProps) {
   const [mounted, setMounted] = useState(false);
-  const { data } = useSWR("https://jsonplaceholder.typicode.com/posts/1");
 
   useEffect(() => {
     setMounted(true);
@@ -36,7 +34,6 @@ export default function App({ state }: AppProps) {
           <Component />
           <Ticker label="Hydrated" ticked={mounted} />
           <BigLazyComponent />
-          <pre>{JSON.stringify(data, null, 2)}</pre>
         </body>
       </html>
     </HelmetProvider>

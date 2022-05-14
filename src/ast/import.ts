@@ -1,4 +1,4 @@
-import { resolveSpecifier, Visitor } from "../deps.ts";
+import { common, resolveSpecifier, Visitor } from "../deps.ts";
 import type {
   CallExpression,
   ImportDeclaration,
@@ -39,7 +39,7 @@ export class ImportVisitor extends Visitor {
     const resolvedSpecifier = resolveSpecifier(
       value,
       this.importMap,
-      new URL("/", "http://localhost"),
+      new URL("", import.meta.url),
     );
 
     if (resolvedSpecifier.matched) {
@@ -47,6 +47,14 @@ export class ImportVisitor extends Visitor {
     }
 
     const isExternalSpecifier = node.value.startsWith("http");
+    const isUltraSpecifier = Boolean(common([node.value, import.meta.url]));
+
+    /**
+     * Detect Ultra internals
+     */
+    if (resolvedSpecifier.matched && isUltraSpecifier) {
+      node.value = `/@ultra/compiler/${node.value}`;
+    }
 
     if (!isExternalSpecifier) {
       if (

@@ -3,6 +3,7 @@ import {
   basename,
   expandGlob,
   ExpandGlobOptions,
+  resolve,
   toFileUrl,
 } from "./deps.ts";
 import { readFileAndDecode } from "./utils.ts";
@@ -40,6 +41,19 @@ export class Application extends BaseApplication {
           basename(Deno.mainModule),
         ],
       };
+
+      /**
+       * An array of Ultra sources that can be compiled
+       * and served to a browser client.
+       */
+      const ultraSources = [
+        resolve("..", "react.ts"),
+      ];
+
+      for (const ultra of ultraSources) {
+        const url = toFileUrl(ultra);
+        sources.set(String(url), await readFileAndDecode(url));
+      }
 
       for await (const file of expandGlob(globPattern, globOptions)) {
         const filepath = toFileUrl(file.path);

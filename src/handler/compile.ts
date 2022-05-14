@@ -15,7 +15,10 @@ export function createCompileHandler(
     try {
       pathname = toLocalPathname(pathname, pathPrefix);
 
-      const url = new URL(join(rootUrl.toString(), pathname));
+      const url = pathname.startsWith("file://")
+        ? new URL(pathname)
+        : new URL(join(rootUrl.toString(), pathname));
+
       const input = sources.get(url.toString());
 
       if (!input) {

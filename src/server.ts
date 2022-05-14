@@ -26,7 +26,10 @@ export default async function createServer(
   } = options;
 
   const importMap = await resolveImportMap(rootUrl.pathname);
-  const parsedImportMap = parseImportMap(importMap, rootUrl);
+  const parsedImportMap = parseImportMap(
+    importMap,
+    new URL("", import.meta.url),
+  );
   const publicUrl = join(rootUrl.pathname, publicPath);
 
   let { bootstrapModules = [] } = options;
@@ -70,6 +73,23 @@ export default async function createServer(
     const message = `Ultra running on http://localhost:${event.detail.port}`;
     console.log(message);
   });
+
+  if (mode === "development") {
+    queueMicrotask(async () => {
+      const watchChannel = new BroadcastChannel("watch_channel");
+      const sources = await server.resolveSources();
+      const watcher = Deno.watchFs(
+        Array.from(sources.keys()).map((pathname) =>
+          new URL(pathname).pathname
+        ),
+        { recursive: true },
+      );
+
+      for await (const event of watcher) {
+        watchChannel.postMessage(event);
+      }
+    });
+  }
 
   return server;
 }
