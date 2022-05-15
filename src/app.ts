@@ -164,12 +164,12 @@ export class Application extends ApplicationEvents {
 
       for (const ultra of ultraSources) {
         const url = toFileUrl(relativeImportMetaPath(ultra, import.meta.url));
-        sources.set(String(url), await readFileAndDecode(url));
+        sources.set(String(url), await loadFileContent(url));
       }
 
       for await (const file of expandGlob(globPattern, globOptions)) {
         const filepath = toFileUrl(file.path);
-        const source = await readFileAndDecode(filepath);
+        const source = await loadFileContent(filepath);
 
         sources.set(String(filepath), source);
       }
