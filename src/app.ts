@@ -162,6 +162,8 @@ export class Application extends ApplicationEvents {
         join(".", "react", "utils.ts"),
       ];
 
+      console.log(`Ultra import url: ${import.meta.url}`);
+
       for (const ultra of ultraSources) {
         this.sources.load(
           relativeImportMetaPath(ultra, import.meta.url),
