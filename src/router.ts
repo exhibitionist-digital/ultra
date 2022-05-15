@@ -1,4 +1,4 @@
-import { Node } from "./deps.ts";
+import { debug, Node } from "./deps.ts";
 import { Context } from "./context.ts";
 import type { RequestHandler } from "./types.ts";
 import { removeTrailingSlash } from "./utils.ts";
@@ -6,6 +6,8 @@ import { removeTrailingSlash } from "./utils.ts";
 /**
  * Based on the work of abc {@link https://github.com/zhmushan/abc/blob/master/router.ts}
  */
+
+const log = debug("ultra:router");
 export class Router {
   trees: Record<string, Node<RequestHandler>> = {};
 
@@ -27,6 +29,8 @@ export class Router {
       this.trees[method] = root;
     }
 
+    log("added", path);
+
     root.add(path, handler);
   }
 
@@ -39,6 +43,8 @@ export class Router {
 
     path = removeTrailingSlash(path);
 
+    log("find handler", method, path);
+
     let requestHandler: RequestHandler | undefined;
 
     if (node) {
@@ -46,6 +52,10 @@ export class Router {
       if (handle) {
         requestHandler = handle;
       }
+    }
+
+    if (requestHandler) {
+      log("found handler", method, path);
     }
 
     return requestHandler ?? (() => new Response("Not found", { status: 404 }));

@@ -1,6 +1,7 @@
 export { Server } from "https://deno.land/std@0.139.0/http/server.ts";
 export { Node } from "https://deno.land/x/router@v2.0.1/mod.ts";
 export type { Handler } from "https://deno.land/std@0.139.0/http/server.ts";
+export { debug } from "https://deno.land/x/debug@0.2.0/mod.ts";
 
 export {
   HTMLRewriter,

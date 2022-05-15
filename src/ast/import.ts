@@ -1,4 +1,5 @@
 import {
+  debug,
   ExportAllDeclaration,
   ExportNamedDeclaration,
   resolveSpecifier,
@@ -10,6 +11,8 @@ import type {
   ParsedImportMap,
   StringLiteral,
 } from "../deps.ts";
+
+const log = debug("ultra:visitor");
 
 export class ImportVisitor extends Visitor {
   constructor(
@@ -66,11 +69,7 @@ export class ImportVisitor extends Visitor {
     }
 
     const isCompilerTarget = this.compilerTargets.includes(node.value);
-
-    console.log("isCompilerTarget", {
-      isCompilerTarget,
-      value: node.value,
-    });
+    log("isCompilerTarget", isCompilerTarget, node.value);
 
     /**
      * If a specifier matches, and its a compiler target

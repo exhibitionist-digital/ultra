@@ -1,8 +1,10 @@
-import { join } from "../deps.ts";
+import { debug, join } from "../deps.ts";
 import { toLocalPathname } from "../utils.ts";
 import type { RequestHandler } from "../types.ts";
 
 class CachedString extends String {}
+
+const log = debug("ultra:compiler");
 
 export function createCompileHandler(
   rootUrl: URL,
@@ -27,14 +29,16 @@ export function createCompileHandler(
       let output: string | null = null;
 
       if (input instanceof CachedString) {
-        console.log(`Cached: ${key}`);
+        log(`Cached: ${key}`);
         output = input.toString();
       } else {
-        console.log(`Compiling: ${key}`);
+        log(`Compiling: ${key}`);
+
         output = app.compiler.compile({
           input,
           url,
         });
+
         app.sources.set(key, new CachedString(output));
       }
 

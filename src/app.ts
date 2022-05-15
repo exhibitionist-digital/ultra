@@ -1,15 +1,6 @@
 import { Compiler } from "./compiler.ts";
 import { Context } from "./context.ts";
-import {
-  basename,
-  expandGlob,
-  ExpandGlobOptions,
-  Handler,
-  HTMLRewriter,
-  join,
-  Server,
-  toFileUrl,
-} from "./deps.ts";
+import { Handler, HTMLRewriter, Server, toFileUrl } from "./deps.ts";
 import { Router } from "./router.ts";
 import {
   ApplicationOptions,
@@ -20,11 +11,8 @@ import {
   ResponseTransformer,
 } from "./types.ts";
 import { ApplicationEvents, ListeningEvent } from "./events.ts";
-import { loadSource, relativeImportMetaPath } from "./utils.ts";
-import { Sources } from "./dev.ts";
-
-const extensions = [".tsx", ".ts", ".jsx", ".js"];
-const globPattern = `**/*+(${extensions.join("|")})`;
+import { loadSource } from "./utils.ts";
+import { resolveSourceUrls, Sources } from "./sources.ts";
 
 /**
  * Based on the work of abc {@link https://github.com/zhmushan/abc/blob/master/app.ts}
@@ -128,61 +116,12 @@ export class Application extends ApplicationEvents {
   };
 
   async resolveSources() {
-    try {
-      const globOptions: ExpandGlobOptions = {
-        root: this.rootUrl.pathname,
-        /**
-         * Might need a better way of defining this... maybe configurable?
-         *
-         * This excludes certain directories/files from being considered
-         * valid compile targets and preventing a request for
-         * http://localhost/@compiler/ultra/server.tsx.js and being sent the compiled source.
-         */
-        exclude: [
-          "vendor",
-          "tests",
-          ".ultra",
-          /**
-           * Note[deckchairlabs]: Deno.mainModule is undefined on Deno Deploy
-           * At least, the last time I checked...
-           */
-          basename(Deno.mainModule),
-        ],
-      };
-
-      /**
-       * An array of extra filepaths that can be compiled
-       * and served to a browser client.
-       *
-       * These paths are relative to this file "app.ts".
-       */
-      const extraCompilerTargets = [
-        join("..", "react.ts"),
-        join(".", "react", "client.ts"),
-        join(".", "react", "useSsrData.ts"),
-        join(".", "react", "useStream.ts"),
-        join(".", "react", "utils.ts"),
-      ];
-
-      const localCompilerTargets = expandGlob(globPattern, globOptions);
-
-      for (const target of extraCompilerTargets) {
-        this.sources.load(
-          relativeImportMetaPath(target, import.meta.url),
-        );
-      }
-
-      for await (const local of localCompilerTargets) {
-        this.sources.load(toFileUrl(local.path));
-      }
-
-      console.log(`Ultra import url: ${import.meta.url}`);
-      console.log(this.sources);
-
-      return this.sources;
-    } catch (error) {
-      throw error;
+    const urls = await resolveSourceUrls(import.meta.url, this.rootUrl);
+    for (const url of urls) {
+      await this.sources.load(url);
     }
+
+    return this.sources;
   }
 
   /**
