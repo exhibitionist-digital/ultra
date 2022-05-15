@@ -20,7 +20,8 @@ import {
   ResponseTransformer,
 } from "./types.ts";
 import { ApplicationEvents, ListeningEvent } from "./events.ts";
-import { loadFileContent, relativeImportMetaPath } from "./utils.ts";
+import { loadSource, relativeImportMetaPath } from "./utils.ts";
+import { SourcesMap } from "./dev.ts";
 
 const extensions = [".tsx", ".ts", ".jsx", ".js"];
 const globPattern = `**/*+(${extensions.join("|")})`;
@@ -39,6 +40,7 @@ export class Application extends ApplicationEvents {
   readonly rootUrl: URL;
   readonly compiler: Compiler;
   readonly mode: Mode;
+  sources: SourcesMap = new SourcesMap((key) => loadSource(key));
 
   constructor(options: ApplicationOptions) {
     super();
@@ -126,8 +128,6 @@ export class Application extends ApplicationEvents {
   };
 
   async resolveSources() {
-    const sources = new Map<string, string>();
-
     try {
       const globOptions: ExpandGlobOptions = {
         root: this.rootUrl.pathname,
@@ -164,17 +164,17 @@ export class Application extends ApplicationEvents {
 
       for (const ultra of ultraSources) {
         const url = toFileUrl(relativeImportMetaPath(ultra, import.meta.url));
-        sources.set(String(url), await loadFileContent(url));
+        this.sources.set(String(url), await loadSource(url));
       }
 
       for await (const file of expandGlob(globPattern, globOptions)) {
         const filepath = toFileUrl(file.path);
-        const source = await loadFileContent(filepath);
+        const source = await loadSource(filepath);
 
-        sources.set(String(filepath), source);
+        this.sources.set(String(filepath), source);
       }
 
-      return sources;
+      return this.sources;
     } catch (error) {
       throw error;
     }

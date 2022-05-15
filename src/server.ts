@@ -67,6 +67,7 @@ export default async function createServer(
 
   server.add("GET", "/*", renderHandler);
 
+  await server.resolveSources();
   await server.compiler.init(
     "https://cdn.esm.sh/@swc/wasm-web@1.2.182/wasm-web_bg.wasm",
   );

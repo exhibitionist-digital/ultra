@@ -47,7 +47,7 @@ export function toLocalPathname(pathname: string, pathPrefix: string) {
   return pathname.replace(pathPrefix, "").slice(0, -extension.length);
 }
 
-export async function loadFileContent(path: string | URL) {
+export async function loadSource(path: string | URL) {
   const url = typeof path === "string" ? new URL(path) : path;
   const content = url.protocol === "file:"
     ? await Deno.readTextFile(url)

@@ -9,8 +9,6 @@ export function createCompileHandler(
   const compileHandler: RequestHandler = async (
     { app, pathname },
   ) => {
-    const sources = await app.resolveSources();
-
     try {
       pathname = toLocalPathname(pathname, pathPrefix);
 
@@ -18,7 +16,7 @@ export function createCompileHandler(
         ? new URL(pathname)
         : new URL(join(rootUrl.toString(), pathname));
 
-      const input = sources.get(url.toString());
+      const input = await app.sources.get(url.toString());
 
       if (!input) {
         throw new Error(`${url} is not valid compiler input.`);
