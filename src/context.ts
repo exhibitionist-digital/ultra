@@ -13,6 +13,7 @@ export class Context {
     this.response = new Response();
     this.state = {
       url: this.url,
+      helmet: {},
     };
   }
 

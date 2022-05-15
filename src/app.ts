@@ -20,7 +20,7 @@ import {
   ResponseTransformer,
 } from "./types.ts";
 import { ApplicationEvents, ListeningEvent } from "./events.ts";
-import { readFileAndDecode, relativeImportMetaPath } from "./utils.ts";
+import { loadFileContent, relativeImportMetaPath } from "./utils.ts";
 
 const extensions = [".tsx", ".ts", ".jsx", ".js"];
 const globPattern = `**/*+(${extensions.join("|")})`;
