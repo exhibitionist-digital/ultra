@@ -15,8 +15,7 @@ export class Sources extends Map {
     return this;
   }
 
-  // deno-lint-ignore no-explicit-any
-  async get(key: string): Promise<any> {
+  async get<T = string>(key: string): Promise<T | undefined> {
     let value = super.get(key);
 
     if (value === invalidated) {
