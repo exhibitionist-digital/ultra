@@ -21,7 +21,7 @@ import {
 } from "./types.ts";
 import { ApplicationEvents, ListeningEvent } from "./events.ts";
 import { loadSource, relativeImportMetaPath } from "./utils.ts";
-import { SourcesMap } from "./dev.ts";
+import { Sources } from "./dev.ts";
 
 const extensions = [".tsx", ".ts", ".jsx", ".js"];
 const globPattern = `**/*+(${extensions.join("|")})`;
@@ -40,7 +40,7 @@ export class Application extends ApplicationEvents {
   readonly rootUrl: URL;
   readonly compiler: Compiler;
   readonly mode: Mode;
-  sources: SourcesMap = new SourcesMap((key) => loadSource(key));
+  sources: Sources = new Sources(loadSource);
 
   constructor(options: ApplicationOptions) {
     super();
@@ -163,15 +163,13 @@ export class Application extends ApplicationEvents {
       ];
 
       for (const ultra of ultraSources) {
-        const url = toFileUrl(relativeImportMetaPath(ultra, import.meta.url));
-        this.sources.set(String(url), await loadSource(url));
+        this.sources.load(
+          toFileUrl(relativeImportMetaPath(ultra, import.meta.url)),
+        );
       }
 
       for await (const file of expandGlob(globPattern, globOptions)) {
-        const filepath = toFileUrl(file.path);
-        const source = await loadSource(filepath);
-
-        this.sources.set(String(filepath), source);
+        this.sources.load(toFileUrl(file.path));
       }
 
       return this.sources;
