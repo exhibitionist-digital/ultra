@@ -162,8 +162,6 @@ export class Application extends ApplicationEvents {
         join(".", "react", "utils.ts"),
       ];
 
-      console.log(`Ultra import url: ${import.meta.url}`);
-
       for (const ultra of ultraSources) {
         this.sources.load(
           relativeImportMetaPath(ultra, import.meta.url),
@@ -173,6 +171,9 @@ export class Application extends ApplicationEvents {
       for await (const file of expandGlob(globPattern, globOptions)) {
         this.sources.load(toFileUrl(file.path));
       }
+
+      console.log(`Ultra import url: ${import.meta.url}`);
+      console.log(this.sources);
 
       return this.sources;
     } catch (error) {
