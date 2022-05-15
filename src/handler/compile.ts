@@ -13,7 +13,7 @@ export function createCompileHandler(
     try {
       const pathname = toLocalPathname(context.pathname, pathPrefix);
 
-      const url = pathname.startsWith("file://")
+      const url = pathname.startsWith("file://") || pathname.startsWith("http")
         ? new URL(pathname)
         : new URL(join(rootUrl.toString(), pathname));
 
