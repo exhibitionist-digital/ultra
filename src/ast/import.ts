@@ -65,7 +65,7 @@ export class ImportVisitor extends Visitor {
       node.value = resolvedSpecifier.resolvedImport.href;
     }
 
-    const isUltraSpecifier = node.value.startsWith("@ultra/") ||
+    const isUltraSpecifier = value.startsWith("@ultra/") ||
       Boolean(common([node.value, import.meta.url]));
 
     /**
