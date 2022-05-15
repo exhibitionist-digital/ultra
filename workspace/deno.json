@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "mode=dev deno run -A --unstable --no-check --watch server.tsx",
+    "dev": "mode=dev deno run -A --unstable --no-check server.tsx",
     "start": "deno run -A --unstable --no-check server.js",
     "cache": "deno cache --reload server.js",
     "vendor": "importMap=importMap.json deno run -A --unstable ../vendor.ts",

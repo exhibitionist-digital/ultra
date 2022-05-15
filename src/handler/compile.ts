@@ -6,11 +6,10 @@ export function createCompileHandler(
   rootUrl: URL,
   pathPrefix: string,
 ) {
-  const compileHandler: RequestHandler = async (
-    { app, pathname },
-  ) => {
+  const compileHandler: RequestHandler = async (context) => {
+    const { app } = context;
     try {
-      pathname = toLocalPathname(pathname, pathPrefix);
+      const pathname = toLocalPathname(context.pathname, pathPrefix);
 
       const url = pathname.startsWith("file://")
         ? new URL(pathname)
