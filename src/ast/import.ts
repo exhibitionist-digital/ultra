@@ -67,6 +67,11 @@ export class ImportVisitor extends Visitor {
 
     const isCompilerTarget = this.compilerTargets.includes(node.value);
 
+    console.log("isCompilerTarget", {
+      isCompilerTarget,
+      value: node.value,
+    });
+
     /**
      * If a specifier matches, and its a compiler target
      * Rewrite the specifier to the compiler path.
@@ -77,7 +82,7 @@ export class ImportVisitor extends Visitor {
 
     const isExternalSpecifier = node.value.startsWith("http");
 
-    if (!isExternalSpecifier) {
+    if (isCompilerTarget || !isExternalSpecifier) {
       if (
         node.value.endsWith(".ts") ||
         node.value.endsWith(".tsx") ||
