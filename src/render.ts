@@ -10,10 +10,7 @@ export async function render(
   element: ReactElement,
   options: RenderOptions,
 ) {
-  const {
-    strategy = "stream",
-    bootstrapModules,
-  } = options;
+  const { strategy, bootstrapModules } = options;
 
   element = createElement(SsrDataProvider, null, element);
 

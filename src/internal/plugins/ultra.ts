@@ -1,12 +1,42 @@
 import { ImportVisitor } from "../../ast/import.ts";
+import { join, serveDir } from "../../deps.ts";
 import type { ParsedImportMap } from "../../deps.ts";
-import type { Plugin, ResponseTransformer } from "../../types.ts";
+import type {
+  Plugin,
+  RequestHandler,
+  ResponseTransformer,
+} from "../../types.ts";
 import { isGetRequest, isHtmlResponse } from "../../utils.ts";
+import { createCompileHandler } from "../../handler/compile.ts";
 
-type PluginOptions = { importMap: ParsedImportMap };
+type PluginOptions = {
+  importMap: ParsedImportMap;
+  rootUrl: URL;
+  publicPath: string;
+  compilerPath: string;
+};
 
-export const ultraPlugin: Plugin<PluginOptions> = (app, { importMap }) => {
+export const ultraPlugin: Plugin<PluginOptions> = (
+  app,
+  options,
+) => {
+  const { importMap, publicPath, compilerPath, rootUrl } = options;
+  const publicUrl = join(rootUrl.pathname, publicPath);
+
+  const compileHandler = createCompileHandler(
+    rootUrl,
+    compilerPath,
+  );
+
+  const publicHandler: RequestHandler = ({ request }) => {
+    return serveDir(request, { fsRoot: publicUrl, urlRoot: publicPath });
+  };
+
+  app.add("GET", `/${publicPath}/*`, publicHandler);
+  app.add("GET", `${compilerPath}*.(tsx|ts|js|jsx).js`, compileHandler);
+
   app.compiler.addVisitor(new ImportVisitor(importMap));
+
   app.addResponseTransformer(
     responseTransformer,
   );

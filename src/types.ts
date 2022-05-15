@@ -7,6 +7,7 @@ export type ImportMap = { imports: Record<string, string> };
 
 export type ServerAppProps = {
   state: RenderState;
+  strategy: RenderStrategy;
 };
 
 export type ServerAppComponent = FunctionComponent<ServerAppProps>;
@@ -17,7 +18,9 @@ export type ServerOptions = {
   publicPath?: string;
   compilerPath?: string;
   context?: RenderStateFactory;
-  renderStrategy?: RenderStrategy;
+  renderStrategy?:
+    | RenderStrategy
+    | RenderStrategyResolver;
   /**
    * The modules provided here are injected into the HTML response.
    * You will definitely want to include the module that hydrates
@@ -27,6 +30,9 @@ export type ServerOptions = {
 };
 
 export type RenderStrategy = "stream" | "static";
+export type RenderStrategyResolver = ((
+  request: Request,
+) => Promise<RenderStrategy> | RenderStrategy);
 
 export type RenderStateFactory = ((
   request: Request,
@@ -47,7 +53,7 @@ export type CreateRouterOptions = {
 };
 
 export type RenderOptions = {
-  strategy?: RenderStrategy;
+  strategy: RenderStrategy;
   bootstrapModules: string[];
 };
 
