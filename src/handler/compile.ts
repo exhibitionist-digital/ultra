@@ -2,6 +2,8 @@ import { join } from "../deps.ts";
 import { toLocalPathname } from "../utils.ts";
 import type { RequestHandler } from "../types.ts";
 
+class CachedString extends String {}
+
 export function createCompileHandler(
   rootUrl: URL,
   pathPrefix: string,
@@ -15,16 +17,26 @@ export function createCompileHandler(
         ? new URL(pathname)
         : new URL(join(rootUrl.toString(), pathname));
 
-      const input = await app.sources.get(url.toString());
+      const key = url.toString();
+      const input = await app.sources.get<string | CachedString>(key);
 
       if (!input) {
         throw new Error(`${url} is not valid compiler input.`);
       }
 
-      const output = app.compiler.compile({
-        input,
-        url,
-      });
+      let output: string | null = null;
+
+      if (input instanceof CachedString) {
+        console.log(`Cached: ${key}`);
+        output = input.toString();
+      } else {
+        console.log(`Compiling: ${key}`);
+        output = app.compiler.compile({
+          input,
+          url,
+        });
+        app.sources.set(key, new CachedString(output));
+      }
 
       return new Response(output, {
         headers: {

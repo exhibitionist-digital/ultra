@@ -12,7 +12,7 @@ export class Sources extends Map {
     const value = await this.loadSource(key);
     this.set(key, value);
 
-    return this;
+    return value;
   }
 
   async get<T = string>(key: string): Promise<T | undefined> {
@@ -21,7 +21,6 @@ export class Sources extends Map {
     if (value === invalidated) {
       console.log(`Source load: ${key}`);
       value = await this.load(key);
-      this.set(key, value);
     }
 
     return value;
