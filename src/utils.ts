@@ -1,10 +1,27 @@
-import { dirname, extname, fromFileUrl, join, normalize } from "./deps.ts";
+import {
+  dirname,
+  extname,
+  fromFileUrl,
+  join,
+  normalize,
+  toFileUrl,
+} from "./deps.ts";
 
 export function relativeImportMetaPath(path: string, importMetaUrl: string) {
-  return join(
-    dirname(fromFileUrl(importMetaUrl)),
+  const importPathname = importMetaUrl.startsWith("http")
+    ? new URL(path, importMetaUrl)
+    : fromFileUrl(importMetaUrl);
+
+  if (importPathname instanceof URL) {
+    return importPathname;
+  }
+
+  const result = join(
+    dirname(importPathname),
     normalize(path),
   );
+
+  return toFileUrl(result);
 }
 
 export function hasTrailingSlash(input: string): boolean {
@@ -47,8 +64,15 @@ export function toLocalPathname(pathname: string, pathPrefix: string) {
   return pathname.replace(pathPrefix, "").slice(0, -extension.length);
 }
 
+export function toUrl(path: string) {
+  return path.startsWith("file://") ? toFileUrl(path) : new URL(path);
+}
+
 export async function loadSource(path: string | URL) {
-  const url = typeof path === "string" ? new URL(path) : path;
+  const url = typeof path === "string"
+    ? path.startsWith("file://") ? toFileUrl(fromFileUrl(path)) : new URL(path)
+    : path;
+
   const content = url.protocol === "file:"
     ? await Deno.readTextFile(url)
     : await (await fetch(url.toString())).text();

@@ -164,7 +164,7 @@ export class Application extends ApplicationEvents {
 
       for (const ultra of ultraSources) {
         this.sources.load(
-          toFileUrl(relativeImportMetaPath(ultra, import.meta.url)),
+          relativeImportMetaPath(ultra, import.meta.url),
         );
       }
 
