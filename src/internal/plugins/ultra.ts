@@ -16,7 +16,7 @@ type PluginOptions = {
   compilerPath: string;
 };
 
-export const ultraPlugin: Plugin<PluginOptions> = (
+export const ultraPlugin: Plugin<PluginOptions> = async (
   app,
   options,
 ) => {
@@ -35,7 +35,11 @@ export const ultraPlugin: Plugin<PluginOptions> = (
   app.add("GET", `/${publicPath}/*`, publicHandler);
   app.add("GET", `${compilerPath}*.(tsx|ts|js|jsx).js`, compileHandler);
 
-  app.compiler.addVisitor(new ImportVisitor(importMap));
+  await app.resolveSources();
+
+  app.compiler.addVisitor(
+    new ImportVisitor(importMap, Array.from(app.sources.keys())),
+  );
 
   app.addResponseTransformer(
     responseTransformer,

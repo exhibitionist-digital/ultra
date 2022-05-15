@@ -1,5 +1,4 @@
 import {
-  common,
   ExportAllDeclaration,
   ExportNamedDeclaration,
   resolveSpecifier,
@@ -15,6 +14,7 @@ import type {
 export class ImportVisitor extends Visitor {
   constructor(
     private importMap: ParsedImportMap,
+    private compilerTargets: string[],
   ) {
     super();
   }
@@ -65,13 +65,13 @@ export class ImportVisitor extends Visitor {
       node.value = resolvedSpecifier.resolvedImport.href;
     }
 
-    const isUltraSpecifier = value.startsWith("@ultra/") ||
-      Boolean(common([node.value, import.meta.url]));
+    const isCompilerTarget = this.compilerTargets.includes(node.value);
 
     /**
-     * Detect Ultra internals
+     * If a specifier matches, and its a compiler target
+     * Rewrite the specifier to the compiler path.
      */
-    if (resolvedSpecifier.matched && isUltraSpecifier) {
+    if (resolvedSpecifier.matched && isCompilerTarget) {
       node.value = `/@ultra/compiler/${node.value}`;
     }
 
