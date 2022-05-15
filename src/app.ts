@@ -151,10 +151,12 @@ export class Application extends ApplicationEvents {
       };
 
       /**
-       * An array of Ultra paths sources that can be compiled
+       * An array of extra filepaths that can be compiled
        * and served to a browser client.
+       *
+       * These paths are relative to this file "app.ts".
        */
-      const ultraSources = [
+      const extraCompilerTargets = [
         join("..", "react.ts"),
         join(".", "react", "client.ts"),
         join(".", "react", "useSsrData.ts"),
@@ -162,14 +164,16 @@ export class Application extends ApplicationEvents {
         join(".", "react", "utils.ts"),
       ];
 
-      for (const ultra of ultraSources) {
+      const localCompilerTargets = expandGlob(globPattern, globOptions);
+
+      for (const target of extraCompilerTargets) {
         this.sources.load(
-          relativeImportMetaPath(ultra, import.meta.url),
+          relativeImportMetaPath(target, import.meta.url),
         );
       }
 
-      for await (const file of expandGlob(globPattern, globOptions)) {
-        this.sources.load(toFileUrl(file.path));
+      for await (const local of localCompilerTargets) {
+        this.sources.load(toFileUrl(local.path));
       }
 
       console.log(`Ultra import url: ${import.meta.url}`);
