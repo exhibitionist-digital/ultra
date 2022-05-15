@@ -65,7 +65,8 @@ export class ImportVisitor extends Visitor {
       node.value = resolvedSpecifier.resolvedImport.href;
     }
 
-    const isUltraSpecifier = Boolean(common([node.value, import.meta.url]));
+    const isUltraSpecifier = node.value.startsWith("@ultra/") ||
+      Boolean(common([node.value, import.meta.url]));
 
     /**
      * Detect Ultra internals
