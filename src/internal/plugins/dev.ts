@@ -8,8 +8,12 @@ export const devPlugin: Plugin = (app) => {
 
   queueMicrotask(async () => {
     const sources = await app.resolveSources();
+    const validWatchTargets = Array.from(sources.keys()).filter((pathname) =>
+      !pathname.startsWith("http")
+    );
+
     const watcher = Deno.watchFs(
-      Array.from(sources.keys()).map((pathname) => new URL(pathname).pathname),
+      validWatchTargets.map((pathname) => new URL(pathname).pathname),
       { recursive: true },
     );
 
