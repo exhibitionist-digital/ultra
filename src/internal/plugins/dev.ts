@@ -7,21 +7,17 @@ export const devPlugin: Plugin = (app) => {
   const listeners = new Set<WebSocket>();
 
   queueMicrotask(async () => {
-    const sources = await app.resolveSources();
-    const validWatchTargets = Array.from(sources.keys()).filter((pathname) =>
-      !pathname.startsWith("http")
-    );
+    const sourceFiles = await app.resolveSources();
 
     const watcher = Deno.watchFs(
-      validWatchTargets.map((pathname) => new URL(pathname).pathname),
+      sourceFiles.watchTargets(),
       { recursive: true },
     );
 
     for await (const event of watcher) {
       if (event.kind === "modify") {
         for (const path of event.paths) {
-          const url = toFileUrl(path);
-          app.sources.invalidate(url.toString());
+          app.sourceFiles.invalidate(toFileUrl(path));
         }
       }
       dev.postMessage(event);

@@ -38,7 +38,7 @@ export const ultraPlugin: Plugin<PluginOptions> = async (
   await app.resolveSources();
 
   app.compiler.addVisitor(
-    new ImportVisitor(importMap, Array.from(app.sources.keys())),
+    new ImportVisitor(importMap, Array.from(app.sourceFiles.keys())),
   );
 
   app.addResponseTransformer(

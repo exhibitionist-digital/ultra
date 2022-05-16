@@ -12,7 +12,7 @@ import {
 } from "./types.ts";
 import { ApplicationEvents, ListeningEvent } from "./events.ts";
 import { loadSource } from "./utils.ts";
-import { resolveSourceUrls, Sources } from "./sources.ts";
+import { resolveSourceUrls, SourceFiles } from "./sources.ts";
 
 /**
  * Based on the work of abc {@link https://github.com/zhmushan/abc/blob/master/app.ts}
@@ -28,7 +28,7 @@ export class Application extends ApplicationEvents {
   readonly rootUrl: URL;
   readonly compiler: Compiler;
   readonly mode: Mode;
-  sources: Sources = new Sources(loadSource);
+  sourceFiles = new SourceFiles(loadSource);
 
   constructor(options: ApplicationOptions) {
     super();
@@ -118,10 +118,10 @@ export class Application extends ApplicationEvents {
   async resolveSources() {
     const urls = await resolveSourceUrls(import.meta.url, this.rootUrl);
     for (const url of urls) {
-      await this.sources.load(url);
+      await this.sourceFiles.load(url);
     }
 
-    return this.sources;
+    return this.sourceFiles;
   }
 
   /**

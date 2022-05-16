@@ -8,49 +8,84 @@ import {
 } from "./deps.ts";
 import { relativeImportMetaPath } from "./utils.ts";
 
-const invalidated = "__$$invalidated$$__";
-
 const log = debug("ultra:sources");
 
-export class Sources extends Map {
-  // deno-lint-ignore no-explicit-any
-  constructor(private loadSource: (key: string) => Promise<any>) {
+type SourceFile = {
+  url: URL;
+  code: string;
+  invalidated?: boolean;
+};
+
+export class SourceFiles extends Map {
+  constructor(private loadSource: (url: URL) => Promise<string>) {
     super();
   }
 
-  async load(key: string | URL) {
-    key = typeof key === "string" ? key : key.toString();
-
-    const value = await this.loadSource(key);
-    this.set(key, value);
-
-    return value;
+  keys(): IterableIterator<string> {
+    return super.keys();
   }
 
-  async get<T = string>(key: string): Promise<T | undefined> {
-    let value = super.get(key);
+  /**
+   * Returns an array of valid pathnames for Deno.watchFs.
+   */
+  watchTargets() {
+    return Array.from(this.keys()).filter((url) => !url.startsWith("http")).map(
+      (url) => new URL(url).pathname,
+    );
+  }
 
-    if (value === invalidated) {
-      log(`Source load: ${key}`);
-      value = await this.load(key);
+  entries(): IterableIterator<[string, SourceFile]> {
+    return super.entries();
+  }
+
+  /**
+   * Loads the source code of the passed {@link URL}, can be a local or remote.
+   */
+  async load(url: URL) {
+    const code = await this.loadSource(url);
+    const source: SourceFile = { url, code };
+    this.set(url.toString(), source);
+
+    log(`Source loaded: ${url}`);
+
+    return source;
+  }
+
+  /**
+   * Returns the {@link SourceFile} of the provided {@link URL}.
+   * If the {@link SourceFile} has been marked as "invalidated" the source is reloaded.
+   */
+  async get(url: URL) {
+    let source: SourceFile | undefined = super.get(url.toString());
+
+    if (source && source.invalidated) {
+      source = await this.load(url);
     }
 
-    return value;
+    return source;
   }
 
-  invalidate(key: string) {
-    if (this.has(key)) {
-      log(`Source invalidated: ${key}`);
-      this.set(key, invalidated);
+  /**
+   * Marks the {@link SourceFile} as invalidated.
+   */
+  async invalidate(url: URL) {
+    const source = await this.get(url);
+
+    if (source) {
+      log(`Source invalidated: ${url}`);
+      this.set(url.toString(), { ...source, invalidated: true });
     }
 
     return this;
   }
 }
 
-const extensions = [".tsx", ".ts", ".jsx", ".js"];
+const extensions = [".tsx", ".ts", ".jsx", ".js", ".css"];
 const globPattern = `**/*+(${extensions.join("|")})`;
 
+/**
+ * Returns an array of source file urls.
+ */
 export async function resolveSourceUrls(
   from: string,
   rootUrl: URL,
@@ -67,9 +102,11 @@ export async function resolveSourceUrls(
      * http://localhost/@compiler/ultra/server.tsx.js and being sent the compiled source.
      */
     exclude: [
+      ".ultra",
       "vendor",
       "tests",
-      ".ultra",
+      "api",
+      "src/api",
       /**
        * Note[deckchairlabs]: Deno.mainModule is undefined on Deno Deploy
        * At least, the last time I checked...
@@ -79,12 +116,12 @@ export async function resolveSourceUrls(
   };
 
   /**
-   * An array of extra filepaths that can be compiled
+   * An array of remote filepaths that can be compiled
    * and served to a browser client.
    *
-   * These paths are relative to this file "app.ts".
+   * These paths are relative to the "from" parameter.
    */
-  const extraCompilerTargets = [
+  const remoteCompilerTargets = [
     join("..", "react.ts"),
     join(".", "react", "client.ts"),
     join(".", "react", "useSsrData.ts"),
@@ -94,7 +131,7 @@ export async function resolveSourceUrls(
 
   const localCompilerTargets = expandGlob(globPattern, globOptions);
 
-  for (const target of extraCompilerTargets) {
+  for (const target of remoteCompilerTargets) {
     urls.push(relativeImportMetaPath(target, from));
   }
 

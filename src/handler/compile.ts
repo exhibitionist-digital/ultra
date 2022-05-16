@@ -5,6 +5,13 @@ import type { RequestHandler } from "../types.ts";
 class CachedString extends String {}
 
 const log = debug("ultra:compiler");
+const compilerCache = new Map<string, CachedString>();
+
+function toAbsoluteUrl(pathname: string, rootUrl: URL) {
+  return pathname.startsWith("file://") || pathname.startsWith("http")
+    ? new URL(pathname)
+    : new URL(join(rootUrl.toString(), pathname));
+}
 
 export function createCompileHandler(
   rootUrl: URL,
@@ -14,32 +21,29 @@ export function createCompileHandler(
     const { app } = context;
     try {
       const pathname = toLocalPathname(context.pathname, pathPrefix);
+      const url = toAbsoluteUrl(pathname, rootUrl);
 
-      const url = pathname.startsWith("file://") || pathname.startsWith("http")
-        ? new URL(pathname)
-        : new URL(join(rootUrl.toString(), pathname));
+      const sourceFile = await app.sourceFiles.get(url);
 
-      const key = url.toString();
-      const input = await app.sources.get<string | CachedString>(key);
-
-      if (!input) {
-        throw new Error(`${url} is not valid compiler input.`);
+      if (!sourceFile) {
+        throw new Error(`${url} is not a valid compiler source file.`);
       }
 
       let output: string | null = null;
+      const cached = compilerCache.get(url.toString());
 
-      if (input instanceof CachedString) {
-        log(`Cached: ${key}`);
-        output = input.toString();
+      if (cached) {
+        log(`Cached: ${url}`);
+        output = cached.toString();
       } else {
-        log(`Compiling: ${key}`);
+        log(`Compiling: ${url}`);
 
         output = app.compiler.compile({
-          input,
+          input: sourceFile.code,
           url,
         });
 
-        app.sources.set(key, new CachedString(output));
+        compilerCache.set(url.toString(), new CachedString(output));
       }
 
       return new Response(output, {

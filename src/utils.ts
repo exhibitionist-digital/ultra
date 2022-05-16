@@ -75,7 +75,7 @@ export async function loadSource(path: string | URL) {
 
   const content = url.protocol === "file:"
     ? await Deno.readTextFile(url)
-    : await (await fetch(url.toString())).text();
+    : await (await fetch(url.toString(), { cache: "no-cache" })).text();
 
   return content;
 }
