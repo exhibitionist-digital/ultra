@@ -4,7 +4,7 @@
 
 The easiest way to work on Ultra is to clone this repo and navigate to the
 `/workspace` directory. It contains a simple webapp that imports Ultra from a
-relative URL.
+relative URL, so it can be used to test changes to the Ultra codebase.
 
 - `cd workspace`
 - `deno task dev`
@@ -72,8 +72,9 @@ Our coding style standard follows the
 [Deno style guide](https://deno.land/manual/contributing/style_guide.md) (DSG).
 Please pay particular attention to the following style guide items:
 
-- [JSDoc comments](https://jsdoc.app/) on all exported functions. (see
-  https://deno.land/manual/contributing/style_guide.md#use-jsdoc-for-exported-symbols)
+- JSDoc-style descriptions (C-style comments) should be added to all exported
+  functions (see
+  https://deno.land/manual/contributing/style_guide.md#use-jsdoc-for-exported-symbols).
 - Unit tests are required for each module and test names should be explicit (see
   https://deno.land/manual/contributing/style_guide.md#each-module-should-come-with-a-test-module).
 - Top level functions should not use arrow syntax (See
