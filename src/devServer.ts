@@ -1,10 +1,12 @@
 import { devServerWebsocketPort, sourceDirectory } from "./env.ts";
-import { readLines, serve } from "./deps.ts";
+import { readLines, Server } from "./deps.ts";
 
 export type DevServerOptions = {
   /** Path to a script that initializes the server. eg. "./server.js" */
   server: string;
 };
+
+Deno.env.set("mode", "dev");
 
 const listeners = new Set<WebSocket>();
 let process: Deno.Process;
@@ -90,14 +92,23 @@ const devServer = (userOptions: DevServerOptions) => {
 
   watcher();
 
-  serve((request: Request): Response => {
-    const { socket, response } = Deno.upgradeWebSocket(request);
-    listeners.add(socket);
-    socket.onclose = () => {
-      listeners.delete(socket);
-    };
-    return response;
-  }, { port: Number(devServerWebsocketPort) });
+  const server = new Server({
+    hostname: "0.0.0.0",
+    port: devServerWebsocketPort,
+    handler(request: Request): Response {
+      const { socket, response } = Deno.upgradeWebSocket(request);
+      listeners.add(socket);
+      socket.onclose = () => {
+        listeners.delete(socket);
+      };
+      return response;
+    },
+  });
+
+  server.listenAndServe();
+  console.log(
+    `Ultra development server running ws://localhost:${devServerWebsocketPort}`,
+  );
 };
 
 export default devServer;

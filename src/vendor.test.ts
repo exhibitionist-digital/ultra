@@ -24,7 +24,7 @@ describe("vendor mapping", () => {
   });
 
   it("should create vendor map with imports prop", async () => {
-    const vendorMap = await vendor();
+    const vendorMap = await vendor({ dir: ".ultra" });
     // console.error("vendor map json", vendorMap);
     assert(vendorMap.imports.react);
     assert(!vendorMap.imports.adfadf);

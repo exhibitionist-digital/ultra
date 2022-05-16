@@ -34,6 +34,7 @@ const envSchema = object({
   vendorDirectory: defaulted(string(), "x"),
   apiDirectory: defaulted(string(), "src/api"),
   disableStreaming: defaulted(boolean(), false),
+  enableLinkPreloadHeaders: defaulted(boolean(), true),
 });
 
 export type UltraEnvironment = Infer<typeof envSchema>;
@@ -48,6 +49,7 @@ export function resolveEnv(env?: { [index: string]: string }) {
   const sourceDirectory = env?.ULTRA_SRC || env?.source;
   const vendorDirectory = env?.ULTRA_VENDOR || env?.vendor;
   const apiDirectory = env?.ULTRA_API_SRC || env?.api;
+  const enableLinkPreloadHeaders = env?.enableLinkPreloadHeaders;
 
   const origin = env?.ULTRA_ORIGIN ||
     `http://localhost:${port}`;
@@ -65,6 +67,7 @@ export function resolveEnv(env?: { [index: string]: string }) {
     apiDirectory,
     lang,
     disableStreaming,
+    enableLinkPreloadHeaders,
   };
 
   /**
