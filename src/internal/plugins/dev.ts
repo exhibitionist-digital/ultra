@@ -1,9 +1,9 @@
 import { serve } from "https://deno.land/std@0.139.0/http/server.ts";
 import { toFileUrl } from "../../deps.ts";
+import { dev } from "../../broadcast.ts";
 import type { Plugin } from "../../types.ts";
 
 export const devPlugin: Plugin = (app) => {
-  const dev = new BroadcastChannel("dev");
   const listeners = new Set<WebSocket>();
 
   queueMicrotask(async () => {
@@ -20,7 +20,7 @@ export const devPlugin: Plugin = (app) => {
           app.sourceFiles.invalidate(toFileUrl(path));
         }
       }
-      dev.postMessage(event);
+      dev.postMessage({ type: "reload", paths: event.paths });
     }
   });
 

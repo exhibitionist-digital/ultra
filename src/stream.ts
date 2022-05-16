@@ -12,7 +12,7 @@ import { assert } from "./react/utils.ts";
 type RenderToStreamOptions = {
   disable?: boolean;
   bootstrapModules: string[];
-  onBoundaryError?: (err: unknown) => void;
+  onBoundaryError?: (error: unknown) => void;
 };
 
 export async function renderToStream(
@@ -20,16 +20,16 @@ export async function renderToStream(
   { disable, bootstrapModules, onBoundaryError }: RenderToStreamOptions,
 ) {
   let didError = false;
-  let firstErr: unknown = null;
+  let firstError: unknown = null;
   let reactBug: unknown = null;
 
-  const onError = (err: unknown) => {
+  const onError = (error: unknown) => {
     didError = true;
-    firstErr = firstErr || err;
+    firstError = firstError || error;
     afterReactBugCatch(() => {
       // Is not a React internal error (i.e. a React bug)
-      if (err !== reactBug) {
-        onBoundaryError?.(err);
+      if (error !== reactBug) {
+        onBoundaryError?.(error);
       }
     });
   };
@@ -45,19 +45,19 @@ export async function renderToStream(
 
   // Upon React internal errors (i.e. React bugs), React rejects `allReady`.
   // React doesn't reject `allReady` upon boundary errors.
-  allReady.catch((err) => {
+  allReady.catch((error) => {
     didError = true;
-    firstErr = firstErr || err;
-    reactBug = err;
+    firstError = firstError || error;
+    reactBug = error;
     // Only log if it wasn't used as rejection for `await renderToStream()`
-    if (reactBug !== firstErr || promiseResolved) {
+    if (reactBug !== firstError || promiseResolved) {
       console.error(reactBug);
     }
   });
 
-  if (didError) throw firstErr;
+  if (didError) throw firstError;
   if (disable) await allReady;
-  if (didError) throw firstErr;
+  if (didError) throw firstError;
 
   const { readableWrapper, streamEnd, injectToStream } = createReadableWrapper(
     readableOriginal,

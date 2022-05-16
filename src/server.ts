@@ -1,6 +1,7 @@
 import { createElement } from "react";
 import { Application } from "./app.ts";
 import type {
+  Mode,
   RequestHandler,
   ServerAppComponent,
   ServerOptions,
@@ -16,7 +17,7 @@ export default async function createServer(
   options: ServerOptions = {},
 ) {
   const {
-    mode = "production",
+    mode = Deno.env.get("ULTRA_MODE") as Mode || "production",
     publicPath = "public",
     rootUrl = toFileUrl(Deno.cwd()),
     compilerPath = "/@ultra/compiler/",
