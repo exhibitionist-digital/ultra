@@ -32,4 +32,5 @@ export async function ultraHandler(context: Context): Promise<void> {
   context.response.status = response.status;
   context.response.headers = response.headers;
   context.response.body = response.body;
+
 }

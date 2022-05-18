@@ -1,5 +1,4 @@
 import {
-  hashFile,
   isRemoteSource,
   isValidUrl,
   isVendorSource,
@@ -7,13 +6,33 @@ import {
   resolveFileUrl,
   stripTrailingSlash,
 } from "./resolver.ts";
+import { hashFile } from "./hashFile.ts";
 import { assert, assertEquals } from "./deps.dev.ts";
 
 Deno.test("hashFile", () => {
-  const hash = hashFile("https://esm.sh/react");
+  const react = hashFile("https://esm.sh/react");
+  const react18 = hashFile("https://esm.sh/react@18");
+  const react18Dev = hashFile("https://esm.sh/react@18?dev");
+  const react18JsxRuntime = hashFile("https://esm.sh/react@18/jsx-runtime.js");
+
   assertEquals(
-    hash,
-    `8ca2952001a498bd682ddd3c98f70920ce4fdaa3b326d23d5d66a6d338c6efdd`,
+    react,
+    `react.8ca2952001a498bd`,
+  );
+
+  assertEquals(
+    react18,
+    "react@18.fb4824b7e80dc85c",
+  );
+
+  assertEquals(
+    react18Dev,
+    "react@18.fb4824b7e80dc85c",
+  );
+
+  assertEquals(
+    react18JsxRuntime,
+    "jsx-runtime.js.072132c59a25b214",
   );
 });
 
@@ -57,6 +76,11 @@ Deno.test("resolvers", async (t) => {
       replaceFileExt("/foo/bar/baz/app.js", ".ts"),
       "/foo/bar/baz/app.ts",
     );
+    assertEquals(
+      replaceFileExt("/absolute/test.jsx.foo/app.jsx", ".js"),
+      "/absolute/test.jsx.foo/app.js",
+    );
+    assertEquals(replaceFileExt("app.js", ".js"), "app.js");
   });
   await t.step("strip trailing slash", () => {
     assertEquals(

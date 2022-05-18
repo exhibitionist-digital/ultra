@@ -1,7 +1,7 @@
 import puppeteer from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
 import type { Browser } from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
-import { join } from "https://deno.land/std@0.135.0/path/mod.ts";
-import { readLines } from "https://deno.land/std@0.135.0/io/mod.ts";
+import { join } from "https://deno.land/std@0.136.0/path/mod.ts";
+import { readLines } from "https://deno.land/std@0.136.0/io/mod.ts";
 
 type StartServerReturn = {
   close: () => Promise<void>;

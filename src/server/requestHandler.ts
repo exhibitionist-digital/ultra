@@ -1,6 +1,6 @@
 import assets from "../assets.ts";
-import { join, LRU, readableStreamFromReader } from "../deps.ts";
-import { disableStreaming, lang } from "../env.ts";
+import { join, readableStreamFromReader, resolve, toFileUrl } from "../deps.ts";
+import { disableStreaming, enableLinkPreloadHeaders, lang } from "../env.ts";
 import render from "../render.ts";
 import {
   replaceFileExt,
@@ -9,6 +9,7 @@ import {
 } from "../resolver.ts";
 import transform from "../transform.ts";
 import type { APIHandler, ImportMap } from "../types.ts";
+import { preloader } from "../preloader.ts";
 
 type CreateRequestHandlerOptions = {
   cwd: string;
@@ -21,6 +22,8 @@ type CreateRequestHandlerOptions = {
 };
 
 type RequestHandler = ((request: Request) => Promise<Response>);
+// Reference object for storing transpiled esm
+const TranspileObj: Record<string, string> = {};
 
 export async function createRequestHandler(
   options: CreateRequestHandlerOptions,
@@ -32,7 +35,6 @@ export async function createRequestHandler(
     isDev,
   } = options;
 
-  const memory = new LRU(500);
   const [{ raw, transpile }, vendor] = await Promise.all([
     assets(sourceDirectory),
     assets(`.ultra/${vendorDirectory}`),
@@ -40,6 +42,7 @@ export async function createRequestHandler(
 
   return async function requestHandler(request: Request): Promise<Response> {
     const requestUrl = new URL(request.url);
+    const fileSrcRootUri = toFileUrl(resolve(cwd, sourceDirectory)).toString();
 
     const xForwardedProto = request.headers.get("x-forwarded-proto");
     if (xForwardedProto) requestUrl.protocol = xForwardedProto + ":";
@@ -49,9 +52,28 @@ export async function createRequestHandler(
 
     // vendor map
     if (vendor.raw.has(".ultra" + requestUrl.pathname)) {
-      const headers = {
+      const headers = new Headers({
         "content-type": "application/javascript",
-      };
+      });
+
+      if (enableLinkPreloadHeaders) {
+        const ultraUri = toFileUrl(resolve(cwd, ".ultra")).toString();
+
+        const link = await preloader(
+          ultraUri + requestUrl.pathname,
+          (specifier: string) => {
+            const path = specifier.replace(ultraUri, "");
+
+            if (path !== requestUrl.pathname) {
+              return requestUrl.origin + path;
+            }
+          },
+        );
+
+        if (link) {
+          headers.set("link", link);
+        }
+      }
 
       const file = await Deno.open(
         `./.ultra${requestUrl.pathname}`,
@@ -64,9 +86,28 @@ export async function createRequestHandler(
     // static assets
     if (raw.has(`${sourceDirectory}${requestUrl.pathname}`)) {
       const contentType = raw.get(`${sourceDirectory}${requestUrl.pathname}`);
-      const headers = {
+      const headers = new Headers({
         "content-type": contentType,
-      };
+      });
+
+      if (
+        enableLinkPreloadHeaders && contentType === "application/javascript"
+      ) {
+        const link = await preloader(
+          fileSrcRootUri + requestUrl.pathname,
+          (specifier: string) => {
+            const path = specifier.replace(fileSrcRootUri, "");
+
+            if (path !== requestUrl.pathname) {
+              return requestUrl.origin + path;
+            }
+          },
+        );
+
+        if (link) {
+          headers.set("link", link);
+        }
+      }
 
       const file = await Deno.open(
         join(".", sourceDirectory, requestUrl.pathname),
@@ -77,11 +118,11 @@ export async function createRequestHandler(
     }
 
     const transpilation = async (file: string) => {
-      const headers = {
+      const headers = new Headers({
         "content-type": "application/javascript",
-      };
+      });
 
-      let js = memory.get(requestUrl.pathname);
+      let js = TranspileObj[requestUrl.pathname];
 
       if (!js) {
         const source = await Deno.readTextFile(resolveFileUrl(cwd, file));
@@ -98,7 +139,23 @@ export async function createRequestHandler(
 
         console.log(`Transpile ${file} in ${duration}ms`);
 
-        if (!isDev) memory.set(requestUrl.pathname, js);
+        if (!isDev) TranspileObj[requestUrl.pathname] = js;
+      }
+
+      if (enableLinkPreloadHeaders) {
+        const link = await preloader(
+          resolveFileUrl(cwd, file).toString(),
+          (specifier: string) => {
+            const path = specifier.replace(fileSrcRootUri, "");
+            if (replaceFileExt(path, ".js") !== requestUrl.pathname) {
+              return requestUrl.origin + path;
+            }
+          },
+        );
+
+        if (link) {
+          headers.set("link", link);
+        }
       }
 
       //@ts-ignore any

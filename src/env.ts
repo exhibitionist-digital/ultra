@@ -55,3 +55,8 @@ export const apiDirectory = env.apiDirectory;
  * @default false
  */
 export const disableStreaming = env.disableStreaming;
+/**
+ * Enable/disable link modulepreload header generation.
+ * @default true
+ */
+export const enableLinkPreloadHeaders = env.enableLinkPreloadHeaders;
