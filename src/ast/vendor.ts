@@ -5,7 +5,7 @@ import {
   StringLiteral,
   Visitor,
 } from "../deps.ts";
-import { hashFile } from "../resolver.ts";
+import { hashFile, isValidUrl } from "../resolver.ts";
 
 const prefix = "./";
 
@@ -35,12 +35,15 @@ export class VendorVisitor extends Visitor {
 
   private replaceImportStringLiteral(node: StringLiteral) {
     const { value } = node;
-    const url = new URL(value);
 
-    node.value = `${prefix + hashFile(value.replace(url.origin, ""))}.js`;
+    if (isValidUrl(value)) {
+      const url = new URL(value);
 
-    //@ts-ignore StringLiteral missing raw field
-    node.raw = `"${node.value}"`;
+      node.value = `${prefix + hashFile(value.replace(url.origin, ""))}.js`;
+
+      //@ts-ignore StringLiteral missing raw field
+      node.raw = `"${node.value}"`;
+    }
 
     return node;
   }
