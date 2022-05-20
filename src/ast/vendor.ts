@@ -11,6 +11,11 @@ import { isValidUrl } from "../resolver.ts";
 const prefix = "./";
 
 export class VendorVisitor extends Visitor {
+  constructor(origin: string) {
+    super();
+    // @ts-ignore origin
+    this.origin = origin;
+  }
   visitExportAllDeclaration(node: ExportAllDeclaration) {
     node.source = this.replaceImportStringLiteral(node.source);
     return super.visitExportAllDeclaration(node);
@@ -36,8 +41,8 @@ export class VendorVisitor extends Visitor {
 
   private replaceImportStringLiteral(node: StringLiteral) {
     let { value } = node;
-    //hotfix for esm.sh
-    if (!isValidUrl(value)) value = "https://cdn.esm.sh" + value;
+    // @ts-ignore origin
+    if (!isValidUrl(value)) value = this.origin + value;
     const url = new URL(value);
 
     node.value = `${prefix + hashFile(value.replace(url.origin, ""))}.js`;

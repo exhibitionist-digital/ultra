@@ -62,7 +62,7 @@ const vendor = async (
           `${directory}/${hash}.js`,
           await vendorTransform({
             source: text,
-            root: ".",
+            origin: url.origin,
           }),
         );
         vendorMap[key] = `./${dir}/${vendorDirectory}/${hash}.js`;

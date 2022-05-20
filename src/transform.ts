@@ -57,9 +57,9 @@ export const transformSource = async (
 export default transformSource;
 
 const vendor = async (
-  { source }: { source: string; root: string },
+  { source, origin }: { source: string; origin: string },
 ): Promise<string> => {
-  const visitor = new VendorVisitor();
+  const visitor = new VendorVisitor(origin);
 
   const ast = await parseSync(source, parserOptions) as Program;
   const transformedAst = visitor.visitProgram(ast);
