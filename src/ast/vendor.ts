@@ -6,6 +6,7 @@ import {
   Visitor,
 } from "../deps.ts";
 import { hashFile } from "../hashFile.ts";
+import { isValidUrl } from "../resolver.ts";
 
 const prefix = "./";
 
@@ -34,7 +35,9 @@ export class VendorVisitor extends Visitor {
   }
 
   private replaceImportStringLiteral(node: StringLiteral) {
-    const { value } = node;
+    let { value } = node;
+    //hotfix for esm.sh
+    if (!isValidUrl(value)) value = "https://cdn.esm.sh" + value;
     const url = new URL(value);
 
     node.value = `${prefix + hashFile(value.replace(url.origin, ""))}.js`;
