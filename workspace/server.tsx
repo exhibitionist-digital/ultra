@@ -1,4 +1,5 @@
 import { Router } from "wouter";
+import staticLocationHook from "wouter/static-location";
 import createServer from "../server.ts";
 import { reactHelmetPlugin } from "../src/plugins/react-helmet.ts";
 import { ServerAppProps } from "../src/types.ts";
@@ -22,7 +23,7 @@ function ServerApp({ state }: ServerAppProps) {
 }
 
 const server = await createServer(ServerApp, {
-  mode: "development",
+  mode: "production",
   bootstrapModules: ["./client.tsx"],
 });
 
@@ -59,30 +60,3 @@ server.register(reactHelmetPlugin);
  * Start the server!
  */
 server.start({ port: 8000 });
-
-/**
- * Server side wouter
- */
-type Navigate = (to: string, opts?: { replace?: boolean }) => void;
-
-function staticLocationHook(
-  path = "/",
-  { record = false } = {},
-) {
-  // deno-lint-ignore prefer-const
-  let hook: { history?: string[] } & (() => [string, Navigate]);
-
-  const navigate: Navigate = (to, { replace } = {}) => {
-    if (record) {
-      if (replace) {
-        hook.history?.pop();
-      }
-      hook.history?.push(to);
-    }
-  };
-
-  hook = () => [path, navigate];
-  hook.history = [path];
-
-  return hook;
-}

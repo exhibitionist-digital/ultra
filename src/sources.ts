@@ -126,6 +126,7 @@ export async function resolveSourceUrls(
     join(".", "react", "client.ts"),
     join(".", "react", "useSsrData.ts"),
     join(".", "react", "useStream.ts"),
+    join(".", "react", "ultraFetch.ts"),
     join(".", "react", "utils.ts"),
   ];
 

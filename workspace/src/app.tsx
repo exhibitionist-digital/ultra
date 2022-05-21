@@ -1,5 +1,6 @@
 import { Helmet, HelmetProvider } from "react-helmet";
-import { createContext, lazy, Suspense } from "react";
+import { Link, Route, Switch } from "wouter";
+import React, { createContext, lazy, Suspense } from "react";
 import Component from "./component.jsx";
 import type { RenderState } from "../../server.ts";
 
@@ -23,10 +24,24 @@ export default function App({ state }: AppProps) {
           </Helmet>
         </head>
         <body>
-          <Suspense>
-            <img src="/public/ultra.svg" />
-            <Component />
-            <BigLazyComponent />
+          <Suspense fallback={<h1>top</h1>}>
+            <Link href="/">home</Link>
+            <Link href="/test">test</Link>
+            <Switch>
+              <Route path="/">
+                <Suspense fallback={<h2>comp</h2>}>
+                  <Component />
+                </Suspense>
+              </Route>
+              <Route path="/test">
+                <Suspense fallback={<h2>bottom</h2>}>
+                  <BigLazyComponent />
+                </Suspense>
+              </Route>
+              <Route>
+                <strong>404</strong>
+              </Route>
+            </Switch>
           </Suspense>
         </body>
       </html>

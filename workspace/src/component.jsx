@@ -1,12 +1,14 @@
 import React from "react";
-import { CTX } from "./app.tsx";
 
-export default () => {
-  const getCtx = React.useContext(CTX);
+import { ultraFetch } from "@ultra/react";
+
+const component = () => {
+  const data = ultraFetch("/api/hello");
   return (
     <div>
-      <h1>Ultra</h1>
-      <h2>{getCtx}</h2>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>
   );
 };
+
+export default component;

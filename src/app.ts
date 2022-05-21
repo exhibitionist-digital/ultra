@@ -42,6 +42,8 @@ export class Application extends ApplicationEvents {
     this.compiler = new Compiler({
       mode,
     });
+    // @ts-ignore ignore self
+    self.__ultraRouter = this.#router;
   }
 
   start(listenOptions: Deno.ListenOptions): void {
