@@ -17,7 +17,7 @@ const expectations = [
 // over and over on Windows specifically. I split out steps
 // into their own tests for this reason.
 
-async function assertExpectedPageElements(page: Page) {
+async function assertExpectedPageElements(page: Page): Promise<void> {
   for (const expected of expectations) {
     const selection = await page.waitForSelector(expected.selector);
     if (selection) {
