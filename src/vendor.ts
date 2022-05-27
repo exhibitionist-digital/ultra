@@ -6,14 +6,14 @@ import { resolveConfig, resolveImportMap } from "./config.ts";
 import { vendorDirectory } from "./env.ts";
 import { hashFile } from "./hashFile.ts";
 
-const cwd = Deno.cwd();
-const config = await resolveConfig(cwd);
-const importMap = await resolveImportMap(cwd, config);
-
 const vendor = async (
   { dir = ".ultra", outputDir }: { dir: string; outputDir?: string },
 ) => {
   // setup directories
+  const cwd = Deno.cwd();
+  const config = await resolveConfig(cwd);
+  const importMap = await resolveImportMap(cwd, config);
+
   await emptyDir(`./${dir}`);
   await ensureDir(
     `./${dir}/${outputDir ? outputDir + "/" : ""}${vendorDirectory}`,

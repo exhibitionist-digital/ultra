@@ -11,7 +11,7 @@ import {
 
 const ENV_VAR = {
   name: "importMap",
-  value: "./workspace/importMap.json",
+  value: "./importMap.test.json",
 };
 
 describe("vendor mapping", () => {
@@ -25,7 +25,6 @@ describe("vendor mapping", () => {
 
   it("should create vendor map with imports prop", async () => {
     const vendorMap = await vendor({ dir: ".ultra" });
-    // console.error("vendor map json", vendorMap);
     assert(vendorMap.imports.react);
     assert(!vendorMap.imports.adfadf);
   });
