@@ -33,6 +33,4 @@ export type RenderOptions = {
   disableStreaming?: boolean;
 };
 
-export type Cache = Map<unknown, unknown>;
-
 export type APIHandler = (request: Request) => Response | Promise<Response>;

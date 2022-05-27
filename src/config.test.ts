@@ -19,17 +19,16 @@ describe("config.ts tests", () => {
   });
 
   describe("resolveImportMap", () => {
-    it("should resolve import map from env var", async () => {
-      Deno.env.set("importMap", "./importMap.test.json");
-      const importMap = await resolveImportMap(cwd);
-      Deno.env.delete("importMap");
+    it("should resolve import map from config object", async () => {
+      const config: Config = { importMap: "./importMap.test.json" };
+      const importMap = await resolveImportMap(cwd, config);
       assert(importMap.imports.react);
       assert(!importMap.imports.asdffgg);
     });
-    it("should resolve import map from config object", async () => {
-      Deno.env.delete("importMap");
-      const config: Config = { importMap: "./importMap.test.json" };
-      const importMap = await resolveImportMap(cwd, config);
+
+    it("should resolve import map from env var", async () => {
+      Deno.env.set("importMap", "./importMap.test.json");
+      const importMap = await resolveImportMap(cwd);
       assert(importMap.imports.react);
       assert(!importMap.imports.asdffgg);
     });

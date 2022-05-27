@@ -8,16 +8,13 @@ import {
   TransformConfig,
   transformSync,
 } from "./deps.ts";
-import { cache } from "https://deno.land/x/cache@0.2.13/mod.ts";
 import { TransformOptions } from "./types.ts";
 import { UltraVisitor } from "./ast/ultra.ts";
 import { ImportMapResolver } from "./importMapResolver.ts";
 import { VendorVisitor } from "./ast/vendor.ts";
+import { swcWasmCache } from "./deps.wasm.ts";
 
-const wasmFilepath = await cache(
-  "https://cdn.esm.sh/@swc/wasm-web@1.2.171/wasm-web_bg.wasm",
-);
-await initSwc(toFileUrl(wasmFilepath.path));
+await initSwc(toFileUrl(swcWasmCache.path));
 
 const parserOptions: ParseOptions = {
   syntax: "typescript",

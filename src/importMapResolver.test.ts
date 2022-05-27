@@ -5,7 +5,7 @@ Deno.test("importResolver", async (t) => {
   const importMap = {
     imports: {
       "react": "https://esm.sh/react",
-      "fmt/": "https://deno.land/std@0.134.0/fmt/",
+      "fmt/": "https://deno.land/std@0.136.0/fmt/",
       "/": "./",
       "./": "./",
       "app.tsx": "./src/app.tsx",
@@ -19,7 +19,7 @@ Deno.test("importResolver", async (t) => {
     },
   };
 
-  function assertFileHrefEquals(href: string, expected: string) {
+  function assertFileHrefEquals(href: string, expected: string): void {
     return assertEquals(href.slice(expected.length * -1), expected);
   }
 
@@ -64,7 +64,7 @@ Deno.test("importResolver", async (t) => {
 
     assertEquals(
       colors.resolvedImport.href,
-      "https://deno.land/std@0.134.0/fmt/colors.ts",
+      "https://deno.land/std@0.136.0/fmt/colors.ts",
     );
   });
 
@@ -81,7 +81,7 @@ Deno.test("importResolver", async (t) => {
       resolver.resolveHref(
         "ultra/react/root.tsx",
         resolver.resolveUrl("ultra/render.tsx"),
-      ),
+      )!,
       "src/root.tsx",
     );
   });

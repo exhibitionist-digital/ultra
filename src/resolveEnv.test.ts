@@ -8,6 +8,7 @@ Deno.test("resolveEnv", async (t) => {
     assertEquals(env, {
       apiDirectory: "src/api",
       disableStreaming: false,
+      enableLinkPreloadHeaders: true,
       lang: "en",
       mode: null,
       origin: "http://localhost:8000",
@@ -32,6 +33,7 @@ Deno.test("resolveEnv", async (t) => {
       mode: "test",
       port: 8000,
       disableStreaming: false,
+      enableLinkPreloadHeaders: true,
       sourceDirectory: "source",
       vendorDirectory: "vendor",
       apiDirectory: "cool/api",
@@ -55,6 +57,7 @@ Deno.test("resolveEnv", async (t) => {
       mode: "test",
       port: 8000,
       disableStreaming: false,
+      enableLinkPreloadHeaders: true,
       sourceDirectory: "source",
       vendorDirectory: "vendor",
       apiDirectory: "cool/api",

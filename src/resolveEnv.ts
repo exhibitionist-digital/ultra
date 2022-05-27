@@ -9,8 +9,9 @@ import {
   object,
   string,
 } from "https://esm.sh/superstruct@0.15.4";
+import type { Struct } from "https://esm.sh/superstruct@0.15.4";
 
-function portFromString(defaultValue: number) {
+function portFromString(defaultValue: number): Struct<number, null> {
   return defaulted(
     coerce(
       number(),
@@ -34,11 +35,14 @@ const envSchema = object({
   vendorDirectory: defaulted(string(), "x"),
   apiDirectory: defaulted(string(), "src/api"),
   disableStreaming: defaulted(boolean(), false),
+  enableLinkPreloadHeaders: defaulted(boolean(), true),
 });
 
 export type UltraEnvironment = Infer<typeof envSchema>;
 
-export function resolveEnv(env?: { [index: string]: string }) {
+export function resolveEnv(
+  env?: { [index: string]: string },
+): UltraEnvironment {
   const mode = env?.ULTRA_MODE || env?.mode || null;
   const port = create(env?.PORT || env?.port, portFromString(defaultPort));
   const devServerWebsocketPort = create(
@@ -48,6 +52,7 @@ export function resolveEnv(env?: { [index: string]: string }) {
   const sourceDirectory = env?.ULTRA_SRC || env?.source;
   const vendorDirectory = env?.ULTRA_VENDOR || env?.vendor;
   const apiDirectory = env?.ULTRA_API_SRC || env?.api;
+  const enableLinkPreloadHeaders = env?.enableLinkPreloadHeaders;
 
   const origin = env?.ULTRA_ORIGIN ||
     `http://localhost:${port}`;
@@ -65,6 +70,7 @@ export function resolveEnv(env?: { [index: string]: string }) {
     apiDirectory,
     lang,
     disableStreaming,
+    enableLinkPreloadHeaders,
   };
 
   /**

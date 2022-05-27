@@ -1,5 +1,5 @@
 import assets from "../../assets.ts";
-import { LRU, readableStreamFromReader } from "../../deps.ts";
+import { readableStreamFromReader } from "../../deps.ts";
 import {
   replaceFileExt,
   resolveFileUrl,
@@ -19,8 +19,6 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
     isDev,
   } = options;
 
-  const memory = new LRU(500);
-  const serverStart = Math.ceil(+new Date() / 100);
   const listeners = new Set<WebSocket>();
 
   // async file watcher to send socket messages
@@ -89,7 +87,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
         "content-type": "text/javascript",
       };
 
-      let js = memory.get(requestUrl.pathname);
+      let js = sessionStorage.getItem(requestUrl.pathname);
 
       if (!js) {
         const source = await Deno.readTextFile(resolveFileUrl(cwd, file));
@@ -106,7 +104,7 @@ export function createRequestHandler(options: CreateRequestHandlerOptions) {
 
         console.log(`Transpile ${file} in ${duration}ms`);
 
-        if (!isDev) memory.set(requestUrl.pathname, js);
+        if (!isDev) sessionStorage.setItem(requestUrl.pathname, js);
       }
 
       //@ts-ignore any

@@ -5,7 +5,11 @@
   },
   "lint": {
     "files": {
-      "exclude": ["workspace/.ultra/", "src/unstable/"]
+      "exclude": ["workspace/", "workspace_unstable/", "src/unstable/"]
+    },
+    "rules": {
+      "tags": ["recommended"],
+      "include": ["explicit-function-return-type", "eqeqeq"]
     }
   },
   "fmt": {

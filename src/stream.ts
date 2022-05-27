@@ -1,8 +1,10 @@
 import { concat } from "./deps.ts";
 
-export function encodeStream(readable: ReadableStream<string | Uint8Array>) {
+export function encodeStream(
+  readable: ReadableStream<string | Uint8Array>,
+): ReadableStream {
   return new ReadableStream({
-    start(controller) {
+    start(controller): Promise<void | undefined> {
       return (async () => {
         const encoder = new TextEncoder();
         const reader = readable.getReader();
@@ -31,7 +33,7 @@ export async function pushBody(
   reader: ReadableStreamDefaultReader<Uint8Array>,
   controller: ReadableStreamDefaultController<Uint8Array>,
   chunkSize: number,
-) {
+): Promise<void> {
   const chunkFlushTimeoutMs = 1;
   let parts = [] as Uint8Array[];
   let partsSize = 0;

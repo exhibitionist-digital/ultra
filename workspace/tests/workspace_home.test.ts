@@ -2,7 +2,7 @@ import {
   assert,
   assertEquals,
   fail,
-} from "https://deno.land/std@0.135.0/testing/asserts.ts";
+} from "https://deno.land/std@0.136.0/testing/asserts.ts";
 import { Page } from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
 import { launchLocalhostBrowser, startTestServer } from "./helpers.ts";
 
@@ -16,8 +16,7 @@ const expectations = [
 // Puppeteer tests, when split into async steps, can fail
 // over and over on windows specifically. I split out steps
 // into their own tests for this reason.
-
-async function assertExpectedPageElements(page: Page) {
+async function assertExpectedPageElements(page: Page): Promise<void> {
   for (const expected of expectations) {
     const selection = await page.waitForSelector(expected.selector);
     if (selection) {

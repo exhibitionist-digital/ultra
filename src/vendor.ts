@@ -1,19 +1,26 @@
 import { emptyDir, ensureDir } from "./deps.ts";
-import { createGraph } from "./deps.dev.ts";
+import { createGraph } from "./deps.ts";
 import { vendor as vendorTransform } from "./transform.ts";
-import { hashFile, isValidUrl } from "./resolver.ts";
+import { isValidUrl } from "./resolver.ts";
 import { resolveConfig, resolveImportMap } from "./config.ts";
 import { vendorDirectory } from "./env.ts";
+import { hashFile } from "./hashFile.ts";
 
-const vendor = async () => {
+const vendor = async (
+  { dir = ".ultra", outputDir }: { dir: string; outputDir?: string },
+) => {
+  // setup directories
   const cwd = Deno.cwd();
   const config = await resolveConfig(cwd);
   const importMap = await resolveImportMap(cwd, config);
 
-  // setup directories
-  await emptyDir("./.ultra");
-  await ensureDir(`./.ultra/${vendorDirectory}`);
-  const directory = `.ultra/${vendorDirectory}`;
+  await emptyDir(`./${dir}`);
+  await ensureDir(
+    `./${dir}/${outputDir ? outputDir + "/" : ""}${vendorDirectory}`,
+  );
+  const directory = `${dir}/${
+    outputDir ? outputDir + "/" : ""
+  }${vendorDirectory}`;
 
   // create a new object for the vendor import map
   const vendorMap: Record<string, string> = {};
@@ -28,7 +35,7 @@ const vendor = async () => {
     const p = new URL(importMap?.imports[key]);
     // these params force the 'browser' imports
     // these will work in BOTH deno and browser
-    if (p.hostname.toLowerCase() == "esm.sh") {
+    if (p.hostname.toLowerCase() === "esm.sh") {
       p.searchParams.delete("dev");
       p.searchParams.append("target", "es2021");
       p.searchParams.append("no-check", "1");
@@ -58,7 +65,7 @@ const vendor = async () => {
             root: ".",
           }),
         );
-        vendorMap[key] = `./.ultra/${vendorDirectory}/${hash}.js`;
+        vendorMap[key] = `./${dir}/${vendorDirectory}/${hash}.js`;
       }
     }
   }
