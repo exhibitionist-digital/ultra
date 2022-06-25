@@ -1,4 +1,4 @@
-import puppeteer from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
+import puppeteer from "https://deno.land/x/puppeteer@14.1.1/mod.ts";
 import { join } from "https://deno.land/std@0.135.0/path/mod.ts";
 import { readLines } from "https://deno.land/std@0.135.0/io/mod.ts";
 
