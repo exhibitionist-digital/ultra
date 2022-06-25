@@ -1,4 +1,4 @@
-import { ParsedImportMap, parseImportMap, resolveImportMap } from "./deps.ts";
+import { ParsedImportMap, parseImportMap, resolveSpecifier } from "./deps.ts";
 import { ImportMap } from "./types.ts";
 
 export class ImportMapResolver {
@@ -9,7 +9,7 @@ export class ImportMapResolver {
   }
 
   resolve(specifier: string, scriptUrl?: URL) {
-    const resolvedImport = resolveImportMap(
+    const resolvedImport = resolveSpecifier(
       specifier,
       this.parsedImportMap,
       scriptUrl || this.baseUrl,

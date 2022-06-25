@@ -4,7 +4,16 @@ import { readLines } from "https://deno.land/std@0.135.0/io/mod.ts";
 
 export async function startTestServer(entrypoint: string) {
   const serverProcess = Deno.run({
-    cmd: [Deno.execPath(), "run", "-A", "--unstable", "--no-check", entrypoint],
+    cmd: [
+      Deno.execPath(),
+      "run",
+      "-A",
+      "--unstable",
+      "--no-check",
+      "--import-map",
+      "./importMap.json",
+      entrypoint,
+    ],
     cwd: join(Deno.cwd(), "./workspace"),
     stdout: "piped",
     stderr: "piped",

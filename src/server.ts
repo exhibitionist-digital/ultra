@@ -1,38 +1,86 @@
-import { serve } from "./deps.ts";
-import {
-  devServerWebsocketPort,
-  isDev,
-  port,
-  sourceDirectory,
-  vendorDirectory,
-} from "./env.ts";
-import { resolveConfig, resolveImportMap } from "./config.ts";
-import { createRequestHandler } from "./server/requestHandler.ts";
+import { createElement } from "react";
+import { Application } from "./app.ts";
+import type {
+  Mode,
+  RequestHandler,
+  ServerAppComponent,
+  ServerOptions,
+} from "./types.ts";
+import { toCompilerUrl } from "./utils.ts";
+import { parseImportMap, toFileUrl } from "./deps.ts";
+import { render } from "./render.ts";
+import { resolveImportMap } from "./config.ts";
+import { ultraPlugin } from "./internal/plugins/ultra.ts";
 
-const cwd = Deno.cwd();
-const config = await resolveConfig(cwd);
-const importMap = await resolveImportMap(cwd, config);
+export default async function createServer(
+  app: ServerAppComponent,
+  options: ServerOptions = {},
+) {
+  const {
+    mode = Deno.env.get("ULTRA_MODE") as Mode || "production",
+    publicPath = "public",
+    rootUrl = toFileUrl(Deno.cwd()),
+    compilerPath = "/@ultra/compiler/",
+    renderStrategy,
+  } = options;
 
-const server = async () => {
-  const requestHandler = await createRequestHandler({
-    cwd,
+  const importMap = await resolveImportMap(rootUrl.pathname);
+
+  const parsedImportMap = parseImportMap(
     importMap,
-    paths: {
-      source: sourceDirectory,
-      vendor: vendorDirectory,
-    },
-    isDev,
+    new URL("", import.meta.url),
+  );
+
+  let { bootstrapModules = [] } = options;
+
+  bootstrapModules = bootstrapModules.map(
+    (bootstrapModule) => toCompilerUrl(bootstrapModule, compilerPath),
+  );
+
+  const renderHandler: RequestHandler = async (context) => {
+    const strategy = renderStrategy
+      ? typeof renderStrategy === "string"
+        ? renderStrategy
+        : await renderStrategy(context.request)
+      : "stream";
+
+    return render(createElement(app, { state: context.state, strategy }), {
+      strategy,
+      bootstrapModules,
+    });
+  };
+
+  const server = new Application({
+    mode,
+    rootUrl,
   });
 
-  let message = `Ultra running http://localhost:${port}`;
+  /**
+   * Setup Ultra
+   */
+  server.register(ultraPlugin, {
+    rootUrl,
+    publicPath,
+    compilerPath,
+    importMap: parsedImportMap,
+    bootstrapModules,
+  });
 
-  if (isDev) {
-    message += ` and ws://localhost:${devServerWebsocketPort}`;
+  server.add("GET", "/*", renderHandler);
+
+  await server.compiler.init(
+    "https://cdn.esm.sh/@swc/wasm-web@1.2.182/wasm-web_bg.wasm",
+  );
+
+  if (mode === "development") {
+    const { devPlugin } = await import("./internal/plugins/dev.ts");
+    server.register(devPlugin);
   }
 
-  console.log(message);
+  server.addEventListener("listening", (event) => {
+    const message = `Ultra running on http://localhost:${event.detail.port}`;
+    console.log(message);
+  });
 
-  return serve(requestHandler, { port: +port });
-};
-
-export default server;
+  return server;
+}
