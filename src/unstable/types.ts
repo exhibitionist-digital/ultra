@@ -13,9 +13,9 @@ export type RequestContext = {
   renderStrategy?: RenderStrategy;
 };
 
-export type RequestContextFactory = ((
+export type RequestContextFactory = (
   request: Request,
-) => Promise<RequestContext> | RequestContext);
+) => Promise<RequestContext> | RequestContext;
 
 export type CreateRequestHandlerOptions = {
   render: Renderer;
@@ -37,9 +37,9 @@ export type AppProps<P = {}> = P & {
 export type AppComponent<T extends AppProps> = FunctionComponent<T>;
 
 export type ServerOptions = {
-  createRequestContext?: ((
+  createRequestContext?: (
     request: Request,
-  ) => Promise<RequestContext> | RequestContext);
+  ) => Promise<RequestContext> | RequestContext;
 };
 
 export type RenderOptions = {
@@ -53,6 +53,6 @@ export type RenderContext = {
   strategy: RenderStrategy;
 };
 
-export type Renderer = ((context: RequestContext) => Promise<Response>);
+export type Renderer = (context: RequestContext) => Promise<Response>;
 
 export type RenderStrategy = "stream" | "static";
