@@ -110,3 +110,10 @@ Here some things we are interested in for the future of JS and/or Ultra:
 [discord]: https://discord.gg/XDC5WxGHb2
 [actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?color=000000&logo=github&label=Tests
 [actions]: https://github.com/exhibitionist-digital/ultra/actions
+
+---
+
+### Contributions
+
+The **Ultra** community welcomes outside contributions. See the
+[Contributor Guidelines](./CONTRIBUTING.md) for details.
