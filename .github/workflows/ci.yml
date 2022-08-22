@@ -2,7 +2,7 @@ name: Format, Lint, Test
 
 on:
   push:
-    branches: [2.0]
+    branches: [main]
 
 jobs:
   fmt-lint-test:
