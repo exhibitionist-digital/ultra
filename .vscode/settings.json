@@ -1,12 +1,18 @@
 {
   "deno.enable": true,
-  "deno.importMap": "./workspace/importMap.json",
   "deno.lint": true,
-  "deno.suggest.imports.hosts": {
-    "https://deno.land": true,
-    "https://x.nest.land": true,
-    "https://crux.land": true
-  },
+  "deno.config": "./deno.json",
   "editor.defaultFormatter": "denoland.vscode-deno",
-  "prettier.enable": false
+  "deno.enablePaths": [
+    "./examples/basic",
+    "./examples/with-api-routes",
+    "./examples/with-jsx-runtime",
+    "./examples/with-react-query",
+    "./examples/with-react-router",
+    "./examples/with-twind",
+    "./"
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  }
 }

@@ -1,0 +1,8 @@
+{
+  "tasks": {
+    "dev": "deno run -A --no-check --watch ./server.js",
+    "build": "deno run -A  ./build.ts",
+    "start": "ULTRA_MODE=production deno run -A ./server.js"
+  },
+  "importMap": "./importMap.json"
+}

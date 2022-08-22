@@ -1,1 +1,1 @@
-export { default } from "./src/server.ts";
+export { createRouter, createServer } from "./lib/server.ts";

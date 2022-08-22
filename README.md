@@ -1,28 +1,43 @@
-<div align="center">
-<br />
-<img src="https://ultrajs.dev/ultra.svg" height="250" />
+# 🌌 Ultra 2.0 (Milky Way)
 
-### ULTRA
+An unopinionated React streaming web-app framework*.
 
-#### Modern Streaming SSR React Framework in Deno
+\* If you want to get very meta (not facebook), Ultra can be viewed as a tiny
+bridge to utilise native browser features whilst using popular front-end
+libraries. 🔥
 
-[ultrajs.dev](https://ultrajs.dev)
+## What's new
 
-[![Discord][discord-badge]][discord]
-[![GitHub Workflow Status][actions-badge]][actions]
-[![deno module](https://shield.deno.dev/x/ultra)](https://deno.land/x/ultra)
-![deno compatibility](https://shield.deno.dev/deno/^1.20.3)
+- BYO query/routing/head libraries
+- Support for wouter, react-router, react-query, twind
+- Native import maps in browser
+- API routing
+- Overhaul of internal source code
 
-</div>
+Ultra allows you to write web-apps which massively simplify your tool chain. You
+write ESM, we ship ESM. Where we are going, there is no "bundling" (it feels so
+2018 just saying that word).
 
----
+**Does Ultra "ship js"?**
 
-**Ultra** is a web-app framework that leans hard into your browser's native
-features. Embrace the future of **ES Modules**, **Import Maps**, and **Web
-Streams**. All while supporting some of the non-standards that many normal
-people love for some reason (**JSX** and **TypeScript**).
+Yes, Ultra creates rich web applications which allow complex client-side
+routing, allow components to persist through route changes (media players,
+interactive elements, etc).
 
-It's driven by the following hot-takes:
+Our goal is to both write _AND_ ship source code that works the same way on
+server/runtime and client. We view the browser as more than just a "target".
+Browser is life, and javascript is good.
+
+**Can I use TypeScript and/or JSX?**
+
+If you want.
+
+**What native browser features should we all be using more?**
+
+Unbundled ESM, service workers, universal import maps, cascading style sheets.
+
+**Ultra always has been (and always will be) powered by the following
+hot-takes:**
 
 - **ESM** is non-negotiable in {currentYear}
 - **SSR** is non-negotiable in {currentYear}
@@ -35,78 +50,23 @@ It's driven by the following hot-takes:
 
 ---
 
-🏄 If you want to dive right in,
-[create-ultra-app](https://github.com/exhibitionist-digital/create-ultra-app) is
-the easiest way. Less words, more ESM.
+### 👨‍👩‍👧‍👦 Community
 
----
-
-### ‼️ v1.0.0 @__@
-
-- Total overhaul of transforms, migration to brand new
-  [@swc/wasm-web](https://swc.rs/docs/usage/wasm)!
-- Esbuild removed!
-- Unfettered support for React 18!
-- Tests!
-- Example integration with [@mdx-js/mdx](https://mdxjs.com)!
-- Improvements to API routes!
-- Updated [docs](https://ultrajs.dev/docs)!
-- New [website](https://ultrajs.dev)!
-
-Migration notes:
-
-Previous v0.8.0 (and earlier) projects need to update the server import. We
-removed the `mod.ts` file for simplicity.
-
-```javascript
-import ultra from "https://deno.land/x/ultra/server.ts";
-```
-
----
-
-### Community
-
-We now have a [Discord](https://discord.gg/XDC5WxGHb2). Come say HI.
-
----
-
-### Notes on using Deno Deploy
-
-We aim to support Deno Deploy as a first class target for Ultra, but there are a
-few things to consider before deploying:
-
-- [Dynamic imports are not supported](https://github.com/denoland/deploy_feedback/issues/1),
-  this means using React Lazy imports will not work. If you try to deploy
-  anything with dynamic imports, the project will fail.
-- [Recursive requests are not supported](https://github.com/denoland/deploy_feedback/issues/187),
-  if using API routes, there is a good chance any requests made in your
-  components may fail during SSR.
-
-NOTE: These above issues are not a limitation when deploying to a service like
-Fly.io, and if you require either of the above, we recommend using Fly.io with a
-custom dockerfile.
-
----
+We have the [Discord](https://discord.gg/XDC5WxGHb2). Come say 'sup.
 
 ### ✨ Wishlist
 
 Here some things we are interested in for the future of JS and/or Ultra:
 
-- Better
-  [Deno support in Vercel](https://github.com/vercel-community/deno/issues/95)
 - React 18 [native ESM exports](https://github.com/facebook/react/issues/11503)
-- [Native import maps](https://caniuse.com/import-maps): Browser support for
-  import maps is still a bit sketchy. Instead of using import map polyfills,
-  Ultra inlines your imports directly into the served ES modules.
+- [ABT: Anything but TypeScript](https://tc39.es/proposal-type-annotations)
+- Libraries supporting
+  [optimal Javascript module design](https://jaydenseric.com/blog/optimal-javascript-module-design)
+- React
+  [resources](https://github.com/facebook/react/commit/796d31809b3683083d3b62ccbab4f00dec8ffb1f)
+  for streaming head management
+- [Native import maps](https://caniuse.com/import-maps) support in Safari
 - [Dynamic import](https://github.com/denoland/deploy_feedback/issues/1) support
   on Deno Deploy
 - [Native CSS modules](https://css-tricks.com/css-modules-the-native-ones/)
-
-**Thank you for going on this journey with us.**
-
-[docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&color=000000&
-[docs]: https://ultrajs.dev/docs
-[discord-badge]: https://img.shields.io/discord/956480805088153620?logo=discord&label=Discord&color=000000&&logoColor=ffffff
-[discord]: https://discord.gg/XDC5WxGHb2
-[actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?color=000000&logo=github&label=Tests
-[actions]: https://github.com/exhibitionist-digital/ultra/actions
+- More and better ESM CDN's
