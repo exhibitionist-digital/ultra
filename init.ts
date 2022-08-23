@@ -1,6 +1,7 @@
 import {
   brightBlue,
   green,
+  underline,
   white,
   yellow,
 } from "https://deno.land/std@0.152.0/fmt/colors.ts";
@@ -311,6 +312,12 @@ if (import.meta.main) {
   if (confirmed) {
     console.log("\n");
     await execute(context, utils);
+
+    console.log(outdent`
+      \n 🎉 BONZA! Your new Ultra project is ready, you can now cd into "${
+      brightBlue(output)
+    }" and run ${underline("deno task dev")} to get started!
+    `);
   } else {
     Deno.exit(0);
   }
