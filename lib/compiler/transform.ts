@@ -1,10 +1,20 @@
-import { transform } from "https://deno.land/x/swc@0.2.1/mod.ts";
+import init, {
+  transform,
+} from "https://esm.sh/@swc/wasm-web@1.2.242/wasm-web.js";
+import { cache } from "https://deno.land/x/cache@0.2.13/mod.ts";
 import { TransformSourceOptions } from "../types.ts";
+import { toFileUrl } from "../deps.ts";
 
-export function transformSource(
+const file = await cache(
+  "https://esm.sh/@swc/wasm-web@1.2.242/wasm-web_bg.wasm",
+);
+
+await init(toFileUrl(file.path));
+
+export async function transformSource(
   source: string,
   options: TransformSourceOptions,
-): { code: string; map?: string } {
+): Promise<{ code: string; map?: string }> {
   const {
     filename,
     target = "es2020",
@@ -18,7 +28,7 @@ export function transformSource(
     minify,
   } = options;
 
-  const transformed = transform(source, {
+  const transformed = await transform(source, {
     // @ts-ignore This exists in the Rust API, but isn't exposed on the config type for some reason
     filename,
     jsc: {
