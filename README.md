@@ -13,8 +13,8 @@
 
 </div>
 
-\* If you want to get very meta (not facebook), **Ultra** can be viewed as a tiny
-bridge to utilise native browser features 🌐 whilst using popular front-end
+\* If you want to get very meta (not facebook), **Ultra** can be viewed as a
+tiny bridge to utilise native browser features 🌐 whilst using popular front-end
 libraries. 🧰
 
 ## ✨ What's new
@@ -24,15 +24,15 @@ You write ESM, we ship ESM. Where we are going, there is no "bundling" (it feels
 so 2018 just saying that word).
 
 - Support for much of the React ecosystem by custom server/client
-  controls.<sup>**</sup>
+  controls<sup>**</sup>
 - Native import maps in browser 🤖
-- Localised import maps for production! 🔥
+- Localised import maps for production 🔥
 - API routing
 - Overhaul of internal source code
 - Updated Deno Deploy support
 
-\*\* Examples include (but not limited to) `react-query` `twind` `emotion`
-`stiches` `react-router` `wouter` **@__@**
+\*\* _Examples include (but not limited to) `react-query` `twind` `emotion`
+`stiches` `react-router` `wouter`_ **@__@**
 
 **Does Ultra "ship js"?**
 
