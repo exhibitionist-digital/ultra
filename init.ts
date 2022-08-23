@@ -50,6 +50,10 @@ async function execute(context: TaskContext, utils: TaskUtils) {
       "public/robots.txt",
       import.meta.resolve("./examples/basic/public/robots.txt"),
     ),
+    createFileTask(
+      utils.dialectFilename("public/style.css", true),
+      styleContent(),
+    ),
   ]);
 
   for (const task of tasks) {
@@ -241,20 +245,88 @@ function clientContent(utils: TaskUtils) {
   `;
 }
 
+function styleContent() {
+  // deno-fmt-ignore
+  return outdent`
+    html,
+    body {
+      margin: 0;
+      padding: 1rem;
+      font-family: monospace;
+      background: #ddd;
+      text-align: center;
+    }
+    
+    h1 {
+      text-align: center;
+      margin: 1rem auto 3rem;
+      font-size: clamp(2em, 10vw, 8em);
+      font-weight: 400;
+    }
+    
+    h1 span::before {
+      content: '@';
+      animation: blink 3s infinite;
+    }
+    
+    @keyframes blink {
+    
+      0%,
+      50%,
+      70%,
+      95% {
+        content: '@';
+      }
+    
+      65%,
+      90% {
+        content: '—';
+      }
+    }
+    
+    p {
+      max-width: 600px;
+      margin: 0 auto 1em;
+    }
+  `;
+}
+
 function helloUltraContent() {
   // deno-fmt-ignore
   return outdent`
     export default function App() {
+      console.log("Hello world!");
       return (
         <html lang="en">
           <head>
             <meta charSet="utf-8" />
-            <title>Ultra.js</title>
+            <title>basic</title>
             <meta name="viewport" content="width=device-width, initial-scale=1" />
             <link rel="shortcut icon" href="/favicon.ico" />
+            <link rel="stylesheet" href="/style.css" />
           </head>
           <body>
-            <div>Welcome to Ultra!</div>
+            <main>
+              <h1>
+                <span></span>__<span></span>
+              </h1>
+              <p>
+                Welcome to{" "}
+                <strong>Ultra</strong>. This is a barebones starter for your web
+                app.
+              </p>
+              <p>
+                Take{" "}
+                <a
+                  href="https://github.com/exhibitionist-digital/ultra/tree/main/examples"
+                  target="_blank"
+                >
+                  this
+                </a>, you may need it where you are going. It will show you how to
+                customise your routing, data fetching, and styling with popular
+                libraries.
+              </p>
+            </main>
           </body>
         </html>
       );
