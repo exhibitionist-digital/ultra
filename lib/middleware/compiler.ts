@@ -1,4 +1,3 @@
-import { ModuleGraph } from "../compiler/graph.ts";
 import { transformSource } from "../compiler/transform.ts";
 import { ULTRA_COMPILER_PATH } from "../constants.ts";
 import { Context, encode, extname, join, Next, toFileUrl } from "../deps.ts";
@@ -7,7 +6,6 @@ import type { Mode, TransformSourceOptions } from "../types.ts";
 export type CompilerOptions = {
   mode: Mode;
   root: string;
-  graph: ModuleGraph;
 } & Omit<TransformSourceOptions, "minify" | "development">;
 
 const decoder = new TextDecoder();
@@ -15,7 +13,6 @@ const decoder = new TextDecoder();
 export const compiler = (options: CompilerOptions) => {
   const {
     root,
-    graph,
     target,
     useBuiltins,
     externalHelpers,
@@ -37,9 +34,8 @@ export const compiler = (options: CompilerOptions) => {
     const url = toFileUrl(path);
 
     const isCompilerTarget = [".ts", ".tsx", ".js", ".jsx"].includes(extension);
-    const isValidModule = graph.get(url.toString());
 
-    if (method === "GET" && isValidModule && isCompilerTarget) {
+    if (method === "GET" && isCompilerTarget) {
       const bytes = await Deno.readFile(url);
       const source = decoder.decode(bytes);
 

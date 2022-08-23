@@ -44,10 +44,6 @@ export async function createServer(
     const spinner = wait("Loading compiler").start();
     const { compiler } = await import("./middleware/compiler.ts");
 
-    spinner.text = "Building module graph";
-    const { createGraph } = await import("./compiler/graph.ts");
-    const graph = await createGraph(browserEntrypoint);
-
     spinner.stop();
 
     server.use(
@@ -55,7 +51,6 @@ export async function createServer(
       compiler({
         mode,
         root,
-        graph,
         ...options.compilerOptions,
       }),
     );
