@@ -99,7 +99,7 @@ Here some things we are interested in for the future of JS and/or Ultra:
 - [Dynamic import](https://github.com/denoland/deploy_feedback/issues/1) support
   on Deno Deploy
 - [Native CSS modules](https://css-tricks.com/css-modules-the-native-ones/)
-- More and better ESM CDN's
+- More and better ESM CDNs
 
 **Thank you for going on this journey with us.**
 
