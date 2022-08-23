@@ -344,8 +344,6 @@ function dialectExtension(dialect: Dialect, isJsx?: boolean) {
 }
 
 if (import.meta.main) {
-  await Deno.permissions.request({ name: "read" });
-
   // deno-fmt-ignore
   console.log(outdent`
     === Welcome to Ultra ===\n
