@@ -274,9 +274,12 @@ function dialectExtension(dialect: Dialect, isJsx?: boolean) {
 if (import.meta.main) {
   await Deno.permissions.request({ name: "read" });
 
-  console.log(
-    `=== Welcome to Ultra ===\nLet's get you setup with your new Ultra project.\nBut first, we need to ask just a few questions.\n`,
-  );
+  // deno-fmt-ignore
+  console.log(outdent`
+    === Welcome to Ultra ===\n
+    Let's get you setup with your new Ultra project.\n
+    But first, we need to ask just a few questions.\n
+  `);
 
   let output = "";
 
@@ -313,10 +316,9 @@ if (import.meta.main) {
     console.log("\n");
     await execute(context, utils);
 
+    // deno-fmt-ignore
     console.log(outdent`
-      \n 🎉 BONZA! Your new Ultra project is ready, you can now cd into "${
-      brightBlue(output)
-    }" and run ${underline("deno task dev")} to get started!
+      \n 🎉 BONZA! Your new Ultra project is ready, you can now cd into "${brightBlue(output)}" and run ${underline("deno task dev")} to get started!
     `);
   } else {
     Deno.exit(0);
