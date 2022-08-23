@@ -17,9 +17,9 @@
 tiny bridge to utilise native browser features 🌐 whilst using popular front-end
 libraries. 🧰
 
-## 🏎️ Quick Start
+## 🧙 Start your journey
 
-Get a basic Ultra project going quickly!
+Here's a basic **Ultra** project to set you on your way.
 
 ```sh
 deno run -A https://deno.land/x/ultra@v2.0.0/init.ts
