@@ -2,7 +2,8 @@ Welp, if you've made it here, you probably have a basic **Ultra** project
 running...
 
 **Ultra** gives you the control to use (or not use) many of the most popular
-React libraries out there.
+React libraries out there. Use the examples above as a guide, you will probably
+need to update your `importMap` `server.tsx` and `client.tsx`
 
 Your app will probably need --
 
@@ -15,7 +16,7 @@ Your app will probably need --
 
 - React Query (with-react-query)
 
-**`CSS/styling`:**
+**`CSS Styling`:**
 
 - Emotion (with-emotion)
 - Stitches (with-stitches)
