@@ -11,7 +11,11 @@ Your app will probably need --
 - Wouter (with-wouter)
 - React Router (with-react-router)
 
-**`CSS/styling`, choose from:**
+**`Data Fetching`:**
+
+- React Query (with-react-query)
+
+**`CSS/styling`:**
 
 - Emotion (with-emotion)
 - Stitches (with-stitches)
@@ -23,7 +27,7 @@ or just use plain old CSS, it's _way_ underrated.
 
 - React Helmet Async (with-react-helmet-async)
 
-**`API Routing`**: (with-api-routes)
+**`API Routing`:**: (with-api-routes)
 
 ---
 
