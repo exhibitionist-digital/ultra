@@ -4,7 +4,7 @@
 
 ### Ultra 2.0 (Milky Way)
 
-#### Next-gen React browser/server fluid framework<sup>*</sup>
+#### Next-gen React browser/server fluid web-app framework<sup>*</sup>
 
 [![Discord][discord-badge]][discord]
 [![GitHub Workflow Status][actions-badge]][actions]
