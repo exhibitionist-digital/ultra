@@ -1,22 +1,38 @@
-# 🌌 Ultra 2.0 (Milky Way)
+<div align="center">
+<br />
+<img src="https://ultrajs.dev/ultra.svg" height="250" />
 
-An unopinionated React streaming web-app framework*.
+### Ultra 2.0 (Milky Way)
+
+#### Next-gen React browser/server fluid framework<sup>*</sup>
+
+[![Discord][discord-badge]][discord]
+[![GitHub Workflow Status][actions-badge]][actions]
+[![deno module](https://shield.deno.dev/x/ultra)](https://deno.land/x/ultra)
+![deno compatibility](https://shield.deno.dev/deno/^1.24.3)
+
+</div>
 
 \* If you want to get very meta (not facebook), Ultra can be viewed as a tiny
-bridge to utilise native browser features whilst using popular front-end
-libraries. 🔥
+bridge to utilise native browser features 🌐 whilst using popular front-end
+libraries. 🧰
 
-## What's new
+## ✨ What's new
 
-- BYO query/routing/head libraries
-- Support for wouter, react-router, react-query, twind
-- Native import maps in browser
+- Support for much of the React ecosystem by custom server/client
+  controls.<sup>**</sup>
+- Native import maps in browser 🤖
+- Localised import maps for production! 🔥
 - API routing
 - Overhaul of internal source code
+- Updated Deno Deploy support
 
-Ultra allows you to write web-apps which massively simplify your tool chain. You
-write ESM, we ship ESM. Where we are going, there is no "bundling" (it feels so
-2018 just saying that word).
+**Ultra** allows you to write web-apps which massively simplify your tool chain.
+You write ESM, we ship ESM. Where we are going, there is no "bundling" (it feels
+so 2018 just saying that word).
+
+\*\* Examples include (but not limited to) `react-query` `twind` `emotion`
+`stiches` `react-router` `wouter`!
 
 **Does Ultra "ship js"?**
 
@@ -54,6 +70,11 @@ hot-takes:**
 
 We have the [Discord](https://discord.gg/XDC5WxGHb2). Come say 'sup.
 
+### 🧟 Contributions
+
+The **Ultra** community welcomes outside contributions. See the
+[Contributor Guidelines](./CONTRIBUTING.md) for details.
+
 ### ✨ Wishlist
 
 Here some things we are interested in for the future of JS and/or Ultra:
@@ -70,3 +91,12 @@ Here some things we are interested in for the future of JS and/or Ultra:
   on Deno Deploy
 - [Native CSS modules](https://css-tricks.com/css-modules-the-native-ones/)
 - More and better ESM CDN's
+
+**Thank you for going on this journey with us.**
+
+[docs-badge]: https://img.shields.io/github/v/release/exhibitionist-digital/ultra?label=Docs&logo=deno&color=000000&
+[docs]: https://ultrajs.dev/docs
+[discord-badge]: https://img.shields.io/discord/956480805088153620?logo=discord&label=Discord&color=000000&&logoColor=ffffff
+[discord]: https://discord.gg/XDC5WxGHb2
+[actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?color=000000&logo=github&label=Tests
+[actions]: https://github.com/exhibitionist-digital/ultra/actions
