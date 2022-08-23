@@ -89,8 +89,10 @@ export function createHeadInjectionTransformStream(
 
 export function createImportMapInjectionStream(importMap: ImportMap) {
   return createHeadInjectionTransformStream(() => {
-    return `<script async src="https://ga.jspm.io/npm:es-module-shims@1.5.1/dist/es-module-shims.js" crossorigin="anonymous"></script>
-    <script type="importmap">${JSON.stringify(importMap, null, 2)}</script>`;
+    return [
+      `<script async src="https://ga.jspm.io/npm:es-module-shims@1.5.1/dist/es-module-shims.js" crossorigin="anonymous"></script>`,
+      `<script type="importmap">${JSON.stringify(importMap)}</script>`,
+    ].join("\n");
   });
 }
 
