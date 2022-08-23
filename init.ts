@@ -56,7 +56,7 @@ async function execute(context: TaskContext, utils: TaskUtils) {
   }
 }
 
-function createFileTask(path: string, content: string) {
+function createFileTask(path: string, content: string | Uint8Array) {
   return async (context: TaskContext) => {
     let overwritten = false;
     path = join(context.cwd, context.output, path);
@@ -76,7 +76,11 @@ function createFileTask(path: string, content: string) {
     }
 
     await ensureDir(dirname(path));
-    await Deno.writeFile(path, new TextEncoder().encode(content));
+
+    await Deno.writeFile(
+      path,
+      typeof content === "string" ? new TextEncoder().encode(content) : content,
+    );
 
     if (!overwritten && !context.overwrite) {
       console.log(`${green("✔️  Created:")} ${path}`);
@@ -94,7 +98,7 @@ function fetchFileTask(path: string, url: string) {
 
     const createFile = createFileTask(
       path,
-      new TextDecoder().decode(content),
+      new Uint8Array(content),
     );
 
     return createFile(context);
