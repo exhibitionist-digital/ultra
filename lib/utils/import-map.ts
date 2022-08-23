@@ -1,4 +1,13 @@
-import { ImportMap } from "../types.ts";
+import { resolve, toFileUrl } from "../deps.ts";
+import { ImportMap, Mode } from "../types.ts";
+
+export function resolveImportMapPath(mode: Mode, root: string, path: string) {
+  if (mode === "development") {
+    return path;
+  }
+
+  return toFileUrl(resolve(root, "./importMap.production.json")).href;
+}
 
 export function importMapRelative(importMap: ImportMap, to: string) {
   let imports = importMap.imports;

@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { fromFileUrl, Hono, logger, resolve, toFileUrl } from "./deps.ts";
+import { fromFileUrl, Hono, logger } from "./deps.ts";
 import { renderToStream } from "./render.tsx";
 import { ImportMap, Mode } from "./types.ts";
 import { toUltraUrl } from "./utils/url.ts";
@@ -24,11 +24,6 @@ export class UltraServer extends Hono {
 
   async init() {
     /**
-     * Resolve the importMapPath
-     */
-    this.importMapPath = this.#resolveImportMapPath(this.importMapPath);
-
-    /**
      * Parse the provided importMap
      */
     this.importMap = await this.#parseImportMap(this.importMapPath);
@@ -49,14 +44,6 @@ export class UltraServer extends Hono {
       bootstrapModules: [this.entrypoint],
       ...options,
     });
-  }
-
-  #resolveImportMapPath(path: string) {
-    if (this.mode === "development") {
-      return path;
-    }
-
-    return toFileUrl(resolve(this.root, "./importMap.production.json")).href;
   }
 
   async #parseImportMap(path: string): Promise<ImportMap> {

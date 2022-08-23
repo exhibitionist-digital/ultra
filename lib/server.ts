@@ -6,6 +6,7 @@ import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
 import { exists } from "./utils/fs.ts";
+import { resolveImportMapPath } from "./utils/import-map.ts";
 
 /**
  * Check if we are running on Deno Deploy and set the mode to production
@@ -28,10 +29,11 @@ export async function createServer(
 
   await assertServerOptions(resolvedOptions);
 
-  const { mode = "development", importMapPath, browserEntrypoint } =
+  const { mode = "development", browserEntrypoint } =
     resolvedOptions as Required<CreateServerOptions>;
 
   const root = fromFileUrl(dirname(browserEntrypoint));
+  const importMapPath = resolveImportMapPath(mode, root, options.importMapPath);
   const server = new UltraServer(root, mode, importMapPath, browserEntrypoint);
 
   await server.init();
@@ -83,12 +85,9 @@ export async function assertServerOptions(options: CreateServerOptions) {
     );
 
     /**
-     * Assert that an "importMap" exists at "importMapPath"
+     * Assert that we are provided an importMapPath
      */
-    assert(
-      await exists(options.importMapPath) === true,
-      `An "importMap" was not found at path "${options.importMapPath}"`,
-    );
+    assert(options.importMapPath, "No importMapPath was supplied");
 
     /**
      * Assert that the "browserEntrypoint" exists
