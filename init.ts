@@ -51,7 +51,7 @@ async function execute(context: TaskContext, utils: TaskUtils) {
       import.meta.resolve("./examples/basic/public/robots.txt"),
     ),
     createFileTask(
-      utils.dialectFilename("public/style.css", true),
+      "public/style.css",
       styleContent(),
     ),
   ]);
@@ -300,7 +300,7 @@ function helloUltraContent() {
         <html lang="en">
           <head>
             <meta charSet="utf-8" />
-            <title>basic</title>
+            <title>Ultra</title>
             <meta name="viewport" content="width=device-width, initial-scale=1" />
             <link rel="shortcut icon" href="/favicon.ico" />
             <link rel="stylesheet" href="/style.css" />
