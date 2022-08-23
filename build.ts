@@ -110,7 +110,7 @@ export default async function build(
     outputDir,
     [
       paths.output.browser,
-      paths.entrypoint.server,
+      paths.output.server,
       ...Array.from(compiled.values()),
       import.meta.resolve("./server.ts"),
     ],
