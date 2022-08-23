@@ -8,11 +8,6 @@ export function useDehydrateReactQuery(queryClient: QueryClient) {
      */
     const dehydratedState = dehydrate(queryClient);
 
-    /**
-     * We clear the queryClient, so no visitor potentially gets data they shouldn't...
-     */
-    queryClient.clear();
-
     return (
       <script
         dangerouslySetInnerHTML={{

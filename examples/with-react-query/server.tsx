@@ -21,10 +21,15 @@ function ServerApp() {
 
 server.get("*", async (context) => {
   /**
+   * We clear the queryClient on each request, so no visitor potentially gets data they shouldn't...
+   */
+  queryClient.clear();
+
+  /**
    * Example of prefetching a query.
    */
-  await queryClient.prefetchQuery(["posts"], async () => {
-    return (await fetch("https://jsonplaceholder.typicode.com/todos")).json();
+  await queryClient.prefetchQuery(["posts", { id: 5 }], async () => {
+    return (await fetch("https://jsonplaceholder.typicode.com/todos/5")).json();
   });
 
   /**
