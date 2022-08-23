@@ -83,7 +83,7 @@ export default async function build(
     plugin,
   } = resolvedOptions as Required<BuildOptions>;
 
-  const spinner = wait("Building").start();
+  const spinner = wait({ text: "Building", stream: Deno.stdout }).start();
 
   /**
    * Resolve paths for build inputs/outputs
@@ -180,15 +180,25 @@ export default async function build(
    */
   if (plugin) {
     spinner.text = `Executing build plugin: ${plugin.name}:onBuild`;
-    await plugin.onBuild(finalBuildResult);
-  }
 
-  spinner.succeed("Build complete");
+    try {
+      await plugin.onBuild(finalBuildResult);
+    } catch (error) {
+      spinner.fail(error.message);
+    }
 
-  if (plugin && plugin.onPostBuild) {
-    spinner.text = `Executing build plugin: ${plugin.name}:onPostBuild`;
-    await plugin.onPostBuild(finalBuildResult);
+    if (plugin.onPostBuild) {
+      spinner.text = `Executing build plugin: ${plugin.name}:onPostBuild`;
+
+      try {
+        await plugin.onPostBuild(finalBuildResult);
+        spinner.succeed("Build complete");
+      } catch (error) {
+        spinner.fail(error.message);
+      }
+    }
   } else {
+    spinner.succeed("Build complete");
     console.log(outdent`
       You can now deploy the "${output}" output directory to a platform of your choice.
       Instructions for common deployment platforms can be found at https://ultrajs.dev/docs#deploying.
