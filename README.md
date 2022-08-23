@@ -19,6 +19,10 @@ libraries. 🧰
 
 ## ✨ What's new
 
+**Ultra** allows you to write web-apps which massively simplify your tool chain.
+You write ESM, we ship ESM. Where we are going, there is no "bundling" (it feels
+so 2018 just saying that word).
+
 - Support for much of the React ecosystem by custom server/client
   controls.<sup>**</sup>
 - Native import maps in browser 🤖
@@ -27,12 +31,8 @@ libraries. 🧰
 - Overhaul of internal source code
 - Updated Deno Deploy support
 
-**Ultra** allows you to write web-apps which massively simplify your tool chain.
-You write ESM, we ship ESM. Where we are going, there is no "bundling" (it feels
-so 2018 just saying that word).
-
 \*\* Examples include (but not limited to) `react-query` `twind` `emotion`
-`stiches` `react-router` `wouter`!
+`stiches` `react-router` `wouter` **@__@**
 
 **Does Ultra "ship js"?**
 
