@@ -8,8 +8,8 @@
 
 [![Discord][discord-badge]][discord]
 [![GitHub Workflow Status][actions-badge]][actions]
-[![deno module](https://shield.deno.dev/x/ultra)](https://deno.land/x/ultra)
-![deno compatibility](https://shield.deno.dev/deno/^1.24.3)
+[![Deno module](https://shield.deno.dev/x/ultra)](https://deno.land/x/ultra)
+![Deno compatibility](https://shield.deno.dev/deno/^1.24.3)
 
 </div>
 
@@ -79,10 +79,10 @@ The **Ultra** community welcomes outside contributions. See the
 
 Here some things we are interested in for the future of JS and/or Ultra:
 
-- React 18 [native ESM exports](https://github.com/facebook/react/issues/11503)
+- React [ESM exports](https://github.com/facebook/react/issues/11503)
 - [AbTs: Anything but TypeScript](https://tc39.es/proposal-type-annotations)
 - Libraries supporting
-  [optimal Javascript module design](https://jaydenseric.com/blog/optimal-javascript-module-design)
+  [optimal JavaScript module design](https://jaydenseric.com/blog/optimal-javascript-module-design)
 - React
   [resources](https://github.com/facebook/react/commit/796d31809b3683083d3b62ccbab4f00dec8ffb1f)
   for streaming head management
