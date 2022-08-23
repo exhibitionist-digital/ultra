@@ -36,7 +36,7 @@ so 2018 just saying that word).
 
 **Does Ultra "ship js"?**
 
-Yes, Ultra creates rich web applications which allow complex client-side
+Yes, **Ultra** creates rich web applications which allow complex client-side
 routing, allow components to persist through route changes (media players,
 interactive elements, etc).
 
