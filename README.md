@@ -34,7 +34,7 @@ so 2018 just saying that word).
 \*\* _Examples include (but not limited to) `react-query` `twind` `emotion`
 `stiches` `react-router` `wouter`_ **@__@**
 
-**Does Ultra "ship js"?**
+**Does Ultra _'ship js'_?**
 
 Yes, **Ultra** creates rich web applications which allow complex client-side
 routing, allow components to persist through route changes (media players,
@@ -80,7 +80,7 @@ The **Ultra** community welcomes outside contributions. See the
 Here some things we are interested in for the future of JS and/or Ultra:
 
 - React 18 [native ESM exports](https://github.com/facebook/react/issues/11503)
-- [ABTs: Anything but TypeScript](https://tc39.es/proposal-type-annotations)
+- [AbTs: Anything but TypeScript](https://tc39.es/proposal-type-annotations)
 - Libraries supporting
   [optimal Javascript module design](https://jaydenseric.com/blog/optimal-javascript-module-design)
 - React
