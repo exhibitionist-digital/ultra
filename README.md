@@ -31,6 +31,7 @@ deno run -A https://deno.land/x/ultra@v2.0.0-alpha.0/init.ts
 You write ESM, we ship ESM. Where we are going, there is no "bundling" (it feels
 so 2018 just saying that word).
 
+- Less opinionated, BYO routing, styling, data fetching, and head libraries
 - Support for much of the React ecosystem by custom server/client
   controls<sup>**</sup>
 - Native import maps in browser 🤖
