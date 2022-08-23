@@ -8,6 +8,9 @@ export type ServeStaticOptions = {
   cache?: boolean;
 };
 
+const modeFromEnv = Deno.env.get("ULTRA_MODE") ||
+  (Deno.env.get("DENO_DEPLOYMENT_ID") !== undefined ? "production" : undefined);
+
 export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
   return async (
     context: Context,
@@ -32,7 +35,7 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
       const fileStream = readableStreamFromReader(file);
 
       if (fileStream) {
-        if (options.cache) {
+        if (modeFromEnv === "production" && options.cache) {
           context.header(
             "Cache-Control",
             "public, max-age=31536000, immutable",
