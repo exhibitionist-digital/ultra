@@ -62,7 +62,7 @@ export async function createServer(
     server.use(`${ULTRA_STATIC_PATH}/*`, serveCompiled({ root }));
   }
 
-  server.use("/public/*", serveStatic({ root: "./" }));
+  server.use("*", serveStatic({ root: "./public" }));
 
   return server;
 }

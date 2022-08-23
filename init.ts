@@ -223,7 +223,7 @@ function helloUltraContent() {
             <meta charSet="utf-8" />
             <title>Ultra.js</title>
             <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <link rel="shortcut icon" href="/public/favicon.ico" />
+            <link rel="shortcut icon" href="/favicon.ico" />
           </head>
           <body>
             <div>Welcome to Ultra!</div>
@@ -247,14 +247,14 @@ if (import.meta.main) {
   await Deno.permissions.request({ name: "read" });
 
   console.log(
-    `=== Welcome to Ultra ===\nLet's get you setup with your new Ultra app.\nBut first, we need to ask just a few questions.\n`,
+    `=== Welcome to Ultra ===\nLet's get you setup with your new Ultra project.\nBut first, we need to ask just a few questions.\n`,
   );
 
   let output = "";
 
   while (output === "") {
     output = await ask(
-      brightBlue("Where do you want to output your new app?"),
+      brightBlue("Where do you want to initialise your new project?"),
     );
   }
 
