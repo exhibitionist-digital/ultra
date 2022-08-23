@@ -54,8 +54,8 @@ export type BuildResult = {
 
 export type BuildPlugin = {
   name: string;
-  onBuild: (result: BuildResult) => Promise<void>;
-  onPostBuild?: (result: BuildResult) => Promise<void>;
+  onBuild: (result: BuildResult) => Promise<void> | void;
+  onPostBuild?: (result: BuildResult) => Promise<void> | void;
 };
 
 const defaultOptions = {
