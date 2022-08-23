@@ -1,8 +1,11 @@
 import {
+  brightBlue,
   emptyDir,
   fromFileUrl,
+  green,
   outdent,
   toFileUrl,
+  underline,
   wait,
 } from "./lib/build/deps.ts";
 import { compileSources } from "./lib/build/compileSources.ts";
@@ -199,10 +202,11 @@ export default async function build(
     }
   } else {
     spinner.succeed("Build complete");
-    console.log(outdent`
-      You can now deploy the "${output}" output directory to a platform of your choice.
-      Instructions for common deployment platforms can be found at https://ultrajs.dev/docs#deploying.
-      Alternatively, you can cd into "${output}" and run: deno task start
+    // deno-fmt-ignore
+    console.log(outdent`\n
+      You can now deploy the "${brightBlue(output)}" output directory to a platform of your choice.
+      Instructions for common deployment platforms can be found at ${green('https://ultrajs.dev/docs#deploying')}.\n
+      Alternatively, you can cd into "${brightBlue(output)}" and run: ${underline("deno task start")}
     `);
   }
 
