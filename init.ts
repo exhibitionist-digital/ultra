@@ -41,6 +41,14 @@ async function execute(context: TaskContext, utils: TaskUtils) {
       utils.dialectFilename("src/app", true),
       helloUltraContent(),
     ),
+    fetchFileTask(
+      "public/favicon.ico",
+      import.meta.resolve("./examples/basic/public/favicon.ico"),
+    ),
+    fetchFileTask(
+      "public/robots.txt",
+      import.meta.resolve("./examples/basic/public/robots.txt"),
+    ),
   ]);
 
   for (const task of tasks) {
@@ -68,13 +76,28 @@ function createFileTask(path: string, content: string) {
     }
 
     await ensureDir(dirname(path));
-    await Deno.writeTextFile(path, content);
+    await Deno.writeFile(path, new TextEncoder().encode(content));
 
     if (!overwritten && !context.overwrite) {
       console.log(`${green("✔️  Created:")} ${path}`);
     } else {
       console.log(`${yellow("✔️  Modifed:")} ${path}`);
     }
+  };
+}
+
+function fetchFileTask(path: string, url: string) {
+  return async (context: TaskContext) => {
+    const response = await fetch(url);
+    const content = await response.arrayBuffer();
+    console.log(`${green("✔️  Fetched:")} ${url}`);
+
+    const createFile = createFileTask(
+      path,
+      new TextDecoder().decode(content),
+    );
+
+    return createFile(context);
   };
 }
 
@@ -282,6 +305,7 @@ if (import.meta.main) {
   );
 
   if (confirmed) {
+    console.log("\n");
     await execute(context, utils);
   } else {
     Deno.exit(0);
