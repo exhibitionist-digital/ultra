@@ -6,10 +6,15 @@
   "deno.enablePaths": [
     "./examples/basic",
     "./examples/with-api-routes",
-    "./examples/with-jsx-runtime",
+    "./examples/with-emotion",
+    "./examples/with-esm",
+    "./examples/with-fly-io",
+    "./examples/with-react-helmet-async",
     "./examples/with-react-query",
     "./examples/with-react-router",
+    "./examples/with-stitches",
     "./examples/with-twind",
+    "./examples/with-wouter",
     "./"
   ],
   "[typescript]": {
