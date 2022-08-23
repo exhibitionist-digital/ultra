@@ -13,7 +13,7 @@
 
 </div>
 
-\* If you want to get very meta (not facebook), Ultra can be viewed as a tiny
+\* If you want to get very meta (not facebook), **Ultra** can be viewed as a tiny
 bridge to utilise native browser features 🌐 whilst using popular front-end
 libraries. 🧰
 
