@@ -75,7 +75,7 @@ We have the [Discord](https://discord.gg/XDC5WxGHb2). Come say 'sup.
 The **Ultra** community welcomes outside contributions. See the
 [Contributor Guidelines](./CONTRIBUTING.md) for details.
 
-### ✨ Wishlist
+### 🦥 Wishlist
 
 Here some things we are interested in for the future of JS and/or Ultra:
 
