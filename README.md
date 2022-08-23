@@ -17,6 +17,14 @@
 tiny bridge to utilise native browser features 🌐 whilst using popular front-end
 libraries. 🧰
 
+## 🏎️ Quick Start
+
+Get a basic Ultra project going quickly!
+
+```sh
+deno run -A https://deno.land/x/ultra@v2.0.0/init.ts
+```
+
 ## ✨ What's new
 
 **Ultra** allows you to write web-apps which massively simplify your tool chain.
