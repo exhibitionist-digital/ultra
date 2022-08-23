@@ -34,6 +34,8 @@ so 2018 just saying that word).
 \*\* _Examples include (but not limited to) `react-query` `twind` `emotion`
 `stiches` `react-router` `wouter`_ **@__@**
 
+---
+
 **Does Ultra _'ship js'_?**
 
 Yes, **Ultra** creates rich web applications which allow complex client-side
