@@ -44,7 +44,7 @@ export const compiler = (options: CompilerOptions) => {
       const source = decoder.decode(bytes);
 
       try {
-        const transformed = transformSource(source, {
+        const transformed = await transformSource(source, {
           filename: url.pathname,
           target,
           externalHelpers,
