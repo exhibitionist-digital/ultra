@@ -51,7 +51,7 @@ async function execute(context: TaskContext, utils: TaskUtils) {
       import.meta.resolve("./examples/basic/public/robots.txt"),
     ),
     createFileTask(
-      utils.dialectFilename("public/style.css", true),
+      "public/style.css",
       styleContent(),
     ),
   ]);
