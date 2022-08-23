@@ -1,7 +1,9 @@
 import { ULTRA_STATIC_PATH } from "../constants.ts";
 import { Context, join, Next, readableStreamFromReader } from "../deps.ts";
 
-export const serveCompiled = ({ root }: { root: string }) => {
+export const serveCompiled = (
+  { root, cache }: { root: string; cache?: boolean },
+) => {
   return async (
     context: Context,
     next: Next,
@@ -17,7 +19,9 @@ export const serveCompiled = ({ root }: { root: string }) => {
 
     if (fileStream) {
       context.header("Content-Type", "text/javascript");
-      context.header("Cache-Control", "public, max-age=31536000, immutable");
+      if (cache) {
+        context.header("Cache-Control", "public, max-age=31536000, immutable");
+      }
       return context.body(fileStream, 200);
     } else {
       console.warn(`Compiled file: ${filepath} not found`);

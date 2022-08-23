@@ -55,11 +55,17 @@ export async function createServer(
       }),
     );
   } else {
-    server.use("/vendor/*", serveStatic({ root: "./" }));
+    server.use(
+      "/vendor/*",
+      serveStatic({ root: "./", cache: mode === "production" }),
+    );
     server.use(`${ULTRA_STATIC_PATH}/*`, serveCompiled({ root }));
   }
 
-  server.use("*", serveStatic({ root: "./public" }));
+  server.use(
+    "*",
+    serveStatic({ root: "./public", cache: mode === "production" }),
+  );
 
   return server;
 }

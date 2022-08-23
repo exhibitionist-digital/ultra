@@ -5,6 +5,7 @@ import { exists } from "../utils/fs.ts";
 export type ServeStaticOptions = {
   root?: string;
   path?: string;
+  cache?: boolean;
 };
 
 export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
@@ -31,7 +32,12 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
       const fileStream = readableStreamFromReader(file);
 
       if (fileStream) {
-        context.header("Cache-Control", "public, max-age=31536000, immutable");
+        if (options.cache) {
+          context.header(
+            "Cache-Control",
+            "public, max-age=31536000, immutable",
+          );
+        }
 
         const mimeType = getMimeType(path);
         if (mimeType) {
