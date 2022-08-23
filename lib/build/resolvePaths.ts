@@ -24,8 +24,6 @@ export function resolvePaths(
     fromFileUrl(options.serverEntrypoint),
   );
 
-  const browserEntrypointOutputPath = join(outputDir, browserEntrypoint);
-
   return {
     rootDir,
     outputDir,
@@ -34,7 +32,8 @@ export function resolvePaths(
       server: serverEntrypoint,
     },
     output: {
-      browser: browserEntrypointOutputPath,
+      browser: join(outputDir, browserEntrypoint),
+      server: join(outputDir, serverEntrypoint),
     },
     resolveOutputFileUrl(path: string) {
       return toFileUrl(join(outputDir, path));
