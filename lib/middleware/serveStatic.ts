@@ -1,12 +1,11 @@
 import { Context, Next, readableStreamFromReader } from "../deps.ts";
 import { getFilePath, getMimeType } from "../deps.ts";
+import { exists } from "../utils/fs.ts";
 
 export type ServeStaticOptions = {
   root?: string;
   path?: string;
 };
-
-const DEFAULT_DOCUMENT = "index.html";
 
 export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
   return async (
@@ -23,27 +22,30 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
     let path = getFilePath({
       filename: options.path ?? url.pathname,
       root: options.root,
-      defaultDocument: DEFAULT_DOCUMENT,
     });
 
     path = `./${path}`;
 
-    const file = await Deno.open(path, { read: true });
-    const fileStream = readableStreamFromReader(file);
+    if (await exists(path)) {
+      const file = await Deno.open(path, { read: true });
+      const fileStream = readableStreamFromReader(file);
 
-    if (fileStream) {
-      context.header("Cache-Control", "public, max-age=31536000, immutable");
+      if (fileStream) {
+        context.header("Cache-Control", "public, max-age=31536000, immutable");
 
-      const mimeType = getMimeType(path);
-      if (mimeType) {
-        context.header("Content-Type", mimeType);
+        const mimeType = getMimeType(path);
+        if (mimeType) {
+          context.header("Content-Type", mimeType);
+        }
+        // Return Response object
+        return context.body(fileStream, 200);
+      } else {
+        console.warn(`Static file: ${path} is not found`);
+        await next();
       }
-      // Return Response object
-      return context.body(fileStream, 200);
-    } else {
-      console.warn(`Static file: ${path} is not found`);
-      await next();
+      return;
     }
-    return;
+
+    await next();
   };
 };
