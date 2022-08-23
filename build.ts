@@ -1,4 +1,10 @@
-import { emptyDir, fromFileUrl, toFileUrl, wait } from "./lib/build/deps.ts";
+import {
+  emptyDir,
+  fromFileUrl,
+  outdent,
+  toFileUrl,
+  wait,
+} from "./lib/build/deps.ts";
 import { compileSources } from "./lib/build/compileSources.ts";
 import { copySource } from "./lib/build/copySource.ts";
 import { createGraph } from "./lib/build/createGraph.ts";
@@ -33,13 +39,23 @@ type BuildOptions = {
    * Output source maps for compiled sources.
    */
   sourceMaps?: boolean;
+  /**
+   * A build plugin to run after completing the initial build
+   */
+  plugin?: BuildPlugin;
 };
 
-type BuildResult = {
+export type BuildResult = {
   options: BuildOptions;
   denoConfig: DenoConfig;
   paths: ResolvedPaths;
   importMap: ImportMap;
+};
+
+export type BuildPlugin = {
+  name: string;
+  onBuild: (result: BuildResult) => Promise<void>;
+  onPostBuild?: (result: BuildResult) => Promise<void>;
 };
 
 const defaultOptions = {
@@ -58,8 +74,14 @@ export default async function build(
 
   await assertBuildOptions(resolvedOptions);
 
-  const { browserEntrypoint, serverEntrypoint, output, sourceMaps, reload } =
-    resolvedOptions as Required<BuildOptions>;
+  const {
+    browserEntrypoint,
+    serverEntrypoint,
+    output,
+    sourceMaps,
+    reload,
+    plugin,
+  } = resolvedOptions as Required<BuildOptions>;
 
   const spinner = wait("Building").start();
 
@@ -150,15 +172,31 @@ export default async function build(
   buildResult.importMap = importMap;
   buildResult.denoConfig = denoConfig;
 
+  const finalBuildResult = buildResult as BuildResult;
+
+  /**
+   * If we are supplied an build plugin, execute that now
+   * with the current build result.
+   */
+  if (plugin) {
+    spinner.text = `Executing build plugin: ${plugin.name}:onBuild`;
+    await plugin.onBuild(finalBuildResult);
+  }
+
   spinner.succeed("Build complete");
 
-  console.log(`
-  You can now deploy the "${output}" output directory to a platform of your choice.
-  Instructions for common deployment platforms can be found at https://ultrajs.dev/docs#deploying.
-  Alternatively, you can cd into "${output}" and run: deno task start
-`);
+  if (plugin && plugin.onPostBuild) {
+    spinner.text = `Executing build plugin: ${plugin.name}:onPostBuild`;
+    await plugin.onPostBuild(finalBuildResult);
+  } else {
+    console.log(outdent`
+      You can now deploy the "${output}" output directory to a platform of your choice.
+      Instructions for common deployment platforms can be found at https://ultrajs.dev/docs#deploying.
+      Alternatively, you can cd into "${output}" and run: deno task start
+    `);
+  }
 
-  return buildResult as BuildResult;
+  return finalBuildResult;
 }
 
 export function assertBuildOptions(options: BuildOptions) {
