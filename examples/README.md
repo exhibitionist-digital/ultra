@@ -28,7 +28,7 @@ or just use plain old CSS, it's _way_ underrated.
 
 - React Helmet Async (with-react-helmet-async)
 
-**`API Routing`:**: (with-api-routes)
+**`API Routing`:** (with-api-routes)
 
 ---
 
