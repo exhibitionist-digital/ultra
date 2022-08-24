@@ -1,5 +1,5 @@
 import { ULTRA_STATIC_PATH } from "../constants.ts";
-import { Context, join, Next } from "../deps.ts";
+import { Context, join, Next, toFileUrl } from "../deps.ts";
 
 export const serveCompiled = (
   { root, cache }: { root: string; cache?: boolean },
@@ -14,8 +14,11 @@ export const serveCompiled = (
     );
 
     const filepath = join(root, pathname);
+
     try {
-      const file = await fetch(filepath).then((response) => response.body);
+      const file = await fetch(toFileUrl(filepath)).then((response) =>
+        response.body
+      );
       context.header("Content-Type", "text/javascript");
       if (cache) {
         context.header("Cache-Control", "public, max-age=31536000, immutable");
