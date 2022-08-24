@@ -159,7 +159,7 @@ export default async function build(
   /**
    * Create the asset manifest
    */
-  await assetManifest(buildContext);
+  const assets = await assetManifest(buildContext);
 
   /**
    * Patch deno.json with required options
@@ -178,6 +178,7 @@ export default async function build(
     options: resolvedOptions,
     paths,
     importMap,
+    assetManifest: assets,
     denoConfig,
     files: buildContext.files,
   };

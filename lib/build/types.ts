@@ -53,6 +53,7 @@ export type BuildResult = {
   denoConfig: DenoConfig;
   paths: ResolvedPaths;
   importMap: ImportMap;
+  assetManifest: Map<string, string>;
   /**
    * A map of files with the source path as the key
    * and the output path as the value.
