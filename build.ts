@@ -83,7 +83,19 @@ export default async function build(
     "Cleaning output directory: %s",
     cwdRelative(buildContext.paths.outputDir),
   );
+
   await emptyDir(buildContext.paths.outputDir);
+
+  /**
+   * Run plugin onPreBuild if available
+   */
+  try {
+    if (plugin && plugin.onPreBuild) {
+      await plugin.onPreBuild(buildContext);
+    }
+  } catch (error) {
+    console.error(error);
+  }
 
   /**
    * Copy everything from rootDir into outputDir

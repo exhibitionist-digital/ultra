@@ -37,6 +37,7 @@ export type BuildOptions = {
 
 export type BuildPlugin = {
   name: string;
+  onPreBuild?: (context: BuildContext) => Promise<void> | void;
   onBuild: (result: BuildResult) => Promise<void> | void;
   onPostBuild?: (result: BuildResult) => Promise<void> | void;
 };
