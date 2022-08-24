@@ -1,7 +1,7 @@
 import type { BuildPlugin } from "../types.ts";
 
-export const netlify: BuildPlugin = {
-  name: "netlify-edge",
+export const vercel: BuildPlugin = {
+  name: "vercel",
   onBuild(_result) {
     throw new Error("TODO");
   },
