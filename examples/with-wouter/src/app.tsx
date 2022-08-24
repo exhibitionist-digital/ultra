@@ -1,8 +1,10 @@
 import { Link, Route, Switch } from "wouter";
 import HomePage from "./pages/Home.tsx";
 import AboutPage from "./pages/About.tsx";
+import { useSearchParams } from "./context/SearchParams.tsx";
 
 export default function App() {
+  const searchParams = useSearchParams();
   return (
     <html lang="en">
       <head>
@@ -15,8 +17,10 @@ export default function App() {
         <nav>
           <Link to="/">Home</Link>
           <Link to="/about">About</Link>
+          <Link to="/about?foo=bar">About: Foo Bar</Link>
         </nav>
         <main>
+          <div>Search params: {searchParams.toString()}</div>
           <Switch>
             <Route path="/">
               <HomePage />
