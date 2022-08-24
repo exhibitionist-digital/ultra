@@ -6,6 +6,6 @@
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/": "https://esm.sh/react-dom@18.2.0/",
     "@tanstack/react-query": "https://esm.sh/@tanstack/react-query@4.1.3?external=react",
-    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.0/"
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.1/"
   }
 }

@@ -22,7 +22,7 @@ libraries. 🧰
 Here's a basic **Ultra** project to set you on your way.
 
 ```sh
-deno run -A https://deno.land/x/ultra@v2.0.0-alpha.0/init.ts
+deno run -A https://deno.land/x/ultra@v2.0.0-alpha.1/init.ts
 ```
 
 ## ✨ What's new
