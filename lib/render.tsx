@@ -6,11 +6,13 @@ import {
 } from "react-dom/server";
 import { fromFileUrl } from "./deps.ts";
 import { FlushEffectsContext } from "./client/flush-effects.js";
+import { AssetProvider } from "./client/asset.js";
 import { continueFromInitialStream, renderToInitialStream } from "./stream.ts";
 import { ImportMap } from "./types.ts";
 
 type RenderToStreamOptions = RenderToReadableStreamOptions & {
   importMap: ImportMap;
+  assetManifest: Map<string, string>;
   generateStaticHTML?: boolean;
   flushEffectsToHead?: boolean;
 };
@@ -23,6 +25,7 @@ export async function renderToStream(
     generateStaticHTML = false,
     flushEffectsToHead = true,
     importMap,
+    assetManifest,
   } = options;
 
   /**
@@ -64,7 +67,11 @@ export async function renderToStream(
   };
 
   const renderStream = await renderToInitialStream({
-    element: <FlushEffects children={Component} />,
+    element: (
+      <FlushEffects>
+        <AssetProvider value={assetManifest} children={Component} />
+      </FlushEffects>
+    ),
     options,
   });
 

@@ -32,7 +32,15 @@ export async function createServer(
 
   const root = fromFileUrl(dirname(browserEntrypoint));
   const importMapPath = resolveImportMapPath(mode, root, options.importMapPath);
-  const server = new UltraServer(root, mode, importMapPath, browserEntrypoint);
+  const assetManifestPath = resolve(root, "asset-manifest.json");
+
+  const server = new UltraServer(
+    root,
+    mode,
+    importMapPath,
+    assetManifestPath,
+    browserEntrypoint,
+  );
 
   await server.init();
 
