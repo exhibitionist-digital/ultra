@@ -1,4 +1,4 @@
-import { BuildContext } from "../../build.ts";
+import type { BuildContext } from "./types.ts";
 import { toFileUrl } from "./deps.ts";
 
 /**
