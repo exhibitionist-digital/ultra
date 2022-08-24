@@ -183,20 +183,24 @@ export default async function build(
    * with the current build result.
    */
   if (plugin) {
-    spinner.text = sprintf("Executing build plugin: %s:onBuild", plugin.name);
+    try {
+      spinner.text = sprintf("Executing build plugin: %s:onBuild", plugin.name);
 
-    await plugin.onBuild(finalBuildResult);
+      await plugin.onBuild(finalBuildResult);
 
-    if (plugin.onPostBuild) {
-      spinner.text = sprintf(
-        "Executing build plugin: %s:onPostBuild",
-        plugin.name,
-      );
+      if (plugin.onPostBuild) {
+        spinner.text = sprintf(
+          "Executing build plugin: %s:onPostBuild",
+          plugin.name,
+        );
 
-      await plugin.onPostBuild(finalBuildResult);
+        await plugin.onPostBuild(finalBuildResult);
+      }
+
+      spinner.succeed(BUILD_COMPLETE_MESSAGE);
+    } catch (error) {
+      spinner.fail(error.message);
     }
-
-    spinner.succeed(BUILD_COMPLETE_MESSAGE);
   } else {
     spinner.succeed(BUILD_COMPLETE_MESSAGE);
     // deno-fmt-ignore
