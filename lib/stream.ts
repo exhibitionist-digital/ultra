@@ -1,3 +1,9 @@
+/**
+ * A lot of this code originally comes from https://github.com/vercel/next.js
+ * with some tweaking.
+ *
+ * node-web-stream-helpers.ts: https://github.com/vercel/next.js/blob/c79b67ccedda1ae6fd9d05cfccf1d2842b94f43f/packages/next/server/node-web-streams-helper.ts
+ */
 import {
   renderToReadableStream,
   RenderToReadableStreamOptions,
