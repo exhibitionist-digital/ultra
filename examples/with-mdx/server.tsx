@@ -4,7 +4,6 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { useDehydrateReactQuery } from "./src/hooks/useDehydrateReactQuery.tsx";
 import { queryClient } from "./src/query-client.ts";
 import { compile } from "https://esm.sh/@mdx-js/mdx/lib/compile";
-import ultraMdx from "https://deno.land/x/ultra@v1.0.1/ultraMdx.ts";
 import App from "./src/app.tsx";
 
 const server = await createServer({
@@ -38,7 +37,6 @@ api.get("/docs", async (context) => {
     await compile(source, {
       outputFormat: "function-body",
       useDynamicImport: true,
-      rehypePlugins: [ultraMdx],
     }),
   );
   const body = JSON.stringify({ content });
