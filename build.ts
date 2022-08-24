@@ -39,6 +39,7 @@ const defaultOptions = {
 };
 
 const cwd = Deno.cwd();
+const BUILD_COMPLETE_MESSAGE = "Build complete!";
 
 function cwdRelative(path: string) {
   return relative(cwd, path);
@@ -172,11 +173,7 @@ export default async function build(
   if (plugin) {
     spinner.text = sprintf("Executing build plugin: %s:onBuild", plugin.name);
 
-    try {
-      await plugin.onBuild(finalBuildResult);
-    } catch (error) {
-      spinner.fail(error.message);
-    }
+    await plugin.onBuild(finalBuildResult);
 
     if (plugin.onPostBuild) {
       spinner.text = sprintf(
@@ -184,15 +181,12 @@ export default async function build(
         plugin.name,
       );
 
-      try {
-        await plugin.onPostBuild(finalBuildResult);
-        spinner.succeed("Build complete");
-      } catch (error) {
-        spinner.fail(error.message);
-      }
+      await plugin.onPostBuild(finalBuildResult);
     }
+
+    spinner.succeed(BUILD_COMPLETE_MESSAGE);
   } else {
-    spinner.succeed("Build complete");
+    spinner.succeed(BUILD_COMPLETE_MESSAGE);
     // deno-fmt-ignore
     console.log(outdent`\n
       You can now deploy the "${brightBlue(output)}" output directory to a platform of your choice.
