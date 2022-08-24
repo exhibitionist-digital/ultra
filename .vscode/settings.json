@@ -4,11 +4,13 @@
   "deno.config": "./deno.json",
   "editor.defaultFormatter": "denoland.vscode-deno",
   "deno.enablePaths": [
+    "./examples/ultra-website",
     "./examples/basic",
     "./examples/with-api-routes",
     "./examples/with-emotion",
     "./examples/with-esm",
     "./examples/with-fly-io",
+    "./examples/with-mdx",
     "./examples/with-react-helmet-async",
     "./examples/with-react-query",
     "./examples/with-react-router",
