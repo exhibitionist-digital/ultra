@@ -5,7 +5,6 @@ import { serveCompiled } from "./middleware/serveCompiled.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
-import { exists } from "./utils/fs.ts";
 import { resolveImportMapPath } from "./utils/import-map.ts";
 
 /**
@@ -27,7 +26,7 @@ export async function createServer(
     ...options,
   };
 
-  await assertServerOptions(resolvedOptions);
+  assertServerOptions(resolvedOptions);
 
   const { mode = "development", browserEntrypoint } =
     resolvedOptions as Required<CreateServerOptions>;
@@ -78,7 +77,7 @@ export function createRouter() {
   return router;
 }
 
-export async function assertServerOptions(options: CreateServerOptions) {
+export function assertServerOptions(options: CreateServerOptions) {
   try {
     /**
      * Assert that we are provided a valid "mode"
@@ -94,11 +93,10 @@ export async function assertServerOptions(options: CreateServerOptions) {
     assert(options.importMapPath, "No importMapPath was supplied");
 
     /**
-     * Assert that the "browserEntrypoint" exists
+     * Assert that we are provided a browserEntrypoint
      */
     assert(
-      await exists(options.browserEntrypoint) === true,
-      `A browser entrypoint was not found at path "${options.browserEntrypoint}"`,
+      `A browser entrypoint was not provided "${options.browserEntrypoint}"`,
     );
   } catch (error) {
     throw new Error(error.message);
