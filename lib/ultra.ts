@@ -11,11 +11,13 @@ type UltraServerRenderOptions = {
 
 export class UltraServer extends Hono {
   public importMap: ImportMap | undefined;
+  public assetManifest: Map<string, string> = new Map();
 
   constructor(
     public root: string,
     public mode: Mode,
     public importMapPath: string,
+    public assetManifestPath: string,
     public entrypoint: string,
   ) {
     super();
@@ -26,12 +28,22 @@ export class UltraServer extends Hono {
     /**
      * Parse the provided importMap
      */
-    this.importMap = await this.#parseImportMap(this.importMapPath);
+    this.importMap = await this.#parseJsonFile(this.importMapPath);
+
+    /**
+     * Parse the provided asset manifest
+     */
+    const assetManifest: [string, string][] | undefined =
+      this.mode === "production"
+        ? await this.#parseJsonFile(this.assetManifestPath)
+        : undefined;
+
+    this.assetManifest = assetManifest ? new Map(assetManifest) : new Map();
 
     /**
      * Prepare the entrypoint
      */
-    this.entrypoint = this.#prepareEntrypoint(this.importMap);
+    this.entrypoint = this.#prepareEntrypoint(this.importMap!);
   }
 
   render(Component: ReactElement, options?: UltraServerRenderOptions) {
@@ -40,13 +52,14 @@ export class UltraServer extends Hono {
     }
 
     return renderToStream(Component, {
+      assetManifest: this.assetManifest,
       importMap: this.importMap,
       bootstrapModules: [this.entrypoint],
       ...options,
     });
   }
 
-  async #parseImportMap(path: string): Promise<ImportMap> {
+  async #parseJsonFile<T>(path: string): Promise<T> {
     const bytes = await fetch(path).then((response) => response.arrayBuffer());
     const content = new TextDecoder().decode(bytes);
 

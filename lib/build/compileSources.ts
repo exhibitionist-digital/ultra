@@ -1,8 +1,8 @@
 import type {
   Module,
 } from "https://deno.land/x/deno_graph@0.31.0/lib/types.d.ts";
-import { extname } from "../deps.ts";
 import { hash } from "../utils/hash.ts";
+import { addFileContentHash } from "./utils/path.ts";
 import { fromFileUrl } from "./deps.ts";
 import type { BuildContext } from "./types.ts";
 
@@ -51,10 +51,8 @@ export async function compileSources(
 }
 
 async function getModuleOutputPath(module: Module) {
-  let outputPath = fromFileUrl(module.specifier);
+  const outputPath = fromFileUrl(module.specifier);
   const sourceHash = await hash(module.source);
-  const extension = extname(outputPath);
-  outputPath = outputPath.replace(extension, `.${sourceHash}${extension}`);
 
-  return outputPath;
+  return addFileContentHash(outputPath, sourceHash);
 }

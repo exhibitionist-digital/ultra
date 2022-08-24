@@ -1,5 +1,13 @@
 import { ULTRA_COMPILER_PATH, ULTRA_STATIC_PATH } from "./constants.ts";
-import { assert, dirname, fromFileUrl, Hono, resolve, wait } from "./deps.ts";
+import {
+  assert,
+  dirname,
+  fromFileUrl,
+  Hono,
+  resolve,
+  toFileUrl,
+  wait,
+} from "./deps.ts";
 import { serveCompiled } from "./middleware/serveCompiled.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
@@ -32,7 +40,16 @@ export async function createServer(
 
   const root = fromFileUrl(dirname(browserEntrypoint));
   const importMapPath = resolveImportMapPath(mode, root, options.importMapPath);
-  const server = new UltraServer(root, mode, importMapPath, browserEntrypoint);
+  const assetManifestPath =
+    toFileUrl(resolve(root, "asset-manifest.json")).href;
+
+  const server = new UltraServer(
+    root,
+    mode,
+    importMapPath,
+    assetManifestPath,
+    browserEntrypoint,
+  );
 
   await server.init();
 
