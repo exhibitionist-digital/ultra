@@ -1,9 +1,10 @@
 import type {
   Module,
 } from "https://deno.land/x/deno_graph@0.31.0/lib/types.d.ts";
-import type { BuildContext } from "./types.ts";
 import { extname } from "../deps.ts";
+import { hash } from "../utils/hash.ts";
 import { fromFileUrl } from "./deps.ts";
+import type { BuildContext } from "./types.ts";
 
 type CompileSourcesOptions = {
   sourceMaps?: boolean;
@@ -56,15 +57,4 @@ async function getModuleOutputPath(module: Module) {
   outputPath = outputPath.replace(extension, `.${sourceHash}${extension}`);
 
   return outputPath;
-}
-
-async function hash(code: string, length = 8) {
-  const msgUint8 = new TextEncoder().encode(code);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join(
-    "",
-  );
-
-  return hashHex.slice(0, length);
 }
