@@ -35,6 +35,15 @@ export async function assetManifest(context: BuildContext) {
       );
 
       assets.set(publicUrl, hashedPublicUrl);
+
+      /**
+       * We change the output path of the source to
+       * the new hashed version.
+       */
+      context.files.set(
+        source,
+        outputPath.replace(publicUrl, hashedPublicUrl),
+      );
     }
   }
 
