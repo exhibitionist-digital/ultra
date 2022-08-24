@@ -1,6 +1,6 @@
 import { globToRegExp, walk } from "./lib/build/deps.ts";
 
-export const VERSION = "2.0.0-alpha.1";
+export const VERSION = "2.0.0-alpha.2";
 export const VERSION_REGEX = /\/\/deno\.land\/x\/ultra@v[\w\.\-]+\//;
 
 export const ULTRA_OUTPUT_REGEX = globToRegExp("examples/**/.ultra", {
