@@ -1,3 +1,5 @@
+import { useAsset } from "ultra/client.js";
+
 export default function App() {
   console.log("Hello world!");
   return (
@@ -6,8 +8,8 @@ export default function App() {
         <meta charSet="utf-8" />
         <title>basic</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="stylesheet" href="/style.css" />
+        <link rel="shortcut icon" href={useAsset("/favicon.ico")} />
+        <link rel="stylesheet" href={useAsset("/style.css")} />
       </head>
       <body>
         <main>
