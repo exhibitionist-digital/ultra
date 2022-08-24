@@ -12,6 +12,7 @@ export function resolvePaths(
   options: ResolvePathsOptions,
 ) {
   const rootDir = Deno.cwd();
+  const publicDir = join(rootDir, "public");
   const outputDir = join(rootDir, dest);
 
   const browserEntrypoint = relative(
@@ -27,6 +28,7 @@ export function resolvePaths(
   return {
     rootDir,
     outputDir,
+    publicDir,
     entrypoint: {
       browser: browserEntrypoint,
       server: serverEntrypoint,
@@ -34,6 +36,12 @@ export function resolvePaths(
     output: {
       browser: join(outputDir, browserEntrypoint),
       server: join(outputDir, serverEntrypoint),
+    },
+    resolveBuildPath(path: string) {
+      return join(outputDir, path);
+    },
+    resolvePublicPath(path: string) {
+      return join(outputDir, publicDir, path);
     },
     resolveOutputFileUrl(path: string) {
       return toFileUrl(join(outputDir, path));

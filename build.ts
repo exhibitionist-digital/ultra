@@ -26,6 +26,7 @@ import type {
   BuildResult,
 } from "./lib/build/types.ts";
 import { createBuildContext } from "./lib/build/context.ts";
+import { assetManifest } from "./lib/build/assetManifest.ts";
 
 /**
  * Re-export these types as convenience to build plugin authors
@@ -102,7 +103,7 @@ export default async function build(
    */
   spinner.text = sprintf(
     "Copying source from: %s to %s",
-    cwdRelative(buildContext.paths.rootDir),
+    buildContext.paths.rootDir,
     cwdRelative(buildContext.paths.outputDir),
   );
   await copySource(buildContext);
@@ -154,6 +155,11 @@ export default async function build(
     paths.resolveOutputFileUrl("importMap.production.json"),
     importMap,
   );
+
+  /**
+   * Create the asset manifest
+   */
+  await assetManifest(buildContext);
 
   /**
    * Patch deno.json with required options
@@ -210,6 +216,8 @@ export default async function build(
       Alternatively, you can cd into "${brightBlue(output)}" and run: ${underline("deno task start")}
     `);
   }
+
+  buildContext.graph?.free();
 
   return finalBuildResult;
 }
