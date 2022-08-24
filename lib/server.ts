@@ -1,6 +1,5 @@
-import { wait } from "https://deno.land/x/wait@0.1.12/mod.ts";
 import { ULTRA_COMPILER_PATH, ULTRA_STATIC_PATH } from "./constants.ts";
-import { assert, dirname, fromFileUrl, Hono, resolve } from "./deps.ts";
+import { assert, dirname, fromFileUrl, Hono, resolve, wait } from "./deps.ts";
 import { serveCompiled } from "./middleware/serveCompiled.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
@@ -42,7 +41,6 @@ export async function createServer(
 
     const spinner = wait("Loading compiler").start();
     const { compiler } = await import("./middleware/compiler.ts");
-
     spinner.stop();
 
     server.use(
