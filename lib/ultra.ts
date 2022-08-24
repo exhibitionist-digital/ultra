@@ -33,9 +33,12 @@ export class UltraServer extends Hono {
     /**
      * Parse the provided asset manifest
      */
-    this.assetManifest = this.mode === "production"
-      ? await this.#parseJsonFile(this.assetManifestPath)
-      : this.assetManifest;
+    const assetManifest: [string, string][] | undefined =
+      this.mode === "production"
+        ? await this.#parseJsonFile(this.assetManifestPath)
+        : undefined;
+
+    this.assetManifest = assetManifest ? new Map(assetManifest) : new Map();
 
     /**
      * Prepare the entrypoint
