@@ -4,6 +4,8 @@ import {
   fromFileUrl,
   green,
   outdent,
+  relative,
+  sprintf,
   toFileUrl,
   underline,
   wait,
@@ -12,60 +14,35 @@ import { compileSources } from "./lib/build/compileSources.ts";
 import { copySource } from "./lib/build/copySource.ts";
 import { createGraph } from "./lib/build/createGraph.ts";
 import { patchDenoConfig } from "./lib/build/patchDenoConfig.ts";
-import { ResolvedPaths, resolvePaths } from "./lib/build/resolvePaths.ts";
+import { resolvePaths } from "./lib/build/resolvePaths.ts";
 import { vendorDependencies } from "./lib/build/vendorDependencies.ts";
-import { DenoConfig, ImportMap } from "./lib/types.ts";
 import { assert } from "./lib/deps.ts";
 import { toUltraUrl } from "./lib/utils/url.ts";
 import { writeJsonFile } from "./lib/utils/json.ts";
 import { cleanup } from "./lib/build/cleanup.ts";
+import type {
+  BuildOptions,
+  BuildPlugin,
+  BuildResult,
+} from "./lib/build/types.ts";
+import { createBuildContext } from "./lib/build/context.ts";
 
-type BuildOptions = {
-  /**
-   * The browser entrypoint. This is what initially gets sent with the server
-   * rendered HTML markup. This should be what hydrates your React application.
-   */
-  browserEntrypoint: string;
-  /**
-   * The server entrypoint. This should be what handles your SSR and routing.
-   */
-  serverEntrypoint: string;
-  /**
-   * The output directory for built files.
-   */
-  output?: string;
-  /**
-   * Force reload of dependencies when vendoring.
-   */
-  reload?: boolean;
-  /**
-   * Output source maps for compiled sources.
-   */
-  sourceMaps?: boolean;
-  /**
-   * A build plugin to run after completing the initial build
-   */
-  plugin?: BuildPlugin;
-};
-
-export type BuildResult = {
-  options: BuildOptions;
-  denoConfig: DenoConfig;
-  paths: ResolvedPaths;
-  importMap: ImportMap;
-};
-
-export type BuildPlugin = {
-  name: string;
-  onBuild: (result: BuildResult) => Promise<void> | void;
-  onPostBuild?: (result: BuildResult) => Promise<void> | void;
-};
+/**
+ * Re-export these types as convenience to build plugin authors
+ */
+export type { BuildPlugin };
 
 const defaultOptions = {
   output: ".ultra",
   reload: false,
   sourceMaps: false,
 };
+
+const cwd = Deno.cwd();
+
+function cwdRelative(path: string) {
+  return relative(cwd, path);
+}
 
 export default async function build(
   options: BuildOptions,
@@ -96,63 +73,66 @@ export default async function build(
     serverEntrypoint,
   });
 
-  const { rootDir, outputDir } = paths;
-
   /**
-   * Prepare the build result
+   * Prepare the BuildContext
    */
-  const buildResult: Partial<BuildResult> = {
-    options: resolvedOptions,
-    paths,
-  };
+  const buildContext = createBuildContext(paths);
 
-  spinner.text = `Cleaning output directory: ${outputDir}`;
-  await emptyDir(outputDir);
+  spinner.text = sprintf(
+    "Cleaning output directory: %s",
+    cwdRelative(buildContext.paths.outputDir),
+  );
+  await emptyDir(buildContext.paths.outputDir);
 
   /**
    * Copy everything from rootDir into outputDir
    */
-  spinner.text = `Copying source from: ${rootDir} to ${outputDir}`;
-  await copySource(rootDir, outputDir);
+  spinner.text = sprintf(
+    "Copying source from: %s to %s",
+    cwdRelative(buildContext.paths.rootDir),
+    cwdRelative(buildContext.paths.outputDir),
+  );
+  await copySource(buildContext);
 
   /**
    * Build a module graph from the provided entry points
    */
   spinner.text = "Building module graph";
-  const graph = await createGraph(paths);
+  buildContext.graph = await createGraph(buildContext);
 
   /**
    * Compile the sources found in the module graph
    */
   spinner.text = "Compiling and minifying sources";
-  const compiled = await compileSources(graph, { sourceMaps, hash: true });
+  const compiled = await compileSources(buildContext, {
+    sourceMaps,
+    hash: true,
+  });
 
   /**
    * Vendor dependencies
    */
   spinner.text = "Vendoring dependencies";
-  const importMap = await vendorDependencies(
-    outputDir,
-    [
-      paths.output.browser,
-      paths.output.server,
-      ...Array.from(compiled.values()),
-      import.meta.resolve("./server.ts"),
-    ],
-    {
-      reload,
-    },
-  );
+  const importMap = await vendorDependencies(buildContext, [
+    ...Array.from(compiled.values()),
+    import.meta.resolve("./server.ts"),
+  ], {
+    reload,
+  });
 
   /**
    * Insert hashed source files into the importMap
    */
   for (const module of compiled.entries()) {
     const specifier = fromFileUrl(
-      toUltraUrl(outputDir, module[0], "production"),
+      toUltraUrl(buildContext.paths.outputDir, module[0], "production"),
     );
     const resolved = fromFileUrl(
-      toUltraUrl(outputDir, toFileUrl(module[1]).href, "production"),
+      toUltraUrl(
+        buildContext.paths.outputDir,
+        toFileUrl(module[1]).href,
+        "production",
+      ),
     );
     importMap.imports[specifier] = resolved;
   }
@@ -172,17 +152,25 @@ export default async function build(
    */
   await cleanup(paths);
 
-  buildResult.importMap = importMap;
-  buildResult.denoConfig = denoConfig;
+  /**
+   * Prepare the build result
+   */
+  const buildResult: BuildResult = {
+    options: resolvedOptions,
+    paths,
+    importMap,
+    denoConfig,
+    files: buildContext.files,
+  };
 
-  const finalBuildResult = buildResult as BuildResult;
+  const finalBuildResult = buildResult;
 
   /**
    * If we are supplied an build plugin, execute that now
    * with the current build result.
    */
   if (plugin) {
-    spinner.text = `Executing build plugin: ${plugin.name}:onBuild`;
+    spinner.text = sprintf("Executing build plugin: %s:onBuild", plugin.name);
 
     try {
       await plugin.onBuild(finalBuildResult);
@@ -191,7 +179,10 @@ export default async function build(
     }
 
     if (plugin.onPostBuild) {
-      spinner.text = `Executing build plugin: ${plugin.name}:onPostBuild`;
+      spinner.text = sprintf(
+        "Executing build plugin: %s:onPostBuild",
+        plugin.name,
+      );
 
       try {
         await plugin.onPostBuild(finalBuildResult);

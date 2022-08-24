@@ -1,7 +1,7 @@
 import type {
   Module,
-  ModuleGraph,
 } from "https://deno.land/x/deno_graph@0.31.0/lib/types.d.ts";
+import { BuildContext } from "./types.ts";
 import { extname } from "../deps.ts";
 import { fromFileUrl } from "./deps.ts";
 
@@ -16,29 +16,33 @@ type CompileSourcesOptions = {
  * with the compiled result.
  */
 export async function compileSources(
-  graph: ModuleGraph,
+  context: BuildContext,
   options: CompileSourcesOptions,
 ) {
   const { transformSource } = await import("../compiler/transform.ts");
   const compiled = new Map();
 
-  for (const module of graph.modules) {
-    const transformed = await transformSource(module.source, {
-      filename: module.specifier,
-      development: false,
-      minify: options.minify || true,
-      sourceMaps: options.sourceMaps,
-    });
+  if (context.graph) {
+    for (const module of context.graph.modules) {
+      const transformed = await transformSource(module.source, {
+        filename: module.specifier,
+        development: false,
+        minify: options.minify || true,
+        sourceMaps: options.sourceMaps,
+      });
 
-    const outputPath = options.hash
-      ? await getModuleOutputPath(module)
-      : fromFileUrl(module.specifier);
+      const outputPath = options.hash
+        ? await getModuleOutputPath(module)
+        : fromFileUrl(module.specifier);
 
-    await Deno.writeTextFile(outputPath, transformed.code);
-    compiled.set(module.specifier, outputPath);
+      await Deno.writeTextFile(outputPath, transformed.code);
 
-    if (transformed.map) {
-      await Deno.writeTextFile(`${outputPath}.map`, transformed.map);
+      compiled.set(module.specifier, outputPath);
+      context.files.set(module.specifier, outputPath);
+
+      if (transformed.map) {
+        await Deno.writeTextFile(`${outputPath}.map`, transformed.map);
+      }
     }
   }
 
