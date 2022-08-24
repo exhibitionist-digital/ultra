@@ -1,4 +1,4 @@
-import { Context, Next, readableStreamFromReader } from "../deps.ts";
+import { Context, Next, toFileUrl } from "../deps.ts";
 import { getFilePath, getMimeType } from "../deps.ts";
 import { exists } from "../utils/fs.ts";
 
@@ -25,13 +25,14 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
       root: options.root,
     });
 
-    path = `./${path}`;
+    path = `/${path}`;
 
     if (await exists(path)) {
-      const file = await Deno.open(path, { read: true });
-      const fileStream = readableStreamFromReader(file);
+      const file = await fetch(toFileUrl(path)).then((response) =>
+        response.body
+      );
 
-      if (fileStream) {
+      if (file) {
         if (options.cache) {
           context.header(
             "Cache-Control",
@@ -44,7 +45,7 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
           context.header("Content-Type", mimeType);
         }
         // Return Response object
-        return context.body(fileStream, 200);
+        return context.body(file, 200);
       } else {
         console.warn(`Static file: ${path} is not found`);
         await next();

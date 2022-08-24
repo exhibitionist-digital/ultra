@@ -36,7 +36,7 @@ export const compiler = (options: CompilerOptions) => {
     const isCompilerTarget = [".ts", ".tsx", ".js", ".jsx"].includes(extension);
 
     if (method === "GET" && isCompilerTarget) {
-      const bytes = await Deno.readFile(url);
+      const bytes = await fetch(url).then((response) => response.arrayBuffer());
       const source = decoder.decode(bytes);
 
       try {

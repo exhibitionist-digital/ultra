@@ -47,7 +47,7 @@ export class UltraServer extends Hono {
   }
 
   async #parseImportMap(path: string): Promise<ImportMap> {
-    const bytes = await Deno.readFile(fromFileUrl(path));
+    const bytes = await fetch(path).then((response) => response.arrayBuffer());
     const content = new TextDecoder().decode(bytes);
 
     return JSON.parse(content);

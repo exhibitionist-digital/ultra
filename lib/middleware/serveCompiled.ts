@@ -1,5 +1,5 @@
 import { ULTRA_STATIC_PATH } from "../constants.ts";
-import { Context, join, Next, readableStreamFromReader } from "../deps.ts";
+import { Context, join, Next } from "../deps.ts";
 
 export const serveCompiled = (
   { root, cache }: { root: string; cache?: boolean },
@@ -14,15 +14,14 @@ export const serveCompiled = (
     );
 
     const filepath = join(root, pathname);
-    const file = await Deno.open(filepath, { read: true });
-    const fileStream = readableStreamFromReader(file);
+    const file = await fetch(filepath).then((response) => response.body);
 
-    if (fileStream) {
+    if (file) {
       context.header("Content-Type", "text/javascript");
       if (cache) {
         context.header("Cache-Control", "public, max-age=31536000, immutable");
       }
-      return context.body(fileStream, 200);
+      return context.body(file, 200);
     } else {
       console.warn(`Compiled file: ${filepath} not found`);
       await next();

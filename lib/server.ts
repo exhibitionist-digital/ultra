@@ -1,6 +1,6 @@
 import { wait } from "https://deno.land/x/wait@0.1.12/mod.ts";
 import { ULTRA_COMPILER_PATH, ULTRA_STATIC_PATH } from "./constants.ts";
-import { assert, dirname, fromFileUrl, Hono } from "./deps.ts";
+import { assert, dirname, fromFileUrl, Hono, resolve } from "./deps.ts";
 import { serveCompiled } from "./middleware/serveCompiled.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
@@ -57,14 +57,17 @@ export async function createServer(
   } else {
     server.use(
       "/vendor/*",
-      serveStatic({ root: "./", cache: mode === "production" }),
+      serveStatic({ root: resolve(root, "./"), cache: mode === "production" }),
     );
     server.use(`${ULTRA_STATIC_PATH}/*`, serveCompiled({ root }));
   }
 
   server.use(
     "*",
-    serveStatic({ root: "./public", cache: mode === "production" }),
+    serveStatic({
+      root: resolve(root, "./public"),
+      cache: mode === "production",
+    }),
   );
 
   return server;
