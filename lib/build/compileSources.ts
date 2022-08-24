@@ -1,7 +1,7 @@
 import type {
   Module,
 } from "https://deno.land/x/deno_graph@0.31.0/lib/types.d.ts";
-import { BuildContext } from "./types.ts";
+import type { BuildContext } from "./types.ts";
 import { extname } from "../deps.ts";
 import { fromFileUrl } from "./deps.ts";
 

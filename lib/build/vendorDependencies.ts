@@ -1,9 +1,9 @@
-import { ImportMap } from "../types.ts";
-import { importJsonModule, writeJsonFile } from "../utils/json.ts";
+import type { ImportMap } from "../types.ts";
 import { importMapRelative } from "../utils/import-map.ts";
+import { importJsonModule, writeJsonFile } from "../utils/json.ts";
 import { nonNullable } from "../utils/non-nullable.ts";
 import { resolve, toFileUrl } from "./deps.ts";
-import { BuildContext } from "./types.ts";
+import type { BuildContext } from "./types.ts";
 
 type VendorDependenciesOptions = {
   reload?: boolean;

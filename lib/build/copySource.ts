@@ -1,4 +1,4 @@
-import { BuildContext } from "./types.ts";
+import type { BuildContext } from "./types.ts";
 import { copy, ensureDir, join, relative, walk } from "./deps.ts";
 
 /**
