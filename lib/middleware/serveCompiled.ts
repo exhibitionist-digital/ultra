@@ -14,16 +14,22 @@ export const serveCompiled = (
     );
 
     const filepath = join(root, pathname);
-    const file = await fetch(filepath).then((response) => response.body);
-
-    if (file) {
+    try {
+      const file = await fetch(filepath).then((response) => response.body);
       context.header("Content-Type", "text/javascript");
       if (cache) {
         context.header("Cache-Control", "public, max-age=31536000, immutable");
       }
       return context.body(file, 200);
-    } else {
-      console.warn(`Compiled file: ${filepath} not found`);
+    } catch (_error) {
+      /**
+       * This is so we can just continue the request if the above fetch fails,
+       * since the compiled asset might not exist, and we want to avoid Deno APIs
+       * in the runtime as much as possible.
+       *
+       * TODO: Maybe we should handle the type of error that fetch would throw?
+       */
+      console.debug(`Compiled file: ${filepath} not found`);
       await next();
     }
   };

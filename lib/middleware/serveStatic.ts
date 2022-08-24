@@ -1,6 +1,5 @@
-import { Context, Next, toFileUrl } from "../deps.ts";
-import { getFilePath, getMimeType } from "../deps.ts";
-import { exists } from "../utils/fs.ts";
+import type { Context, Next } from "../deps.ts";
+import { getFilePath, getMimeType, toFileUrl } from "../deps.ts";
 
 export type ServeStaticOptions = {
   root?: string;
@@ -27,7 +26,7 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
 
     path = `/${path}`;
 
-    if (await exists(path)) {
+    try {
       const file = await fetch(toFileUrl(path)).then((response) =>
         response.body
       );
@@ -50,9 +49,18 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
         console.warn(`Static file: ${path} is not found`);
         await next();
       }
-      return;
-    }
 
-    await next();
+      return;
+    } catch (_error) {
+      /**
+       * This is so we can just continue the request if the above fetch fails,
+       * since the static asset might not exist, and we want to avoid Deno APIs
+       * in the runtime as much as possible.
+       *
+       * TODO: Maybe we should handle the type of error that fetch would throw?
+       */
+      console.debug(`Static file: ${path} does not exist, continuing`);
+      await next();
+    }
   };
 };
