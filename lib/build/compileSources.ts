@@ -38,7 +38,7 @@ export async function compileSources(
       await Deno.writeTextFile(outputPath, transformed.code);
 
       compiled.set(module.specifier, outputPath);
-      context.files.set(module.specifier, outputPath);
+      context.files.set(fromFileUrl(module.specifier), outputPath);
 
       if (transformed.map) {
         await Deno.writeTextFile(`${outputPath}.map`, transformed.map);
