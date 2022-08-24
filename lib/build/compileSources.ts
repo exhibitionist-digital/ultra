@@ -23,7 +23,7 @@ export async function compileSources(
   const compiled = new Map();
 
   for (const module of graph.modules) {
-    const transformed = transformSource(module.source, {
+    const transformed = await transformSource(module.source, {
       filename: module.specifier,
       development: false,
       minify: options.minify || true,
