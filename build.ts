@@ -70,7 +70,7 @@ export default async function build(
     exclude,
   } = resolvedOptions as Required<BuildOptions>;
 
-  const spinner = wait("Building");
+  const spinner = wait("Building").start();
 
   /**
    * Resolve paths for build inputs/outputs

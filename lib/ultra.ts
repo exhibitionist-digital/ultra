@@ -69,11 +69,11 @@ export class UltraServer extends Hono {
   #prepareEntrypoint(importMap: ImportMap) {
     const specifier = toUltraUrl(this.root, this.entrypoint, this.mode)!;
 
-    console.log(specifier, this.entrypoint, importMap);
-
     if (this.mode === "production") {
-      if (importMap.imports[fromFileUrl(specifier)]) {
-        return importMap.imports[fromFileUrl(specifier)];
+      for (const [, resolved] of Object.entries(importMap.imports)) {
+        if (resolved === specifier) {
+          return resolved;
+        }
       }
     }
 
