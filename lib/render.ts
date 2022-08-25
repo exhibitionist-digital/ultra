@@ -4,11 +4,9 @@ import {
   RenderToReadableStreamOptions,
   renderToString,
 } from "react-dom/server";
-import { AssetContext } from "./client/asset.js";
-import {
-  FlushEffectsContext,
-  useFlushEffects,
-} from "./client/flush-effects.js";
+import AssetContext from "../hooks/asset-context.js";
+import FlushEffectsContext from "../hooks/flush-effect-context.js";
+import useFlushEffects from "../hooks/use-flush-effects.js";
 import { fromFileUrl, sprintf } from "./deps.ts";
 import { log } from "./logger.ts";
 import { continueFromInitialStream, renderToInitialStream } from "./stream.ts";
