@@ -8,6 +8,7 @@ import type { BuildContext } from "./types.ts";
 type VendorDependenciesOptions = {
   reload?: boolean;
   target: "browser" | "server";
+  paths?: string[];
 };
 
 /**
@@ -29,10 +30,13 @@ export async function vendorDependencies(
     "--output",
     vendorOutputPath,
     options.reload ? "--reload" : undefined,
-    options.target === "browser"
-      ? context.paths.output.browser
-      : context.paths.output.server,
   ].filter(nonNullable);
+
+  if (options.target === "browser") {
+    cmd.push(context.paths.output.browser, ...options.paths || []);
+  } else {
+    cmd.push(context.paths.output.server);
+  }
 
   const vendor = Deno.run({
     cwd: outputDir,

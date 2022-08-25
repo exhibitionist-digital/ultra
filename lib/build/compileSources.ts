@@ -21,7 +21,7 @@ export async function compileSources(
   options: CompileSourcesOptions,
 ) {
   const { transformSource } = await import("../compiler/transform.ts");
-  const compiled = new Map();
+  const compiled = new Map<string, string>();
 
   /**
    * Compile the server entrypoint

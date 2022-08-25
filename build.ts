@@ -139,6 +139,7 @@ export default async function build(
     vendorDependencies(buildContext, {
       target: "browser",
       reload,
+      paths: [...Array.from(compiled.values())],
     }),
     vendorDependencies(buildContext, {
       target: "server",
@@ -172,7 +173,7 @@ export default async function build(
       buildContext.paths.outputDir,
       compiled.get(
         module.specifier,
-      ),
+      )!,
     );
 
     serverImportMap.imports[relativeSpecifier] = resolvedSpecifier;
