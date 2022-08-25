@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.153.0/http/server.ts";
-import { createServer } from "ultra/server.ts";
-import { useFlushEffects } from "ultra/client.js";
 import { HelmetProvider } from "react-helmet-async";
+import useFlushEffects from "ultra/hooks/use-flush-effects.js";
+import { createServer } from "ultra/server.ts";
 import App from "./src/app.tsx";
 
 const server = await createServer({

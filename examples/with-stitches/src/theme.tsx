@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { useFlushEffects } from "ultra/client.js";
+import useFlushEffects from "ultra/hooks/use-flush-effects.js";
 import { getCssText } from "./stitches.config.ts";
 
 export function ThemeProvider({ children }: PropsWithChildren) {

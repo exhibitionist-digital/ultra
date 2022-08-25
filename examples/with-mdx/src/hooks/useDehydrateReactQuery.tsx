@@ -1,5 +1,5 @@
 import { dehydrate, QueryClient } from "@tanstack/react-query";
-import { useFlushEffects } from "ultra/client.js";
+import useFlushEffects from "ultra/hooks/use-flush-effects.js";
 
 export function useDehydrateReactQuery(queryClient: QueryClient) {
   useFlushEffects(() => {

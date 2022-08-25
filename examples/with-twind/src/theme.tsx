@@ -2,7 +2,7 @@ import { PropsWithChildren } from "react";
 import { Sheet } from "twind";
 import { getStyleTagProperties, VirtualSheet } from "twind/sheets";
 import { sheet } from "../twind.ts";
-import { useFlushEffects } from "ultra/client.js";
+import useFlushEffects from "ultra/hooks/use-flush-effects.js";
 
 /**
  * This is just a guard to make sure we are dealing with
