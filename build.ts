@@ -25,7 +25,7 @@ import type {
   BuildResult,
 } from "./lib/build/types.ts";
 import { createBuildContext } from "./lib/build/context.ts";
-import { assetManifest } from "./lib/build/assetManifest.ts";
+import { createAssetManifest } from "./lib/build/assetManifest.ts";
 import { writeJsonFile } from "./lib/utils/json.ts";
 import { patchImportMap } from "./lib/build/patchImportMap.ts";
 
@@ -180,7 +180,10 @@ export default async function build(
   /**
    * Create the asset manifest
    */
-  const assets = await assetManifest(buildContext);
+  const assets = await createAssetManifest(buildContext, {
+    // TODO: We need a default exclusion list
+    exclude: ["robots.txt"],
+  });
 
   /**
    * Patch deno.json with required options

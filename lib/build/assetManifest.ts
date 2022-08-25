@@ -4,7 +4,14 @@ import { globToRegExp, join } from "./deps.ts";
 import type { BuildContext } from "./types.ts";
 import { addFileContentHash } from "./utils/path.ts";
 
-export async function assetManifest(context: BuildContext) {
+type CreateAssetManifestOptions = {
+  exclude?: string[];
+};
+
+export async function createAssetManifest(
+  context: BuildContext,
+  options?: CreateAssetManifestOptions,
+) {
   const PUBLIC_ASSET_REGEX = globToRegExp(
     join(context.paths.outputDir, "public", "**", "*"),
     {
@@ -14,11 +21,29 @@ export async function assetManifest(context: BuildContext) {
     },
   );
 
+  const excluded = options?.exclude?.map((exclude) =>
+    globToRegExp(
+      join(context.paths.outputDir, "public", exclude),
+      {
+        extended: true,
+        globstar: true,
+        caseInsensitive: false,
+      },
+    )
+  ) || [];
+
+  function isExcluded(path: string) {
+    return excluded.some((pattern) => pattern.test(path));
+  }
+
   const publicDir = context.paths.resolveBuildPath("public");
   const assets = new Map<string, string>();
 
   for (const [source, outputPath] of context.files.entries()) {
-    if (PUBLIC_ASSET_REGEX.test(outputPath)) {
+    if (
+      !isExcluded(outputPath) &&
+      PUBLIC_ASSET_REGEX.test(outputPath)
+    ) {
       const content = await Deno.readFile(source);
       const sourceHash = await hash(content);
 
@@ -29,7 +54,7 @@ export async function assetManifest(context: BuildContext) {
       const publicUrl = outputPath.replace(publicDir, "");
       const hashedPublicUrl = addFileContentHash(publicUrl, sourceHash);
 
-      await Deno.rename(
+      await Deno.copyFile(
         outputPath,
         outputPath.replace(publicUrl, hashedPublicUrl),
       );
