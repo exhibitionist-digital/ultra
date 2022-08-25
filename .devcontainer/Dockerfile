@@ -12,7 +12,7 @@ RUN mkdir -p /deno \
 ENV PATH=${DENO_INSTALL}/bin:${PATH} \
     DENO_DIR=${DENO_INSTALL}/.cache/deno
 
-RUN deno install --allow-read --allow-write --allow-run -f -n publish https://deno.land/x/publish@v1.15.0/cli.ts
+RUN deno install --allow-read --allow-write --allow-run --allow-net -f -n publish https://deno.land/x/publish@v1.15.0/cli.ts
 
 ENV PATH="/home/vscode/.deno/bin:${PATH}"
 
