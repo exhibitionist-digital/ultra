@@ -179,9 +179,26 @@ export default async function build(
     );
 
     serverImportMap.imports[relativeSpecifier] = resolvedSpecifier;
+
+    /**
+     * This will result in something like "/_ultra/static/client.tsx"
+     */
+    const importSpecifier = `${ULTRA_STATIC_PATH}/${
+      relativeSpecifier.replace("./", "")
+    }`;
+
+    /**
+     * This will result in something like "/_ultra/static/client.9d29f9c0.tsx"
+     */
+    const importResolved = `${ULTRA_STATIC_PATH}/${
+      resolvedSpecifier.replace("./", "")
+    }`;
+
     // deno-fmt-ignore
-    browserImportMap.imports[relativeSpecifier] = `${ULTRA_STATIC_PATH}/${resolvedSpecifier.replace('./', '')}`;
+    browserImportMap.imports[importSpecifier] = importResolved
   }
+
+  browserImportMap.imports[ULTRA_STATIC_PATH];
 
   /**
    * Write the new importMaps
