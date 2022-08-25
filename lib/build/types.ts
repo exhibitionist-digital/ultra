@@ -22,6 +22,11 @@ export type BuildOptions = {
    */
   output?: string;
   /**
+   * The files specified in exclude will be ignored by the build script.
+   * They won't be copied to the output directory or participate in any further processing.
+   */
+  exclude?: string[];
+  /**
    * Force reload of dependencies when vendoring.
    */
   reload?: boolean;

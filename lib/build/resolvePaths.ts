@@ -1,8 +1,16 @@
-import { fromFileUrl, join, relative, toFileUrl } from "./deps.ts";
+import {
+  fromFileUrl,
+  globToRegExp,
+  join,
+  relative,
+  resolve,
+  toFileUrl,
+} from "./deps.ts";
 
 type ResolvePathsOptions = {
   browserEntrypoint: string;
   serverEntrypoint: string;
+  exclude?: string[];
 };
 
 export type ResolvedPaths = ReturnType<typeof resolvePaths>;
@@ -25,10 +33,24 @@ export function resolvePaths(
     fromFileUrl(options.serverEntrypoint),
   );
 
+  /**
+   * Build up the regular expressions for excluding
+   * files from build processing.
+   */
+  const excluded =
+    options?.exclude?.map((pattern) =>
+      globToRegExp(resolve(rootDir, pattern), {
+        extended: true,
+        globstar: true,
+        caseInsensitive: false,
+      })
+    ) || [];
+
   return {
     rootDir,
     outputDir,
     publicDir,
+    excluded,
     entrypoint: {
       browser: browserEntrypoint,
       server: serverEntrypoint,

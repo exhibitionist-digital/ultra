@@ -1,8 +1,10 @@
 import {
   brightBlue,
+  deepMerge,
   emptyDir,
   fromFileUrl,
   green,
+  join,
   outdent,
   relative,
   sprintf,
@@ -33,10 +35,14 @@ import { assetManifest } from "./lib/build/assetManifest.ts";
  */
 export type { BuildPlugin };
 
-const defaultOptions = {
+const defaultOptions: Partial<BuildOptions> = {
   output: ".ultra",
   reload: false,
   sourceMaps: false,
+  exclude: [
+    ".git",
+    join("**", ".DS_Store"),
+  ],
 };
 
 const cwd = Deno.cwd();
@@ -49,10 +55,7 @@ function cwdRelative(path: string) {
 export default async function build(
   options: BuildOptions,
 ): Promise<BuildResult> {
-  const resolvedOptions = {
-    ...defaultOptions,
-    ...options,
-  };
+  const resolvedOptions = deepMerge(defaultOptions, options);
 
   await assertBuildOptions(resolvedOptions);
 
@@ -63,9 +66,10 @@ export default async function build(
     sourceMaps,
     reload,
     plugin,
+    exclude,
   } = resolvedOptions as Required<BuildOptions>;
 
-  const spinner = wait({ text: "Building", stream: Deno.stdout }).start();
+  const spinner = wait({ text: "Building", stream: Deno.stdout });
 
   /**
    * Resolve paths for build inputs/outputs
@@ -73,6 +77,7 @@ export default async function build(
   const paths = resolvePaths(output, {
     browserEntrypoint,
     serverEntrypoint,
+    exclude: [...exclude, output],
   });
 
   /**

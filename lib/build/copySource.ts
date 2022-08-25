@@ -6,7 +6,7 @@ import { copyFiles } from "./utils/fs.ts";
  */
 export async function copySource(context: BuildContext) {
   const { rootDir, outputDir } = context.paths;
-  const copied = await copyFiles(rootDir, outputDir);
+  const copied = await copyFiles(rootDir, outputDir, context.paths.excluded);
 
   for (const [source, dest] of copied.entries()) {
     context.files.set(source, dest);

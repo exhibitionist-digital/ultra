@@ -8,7 +8,7 @@ export async function copyFiles(from: string, to: string, skip: RegExp[] = []) {
   const copied = new Map<string, string>();
   for await (
     const entry of walk(from, {
-      skip: [new RegExp(to), ...skip],
+      skip,
     })
   ) {
     const relativePath = relative(from, entry.path);
