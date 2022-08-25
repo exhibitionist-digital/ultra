@@ -6,7 +6,7 @@ export function resolveImportMapPath(mode: Mode, root: string, path: string) {
     return path;
   }
 
-  return toFileUrl(resolve(root, "./importMap.production.json")).href;
+  return toFileUrl(resolve(root, "./importMap.browser.json")).href;
 }
 
 export function importMapRelative(importMap: ImportMap, to: string) {

@@ -18,7 +18,7 @@ export async function patchDenoConfig(paths: ResolvedPaths) {
   }
 
   if (denoConfig.importMap) {
-    denoConfig.importMap = "./importMap.production.json";
+    denoConfig.importMap = "./importMap.server.json";
   }
 
   await writeJsonFile(

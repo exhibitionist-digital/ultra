@@ -23,6 +23,28 @@ export async function compileSources(
   const { transformSource } = await import("../compiler/transform.ts");
   const compiled = new Map();
 
+  /**
+   * Compile the server entrypoint
+   */
+  try {
+    const serverSource = await Deno.readTextFile(context.paths.output.server);
+    const server = await transformSource(serverSource, {
+      filename: context.paths.output.server,
+      development: false,
+      minify: false,
+      sourceMaps: false,
+    });
+    /**
+     * Overwrite the server entrypoint with the compiled code
+     */
+    await Deno.writeTextFile(context.paths.output.server, server.code);
+  } catch (error) {
+    throw error;
+  }
+
+  /**
+   * Now compile the module graph
+   */
   if (context.graph) {
     for (const module of context.graph.modules) {
       const transformed = await transformSource(module.source, {

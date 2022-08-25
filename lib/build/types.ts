@@ -57,7 +57,10 @@ export type BuildResult = {
   options: BuildOptions;
   denoConfig: DenoConfig;
   paths: ResolvedPaths;
-  importMap: ImportMap;
+  importMap: {
+    browser: ImportMap;
+    server: ImportMap;
+  };
   assetManifest: Map<string, string>;
   /**
    * A map of files with the source path as the key

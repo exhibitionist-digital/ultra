@@ -7,8 +7,8 @@ import {
   join,
   outdent,
   relative,
+  SEP,
   sprintf,
-  toFileUrl,
   underline,
   wait,
 } from "./lib/build/deps.ts";
@@ -19,8 +19,6 @@ import { patchDenoConfig } from "./lib/build/patchDenoConfig.ts";
 import { resolvePaths } from "./lib/build/resolvePaths.ts";
 import { vendorDependencies } from "./lib/build/vendorDependencies.ts";
 import { assert } from "./lib/deps.ts";
-import { toUltraUrl } from "./lib/utils/url.ts";
-import { writeJsonFile } from "./lib/utils/json.ts";
 import { cleanup } from "./lib/build/cleanup.ts";
 import type {
   BuildOptions,
@@ -117,7 +115,9 @@ export default async function build(
    * Build a module graph from the provided entry points
    */
   spinner.text = "Building module graph";
-  buildContext.graph = await createGraph(buildContext);
+  const browserModuleGraph = buildContext.graph = await createGraph(
+    buildContext,
+  );
 
   /**
    * Compile the sources found in the module graph
@@ -131,35 +131,55 @@ export default async function build(
   /**
    * Vendor dependencies
    */
-  spinner.text = "Vendoring dependencies";
-  const importMap = await vendorDependencies(buildContext, [
-    ...Array.from(compiled.values()),
-    import.meta.resolve("./server.ts"),
-  ], {
-    reload,
-  });
+  spinner.text = "Vendoring browser dependencies";
+
+  const [browserImportMap, serverImportMap] = await Promise.all([
+    vendorDependencies(buildContext, {
+      target: "browser",
+      reload,
+    }),
+    vendorDependencies(buildContext, {
+      target: "server",
+      reload,
+    }),
+  ]);
 
   /**
-   * Insert hashed source files into the importMap
+   * Insert hashed source files into the importMaps
    */
-  for (const module of compiled.entries()) {
-    const specifier = fromFileUrl(
-      toUltraUrl(buildContext.paths.outputDir, module[0], "production"),
+  function toRelativeSpecifier(from: string, specifier: string) {
+    specifier = relative(
+      from,
+      specifier.startsWith("file://") ? fromFileUrl(specifier) : specifier,
     );
-    const resolved = fromFileUrl(
-      toUltraUrl(
-        buildContext.paths.outputDir,
-        toFileUrl(module[1]).href,
-        "production",
-      ),
-    );
-    importMap.imports[specifier] = resolved;
+
+    return `.${SEP}${specifier}`;
   }
 
-  await writeJsonFile(
-    paths.resolveOutputFileUrl("importMap.production.json"),
-    importMap,
-  );
+  for (const module of browserModuleGraph.modules) {
+    /**
+     * We want to exclude any "roots" which will most certainly
+     * be the entrypoint.
+     */
+    if (!browserModuleGraph.roots.includes(module.specifier)) {
+      const relativeSpecifier = toRelativeSpecifier(
+        buildContext.paths.outputDir,
+        module.specifier,
+      );
+      serverImportMap.imports[relativeSpecifier] = toRelativeSpecifier(
+        buildContext.paths.outputDir,
+        compiled.get(
+          module.specifier,
+        ),
+      );
+      browserImportMap.imports[relativeSpecifier] = toRelativeSpecifier(
+        buildContext.paths.outputDir,
+        compiled.get(
+          module.specifier,
+        ),
+      );
+    }
+  }
 
   /**
    * Create the asset manifest
@@ -182,7 +202,10 @@ export default async function build(
   const buildResult: BuildResult = {
     options: resolvedOptions,
     paths,
-    importMap,
+    importMap: {
+      browser: browserImportMap,
+      server: serverImportMap,
+    },
     assetManifest: assets,
     denoConfig,
     files: buildContext.files,

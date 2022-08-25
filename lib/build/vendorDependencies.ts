@@ -2,11 +2,12 @@ import type { ImportMap } from "../types.ts";
 import { importMapRelative } from "../utils/import-map.ts";
 import { importJsonModule, writeJsonFile } from "../utils/json.ts";
 import { nonNullable } from "../utils/non-nullable.ts";
-import { resolve, toFileUrl } from "./deps.ts";
+import { join, resolve, SEP, toFileUrl } from "./deps.ts";
 import type { BuildContext } from "./types.ts";
 
 type VendorDependenciesOptions = {
   reload?: boolean;
+  target: "browser" | "server";
 };
 
 /**
@@ -16,16 +17,21 @@ type VendorDependenciesOptions = {
  */
 export async function vendorDependencies(
   context: BuildContext,
-  paths: string[],
   options: VendorDependenciesOptions,
 ) {
   const { outputDir } = context.paths;
+  const vendorOutputPath = join("vendor", options.target, SEP);
+
   const cmd = [
     Deno.execPath(),
     "vendor",
     "--force",
+    "--output",
+    vendorOutputPath,
     options.reload ? "--reload" : undefined,
-    ...[context.paths.output.browser, context.paths.output.server, ...paths],
+    options.target === "browser"
+      ? context.paths.output.browser
+      : context.paths.output.server,
   ].filter(nonNullable);
 
   const vendor = Deno.run({
@@ -39,24 +45,25 @@ export async function vendorDependencies(
   const rawError = await vendor.stderrOutput();
 
   if (code === 0) {
-    const vendorPath = "./vendor/";
     const vendorImportMapPath = toFileUrl(resolve(
       outputDir,
-      vendorPath,
+      vendorOutputPath,
       "import_map.json",
     ));
 
     const builtImportMapPath = resolve(
       outputDir,
-      "./importMap.production.json",
+      `./importMap.${options.target}.json`,
     );
 
-    const vendorImportMap: ImportMap = await importJsonModule(
+    const targetImportMap: ImportMap = await importJsonModule(
       vendorImportMapPath,
     );
 
-    const importMap = importMapRelative(vendorImportMap, vendorPath);
-
+    const importMap = importMapRelative(
+      targetImportMap,
+      `.${SEP}${vendorOutputPath}`,
+    );
     await writeJsonFile(builtImportMapPath, importMap);
 
     return importMap;
