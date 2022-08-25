@@ -9,7 +9,7 @@ export function resolveImportMapPath(mode: Mode, root: string, path: string) {
   return toFileUrl(resolve(root, "./importMap.browser.json")).href;
 }
 
-export function importMapRelative(importMap: ImportMap, to: string) {
+export function importMapRelative(importMap: ImportMap, to: string): ImportMap {
   let imports = importMap.imports;
   const scopes = importMap.scopes;
 

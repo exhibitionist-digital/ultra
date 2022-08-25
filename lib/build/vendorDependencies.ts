@@ -3,11 +3,11 @@ import { importMapRelative } from "../utils/import-map.ts";
 import { importJsonModule, writeJsonFile } from "../utils/json.ts";
 import { nonNullable } from "../utils/non-nullable.ts";
 import { join, resolve, SEP, toFileUrl } from "./deps.ts";
-import type { BuildContext } from "./types.ts";
+import type { BuildContext, BuildTarget } from "./types.ts";
 
 type VendorDependenciesOptions = {
   reload?: boolean;
-  target: "browser" | "server";
+  target: BuildTarget;
   paths?: string[];
 };
 

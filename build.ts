@@ -2,13 +2,11 @@ import {
   brightBlue,
   deepMerge,
   emptyDir,
-  fromFileUrl,
   green,
   join,
   outdent,
   relative,
   resolve,
-  SEP,
   sprintf,
   underline,
   wait,
@@ -29,7 +27,7 @@ import type {
 import { createBuildContext } from "./lib/build/context.ts";
 import { assetManifest } from "./lib/build/assetManifest.ts";
 import { writeJsonFile } from "./lib/utils/json.ts";
-import { ULTRA_STATIC_PATH } from "./lib/constants.ts";
+import { patchImportMap } from "./lib/build/patchImportMap.ts";
 
 /**
  * Re-export these types as convenience to build plugin authors
@@ -118,7 +116,7 @@ export default async function build(
    * Build a module graph from the provided entry points
    */
   spinner.text = "Building module graph";
-  const browserModuleGraph = buildContext.graph = await createGraph(
+  buildContext.graph = await createGraph(
     buildContext,
   );
 
@@ -136,7 +134,7 @@ export default async function build(
    */
   spinner.text = "Vendoring browser dependencies";
 
-  const [browserImportMap, serverImportMap] = await Promise.all([
+  let [browserImportMap, serverImportMap] = await Promise.all([
     vendorDependencies(buildContext, {
       target: "browser",
       reload,
@@ -149,56 +147,21 @@ export default async function build(
   ]);
 
   /**
-   * Insert hashed source files into the importMaps
+   * Patch the importMaps with resolved import specifiers
    */
-  function toRelativeSpecifier(from: string, specifier: string) {
-    specifier = relative(
-      from,
-      specifier.startsWith("file://") ? fromFileUrl(specifier) : specifier,
-    );
+  browserImportMap = patchImportMap(
+    buildContext,
+    compiled,
+    browserImportMap,
+    "browser",
+  );
 
-    return `.${SEP}${specifier}`;
-  }
-
-  // TODO(deckchairlabs): document and move this to a build lib
-  for (const module of browserModuleGraph.modules) {
-    /**
-     * We want to exclude any "roots" which will most certainly
-     * be the entrypoint.
-     */
-    const relativeSpecifier = toRelativeSpecifier(
-      buildContext.paths.outputDir,
-      module.specifier,
-    );
-
-    const resolvedSpecifier = toRelativeSpecifier(
-      buildContext.paths.outputDir,
-      compiled.get(
-        module.specifier,
-      )!,
-    );
-
-    serverImportMap.imports[relativeSpecifier] = resolvedSpecifier;
-
-    /**
-     * This will result in something like "/_ultra/static/client.tsx"
-     */
-    const importSpecifier = `${ULTRA_STATIC_PATH}/${
-      relativeSpecifier.replace("./", "")
-    }`;
-
-    /**
-     * This will result in something like "/_ultra/static/client.9d29f9c0.tsx"
-     */
-    const importResolved = `${ULTRA_STATIC_PATH}/${
-      resolvedSpecifier.replace("./", "")
-    }`;
-
-    // deno-fmt-ignore
-    browserImportMap.imports[importSpecifier] = importResolved
-  }
-
-  browserImportMap.imports[ULTRA_STATIC_PATH];
+  serverImportMap = patchImportMap(
+    buildContext,
+    compiled,
+    serverImportMap,
+    "server",
+  );
 
   /**
    * Write the new importMaps

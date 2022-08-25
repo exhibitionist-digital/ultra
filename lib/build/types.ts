@@ -40,6 +40,8 @@ export type BuildOptions = {
   plugin?: BuildPlugin;
 };
 
+export type BuildTarget = "browser" | "server";
+
 export type BuildPlugin = {
   name: string;
   onPreBuild?: (context: BuildContext) => Promise<void> | void;
