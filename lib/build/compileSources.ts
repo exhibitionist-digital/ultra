@@ -1,6 +1,6 @@
 import type {
   Module,
-} from "https://deno.land/x/deno_graph@0.31.0/lib/types.d.ts";
+} from "https://deno.land/x/deno_graph@0.32.0/lib/types.d.ts";
 import { hash } from "../utils/hash.ts";
 import { addFileContentHash } from "./utils/path.ts";
 import { fromFileUrl } from "./deps.ts";

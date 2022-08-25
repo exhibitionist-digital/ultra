@@ -6,9 +6,10 @@ import { toFileUrl } from "./deps.ts";
  */
 export async function createGraph(context: BuildContext) {
   const { createGraph: createModuleGraph } = await import(
-    "https://deno.land/x/deno_graph@0.31.0/mod.ts"
+    "https://deno.land/x/deno_graph@0.32.0/mod.ts"
   );
   return createModuleGraph(toFileUrl(context.paths.output.browser).href, {
     kind: "codeOnly",
+    defaultJsxImportSource: "react",
   });
 }

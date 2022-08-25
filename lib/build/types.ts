@@ -3,7 +3,7 @@ import { ResolvedPaths } from "./resolvePaths.ts";
 import type {
   Module,
   ModuleGraph,
-} from "https://deno.land/x/deno_graph@0.31.0/lib/types.d.ts";
+} from "https://deno.land/x/deno_graph@0.32.0/lib/types.d.ts";
 
 export type { Module, ModuleGraph };
 
