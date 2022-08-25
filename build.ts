@@ -7,6 +7,7 @@ import {
   join,
   outdent,
   relative,
+  resolve,
   SEP,
   sprintf,
   underline,
@@ -27,6 +28,7 @@ import type {
 } from "./lib/build/types.ts";
 import { createBuildContext } from "./lib/build/context.ts";
 import { assetManifest } from "./lib/build/assetManifest.ts";
+import { writeJsonFile } from "./lib/utils/json.ts";
 
 /**
  * Re-export these types as convenience to build plugin authors
@@ -67,7 +69,7 @@ export default async function build(
     exclude,
   } = resolvedOptions as Required<BuildOptions>;
 
-  const spinner = wait({ text: "Building", stream: Deno.stdout }).start();
+  const spinner = wait("Building").start();
 
   /**
    * Resolve paths for build inputs/outputs
@@ -161,25 +163,35 @@ export default async function build(
      * We want to exclude any "roots" which will most certainly
      * be the entrypoint.
      */
-    if (!browserModuleGraph.roots.includes(module.specifier)) {
-      const relativeSpecifier = toRelativeSpecifier(
-        buildContext.paths.outputDir,
+    const relativeSpecifier = toRelativeSpecifier(
+      buildContext.paths.outputDir,
+      module.specifier,
+    );
+
+    const resolvedSpecifier = toRelativeSpecifier(
+      buildContext.paths.outputDir,
+      compiled.get(
         module.specifier,
-      );
-      serverImportMap.imports[relativeSpecifier] = toRelativeSpecifier(
-        buildContext.paths.outputDir,
-        compiled.get(
-          module.specifier,
-        ),
-      );
-      browserImportMap.imports[relativeSpecifier] = toRelativeSpecifier(
-        buildContext.paths.outputDir,
-        compiled.get(
-          module.specifier,
-        ),
-      );
-    }
+      ),
+    );
+
+    serverImportMap.imports[relativeSpecifier] = resolvedSpecifier;
+    browserImportMap.imports[relativeSpecifier] = resolvedSpecifier;
   }
+
+  /**
+   * Write the new importMaps
+   */
+  await Promise.all([
+    writeJsonFile(
+      resolve(paths.outputDir, "./importMap.browser.json"),
+      browserImportMap,
+    ),
+    writeJsonFile(
+      resolve(paths.outputDir, "./importMap.server.json"),
+      serverImportMap,
+    ),
+  ]);
 
   /**
    * Create the asset manifest
