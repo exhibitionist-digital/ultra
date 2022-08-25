@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.152.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.153.0/http/server.ts";
 import { createRouter, createServer } from "ultra/server.ts";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useDehydrateReactQuery } from "./src/hooks/useDehydrateReactQuery.tsx";

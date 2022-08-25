@@ -4,10 +4,10 @@ import {
   underline,
   white,
   yellow,
-} from "https://deno.land/std@0.152.0/fmt/colors.ts";
-import { dirname, join } from "https://deno.land/std@0.152.0/path/mod.ts";
+} from "https://deno.land/std@0.153.0/fmt/colors.ts";
+import { dirname, join } from "https://deno.land/std@0.153.0/path/mod.ts";
 import outdent from "https://deno.land/x/outdent@v0.8.0/mod.ts";
-import { ensureDir } from "https://deno.land/std@0.152.0/fs/ensure_dir.ts";
+import { ensureDir } from "https://deno.land/std@0.153.0/fs/ensure_dir.ts";
 
 type Dialect = "ts" | "js";
 
@@ -210,7 +210,7 @@ function serverContent(utils: TaskUtils) {
 
   // deno-fmt-ignore
   return outdent`
-    import { serve } from "https://deno.land/std@0.152.0/http/server.ts";
+    import { serve } from "https://deno.land/std@0.153.0/http/server.ts";
     import { createServer } from "ultra/server.ts";
     import App from "./src/${app}";
     

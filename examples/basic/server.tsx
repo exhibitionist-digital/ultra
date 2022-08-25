@@ -1,5 +1,5 @@
-import { serve } from "https://deno.land/std@0.152.0/http/server.ts";
-import { createServer } from "ultra/server.ts";
+import { serve } from "https://deno.land/std@0.153.0/http/server.ts";
+import { createServer } from "../../server.ts";
 import App from "./src/app.tsx";
 
 const server = await createServer({
