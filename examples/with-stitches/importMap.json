@@ -5,6 +5,6 @@
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/": "https://esm.sh/react-dom@18.2.0/",
     "@stitches/react": "https://esm.sh/@stitches/react@1.2.8?external=react",
-    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.2/"
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.3/"
   }
 }
