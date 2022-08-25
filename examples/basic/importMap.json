@@ -4,6 +4,6 @@
     "react/": "https://esm.sh/react@18.2.0/",
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/": "https://esm.sh/react-dom@18.2.0/",
-    "ultra/": "https://raw.githubusercontent.com/exhibitionist-digital/ultra/554de58e630c09f1007f9dde261e40910c135d11/"
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.3/"
   }
 }
