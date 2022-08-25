@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { createElement as h, Fragment, useCallback } from "react";
 import type { ReactNode } from "react";
 import {
   RenderToReadableStreamOptions,
@@ -34,15 +34,17 @@ function FlushEffects({ children }: { children: JSX.Element }) {
   );
 
   return (
-    <FlushEffectsContext.Provider value={addFlushEffects}>
-      {children}
-    </FlushEffectsContext.Provider>
+    h(FlushEffectsContext.Provider, { value: addFlushEffects }, children)
   );
 }
 
 const flushEffectHandler = (): string => {
   return renderToString(
-    <>{Array.from(flushEffectsCallbacks).map((callback) => callback())}</>,
+    h(
+      Fragment,
+      null,
+      Array.from(flushEffectsCallbacks).map((callback) => callback()),
+    ),
   );
 };
 
@@ -51,23 +53,18 @@ function AssetProvider(
 ) {
   useFlushEffects(() => {
     return (
-      <script
-        type="text/javascript"
-        dangerouslySetInnerHTML={{
+      h("script", {
+        type: "text/javascript",
+        dangerouslySetInnerHTML: {
           __html: `window.__ULTRA_ASSET_MAP = ${
             JSON.stringify(Array.from(value.entries()))
           }`,
-        }}
-      >
-      </script>
+        },
+      })
     );
   });
 
-  return (
-    <AssetContext.Provider value={value}>
-      {children}
-    </AssetContext.Provider>
-  );
+  return h(AssetContext.Provider, { value }, children);
 }
 
 export async function renderToStream(
@@ -94,10 +91,10 @@ export async function renderToStream(
   };
 
   const renderStream = await renderToInitialStream({
-    element: (
-      <FlushEffects>
-        <AssetProvider value={assetManifest} children={App} />
-      </FlushEffects>
+    element: h(
+      FlushEffects,
+      null,
+      h(AssetProvider, { value: assetManifest, children: App }),
     ),
     options,
   });

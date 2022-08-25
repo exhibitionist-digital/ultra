@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 import { fromFileUrl, Hono, logger } from "./deps.ts";
-import { renderToStream } from "./render.tsx";
+import { renderToStream } from "./render.ts";
 import { ImportMap, Mode } from "./types.ts";
 import { toUltraUrl } from "./utils/url.ts";
 
