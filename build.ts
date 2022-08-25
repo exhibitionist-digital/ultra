@@ -7,10 +7,10 @@ import {
   outdent,
   relative,
   resolve,
-  sprintf,
   underline,
   wait,
 } from "./lib/build/deps.ts";
+import { sprintf } from "./lib/deps.ts";
 import { compileSources } from "./lib/build/compileSources.ts";
 import { copySource } from "./lib/build/copySource.ts";
 import { createGraph } from "./lib/build/createGraph.ts";

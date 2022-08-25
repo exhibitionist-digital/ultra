@@ -54,8 +54,6 @@ export async function createServer(
   await server.init();
 
   if (mode === "development") {
-    console.log(`Using browser entrypoint: ${browserEntrypoint}`);
-
     const spinner = wait("Loading compiler").start();
     const { compiler } = await import("./middleware/compiler.ts");
     spinner.stop();

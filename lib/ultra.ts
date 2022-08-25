@@ -1,8 +1,9 @@
 import type { ReactElement } from "react";
-import { fromFileUrl, Hono, logger } from "./deps.ts";
+import { Hono, logger, sprintf } from "./deps.ts";
 import { renderToStream } from "./render.ts";
 import { ImportMap, Mode } from "./types.ts";
 import { toUltraUrl } from "./utils/url.ts";
+import { log } from "./logger.ts";
 
 type UltraServerRenderOptions = {
   generateStaticHTML?: boolean;
@@ -25,6 +26,8 @@ export class UltraServer extends Hono {
   }
 
   async init() {
+    log.debug("Initialising server");
+
     /**
      * Parse the provided importMap
      */
@@ -51,6 +54,8 @@ export class UltraServer extends Hono {
       throw new Error("Import map has not been parsed.");
     }
 
+    log.debug("Rendering component");
+
     return renderToStream(Component, {
       assetManifest: this.assetManifest,
       importMap: this.importMap,
@@ -60,22 +65,29 @@ export class UltraServer extends Hono {
   }
 
   async #parseJsonFile<T>(path: string): Promise<T> {
+    log.debug(sprintf("Parsing JSON: %s", path));
     const bytes = await fetch(path).then((response) => response.arrayBuffer());
     const content = new TextDecoder().decode(bytes);
 
-    return JSON.parse(content);
+    const json = JSON.parse(content);
+    log.debug(json);
+
+    return json;
   }
 
   #prepareEntrypoint(importMap: ImportMap) {
-    const specifier = toUltraUrl(this.root, this.entrypoint, this.mode)!;
+    log.debug(sprintf("Resolving entrypoint: %s", this.entrypoint));
+    let specifier = toUltraUrl(this.root, this.entrypoint, this.mode)!;
 
     if (this.mode === "production") {
       for (const [, resolved] of Object.entries(importMap.imports)) {
         if (resolved === specifier) {
-          return resolved;
+          specifier = resolved;
         }
       }
     }
+
+    log.debug(sprintf("Resolved entrypoint: %s", specifier));
 
     return specifier;
   }

@@ -1,6 +1,15 @@
 import { transformSource } from "../compiler/transform.ts";
 import { ULTRA_COMPILER_PATH } from "../constants.ts";
-import { Context, encode, extname, join, Next, toFileUrl } from "../deps.ts";
+import {
+  Context,
+  encode,
+  extname,
+  join,
+  Next,
+  sprintf,
+  toFileUrl,
+} from "../deps.ts";
+import { log } from "../logger.ts";
 import type { Mode, TransformSourceOptions } from "../types.ts";
 
 export type CompilerOptions = {
@@ -38,6 +47,8 @@ export const compiler = (options: CompilerOptions) => {
     if (method === "GET" && isCompilerTarget) {
       const bytes = await fetch(url).then((response) => response.arrayBuffer());
       const source = decoder.decode(bytes);
+
+      log.debug(sprintf("Compiling: %s", url.toString()));
 
       try {
         const transformed = await transformSource(source, {

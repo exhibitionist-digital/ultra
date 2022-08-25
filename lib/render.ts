@@ -1,17 +1,18 @@
-import { createElement as h, Fragment, useCallback } from "react";
 import type { ReactNode } from "react";
+import { createElement as h, Fragment, useCallback } from "react";
 import {
   RenderToReadableStreamOptions,
   renderToString,
 } from "react-dom/server";
-import { fromFileUrl } from "./deps.ts";
+import { AssetContext } from "./client/asset.js";
 import {
   FlushEffectsContext,
   useFlushEffects,
 } from "./client/flush-effects.js";
+import { fromFileUrl, sprintf } from "./deps.ts";
+import { log } from "./logger.ts";
 import { continueFromInitialStream, renderToInitialStream } from "./stream.ts";
 import { ImportMap } from "./types.ts";
-import { AssetContext } from "./client/asset.js";
 
 type RenderToStreamOptions = RenderToReadableStreamOptions & {
   importMap: ImportMap;
@@ -87,9 +88,10 @@ export async function renderToStream(
   );
 
   options.onError = (error) => {
-    console.error(error);
+    log.error(error);
   };
 
+  log.debug(sprintf("Rendering to initial stream"));
   const renderStream = await renderToInitialStream({
     element: h(
       FlushEffects,
@@ -99,6 +101,7 @@ export async function renderToStream(
     options,
   });
 
+  log.debug(sprintf("Continuing from initial stream"));
   return await continueFromInitialStream(renderStream, {
     generateStaticHTML,
     flushEffectsToHead,

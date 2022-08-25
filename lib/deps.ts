@@ -8,6 +8,7 @@ export {
   resolve,
   toFileUrl,
 } from "https://deno.land/std@0.153.0/path/mod.ts";
+export { sprintf } from "https://deno.land/std@0.153.0/fmt/printf.ts";
 export { assert } from "https://deno.land/std@0.153.0/_util/assert.ts";
 export { encode } from "https://deno.land/std@0.153.0/encoding/base64.ts";
 export { readableStreamFromReader } from "https://deno.land/std@0.153.0/streams/conversion.ts";
