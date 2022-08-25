@@ -69,7 +69,7 @@ export default async function build(
     exclude,
   } = resolvedOptions as Required<BuildOptions>;
 
-  const spinner = wait({ text: "Building", stream: Deno.stdout });
+  const spinner = wait({ text: "Building", stream: Deno.stdout }).start();
 
   /**
    * Resolve paths for build inputs/outputs
