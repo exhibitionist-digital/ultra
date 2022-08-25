@@ -42,6 +42,8 @@ const defaultOptions: Partial<BuildOptions> = {
     ".git",
     join("**", ".DS_Store"),
   ],
+  // TODO: We need a default exclusion list
+  assetsExclude: ["robots.txt"],
 };
 
 const cwd = Deno.cwd();
@@ -66,6 +68,7 @@ export default async function build(
     reload,
     plugin,
     exclude,
+    assetsExclude,
   } = resolvedOptions as Required<BuildOptions>;
 
   const spinner = wait("Building").start();
@@ -181,8 +184,7 @@ export default async function build(
    * Create the asset manifest
    */
   const assets = await createAssetManifest(buildContext, {
-    // TODO: We need a default exclusion list
-    exclude: ["robots.txt"],
+    exclude: assetsExclude,
   });
 
   /**
