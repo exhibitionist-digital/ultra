@@ -1,4 +1,4 @@
-import { createElementm as h } from "react";
+import { createElement as h } from "react";
 import useFlushEffects from "./use-flush-effects.js";
 
 /**
