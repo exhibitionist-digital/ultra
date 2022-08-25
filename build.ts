@@ -29,6 +29,7 @@ import type {
 import { createBuildContext } from "./lib/build/context.ts";
 import { assetManifest } from "./lib/build/assetManifest.ts";
 import { writeJsonFile } from "./lib/utils/json.ts";
+import { ULTRA_STATIC_PATH } from "./lib/constants.ts";
 
 /**
  * Re-export these types as convenience to build plugin authors
@@ -69,7 +70,7 @@ export default async function build(
     exclude,
   } = resolvedOptions as Required<BuildOptions>;
 
-  const spinner = wait("Building").start();
+  const spinner = wait("Building");
 
   /**
    * Resolve paths for build inputs/outputs
@@ -159,6 +160,7 @@ export default async function build(
     return `.${SEP}${specifier}`;
   }
 
+  // TODO(deckchairlabs): document and move this to a build lib
   for (const module of browserModuleGraph.modules) {
     /**
      * We want to exclude any "roots" which will most certainly
@@ -177,7 +179,8 @@ export default async function build(
     );
 
     serverImportMap.imports[relativeSpecifier] = resolvedSpecifier;
-    browserImportMap.imports[relativeSpecifier] = resolvedSpecifier;
+    // deno-fmt-ignore
+    browserImportMap.imports[relativeSpecifier] = `${ULTRA_STATIC_PATH}/${resolvedSpecifier.replace('./', '')}`;
   }
 
   /**
