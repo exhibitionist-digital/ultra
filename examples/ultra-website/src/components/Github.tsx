@@ -8,7 +8,6 @@ export default function GitHub() {
       `/api/github`,
     ).then((response) => response.json());
   });
-  console.log({ stars });
   return (
     <a id="github" href={href} target="_blank">
       ★ <span>{stars?.data?.stargazers_count}</span>
