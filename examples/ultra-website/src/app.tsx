@@ -8,9 +8,22 @@ import GitHub from "./components/Github.tsx";
 
 export default function App() {
   const [pathname] = useLocation();
+
+  // scroll to top of page change
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  // rm service works for now
+  useEffect(() => {
+    navigator.serviceWorker.getRegistrations().then(function (registrations) {
+      for (const registration of registrations) {
+        registration.unregister();
+      }
+    });
+  });
+
+  // smooth scroll
   const top = () => {
     window.scroll({
       top: 0,
