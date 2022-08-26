@@ -9,6 +9,8 @@ import staticLocationHook from "wouter/static-location";
 import App from "./src/app.tsx";
 import { useDehydrateReactQuery } from "./src/hooks/useDehydrateReactQuery.tsx";
 import { queryClient } from "./src/query-client.ts";
+import { HelmetProvider } from "react-helmet-async";
+import useFlushEffects from "ultra/hooks/use-flush-effects.js";
 
 const server = await createServer({
   importMapPath: import.meta.resolve("./importMap.json"),
@@ -74,14 +76,30 @@ api.get("/:slug", async (context) => {
 server.route("/api", api);
 
 server.get("*", async (context) => {
+  // deno-lint-ignore no-explicit-any
+  const helmetContext: Record<string, any> = {};
   function ServerApp() {
+    useFlushEffects(() => {
+      const { helmet } = helmetContext;
+      return (
+        <>
+          {helmet.title.toComponent()}
+          {helmet.priority.toComponent()}
+          {helmet.meta.toComponent()}
+          {helmet.link.toComponent()}
+          {helmet.script.toComponent()}
+        </>
+      );
+    });
     useDehydrateReactQuery(queryClient);
     return (
-      <QueryClientProvider client={queryClient}>
-        <Router hook={staticLocationHook(new URL(context.req.url).pathname)}>
-          <App />
-        </Router>
-      </QueryClientProvider>
+      <HelmetProvider context={helmetContext}>
+        <QueryClientProvider client={queryClient}>
+          <Router hook={staticLocationHook(new URL(context.req.url).pathname)}>
+            <App />
+          </Router>
+        </QueryClientProvider>
+      </HelmetProvider>
     );
   }
   /**

@@ -5,6 +5,7 @@ import HomePage from "./components/Home.tsx";
 import Markdown from "./components/Markdown.tsx";
 import { Suspense } from "react";
 import GitHub from "./components/Github.tsx";
+import { Helmet } from "react-helmet-async";
 
 export default function App() {
   const [pathname] = useLocation();
@@ -41,7 +42,6 @@ export default function App() {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <title>Ultra: The Quest for Zero-Legacy</title>
         <meta
           name="description"
           content="Hypermodern Zero-Legacy Deno/React Framework"
@@ -50,30 +50,32 @@ export default function App() {
         <link rel="shortcut icon" href={useAsset("/favicon.ico")} />
         <link rel="preload" as="style" href={useAsset("/style.css")} />
         <link rel="stylesheet" href={useAsset("/style.css")} />
-
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://ultrajs.dev/" />
-        <meta property="og:title" content="Ultra: The Quest for Zero-Legacy" />
+        <meta property="og:image" content="https://ultrajs.dev/share.jpg" />
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta
+          property="twitter:image"
+          content="https://ultrajs.dev/share.jpg"
+        />
         <meta
           property="og:description"
           content="Hypermodern Zero-Legacy Deno/React Framework"
-        />
-        <meta property="og:image" content="https://ultrajs.dev/share.jpg" />
-
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://ultrajs.dev/" />
-        <meta
-          property="twitter:title"
-          content="Ultra: The Quest for Zero-Legacy"
         />
         <meta
           property="twitter:description"
           content="Hypermodern Zero-Legacy Deno/React Framework"
         />
-        <meta
-          property="twitter:image"
-          content="https://ultrajs.dev/share.jpg"
-        />
+        <Helmet prioritizeSeoTags>
+          <title>Ultra: The Quest for Zero-Legacy</title>
+          <meta
+            property="og:title"
+            content="Ultra: The Quest for Zero-Legacy"
+          />
+          <meta
+            property="twitter:title"
+            content="Ultra: The Quest for Zero-Legacy"
+          />
+        </Helmet>
       </head>
       <body>
         <main>
