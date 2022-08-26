@@ -86,7 +86,6 @@ h6 a {
   color: currentColor;
   display: inline-block;
   font-style: normal;
-  text-shadow: 0 0 0.15em #6666ff;
 }
 
 h1 a::before,
@@ -296,6 +295,34 @@ ul {
 .page h4 {
   padding: 2rem 0 1rem;
   margin: 0;
+}
+
+.lil-ultra {
+  text-align: center;
+  font-family: monospace;
+  color: #777;
+  margin: 5rem auto 3rem auto;
+  font-size: clamp(2em, 10vw, 8em);
+  font-weight: 400;
+}
+
+.lil-ultra span::before {
+  content: "@";
+  animation: blink 3s infinite;
+}
+
+@keyframes blink {
+  0%,
+  50%,
+  70%,
+  95% {
+    content: "@";
+  }
+
+  65%,
+  90% {
+    content: "—";
+  }
 }
 
 pre code {
