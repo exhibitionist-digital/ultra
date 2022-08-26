@@ -9,7 +9,10 @@ import {
   resolve,
   underline,
 } from "./lib/build/deps.ts";
-import { Builder } from "https://deno.land/x/mesozoic@v1.0.0-alpha.8/mod.ts";
+import {
+  Builder,
+  BuilderOptions,
+} from "https://deno.land/x/mesozoic@v1.0.0-alpha.9/mod.ts";
 import type { BuildOptions, BuildPlugin } from "./lib/build/types.ts";
 
 /**
@@ -72,7 +75,10 @@ export default async function build(
     "./**/*.+(ts|tsx|js|jsx)",
   ];
 
-  const builderOptions = { name: "ultra", logLevel: "INFO" };
+  const builderOptions: BuilderOptions = {
+    name: "ultra",
+    logLevel: "INFO",
+  };
 
   const builder = new Builder({
     root,
@@ -84,7 +90,6 @@ export default async function build(
     compiler: {
       minify: true,
     },
-    //@ts-ignore whatever
   }, builderOptions);
 
   /**
@@ -96,15 +101,29 @@ export default async function build(
    * Gather all sources from root
    */
   const sources = await builder.gatherSources();
+  const entrypointSources = sources.filter((source) =>
+    builder.isEntrypoint(source)
+  );
 
   /**
    * Copy sources to output
    */
   const buildSources = await builder.copySources(sources);
 
-  await builder.vendorSources(
-    sources.filter((source) => builder.isEntrypoint(source)),
+  const configSource = buildSources.find((source) =>
+    source.relativePath() === "./deno.json"
   );
+
+  if (configSource) {
+    const config = JSON.parse(await configSource.read());
+    config.compilerOptions.jsx = "react-jsx";
+    await configSource.write(JSON.stringify(config, null, 2));
+  }
+
+  /**
+   * Vendor the dependencies of the entrypoints
+   */
+  await builder.vendorSources(entrypointSources);
 
   /**
    * Execute the build
