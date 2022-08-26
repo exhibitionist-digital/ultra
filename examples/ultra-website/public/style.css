@@ -122,6 +122,20 @@ h4 {
   margin: 0 auto;
 }
 
+blockquote {
+  margin: 0;
+  padding: 1rem;
+  background: #6666ff;
+  border-radius: 0.5em;
+  margin-bottom: 2em;
+  font-size: 80%;
+  display: inline-block;
+}
+
+.page blockquote p {
+  margin-bottom: 0;
+}
+
 .logo {
   display: inline-flex;
   align-items: center;
@@ -268,9 +282,16 @@ figure {
   margin: 0 2rem;
 }
 
-.page p {
+.page p,
+.page small {
   max-width: 600px;
   margin: 0 0 2rem;
+  display: block;
+}
+
+.page small {
+  color: #aaa;
+  margin-top: 2rem;
 }
 
 ul {
@@ -279,8 +300,16 @@ ul {
 
 .page ul li {
   display: list-item;
-  list-style-type: "✅ ";
+
   margin-bottom: 0.5em;
+}
+
+.page.philosophy ul li {
+  list-style-type: "✅ ";
+}
+
+.page.docs ul li {
+  list-style-type: "- ";
 }
 
 .page ul li:last-of-type {

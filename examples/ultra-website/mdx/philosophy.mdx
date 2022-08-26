@@ -1,8 +1,8 @@
 # philosophy
 
-Ultra takes a non-prescriptive approach to web-app development. You can configure it to use most existing libraries that you are accustomed to — or you can write your own... 
+**Ultra** takes a non-prescriptive approach to web-app development. You can configure it to use most existing libraries that you are accustomed to — or you can write your own... 
 
-We want Ultra to do a few things, and do them well.
+We want **Ultra** to do a few things, and do them well.
 
 - React streaming rendering, with Suspense support
 - Native import maps from top to bottom
@@ -17,9 +17,9 @@ We want Ultra to do a few things, and do them well.
 
 ---
 
-### [Breakdown of a basic Ultra project](#breakdown-of-a-basic-ultra-project)
+### [Breakdown of a basic **Ultra** project](#breakdown-of-a-basic-ultra-project)
 
-To follow along at home, run this command to quickly scaffold out a basic Ultra project.
+To follow along at home, run this command to quickly scaffold out a basic **Ultra** project.
 
 ```sh
 deno run -A https://deno.land/x/ultra@v2.0.0-alpha.4/init.ts
@@ -39,7 +39,7 @@ deno run -A https://deno.land/x/ultra@v2.0.0-alpha.4/init.ts
 }
 ```
 
-Atm, these are the only deps required to run an Ultra project. Simple, I like it.
+Atm, these are the only deps required to run an **Ultra** project. Simple, I like it.
 
 #### [server.tsx](#servertsx)
 
@@ -69,7 +69,7 @@ serve(server.fetch);
 
 This file controls how your app will render on the server. It's using Deno's std http server, you can probably use another one if you want.
 
-`createServer` kickstarts the Ultra renderer and static asset pipeline, it only needs your import map and client entry point.
+`createServer` kickstarts the **Ultra** renderer and static asset pipeline, it only needs your import map and client entry point.
 
 You can also look at creating API routes here by following [this example](https://github.com/exhibitionist-digital/ultra/tree/main/examples/with-api-routes).
 
