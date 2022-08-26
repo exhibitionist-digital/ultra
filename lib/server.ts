@@ -8,6 +8,7 @@ import {
   toFileUrl,
   wait,
 } from "./deps.ts";
+import { ensureMinDenoVersion } from "./dev/ensureMinDenoVersion.ts";
 import { serveCompiled } from "./middleware/serveCompiled.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
@@ -92,6 +93,11 @@ export function createRouter() {
 
 export function assertServerOptions(options: CreateServerOptions) {
   try {
+    /**
+     * Ensure we are running a supported Deno version
+     */
+    options.mode === "development" && ensureMinDenoVersion();
+
     /**
      * Assert that we are provided a valid "mode"
      */
