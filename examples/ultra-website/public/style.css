@@ -40,7 +40,8 @@ a {
   color: inherit;
 }
 
-a:hover {
+a:hover,
+a:focus {
   color: #6666ff;
 }
 
@@ -137,7 +138,8 @@ h4 {
   border-radius: 2em;
 }
 
-#github:hover {
+#github:hover,
+#github:focus {
   color: white;
   background: #6666ff;
   animation: none;
@@ -374,7 +376,8 @@ ul {
   font-weight: 400;
 }
 
-.lil-ultra:hover {
+.lil-ultra:hover,
+.lil-ultra:focus {
   color: #6666ff;
   cursor: not-allowed;
 }
