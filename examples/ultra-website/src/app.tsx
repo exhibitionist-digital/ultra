@@ -53,7 +53,7 @@ export default function App() {
           property="og:description"
           content="Hypermodern Zero-Legacy Deno/React Framework"
         />
-        <meta property="og:image" content="https://ultrajs.dev/share.webp" />
+        <meta property="og:image" content="https://ultrajs.dev/share.jpg" />
 
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://ultrajs.dev/" />
@@ -67,7 +67,7 @@ export default function App() {
         />
         <meta
           property="twitter:image"
-          content="https://ultrajs.dev/share.webp"
+          content="https://ultrajs.dev/share.jpg"
         />
       </head>
       <body>
