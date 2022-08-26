@@ -362,12 +362,21 @@ ul {
 }
 
 .lil-ultra {
+  appearance: none;
+  border: none;
+  background: none;
+  display: block;
   text-align: center;
   font-family: monospace;
   color: #777;
   margin: 5rem auto 3rem auto;
   font-size: clamp(2em, 10vw, 8em);
   font-weight: 400;
+}
+
+.lil-ultra:hover {
+  color: #6666ff;
+  cursor: not-allowed;
 }
 
 .lil-ultra span::before {

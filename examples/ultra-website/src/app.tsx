@@ -11,6 +11,13 @@ export default function App() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+  const top = () => {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  };
   return (
     <html lang="en">
       <head>
@@ -68,9 +75,9 @@ export default function App() {
               404
             </Route>
           </Switch>
-          <div className="lil-ultra">
+          <button className="lil-ultra" onClick={top}>
             <span></span>__<span></span>
-          </div>
+          </button>
         </main>
       </body>
     </html>
