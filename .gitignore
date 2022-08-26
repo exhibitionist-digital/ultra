@@ -1,6 +1,7 @@
 .ultra
 .DS_Store
 NOTES.md
+*.png
 
 # Local Netlify folder
 .netlify

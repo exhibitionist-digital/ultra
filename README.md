@@ -4,7 +4,7 @@
 
 ### Ultra 2.0 (Milky Way)
 
-#### Next-gen browser/server fluid React framework<sup>*</sup>
+#### Hypermodern Zero-Legacy Deno/React Framework<sup>*</sup>
 
 [![Discord][discord-badge]][discord]
 [![GitHub Workflow Status][actions-badge]][actions]
@@ -22,7 +22,7 @@ libraries. 🧰
 Here's a basic **Ultra** project to set you on your way.
 
 ```sh
-deno run -A https://deno.land/x/ultra@v2.0.0-alpha.4/init.ts
+deno run -A https://deno.land/x/ultra@v2.0.0-alpha.5/init.ts
 ```
 
 ## ✨ What's new
