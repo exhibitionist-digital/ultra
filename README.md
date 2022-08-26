@@ -4,7 +4,7 @@
 
 ### Ultra 2.0 (Milky Way)
 
-#### Next-gen browser/server fluid React framework<sup>*</sup>
+#### Hypermodern Zero-Legacy Deno/React Framework<sup>*</sup>
 
 [![Discord][discord-badge]][discord]
 [![GitHub Workflow Status][actions-badge]][actions]

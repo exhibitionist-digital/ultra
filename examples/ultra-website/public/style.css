@@ -1,0 +1,396 @@
+@font-face {
+  font-family: "Space Grotesk";
+  src: url(/SG-Linear.woff2) format("woff2");
+  font-weight: 100 700;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "Fancy";
+  src: url(/fancy.woff2) format("woff2");
+  font-weight: 100 700;
+  font-display: block;
+}
+
+::selection {
+  background: #6666ff;
+  color: white;
+}
+
+html,
+body {
+  background: black;
+  color: white;
+  margin: 0;
+  padding: 0;
+  font-family: "Space Grotesk";
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  max-width: 1500px;
+  margin: auto;
+  font-size: 120%;
+  padding-bottom: 5rem;
+}
+
+a {
+  color: inherit;
+}
+
+a:hover {
+  color: #6666ff;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  padding: 0 2rem 3rem;
+  flex-wrap: wrap;
+}
+
+nav a {
+  margin-right: 1em;
+}
+
+hr {
+  border: none;
+  background: #212121;
+  height: 2px;
+  margin: 2rem auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 200;
+  position: relative;
+  z-index: 10;
+}
+
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a,
+h6 a {
+  text-decoration: none;
+}
+
+.story h3 span {
+  color: currentColor;
+  display: inline-block;
+  font-style: normal;
+  text-shadow: 0 0 0.15em #6666ff;
+}
+
+h1 a::before,
+/* h2 a::before, */
+h3 a::before,
+h4 a::before,
+h5 a::before,
+h6 a::before {
+  content: "# ";
+  color: #777;
+}
+
+h1 {
+  font-size: clamp(2rem, 10vw, 8rem);
+  font-weight: 700;
+  margin: auto;
+  text-shadow: 3px 3px 0 black;
+}
+
+h2 {
+  font-size: clamp(1.2rem, 2vw, 2rem);
+  margin-bottom: 4rem;
+  text-shadow: 2px 2px 0 black;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 200%;
+  margin: 0 auto;
+}
+
+h4 {
+  font-size: 150%;
+  margin: 0 auto;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  text-transform: initial;
+  color: inherit;
+  padding: 0 1rem;
+  font-size: 160%;
+  font-weight: 600;
+}
+
+.logo svg {
+  margin: 0 -0.25em;
+  width: 80px;
+  height: 80px;
+}
+
+.home {
+  text-align: center;
+  padding-bottom: 3rem;
+}
+
+.home figure {
+  position: relative;
+  padding: 5rem 0 2rem;
+  margin-bottom: -1rem;
+}
+
+.home img {
+  position: absolute;
+  height: 90%;
+  width: 40%;
+  object-fit: cover;
+  border-radius: 1rem;
+}
+
+.home img:first-of-type {
+  top: 0;
+  left: 0;
+}
+
+.home img:last-of-type {
+  bottom: 0;
+  right: 0;
+}
+
+code {
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 80%;
+  line-height: 1em;
+  background: #1a1a1a;
+  padding: 0.2em 0.4em;
+  border-radius: 0.5em;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow: auto;
+}
+
+code::-webkit-scrollbar {
+  display: none;
+}
+
+.story {
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto 5rem;
+}
+
+.story p {
+  margin: 1em 0;
+  color: #777;
+  display: block;
+}
+
+.story h3:first-of-type,
+.page h2 {
+  font-family: "Fancy";
+  font-size: clamp(2.5em, 7vw, 5em);
+  color: #777;
+  text-align: center;
+  padding: 1rem 0;
+  margin: 0 auto;
+}
+
+@media (min-width: 800px) {
+  .story figure {
+    display: flex;
+    align-items: center;
+  }
+  .story figure img {
+    width: 80% !important;
+  }
+
+  .story figure p {
+    width: 50%;
+  }
+}
+
+.story figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  min-height: 500px;
+  border-radius: 1em;
+  margin: auto;
+  display: block;
+}
+
+.story figure p {
+  text-align: left;
+}
+
+.story strong {
+  font-weight: 800;
+  color: white;
+}
+
+.story span {
+  color: #6666ff;
+  font-weight: 800;
+  font-style: italic;
+}
+
+.story figure:nth-of-type(odd) {
+  flex-direction: row-reverse;
+}
+
+@media (min-width: 650px) {
+  .story figure {
+    display: flex;
+    align-items: center;
+  }
+  .story figure img {
+    width: 80%;
+  }
+
+  .story figure p {
+    width: 50%;
+  }
+}
+
+.page,
+figure {
+  margin: 0 2rem;
+}
+
+.page p {
+  max-width: 600px;
+  margin: 0 0 2rem;
+}
+
+ul {
+  padding: 0 0 0 2em;
+}
+
+.page ul li {
+  display: list-item;
+  list-style-type: "✅ ";
+  margin-bottom: 0.5em;
+}
+
+.page ul li:last-of-type {
+  margin-bottom: 0;
+}
+
+.page h1 {
+  margin-bottom: 2rem;
+}
+
+.page h3,
+.page h4 {
+  padding: 2rem 0 1rem;
+  margin: 0;
+}
+
+pre code {
+  display: inline-block;
+  overflow-x: auto;
+  max-width: 100%;
+  padding: 1.5rem 2rem;
+  line-height: 1.333;
+  font-size: 0.8rem;
+}
+
+/*!
+  Theme: GitHub Dark
+  Description: Dark theme as seen on github.com
+  Author: github.com
+  Maintainer: @Hirse
+  Updated: 2021-05-15
+  Outdated base version: https://github.com/primer/github-syntax-dark
+  Current colors taken from GitHub's CSS
+*/
+
+.hljs {
+  color: #c9d1d9;
+  background: #0d1117;
+}
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable.language_ {
+  color: #ff7b72;
+}
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_ {
+  color: #d2a8ff;
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-variable {
+  color: #79c0ff;
+}
+.hljs-meta .hljs-string,
+.hljs-regexp,
+.hljs-string {
+  color: #a5d6ff;
+}
+.hljs-built_in,
+.hljs-symbol {
+  color: #ffa657;
+}
+.hljs-code,
+.hljs-comment,
+.hljs-formula {
+  color: #8b949e;
+}
+.hljs-name,
+.hljs-quote,
+.hljs-selector-pseudo,
+.hljs-selector-tag {
+  color: #7ee787;
+}
+.hljs-subst {
+  color: #c9d1d9;
+}
+.hljs-section {
+  color: #1f6feb;
+  font-weight: 700;
+}
+.hljs-bullet {
+  color: #f2cc60;
+}
+.hljs-emphasis {
+  color: #c9d1d9;
+  font-style: italic;
+}
+.hljs-strong {
+  color: #c9d1d9;
+  font-weight: 700;
+}
+.hljs-addition {
+  color: #aff5b4;
+  background-color: #033a16;
+}
+.hljs-deletion {
+  color: #ffdcd7;
+  background-color: #67060c;
+}

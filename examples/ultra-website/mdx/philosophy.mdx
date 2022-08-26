@@ -1,0 +1,114 @@
+# philosophy
+
+Ultra takes an non-prescriptive approach to web-app development. You can configure it to use most existing libraries that you are acustomed to -- or you can write your own... We want Ultra to do a few things, and do them well.
+
+- React streaming rendering, with Suspense support
+- Native import maps from top to bottom
+- Import maps with localised dependencies in production
+- Shipping pure, unbundled ESM always
+- Simplifying your tool chain, removing the 'black-box bundler' approach
+- Write apps that work the same way in the browser that they do on the server
+
+---
+
+## [Give us ESM or give us death](#give-us-esm-or-give-us-death)
+
+---
+
+### [Breakdown of an basic Ultra project](#breakdown-of-an-basic-ultra-project)
+
+To follow along at home, run this to quickly scaffold out an Ultra project.
+
+```sh
+deno run -A https://deno.land/x/ultra@v2.0.0-alpha.4/init.ts
+```
+
+#### [importMap.json](#importmapjson)
+
+```json
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react/": "https://esm.sh/react@18.2.0/",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/": "https://esm.sh/react-dom@18.2.0/",
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.4/"
+  }
+}
+```
+
+Atm, these are the only deps required to run an Ultra project. Simple, I like it.
+
+#### [server.tsx](#servertsx)
+
+```js
+import { serve } from "https://deno.land/std@0.153.0/http/server.ts";
+import { createServer } from "ultra/server.ts";
+import App from "./src/app.tsx";
+
+const server = await createServer({
+  importMapPath: import.meta.resolve("./importMap.json"),
+  browserEntrypoint: import.meta.resolve("./client.tsx"),
+});
+
+server.get("*", async (context) => {
+  /**
+   * Render the request
+   */
+  const result = await server.render(<App />);
+
+  return context.body(result, 200, {
+    "content-type": "text/html",
+  });
+});
+
+serve(server.fetch);
+```
+
+This file controls how your app will render on the server. It's using Deno's std http server, you can probably use another one if you want.
+
+`createServer` kickstarts the Ultra renderer, it only needs your import map and client entry point.
+
+You can also look at creating API routes here by following [this example](https://github.com/exhibitionist-digital/ultra/tree/main/examples/with-api-routes).
+
+#### [client.tsx](#clienttsx)
+
+```js
+import { hydrateRoot } from "react-dom/client";
+import App from "./src/app.tsx";
+
+hydrateRoot(document, <App />);  
+```
+
+This should look familiar to most... This is your client entrypoint, and what is used for client rendering.
+
+#### [src/](#src)
+
+Put your source code here.
+
+#### [public/](#public)
+
+Static files go here. When building for production, these files will be versioned.
+
+#### [deno.json](#denojson)
+
+```json
+{
+  "tasks": {
+    "dev": "deno run -A --no-check --watch ./server.tsx",
+    "build": "deno run -A ./build.ts",
+    "start": "ULTRA_MODE=production deno run -A --no-remote ./server.tsx"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsxdev",
+    "jsxImportSource": "react"
+  },
+  "importMap": "./importMap.json"
+}
+```
+
+We use Deno's native task runner/config file. 
+
+Try running `deno task dev`: This will spin up for development server and watch for file changes.
+
+We use the `react-jsx` and `react` comipiler options so you dont need to `import React from 'react'` everywhere.
