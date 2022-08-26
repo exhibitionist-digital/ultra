@@ -22,7 +22,12 @@ export default function App() {
         location.reload();
       }
     });
-  });
+    const hash = window.location.hash;
+    if (hash) {
+      location.href = "#";
+      location.href = hash;
+    }
+  }, []);
 
   // smooth scroll
   const top = () => {
@@ -86,6 +91,9 @@ export default function App() {
             <Link href="/docs">
               Docs
             </Link>
+            <a href="https://discord.com/invite/XDC5WxGHb2" target="_blank">
+              Discord
+            </a>
           </nav>
 
           <Switch>
