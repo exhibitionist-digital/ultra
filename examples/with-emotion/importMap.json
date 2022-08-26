@@ -6,6 +6,6 @@
     "react-dom/": "https://esm.sh/react-dom@18.2.0/",
     "@emotion/react": "https://esm.sh/@emotion/react@11.10.0?external=react",
     "@emotion/styled": "https://esm.sh/@emotion/styled@11.10.0?external=react,@emotion/react",
-    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.5/"
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.6/"
   }
 }
