@@ -19,6 +19,7 @@ export default function App() {
     navigator.serviceWorker.getRegistrations().then(function (registrations) {
       for (const registration of registrations) {
         registration.unregister();
+        location.reload();
       }
     });
   });
@@ -40,15 +41,34 @@ export default function App() {
           name="description"
           content="Hypermodern Zero-Legacy Deno/React Framework"
         />
-        <meta property="og:image" content="https://u2.fly.dev/share.webp" />
-        <meta
-          property="twitter:image"
-          content="https://u2.fly.dev/share.webp"
-        />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="shortcut icon" href={useAsset("/favicon.ico")} />
         <link rel="preload" as="style" href={useAsset("/style.css")} />
         <link rel="stylesheet" href={useAsset("/style.css")} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://ultrajs.dev/" />
+        <meta property="og:title" content="Ultra: The Quest for Zero-Legacy" />
+        <meta
+          property="og:description"
+          content="Hypermodern Zero-Legacy Deno/React Framework"
+        />
+        <meta property="og:image" content="https://ultrajs.dev/share.webp" />
+
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://ultrajs.dev/" />
+        <meta
+          property="twitter:title"
+          content="Ultra: The Quest for Zero-Legacy"
+        />
+        <meta
+          property="twitter:description"
+          content="Hypermodern Zero-Legacy Deno/React Framework"
+        />
+        <meta
+          property="twitter:image"
+          content="https://ultrajs.dev/share.webp"
+        />
       </head>
       <body>
         <main>
