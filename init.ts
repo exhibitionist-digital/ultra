@@ -318,7 +318,7 @@ function helloUltraContent() {
               <p>
                 Take{" "}
                 <a
-                  href="https://github.com/exhibitionist-digital/ultra/tree/main/examples"
+                  href="https://ultrajs.dev/docs"
                   target="_blank"
                 >
                   this
