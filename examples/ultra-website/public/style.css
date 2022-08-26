@@ -122,6 +122,36 @@ h4 {
   margin: 0 auto;
 }
 
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+}
+
+#github {
+  text-decoration: none;
+  animation: flash 2s infinite;
+  padding: 0.5em 1em;
+  border: 2px solid currentColor;
+  border-radius: 2em;
+}
+
+#github:hover {
+  color: white;
+  background: #6666ff;
+  animation: none;
+}
+
+@keyframes flash {
+  to {
+    background: black;
+  }
+  from {
+    background: #6666ff;
+  }
+}
+
 blockquote {
   margin: 0;
   padding: 1rem;
@@ -142,7 +172,6 @@ blockquote {
   text-decoration: none;
   text-transform: initial;
   color: inherit;
-  padding: 0 1rem;
   font-size: 160%;
   font-weight: 600;
 }
@@ -221,6 +250,12 @@ code::-webkit-scrollbar {
 }
 
 @media (min-width: 800px) {
+  #github {
+    position: fixed;
+    z-index: 20;
+    right: 1rem;
+    top: 1rem;
+  }
   .story figure {
     display: flex;
     align-items: center;

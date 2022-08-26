@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import useAsset from "ultra/hooks/use-asset.js";
 import { Link, Route, Switch, useLocation } from "wouter";
-import HomePage from "./pages/Home.tsx";
-import Markdown from "./pages/Markdown.tsx";
+import HomePage from "./components/Home.tsx";
+import Markdown from "./components/Markdown.tsx";
 import { Suspense } from "react";
+import GitHub from "./components/Github.tsx";
 
 export default function App() {
   const [pathname] = useLocation();
@@ -31,10 +32,13 @@ export default function App() {
       </head>
       <body>
         <main>
-          <Link href="/" className="logo">
-            <Ultra />
-            <span>Ultra</span>
-          </Link>
+          <div className="top">
+            <Link href="/" className="logo">
+              <Ultra />
+              <span>Ultra</span>
+            </Link>
+            <GitHub />
+          </div>
           <nav>
             <Link href="/philosophy">
               Philosophy
