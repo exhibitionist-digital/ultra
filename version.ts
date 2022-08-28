@@ -1,7 +1,7 @@
 import { walk } from "https://deno.land/std@0.153.0/fs/mod.ts";
 import { globToRegExp } from "https://deno.land/std@0.153.0/path/glob.ts";
 
-export const VERSION = "2.0.0-alpha.7";
+export const VERSION = "2.0.0-alpha.8";
 export const VERSION_REGEX = /\/\/deno\.land\/x\/ultra@v[\w\.\-]+\//;
 
 export const ULTRA_OUTPUT_REGEX = globToRegExp("examples/**/.ultra", {
