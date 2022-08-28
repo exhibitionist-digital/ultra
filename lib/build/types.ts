@@ -1,4 +1,4 @@
-import { BuildResult } from "https://deno.land/x/mesozoic@v1.0.0-alpha.15/lib/builder.ts";
+import { Builder, BuildResult } from "./deps.ts";
 
 export type DenoConfig = {
   tasks?: Record<string, string>;
@@ -50,6 +50,5 @@ export type BuildPlugin = {
    * The name of the plugin.
    */
   name: string;
-  onBuild: (result: BuildResult) => Promise<void> | void;
-  onPostBuild?: (result: BuildResult) => Promise<void> | void;
+  onBuild: (context: Builder, result: BuildResult) => Promise<void> | void;
 };

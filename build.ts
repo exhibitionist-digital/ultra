@@ -1,19 +1,15 @@
 import {
-  brightBlue,
+  Builder,
+  crayon,
   deepMerge,
   fromFileUrl,
-  green,
   join,
   outdent,
   relative,
   resolve,
   sprintf,
-  underline,
-} from "./lib/build/deps.ts";
-import {
-  Builder,
   VirtualFile,
-} from "https://deno.land/x/mesozoic@v1.0.0-alpha.19/mod.ts";
+} from "./lib/build/deps.ts";
 import type {
   BuildOptions,
   BuildPlugin,
@@ -66,7 +62,7 @@ export default async function build(
     logLevel: "INFO",
     compiler: {
       minify: true,
-      sourceMaps: false,
+      sourceMaps: resolvedOptions.sourceMaps,
     },
   });
 
@@ -114,9 +110,9 @@ export default async function build(
   /**
    * Execute the build
    */
-  const { entrypoints } = await builder.build(buildSources);
+  const result = await builder.build(buildSources);
 
-  for (const entrypoint of entrypoints.values()) {
+  for (const entrypoint of result.entrypoints.values()) {
     const name = entrypoint.config?.vendorOutputDir;
     await Deno.writeTextFile(
       join(output, sprintf("importMap%s.json", name ? `.${name}` : "")),
@@ -169,12 +165,22 @@ export default async function build(
     }
   }
 
+  if (resolvedOptions.plugin) {
+    builder.log.info(
+      sprintf(
+        "Starting build plugin %s",
+        crayon.lightBlue(resolvedOptions.plugin.name),
+      ),
+    );
+    await resolvedOptions.plugin.onBuild(builder, result);
+  }
+
   builder.log.success("Build complete");
 
   // deno-fmt-ignore
   console.log(outdent`\n
-    You can now deploy the "${brightBlue(output)}" output directory to a platform of your choice.
-    Instructions for common deployment platforms can be found at ${green('https://ultrajs.dev/docs#deploying')}.\n
-    Alternatively, you can cd into "${brightBlue(output)}" and run: ${underline("deno task start")}
+    You can now deploy the "${crayon.lightBlue(output)}" output directory to a platform of your choice.
+    Instructions for common deployment platforms can be found at ${crayon.green('https://ultrajs.dev/docs#deploying')}.\n
+    Alternatively, you can cd into "${crayon.lightBlue(output)}" and run: ${crayon.underline("deno task start")}
   `);
 }
