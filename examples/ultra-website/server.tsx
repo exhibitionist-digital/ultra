@@ -1,3 +1,4 @@
+// @ts-nocheck wip
 import { QueryClientProvider } from "@tanstack/react-query";
 import { serve } from "https://deno.land/std@0.152.0/http/server.ts";
 import { compileSync } from "https://esm.sh/@mdx-js/mdx@2.1.3/lib/compile?no-dts";
@@ -22,9 +23,6 @@ const server = await createServer({
  */
 const api = createRouter();
 
-/**
- * An example MDX route
- */
 api.get("/github", async (context) => {
   const getCount = async () => {
     let data = await fetch(
@@ -70,14 +68,13 @@ api.get("/:slug", async (context) => {
   return context.json({ content });
 });
 
-/**
- * Mount the API router to /api
- */
 server.route("/api", api);
 
 server.get("*", async (context) => {
+  queryClient.clear();
   // deno-lint-ignore no-explicit-any
   const helmetContext: Record<string, any> = {};
+
   function ServerApp() {
     useFlushEffects(() => {
       const { helmet } = helmetContext;

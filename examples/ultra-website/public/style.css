@@ -31,6 +31,7 @@ body {
 
 body {
   max-width: 1500px;
+  min-width: 390px;
   margin: auto;
   font-size: 120%;
   padding-bottom: 5rem;
@@ -43,6 +44,10 @@ a {
 a:hover,
 a:focus {
   color: #6666ff;
+}
+
+a:focus {
+  outline: 1px dotted #777;
 }
 
 nav {
@@ -92,10 +97,16 @@ h6 a {
 h1 a::before,
 /* h2 a::before, */
 h3 a::before,
-h4 a::before,
 h5 a::before,
 h6 a::before {
   content: "# ";
+  color: #777;
+}
+
+h4 a::before,
+h5 a::before,
+h6 a::before {
+  content: "→ ";
   color: #777;
 }
 
@@ -372,7 +383,7 @@ ul {
   font-family: monospace;
   color: #777;
   margin: 5rem auto 3rem auto;
-  font-size: clamp(5em, 20vw, 8em);
+  font-size: clamp(3em, 15vw, 8em);
   font-weight: 400;
 }
 
