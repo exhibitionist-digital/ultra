@@ -1,7 +1,7 @@
 import { createElement as h } from "react";
 import { RenderToReadableStreamOptions } from "react-dom/server";
 import { flushEffectHandler, UltraProvider } from "./provider.ts";
-import { fromFileUrl, sprintf } from "./deps.ts";
+import { fromFileUrl } from "./deps.ts";
 import type { Context } from "./types.ts";
 import { log } from "./logger.ts";
 import { continueFromInitialStream, renderToInitialStream } from "./stream.ts";
@@ -38,7 +38,6 @@ export async function renderToStream(
     log.error(error);
   };
 
-  log.debug(sprintf("Rendering to initial stream"));
   const renderStream = await renderToInitialStream({
     element: h(
       UltraProvider,
@@ -51,7 +50,6 @@ export async function renderToStream(
     options,
   });
 
-  log.debug(sprintf("Continuing from initial stream"));
   return await continueFromInitialStream(renderStream, {
     generateStaticHTML,
     flushEffectsToHead,
