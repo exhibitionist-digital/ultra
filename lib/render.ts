@@ -2,6 +2,7 @@ import { createElement as h } from "react";
 import { RenderToReadableStreamOptions } from "react-dom/server";
 import { flushEffectHandler, UltraProvider } from "./provider.ts";
 import { fromFileUrl, sprintf } from "./deps.ts";
+import type { Context } from "./types.ts";
 import { log } from "./logger.ts";
 import { continueFromInitialStream, renderToInitialStream } from "./stream.ts";
 import { ImportMap } from "./types.ts";
@@ -15,6 +16,7 @@ type RenderToStreamOptions = RenderToReadableStreamOptions & {
 
 export async function renderToStream(
   App: JSX.Element,
+  context: Context,
   options: RenderToStreamOptions,
 ) {
   const {
@@ -40,7 +42,11 @@ export async function renderToStream(
   const renderStream = await renderToInitialStream({
     element: h(
       UltraProvider,
-      { assetManifest, children: App },
+      {
+        context,
+        assetManifest,
+        children: App,
+      },
     ),
     options,
   });

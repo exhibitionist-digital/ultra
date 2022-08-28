@@ -1,9 +1,11 @@
 import type { PropsWithChildren, ReactNode } from "react";
 import { createElement as h, Fragment, useCallback } from "react";
+import { renderToString } from "react-dom/server";
 import AssetContext from "../hooks/asset-context.js";
 import FlushEffectsContext from "../hooks/flush-effect-context.js";
+import ServerContext from "../hooks/server-context.js";
 import useFlushEffects from "../hooks/use-flush-effects.js";
-import { renderToString } from "react-dom/server";
+import type { Context } from "./types.ts";
 
 const flushEffectsCallbacks: Set<() => ReactNode> = new Set();
 
@@ -52,16 +54,29 @@ function AssetProvider(
   return h(AssetContext.Provider, { value }, children);
 }
 
+function ServerContextProvider(
+  { children, value }: { children: ReactNode; value: Context },
+) {
+  return h(ServerContext.Provider, { value }, children);
+}
+
 type UltraProviderProps = {
+  context: Context;
   assetManifest: Map<string, string>;
 };
 
 export function UltraProvider(
-  { assetManifest, children }: PropsWithChildren<UltraProviderProps>,
+  { context, assetManifest, children }: PropsWithChildren<UltraProviderProps>,
 ) {
   return h(
-    FlushEffects,
-    null,
-    h(AssetProvider, { value: assetManifest, children }),
+    ServerContextProvider,
+    {
+      value: context,
+      children: h(
+        FlushEffects,
+        null,
+        h(AssetProvider, { value: assetManifest, children }),
+      ),
+    },
   );
 }
