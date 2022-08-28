@@ -22,7 +22,7 @@ export class UltraServer extends Hono {
     public entrypoint: string,
   ) {
     super();
-    this.use("*", logger());
+    this.use("*", logger((message) => log.info(message)));
   }
 
   async init() {

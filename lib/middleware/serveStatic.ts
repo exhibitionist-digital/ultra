@@ -1,5 +1,6 @@
 import type { Context, Next } from "../types.ts";
 import { getFilePath, getMimeType, toFileUrl } from "../deps.ts";
+import { log } from "../logger.ts";
 
 export type ServeStaticOptions = {
   root?: string;
@@ -46,7 +47,7 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
         // Return Response object
         return context.body(file, 200);
       } else {
-        console.warn(`Static file: ${path} is not found`);
+        log.warning(`Static file: ${path} is not found`);
         await next();
       }
 
@@ -59,7 +60,7 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
        *
        * TODO: Maybe we should handle the type of error that fetch would throw?
        */
-      console.debug(`Static file: ${path} does not exist, continuing`);
+      log.debug(`Static file: ${path} does not exist, continuing`);
       await next();
     }
   };
