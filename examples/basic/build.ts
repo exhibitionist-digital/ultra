@@ -1,4 +1,4 @@
-import build from "ultra/build.ts";
+import build from "../../build.ts";
 
 await build({
   browserEntrypoint: import.meta.resolve("./client.tsx"),
