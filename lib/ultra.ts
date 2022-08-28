@@ -1,9 +1,9 @@
 import type { ReactElement } from "react";
 import { Hono, logger, sprintf } from "./deps.ts";
-import { renderToStream } from "./render.ts";
-import { ImportMap, Mode } from "./types.ts";
-import { toUltraUrl } from "./utils/url.ts";
 import { log } from "./logger.ts";
+import { renderToStream } from "./render.ts";
+import { Context, ImportMap, Mode } from "./types.ts";
+import { toUltraUrl } from "./utils/url.ts";
 
 type UltraServerRenderOptions = {
   generateStaticHTML?: boolean;
@@ -49,16 +49,34 @@ export class UltraServer extends Hono {
     this.entrypoint = this.#prepareEntrypoint(this.importMap!);
   }
 
-  render(Component: ReactElement, options?: UltraServerRenderOptions) {
-    if (!this.importMap) {
-      throw new Error("Import map has not been parsed.");
-    }
+  render(
+    Component: ReactElement,
+    options?: UltraServerRenderOptions,
+  ) {
+    this.#valid();
 
     log.debug("Rendering component");
 
-    return renderToStream(Component, {
+    return renderToStream(Component, undefined, {
       assetManifest: this.assetManifest,
-      importMap: this.importMap,
+      importMap: this.importMap!,
+      bootstrapModules: [this.entrypoint],
+      ...options,
+    });
+  }
+
+  renderWithContext(
+    Component: ReactElement,
+    context: Context,
+    options?: UltraServerRenderOptions,
+  ) {
+    this.#valid();
+
+    log.debug("Rendering component");
+
+    return renderToStream(Component, context, {
+      assetManifest: this.assetManifest,
+      importMap: this.importMap!,
       bootstrapModules: [this.entrypoint],
       ...options,
     });
@@ -73,6 +91,12 @@ export class UltraServer extends Hono {
     log.debug(json);
 
     return json;
+  }
+
+  #valid() {
+    if (!this.importMap) {
+      throw new Error("Import map has not been parsed.");
+    }
   }
 
   #prepareEntrypoint(importMap: ImportMap) {

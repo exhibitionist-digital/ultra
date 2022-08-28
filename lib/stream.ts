@@ -10,6 +10,7 @@ import {
 } from "react-dom/server";
 import { ImportMap, RenderedReadableStream } from "./types.ts";
 import { nonNullable } from "./utils/non-nullable.ts";
+import { log } from "./logger.ts";
 
 export function encodeText(input: string) {
   return new TextEncoder().encode(input);
@@ -94,6 +95,7 @@ export function createHeadInjectionTransformStream(
 }
 
 export function createImportMapInjectionStream(importMap: ImportMap) {
+  log.debug("Stream inject importMap");
   return createHeadInjectionTransformStream(() => {
     return [
       `<script async src="https://ga.jspm.io/npm:es-module-shims@1.5.1/dist/es-module-shims.js" crossorigin="anonymous"></script>`,
@@ -109,6 +111,7 @@ export function renderToInitialStream({
   element: React.ReactElement;
   options?: RenderToReadableStreamOptions;
 }): Promise<RenderedReadableStream> {
+  log.debug("Render to initial stream");
   return renderToReadableStream(element, options);
 }
 
@@ -130,10 +133,15 @@ export async function continueFromInitialStream(
     flushEffectsToHead,
   } = options;
 
+  log.debug("Continue from initial stream");
+
   /**
    * @see https://reactjs.org/docs/react-dom-server.html#rendertoreadablestream
    */
   if (generateStaticHTML) {
+    log.debug(
+      "Waiting for stream to complete, generateStaticHTML was requested",
+    );
     await renderStream.allReady;
   }
 
@@ -154,6 +162,7 @@ export async function continueFromInitialStream(
      * Flush effects to the head if flushEffectsToHead is true
      */
     createHeadInjectionTransformStream(() => {
+      log.debug("Stream flush effects", { flushEffectsToHead });
       return flushEffectHandler && flushEffectsToHead
         ? flushEffectHandler()
         : "";
