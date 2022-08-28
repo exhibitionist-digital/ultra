@@ -110,10 +110,7 @@ export default async function build(
   /**
    * Execute the build
    */
-  const result = await builder.build(buildSources);
-  console.log(result);
-
-  console.log(builder.toManifest(buildSources, { prefix: "/_ultra/static" }));
+  await builder.build(buildSources);
 
   // deno-fmt-ignore
   console.log(outdent`\n
