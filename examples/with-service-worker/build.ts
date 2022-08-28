@@ -24,7 +24,7 @@ await build({
         const cacheUrls = cacheManifest.map(([, compiled]) => compiled);
         const replacedSource = serviceWorker.replace(
           "__ULTRA_CACHE_URLS",
-          JSON.stringify(cacheUrls),
+          cacheUrls.join(","),
         );
 
         /**
