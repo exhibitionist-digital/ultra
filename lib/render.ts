@@ -1,12 +1,6 @@
-import type { ReactNode } from "react";
-import { createElement as h, Fragment, useCallback } from "react";
-import {
-  RenderToReadableStreamOptions,
-  renderToString,
-} from "react-dom/server";
-import AssetContext from "../hooks/asset-context.js";
-import FlushEffectsContext from "../hooks/flush-effect-context.js";
-import useFlushEffects from "../hooks/use-flush-effects.js";
+import { createElement as h } from "react";
+import { RenderToReadableStreamOptions } from "react-dom/server";
+import { flushEffectHandler, UltraProvider } from "./provider.ts";
 import { fromFileUrl, sprintf } from "./deps.ts";
 import { log } from "./logger.ts";
 import { continueFromInitialStream, renderToInitialStream } from "./stream.ts";
@@ -18,53 +12,6 @@ type RenderToStreamOptions = RenderToReadableStreamOptions & {
   generateStaticHTML?: boolean;
   flushEffectsToHead?: boolean;
 };
-
-const flushEffectsCallbacks: Set<() => ReactNode> = new Set();
-
-function FlushEffects({ children }: { children: JSX.Element }) {
-  // Reset flushEffectsHandler on each render
-  flushEffectsCallbacks.clear();
-
-  const addFlushEffects = useCallback(
-    (handler: () => ReactNode) => {
-      flushEffectsCallbacks.add(handler);
-    },
-    [],
-  );
-
-  return (
-    h(FlushEffectsContext.Provider, { value: addFlushEffects }, children)
-  );
-}
-
-const flushEffectHandler = (): string => {
-  return renderToString(
-    h(
-      Fragment,
-      null,
-      Array.from(flushEffectsCallbacks).map((callback) => callback()),
-    ),
-  );
-};
-
-function AssetProvider(
-  { children, value }: { children: JSX.Element; value: Map<string, string> },
-) {
-  useFlushEffects(() => {
-    return (
-      h("script", {
-        type: "text/javascript",
-        dangerouslySetInnerHTML: {
-          __html: `window.__ULTRA_ASSET_MAP = ${
-            JSON.stringify(Array.from(value.entries()))
-          }`,
-        },
-      })
-    );
-  });
-
-  return h(AssetContext.Provider, { value }, children);
-}
 
 export async function renderToStream(
   App: JSX.Element,
@@ -92,9 +39,8 @@ export async function renderToStream(
   log.debug(sprintf("Rendering to initial stream"));
   const renderStream = await renderToInitialStream({
     element: h(
-      FlushEffects,
-      null,
-      h(AssetProvider, { value: assetManifest, children: App }),
+      UltraProvider,
+      { assetManifest, children: App },
     ),
     options,
   });
