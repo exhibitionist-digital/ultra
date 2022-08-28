@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { Hono, logger, sprintf } from "./deps.ts";
+import { fromFileUrl, Hono, logger, relative, sprintf } from "./deps.ts";
 import { log } from "./logger.ts";
 import { renderToStream } from "./render.ts";
 import { Context, ImportMap, Mode } from "./types.ts";
@@ -101,18 +101,22 @@ export class UltraServer extends Hono {
 
   #prepareEntrypoint(importMap: ImportMap) {
     log.debug(sprintf("Resolving entrypoint: %s", this.entrypoint));
-    let specifier = toUltraUrl(this.root, this.entrypoint, this.mode)!;
+    let entrypointSpecifier = `./${
+      relative(this.root, fromFileUrl(this.entrypoint))
+    }`;
 
     if (this.mode === "production") {
-      for (const [, resolved] of Object.entries(importMap.imports)) {
-        if (resolved === specifier) {
-          specifier = resolved;
+      for (const [specifier, resolved] of Object.entries(importMap.imports)) {
+        if (specifier === entrypointSpecifier) {
+          entrypointSpecifier = resolved;
         }
       }
+    } else {
+      entrypointSpecifier = toUltraUrl(this.root, this.entrypoint, this.mode)!;
     }
 
-    log.debug(sprintf("Resolved entrypoint: %s", specifier));
+    log.debug(sprintf("Resolved entrypoint: %s", entrypointSpecifier));
 
-    return specifier;
+    return entrypointSpecifier;
   }
 }

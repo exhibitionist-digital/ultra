@@ -13,7 +13,7 @@ import {
 import {
   Builder,
   VirtualFile,
-} from "https://deno.land/x/mesozoic@v1.0.0-alpha.18/mod.ts";
+} from "https://deno.land/x/mesozoic@v1.0.0-alpha.19/mod.ts";
 import type {
   BuildOptions,
   BuildPlugin,

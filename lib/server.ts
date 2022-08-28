@@ -66,10 +66,21 @@ export async function createServer(
         ...options.compilerOptions,
       }),
     );
+
+    server.use(
+      "*",
+      serveStatic({
+        root: resolve(root, "./public"),
+        cache: false,
+      }),
+    );
   } else {
     server.use(
       "*",
-      serveStatic({ root: resolve(root, "./"), cache: mode === "production" }),
+      serveStatic({
+        root: resolve(root, "./"),
+        cache: true,
+      }),
     );
   }
 
