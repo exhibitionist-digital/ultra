@@ -1,5 +1,6 @@
 import { ULTRA_STATIC_PATH } from "../constants.ts";
-import { Context, join, Next, toFileUrl } from "../deps.ts";
+import { join, toFileUrl } from "../deps.ts";
+import type { Context, Next } from "../types.ts";
 
 export const serveCompiled = (
   { root, cache }: { root: string; cache?: boolean },

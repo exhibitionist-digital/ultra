@@ -1,5 +1,14 @@
 import { BuildResult } from "https://deno.land/x/mesozoic@v1.0.0-alpha.15/lib/builder.ts";
 
+export type DenoConfig = {
+  tasks?: Record<string, string>;
+  compilerOptions?: {
+    jsx: "preserve" | "react" | "react-jsx" | "react-jsxdev";
+    jsxImportSource?: string;
+  };
+  importMap?: string;
+};
+
 export type BuildOptions = {
   /**
    * The browser entrypoint. This is what initially gets sent with the server

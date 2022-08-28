@@ -1,4 +1,4 @@
-import { ULTRA_COMPILER_PATH, ULTRA_STATIC_PATH } from "./constants.ts";
+import { ULTRA_COMPILER_PATH } from "./constants.ts";
 import {
   assert,
   dirname,
@@ -9,7 +9,6 @@ import {
   wait,
 } from "./deps.ts";
 import { ensureMinDenoVersion } from "./dev/ensureMinDenoVersion.ts";
-import { serveCompiled } from "./middleware/serveCompiled.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
@@ -69,19 +68,10 @@ export async function createServer(
     );
   } else {
     server.use(
-      "/vendor/*",
+      "*",
       serveStatic({ root: resolve(root, "./"), cache: mode === "production" }),
     );
-    server.use(`${ULTRA_STATIC_PATH}/*`, serveCompiled({ root }));
   }
-
-  server.use(
-    "*",
-    serveStatic({
-      root: resolve(root, "./public"),
-      cache: mode === "production",
-    }),
-  );
 
   return server;
 }

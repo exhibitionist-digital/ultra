@@ -1,4 +1,4 @@
-import type { Context, Next } from "../deps.ts";
+import type { Context, Next } from "../types.ts";
 import { getFilePath, getMimeType, toFileUrl } from "../deps.ts";
 
 export type ServeStaticOptions = {

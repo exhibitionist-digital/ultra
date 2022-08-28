@@ -11,6 +11,7 @@ export {
   walk,
 } from "https://deno.land/std@0.153.0/fs/mod.ts";
 export { globToRegExp } from "https://deno.land/std@0.153.0/path/glob.ts";
+export { sprintf } from "https://deno.land/std@0.153.0/fmt/printf.ts";
 export {
   fromFileUrl,
   join,

@@ -25,15 +25,6 @@ export type CreateServerOptions = {
   compilerOptions?: Omit<CompilerOptions, "mode">;
 };
 
-export type DenoConfig = {
-  tasks?: Record<string, string>;
-  compilerOptions?: {
-    jsx: "preserve" | "react" | "react-jsx" | "react-jsxdev";
-    jsxImportSource?: string;
-  };
-  importMap?: string;
-};
-
 export type ImportMap = {
   imports: Record<string, string>;
   scopes?: Record<string, Record<string, string>>;

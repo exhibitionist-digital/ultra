@@ -7,10 +7,18 @@ import {
   outdent,
   relative,
   resolve,
+  sprintf,
   underline,
 } from "./lib/build/deps.ts";
-import { Builder } from "https://deno.land/x/mesozoic@v1.0.0-alpha.15/mod.ts";
-import type { BuildOptions, BuildPlugin } from "./lib/build/types.ts";
+import {
+  Builder,
+  VirtualFile,
+} from "https://deno.land/x/mesozoic@v1.0.0-alpha.18/mod.ts";
+import type {
+  BuildOptions,
+  BuildPlugin,
+  DenoConfig,
+} from "./lib/build/types.ts";
 
 /**
  * Re-export these types as convenience to build plugin authors
@@ -106,7 +114,62 @@ export default async function build(
   /**
    * Execute the build
    */
-  await builder.build(buildSources);
+  const { entrypoints } = await builder.build(buildSources);
+
+  for (const entrypoint of entrypoints.values()) {
+    const name = entrypoint.config?.vendorOutputDir;
+    await Deno.writeTextFile(
+      join(output, sprintf("importMap%s.json", name ? `.${name}` : "")),
+      JSON.stringify(entrypoint.importMap, null, 2),
+    );
+  }
+
+  /**
+   * Remove the dev importMap
+   */
+  await buildSources.get("./importMap.json").then((source) => source.remove());
+
+  /**
+   * Generate asset-manifest.json
+   */
+  builder.log.info("Generating asset-manifest.json");
+  const manifest = builder.toManifest(buildSources, {
+    exclude: ["./deno.json", "./importMap.json"],
+    prefix: "/",
+  });
+
+  const assetManifest = manifest.map(([relative, absolute]) => {
+    return [relative.replace("./public/", "./"), absolute];
+  });
+
+  const assetManifestSource = new VirtualFile(
+    "./asset-manifest.json",
+    builder.context.output,
+    JSON.stringify(assetManifest, null, 2),
+  );
+
+  builder.copySource(assetManifestSource, builder.context.output);
+
+  /**
+   * Patch deno.json
+   */
+  builder.log.info("Patching deno.json");
+  const denoConfigSource = await buildSources.get("./deno.json");
+
+  if (denoConfigSource) {
+    const denoConfig = await denoConfigSource.readAsJson<DenoConfig>();
+    if (denoConfig) {
+      if (denoConfig.compilerOptions?.jsx) {
+        denoConfig.compilerOptions.jsx = "react-jsx";
+      }
+      if (denoConfig.importMap) {
+        denoConfig.importMap = "./importMap.server.json";
+      }
+      await denoConfigSource.writeJson(denoConfig);
+    }
+  }
+
+  builder.log.success("Build complete");
 
   // deno-fmt-ignore
   console.log(outdent`\n
