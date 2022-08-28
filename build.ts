@@ -22,10 +22,6 @@ const defaultOptions: Omit<
   "browserEntrypoint" | "serverEntrypoint" | "plugin"
 > = {
   output: ".ultra",
-  compiler: {
-    minify: true,
-    sourceMaps: false,
-  },
   exclude: [
     ".git",
     join("**", ".DS_Store"),
