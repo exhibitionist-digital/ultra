@@ -10,27 +10,16 @@ import { Helmet } from "react-helmet-async";
 export default function App() {
   const [pathname] = useLocation();
 
-  // scroll to top of page change
+  useEffect(() => {
+    if ("serviceWorker" in navigator && location.hostname == "ultrajs.dev") {
+      navigator.serviceWorker.register("/service-worker.js");
+    }
+  }, []);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  // rm service works for now
-  useEffect(() => {
-    navigator.serviceWorker.getRegistrations().then(function (registrations) {
-      for (const registration of registrations) {
-        registration.unregister();
-        location.reload();
-      }
-    });
-    const hash = window.location.hash;
-    if (hash) {
-      location.href = "#";
-      location.href = hash;
-    }
-  }, []);
-
-  // smooth scroll
   const top = () => {
     window.scroll({
       top: 0,
@@ -65,17 +54,6 @@ export default function App() {
           property="twitter:description"
           content="Hypermodern Zero-Legacy Deno/React Framework"
         />
-        <Helmet prioritizeSeoTags>
-          <title>Ultra: The Quest for Zero-Legacy</title>
-          <meta
-            property="og:title"
-            content="Ultra: The Quest for Zero-Legacy"
-          />
-          <meta
-            property="twitter:title"
-            content="Ultra: The Quest for Zero-Legacy"
-          />
-        </Helmet>
       </head>
       <body>
         <main>
@@ -97,19 +75,21 @@ export default function App() {
               Discord
             </a>
           </nav>
-
           <Switch>
             <Route path="/">
+              <Title title="The Quest for Zero-Legacy" />
               <Suspense fallback={null}>
                 <HomePage />
               </Suspense>
             </Route>
             <Route path="/philosophy">
+              <Title title="📖 Philosophy" />
               <Suspense fallback={null}>
                 <Markdown page="philosophy" />
               </Suspense>
             </Route>
             <Route path="/docs">
+              <Title title="⚙️ Docs" />
               <Suspense fallback={null}>
                 <Markdown page="docs" />
               </Suspense>
@@ -126,6 +106,20 @@ export default function App() {
     </html>
   );
 }
+
+const Title = ({ title }: { title: string }) => (
+  <Helmet prioritizeSeoTags>
+    <title>Ultra: {title}</title>
+    <meta
+      property="og:title"
+      content={`Ultra: ${title}`}
+    />
+    <meta
+      property="twitter:title"
+      content={`Ultra: ${title}`}
+    />
+  </Helmet>
+);
 
 const Ultra = () => {
   return (
