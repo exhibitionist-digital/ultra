@@ -12,7 +12,8 @@ import {
 import {
   Builder,
   BuilderOptions,
-} from "https://deno.land/x/mesozoic@v1.0.0-alpha.9/mod.ts";
+  ImportMap,
+} from "https://deno.land/x/mesozoic@v1.0.0-alpha.14/mod.ts";
 import type { BuildOptions, BuildPlugin } from "./lib/build/types.ts";
 
 /**
@@ -45,30 +46,27 @@ export default async function build(
     : resolve(root, ".ultra");
 
   function makeRelative(path: string) {
-    return relative(
-      root,
-      fromFileUrl(path),
-    );
+    return `./${
+      relative(
+        root,
+        fromFileUrl(path),
+      )
+    }`;
   }
 
   const mainModule = makeRelative(Deno.mainModule);
   const browserEntrypoint = makeRelative(resolvedOptions.browserEntrypoint);
   const serverEntrypoint = makeRelative(resolvedOptions.serverEntrypoint);
 
-  const entrypoints = [
-    `./${serverEntrypoint}`,
-    `./${browserEntrypoint}`,
-  ];
-
   const exclude = [
-    `./${mainModule}`,
+    mainModule,
     ...(resolvedOptions.exclude || []),
   ];
 
   const hashable = [
     "./src/**/*.+(ts|tsx|js|jsx|css)",
     "./public/**/*.+(css|ico|jpg|png|svg|gif|otf|ttf|woff)",
-    `./${browserEntrypoint}`,
+    browserEntrypoint,
   ];
 
   const compilable = [
@@ -76,17 +74,33 @@ export default async function build(
   ];
 
   const builderOptions: BuilderOptions = {
-    name: "ultra",
-    logLevel: "INFO",
+    name: "build",
+    logLevel: "DEBUG",
   };
 
   const builder = new Builder({
     root,
     output,
     exclude,
-    entrypoints,
+    entrypoints: {
+      [browserEntrypoint]: {
+        output: "browser",
+        target: "browser",
+      },
+      [serverEntrypoint]: {
+        output: "server",
+        target: "deno",
+      },
+    },
     hashable,
     compilable,
+    manifest: {
+      exclude: [
+        "./public/robots.txt",
+        "./importMap.json",
+        "./deno.json",
+      ],
+    },
     compiler: {
       minify: true,
     },
@@ -101,34 +115,80 @@ export default async function build(
    * Gather all sources from root
    */
   const sources = await builder.gatherSources();
-  const entrypointSources = sources.filter((source) =>
-    builder.isEntrypoint(source)
-  );
 
   /**
    * Copy sources to output
    */
   const buildSources = await builder.copySources(sources);
 
-  const configSource = buildSources.find((source) =>
-    source.relativePath() === "./deno.json"
+  /**
+   * Resolve the importMapSource
+   */
+  const importMapSource = buildSources.find((source) =>
+    source.relativePath() === "./importMap.json"
   );
 
-  if (configSource) {
-    const config = JSON.parse(await configSource.read());
-    config.compilerOptions.jsx = "react-jsx";
-    await configSource.write(JSON.stringify(config, null, 2));
-  }
-
   /**
-   * Vendor the dependencies of the entrypoints
+   * Read the importMap JSON
    */
-  await builder.vendorSources(entrypointSources);
+  const importMap = importMapSource
+    ? await importMapSource.readAsJson<ImportMap>()
+    : undefined;
 
   /**
    * Execute the build
    */
-  await builder.build(buildSources);
+  const result = await builder.build(buildSources, importMap);
+  console.log(result);
+
+  // /**
+  //  * This will hold files we want to generate after
+  //  * the main build process has completed.
+  //  */
+  // const virtualSources = new FileBag();
+
+  // /**
+  //  * Find deno.json and patch it
+  //  */
+  // const configSource = buildSources.find((source) =>
+  //   source.relativePath() === "./deno.json"
+  // );
+
+  // if (configSource) {
+  //   builder.log.info(`Patching ${configSource.relativePath()}`);
+  //   const config: DenoConfig = await configSource.readAsJson();
+
+  //   if (config.compilerOptions) {
+  //     config.compilerOptions.jsx = "react-jsx";
+  //   }
+
+  //   //@ts-ignore fixed upstream
+  //   await configSource.writeJson(config, true);
+  // }
+
+  // /**
+  //  * Execute the build
+  //  */
+  // const result = await builder.build(buildSources);
+
+  // /**
+  //  * Create asset manifest
+  //  */
+  // const manifest = builder.toManifest(buildSources, "/_ultra/static");
+
+  // const assetManifest = new VirtualFile(
+  //   "./asset-manifest.json",
+  //   builder.context.root,
+  //   JSON.stringify(manifest, null, 2),
+  // );
+
+  // virtualSources.add(assetManifest);
+
+  // await builder.copySources(virtualSources);
+
+  // // const assetManifest = new VirtualFile()
+
+  // // console.log(builder.toManifest(buildSources, "/_ultra/static"));
 
   // deno-fmt-ignore
   console.log(outdent`\n
