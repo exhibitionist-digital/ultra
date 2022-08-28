@@ -1,4 +1,4 @@
-import { resolve, toFileUrl } from "../deps.ts";
+import { join, resolve, toFileUrl } from "../deps.ts";
 import { ImportMap, Mode } from "../types.ts";
 
 export function resolveImportMapPath(mode: Mode, root: string, path: string) {
@@ -6,7 +6,8 @@ export function resolveImportMapPath(mode: Mode, root: string, path: string) {
     return path;
   }
 
-  return toFileUrl(resolve(root, "./importMap.browser.json")).href;
+  return toFileUrl(resolve(root, join("vendor", "browser", "importMap.json")))
+    .href;
 }
 
 export function importMapRelative(importMap: ImportMap, to: string): ImportMap {
