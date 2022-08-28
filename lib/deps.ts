@@ -8,6 +8,8 @@ export {
   resolve,
   toFileUrl,
 } from "https://deno.land/std@0.153.0/path/mod.ts";
+export { crayon } from "https://deno.land/x/crayon@3.3.2/mod.ts";
+export * as log from "https://deno.land/std@0.153.0/log/mod.ts";
 export { sprintf } from "https://deno.land/std@0.153.0/fmt/printf.ts";
 export { assert } from "https://deno.land/std@0.153.0/_util/assert.ts";
 export { encode } from "https://deno.land/std@0.153.0/encoding/base64.ts";
@@ -18,5 +20,4 @@ export { wait } from "https://deno.land/x/wait@0.1.12/mod.ts";
 export { Hono } from "https://deno.land/x/hono@v2.1.1/mod.ts";
 export { getFilePath } from "https://deno.land/x/hono@v2.1.1/utils/filepath.ts";
 export { getMimeType } from "https://deno.land/x/hono@v2.1.1/utils/mime.ts";
-export type { Context, Next } from "https://deno.land/x/hono@v2.1.1/mod.ts";
 export { logger } from "https://deno.land/x/hono@v2.1.1/middleware.ts";
