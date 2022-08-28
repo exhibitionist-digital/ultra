@@ -1,14 +1,7 @@
 import { transformSource } from "../compiler/transform.ts";
 import { ULTRA_COMPILER_PATH } from "../constants.ts";
-import {
-  Context,
-  encode,
-  extname,
-  join,
-  Next,
-  sprintf,
-  toFileUrl,
-} from "../deps.ts";
+import { encode, extname, join, sprintf, toFileUrl } from "../deps.ts";
+import type { Context, Next } from "../types.ts";
 import { log } from "../logger.ts";
 import type { Mode, TransformSourceOptions } from "../types.ts";
 

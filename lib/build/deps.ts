@@ -1,4 +1,10 @@
+export {
+  Builder,
+  VirtualFile,
+} from "https://deno.land/x/mesozoic@v1.0.0-alpha.25/mod.ts";
+export type { BuildResult } from "https://deno.land/x/mesozoic@v1.0.0-alpha.25/mod.ts";
 export { deepMerge } from "https://deno.land/std@0.153.0/collections/deep_merge.ts";
+export { crayon } from "https://deno.land/x/crayon@3.3.2/mod.ts";
 export {
   brightBlue,
   green,
@@ -11,6 +17,7 @@ export {
   walk,
 } from "https://deno.land/std@0.153.0/fs/mod.ts";
 export { globToRegExp } from "https://deno.land/std@0.153.0/path/glob.ts";
+export { sprintf } from "https://deno.land/std@0.153.0/fmt/printf.ts";
 export {
   fromFileUrl,
   join,

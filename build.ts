@@ -1,283 +1,186 @@
 import {
-  brightBlue,
+  Builder,
+  crayon,
   deepMerge,
-  emptyDir,
-  green,
+  fromFileUrl,
   join,
   outdent,
   relative,
   resolve,
-  underline,
-  wait,
+  sprintf,
+  VirtualFile,
 } from "./lib/build/deps.ts";
-import { sprintf } from "./lib/deps.ts";
-import { compileSources } from "./lib/build/compileSources.ts";
-import { copySource } from "./lib/build/copySource.ts";
-import { createGraph } from "./lib/build/createGraph.ts";
-import { patchDenoConfig } from "./lib/build/patchDenoConfig.ts";
-import { resolvePaths } from "./lib/build/resolvePaths.ts";
-import { vendorDependencies } from "./lib/build/vendorDependencies.ts";
-import { assert } from "./lib/deps.ts";
-import { cleanup } from "./lib/build/cleanup.ts";
 import type {
   BuildOptions,
   BuildPlugin,
-  BuildResult,
+  DenoConfig,
 } from "./lib/build/types.ts";
-import { createBuildContext } from "./lib/build/context.ts";
-import { createAssetManifest } from "./lib/build/assetManifest.ts";
-import { writeJsonFile } from "./lib/utils/json.ts";
-import { patchImportMap } from "./lib/build/patchImportMap.ts";
 
 /**
  * Re-export these types as convenience to build plugin authors
  */
 export type { BuildPlugin };
 
-const defaultOptions: Partial<BuildOptions> = {
+const defaultOptions: Omit<
+  BuildOptions,
+  "browserEntrypoint" | "serverEntrypoint" | "plugin"
+> = {
   output: ".ultra",
-  reload: false,
-  sourceMaps: false,
   exclude: [
     ".git",
     join("**", ".DS_Store"),
   ],
-  // TODO: We need a default exclusion list
-  assetsExclude: ["robots.txt"],
 };
 
-const cwd = Deno.cwd();
-const BUILD_COMPLETE_MESSAGE = "Build complete!";
-
-function cwdRelative(path: string) {
-  return relative(cwd, path);
-}
-
 export default async function build(
-  options: BuildOptions,
-): Promise<BuildResult> {
-  const resolvedOptions = deepMerge(defaultOptions, options);
+  options: Partial<BuildOptions>,
+) {
+  const resolvedOptions = deepMerge<BuildOptions>(defaultOptions, options);
+  const root = Deno.cwd();
+  const output = resolvedOptions.output
+    ? resolve(root, resolvedOptions.output)
+    : resolve(root, ".ultra");
 
-  await assertBuildOptions(resolvedOptions);
+  function makeRelative(path: string) {
+    return `./${
+      relative(
+        root,
+        fromFileUrl(path),
+      )
+    }`;
+  }
 
-  const {
-    browserEntrypoint,
-    serverEntrypoint,
+  const mainModule = makeRelative(Deno.mainModule);
+  const browserEntrypoint = makeRelative(resolvedOptions.browserEntrypoint);
+  const serverEntrypoint = makeRelative(resolvedOptions.serverEntrypoint);
+
+  const builder = new Builder({
+    root,
     output,
-    sourceMaps,
-    reload,
-    plugin,
-    exclude,
-    assetsExclude,
-  } = resolvedOptions as Required<BuildOptions>;
-
-  const spinner = wait("Building").start();
-
-  /**
-   * Resolve paths for build inputs/outputs
-   */
-  const paths = resolvePaths(output, {
-    browserEntrypoint,
-    serverEntrypoint,
-    exclude: [...exclude, output],
-  });
-
-  /**
-   * Prepare the BuildContext
-   */
-  const buildContext = createBuildContext(paths);
-
-  spinner.text = sprintf(
-    "Cleaning output directory: %s",
-    cwdRelative(buildContext.paths.outputDir),
-  );
-
-  await emptyDir(buildContext.paths.outputDir);
-
-  /**
-   * Run plugin onPreBuild if available
-   */
-  try {
-    if (plugin && plugin.onPreBuild) {
-      await plugin.onPreBuild(buildContext);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-
-  /**
-   * Copy everything from rootDir into outputDir
-   */
-  spinner.text = sprintf(
-    "Copying source from: %s to %s",
-    buildContext.paths.rootDir,
-    cwdRelative(buildContext.paths.outputDir),
-  );
-  await copySource(buildContext);
-
-  /**
-   * Build a module graph from the provided entry points
-   */
-  spinner.text = "Building module graph";
-  buildContext.graph = await createGraph(
-    buildContext,
-  );
-
-  /**
-   * Compile the sources found in the module graph
-   */
-  spinner.text = "Compiling and minifying sources";
-  const compiled = await compileSources(buildContext, {
-    sourceMaps,
-    hash: true,
-  });
-
-  /**
-   * Vendor dependencies
-   */
-  spinner.text = "Vendoring browser dependencies";
-
-  let [browserImportMap, serverImportMap] = await Promise.all([
-    vendorDependencies(buildContext, {
-      target: "browser",
-      reload,
-      paths: [...Array.from(compiled.values())],
-    }),
-    vendorDependencies(buildContext, {
-      target: "server",
-      reload,
-    }),
-  ]);
-
-  /**
-   * Patch the importMaps with resolved import specifiers
-   */
-  browserImportMap = patchImportMap(
-    buildContext,
-    compiled,
-    browserImportMap,
-    "browser",
-  );
-
-  serverImportMap = patchImportMap(
-    buildContext,
-    compiled,
-    serverImportMap,
-    "server",
-  );
-
-  /**
-   * Write the new importMaps
-   */
-  await Promise.all([
-    writeJsonFile(
-      resolve(paths.outputDir, "./importMap.browser.json"),
-      browserImportMap,
-    ),
-    writeJsonFile(
-      resolve(paths.outputDir, "./importMap.server.json"),
-      serverImportMap,
-    ),
-  ]);
-
-  /**
-   * Create the asset manifest
-   */
-  const assets = await createAssetManifest(buildContext, {
-    exclude: assetsExclude,
-  });
-
-  /**
-   * Patch deno.json with required options
-   */
-  const denoConfig = await patchDenoConfig(paths);
-
-  /**
-   * Cleanup build output
-   */
-  await cleanup(paths);
-
-  /**
-   * Prepare the build result
-   */
-  const buildResult: BuildResult = {
-    options: resolvedOptions,
-    paths,
-    importMap: {
-      browser: browserImportMap,
-      server: serverImportMap,
+    name: "ultra",
+    importMap: "./importMap.json",
+    logLevel: "INFO",
+    compiler: {
+      minify: true,
+      sourceMaps: resolvedOptions.sourceMaps,
     },
-    assetManifest: assets,
-    denoConfig,
-    files: buildContext.files,
-  };
+  });
 
-  const finalBuildResult = buildResult;
+  builder.setEntrypoints({
+    [browserEntrypoint]: {
+      vendorOutputDir: "browser",
+      target: "browser",
+    },
+    [serverEntrypoint]: {
+      vendorOutputDir: "server",
+      target: "deno",
+    },
+  });
+
+  builder.setExcluded([
+    mainModule,
+    ...(resolvedOptions.exclude || []),
+  ]);
+
+  builder.setHashed([
+    "./src/**/*.+(ts|tsx|js|jsx|css)",
+    "./public/**/*.+(css|ico|jpg|png|svg|gif|otf|ttf|woff)",
+    browserEntrypoint,
+  ]);
+
+  builder.setCompiled([
+    "./**/*.+(ts|tsx|js|jsx)",
+  ]);
 
   /**
-   * If we are supplied an build plugin, execute that now
-   * with the current build result.
+   * Clean the output directory
    */
-  if (plugin) {
-    try {
-      spinner.text = sprintf("Executing build plugin: %s:onBuild", plugin.name);
+  await builder.cleanOutput();
 
-      await plugin.onBuild(finalBuildResult);
+  /**
+   * Gather all sources from root
+   */
+  const sources = await builder.gatherSources();
 
-      if (plugin.onPostBuild) {
-        spinner.text = sprintf(
-          "Executing build plugin: %s:onPostBuild",
-          plugin.name,
-        );
+  /**
+   * Copy sources to output
+   */
+  const buildSources = await builder.copySources(sources);
 
-        await plugin.onPostBuild(finalBuildResult);
+  /**
+   * Execute the build
+   */
+  const result = await builder.build(buildSources);
+
+  for (const entrypoint of result.entrypoints.values()) {
+    const name = entrypoint.config?.vendorOutputDir;
+    await Deno.writeTextFile(
+      join(output, sprintf("importMap%s.json", name ? `.${name}` : "")),
+      JSON.stringify(entrypoint.importMap, null, 2),
+    );
+  }
+
+  /**
+   * Remove the dev importMap
+   */
+  await buildSources.get("./importMap.json").then((source) => source.remove());
+
+  /**
+   * Generate asset-manifest.json
+   */
+  builder.log.info("Generating asset-manifest.json");
+  const manifest = builder.toManifest(buildSources, {
+    exclude: ["./deno.json", "./importMap.json"],
+    prefix: "/",
+  });
+
+  const assetManifest = manifest.map(([relative, absolute]) => {
+    return [relative.replace("./public/", "./"), absolute];
+  });
+
+  const assetManifestSource = new VirtualFile(
+    "./asset-manifest.json",
+    builder.context.output,
+    JSON.stringify(assetManifest, null, 2),
+  );
+
+  builder.copySource(assetManifestSource, builder.context.output);
+
+  /**
+   * Patch deno.json
+   */
+  builder.log.info("Patching deno.json");
+  const denoConfigSource = await buildSources.get("./deno.json");
+
+  if (denoConfigSource) {
+    const denoConfig = await denoConfigSource.readAsJson<DenoConfig>();
+    if (denoConfig) {
+      if (denoConfig.compilerOptions?.jsx) {
+        denoConfig.compilerOptions.jsx = "react-jsx";
       }
-
-      spinner.succeed(BUILD_COMPLETE_MESSAGE);
-    } catch (error) {
-      spinner.fail(error.message);
+      if (denoConfig.importMap) {
+        denoConfig.importMap = "./importMap.server.json";
+      }
+      await denoConfigSource.writeJson(denoConfig);
     }
-  } else {
-    spinner.succeed(BUILD_COMPLETE_MESSAGE);
-    // deno-fmt-ignore
-    console.log(outdent`\n
-      You can now deploy the "${brightBlue(output)}" output directory to a platform of your choice.
-      Instructions for common deployment platforms can be found at ${green('https://ultrajs.dev/docs#deploying')}.\n
-      Alternatively, you can cd into "${brightBlue(output)}" and run: ${underline("deno task start")}
-    `);
   }
 
-  buildContext.graph?.free();
-
-  return finalBuildResult;
-}
-
-export function assertBuildOptions(options: BuildOptions) {
-  try {
-    /**
-     * Assert that we are provided a browserEntrypoint
-     */
-    assert(
-      options.browserEntrypoint,
-      `No "browserEntrypoint" was provided, received "${options.browserEntrypoint}"`,
+  if (resolvedOptions.plugin) {
+    builder.log.info(
+      sprintf(
+        "Starting build plugin %s",
+        crayon.lightBlue(resolvedOptions.plugin.name),
+      ),
     );
-
-    /**
-     * Assert that we are provided a serverEntrypoint
-     */
-    assert(
-      options.serverEntrypoint,
-      `No "serverEntrypoint" was provided, received "${options.serverEntrypoint}"`,
-    );
-
-    /**
-     * Assert that we are provided a serverEntrypoint
-     */
-    assert(
-      options.output,
-      `No "output" was provided, received "${options.output}"`,
-    );
-  } catch (error) {
-    throw new Error(error.message);
+    await resolvedOptions.plugin.onBuild(builder, result);
   }
+
+  builder.log.success("Build complete");
+
+  // deno-fmt-ignore
+  console.log(outdent`\n
+    You can now deploy the "${crayon.lightBlue(output)}" output directory to a platform of your choice.
+    Instructions for common deployment platforms can be found at ${crayon.green('https://ultrajs.dev/docs#deploying')}.\n
+    Alternatively, you can cd into "${crayon.lightBlue(output)}" and run: ${crayon.underline("deno task start")}
+  `);
 }

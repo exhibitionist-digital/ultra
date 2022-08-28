@@ -2,7 +2,7 @@
   "tasks": {
     "dev": "deno run -A --no-check --watch ./server.tsx",
     "build": "deno run -A ./build.ts",
-    "start": "ULTRA_MODE=production deno run -A --no-remote ./server.tsx"
+    "start": "ULTRA_MODE=production deno run -A --no-remote ./server.js"
   },
   "compilerOptions": {
     "jsx": "react-jsxdev",

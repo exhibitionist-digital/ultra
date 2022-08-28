@@ -1,6 +1,14 @@
+import type { Environment } from "https://deno.land/x/hono@v2.1.1/hono.ts";
+import type { Context as HonoContext } from "https://deno.land/x/hono@v2.1.1/mod.ts";
 import type { JscTarget } from "https://esm.sh/@swc/core@1.2.212/types.d.ts";
+export type { Next } from "https://deno.land/x/hono@v2.1.1/mod.ts";
 
 export type Mode = "development" | "production";
+
+export type Context<
+  RequestParamKeyType extends string = string,
+  E extends Partial<Environment> = Environment,
+> = HonoContext<RequestParamKeyType, E>;
 
 export type CreateServerOptions = {
   mode?: Mode;
@@ -15,15 +23,6 @@ export type CreateServerOptions = {
    */
   browserEntrypoint: string;
   compilerOptions?: Omit<CompilerOptions, "mode">;
-};
-
-export type DenoConfig = {
-  tasks?: Record<string, string>;
-  compilerOptions?: {
-    jsx: "preserve" | "react" | "react-jsx" | "react-jsxdev";
-    jsxImportSource?: string;
-  };
-  importMap?: string;
 };
 
 export type ImportMap = {

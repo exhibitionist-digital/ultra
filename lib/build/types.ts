@@ -1,11 +1,13 @@
-import { DenoConfig, ImportMap } from "../types.ts";
-import { ResolvedPaths } from "./resolvePaths.ts";
-import type {
-  Module,
-  ModuleGraph,
-} from "https://deno.land/x/deno_graph@0.32.0/lib/types.d.ts";
+import { Builder, BuildResult } from "./deps.ts";
 
-export type { Module, ModuleGraph };
+export type DenoConfig = {
+  tasks?: Record<string, string>;
+  compilerOptions?: {
+    jsx: "preserve" | "react" | "react-jsx" | "react-jsxdev";
+    jsxImportSource?: string;
+  };
+  importMap?: string;
+};
 
 export type BuildOptions = {
   /**
@@ -30,19 +32,6 @@ export type BuildOptions = {
    */
   exclude?: string[];
   /**
-   * An array of file names relative to the "public" directory that will
-   * be excluded from being hashed and added to the asset-manifest.json
-   *
-   * @default ["robots.txt"]
-   */
-  assetsExclude?: string[];
-  /**
-   * Force reload of dependencies when vendoring.
-   *
-   * @default false
-   */
-  reload?: boolean;
-  /**
    * Output source maps for compiled sources.
    *
    * @default false
@@ -56,39 +45,10 @@ export type BuildOptions = {
   plugin?: BuildPlugin;
 };
 
-export type BuildTarget = "browser" | "server";
-
 export type BuildPlugin = {
   /**
    * The name of the plugin.
    */
   name: string;
-  onPreBuild?: (context: BuildContext) => Promise<void> | void;
-  onBuild: (result: BuildResult) => Promise<void> | void;
-  onPostBuild?: (result: BuildResult) => Promise<void> | void;
-};
-
-export type BuildContext = {
-  paths: ResolvedPaths;
-  files: Map<string, string>;
-  /**
-   * A ModuleGraph representing the graph of dependencies for the browserEntrypoint
-   */
-  graph?: ModuleGraph;
-};
-
-export type BuildResult = {
-  options: BuildOptions;
-  denoConfig: DenoConfig;
-  paths: ResolvedPaths;
-  importMap: {
-    browser: ImportMap;
-    server: ImportMap;
-  };
-  assetManifest: Map<string, string>;
-  /**
-   * A map of files with the source path as the key
-   * and the output path as the value.
-   */
-  files: Map<string, string>;
+  onBuild: (context: Builder, result: BuildResult) => Promise<void> | void;
 };

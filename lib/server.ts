@@ -1,4 +1,4 @@
-import { ULTRA_COMPILER_PATH, ULTRA_STATIC_PATH } from "./constants.ts";
+import { ULTRA_COMPILER_PATH } from "./constants.ts";
 import {
   assert,
   dirname,
@@ -8,7 +8,7 @@ import {
   toFileUrl,
   wait,
 } from "./deps.ts";
-import { serveCompiled } from "./middleware/serveCompiled.ts";
+import { ensureMinDenoVersion } from "./dev/ensureMinDenoVersion.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
@@ -66,21 +66,23 @@ export async function createServer(
         ...options.compilerOptions,
       }),
     );
+
+    server.use(
+      "*",
+      serveStatic({
+        root: resolve(root, "./public"),
+        cache: false,
+      }),
+    );
   } else {
     server.use(
-      "/vendor/*",
-      serveStatic({ root: resolve(root, "./"), cache: mode === "production" }),
+      "*",
+      serveStatic({
+        root: resolve(root, "./"),
+        cache: true,
+      }),
     );
-    server.use(`${ULTRA_STATIC_PATH}/*`, serveCompiled({ root }));
   }
-
-  server.use(
-    "*",
-    serveStatic({
-      root: resolve(root, "./public"),
-      cache: mode === "production",
-    }),
-  );
 
   return server;
 }
@@ -92,6 +94,11 @@ export function createRouter() {
 
 export function assertServerOptions(options: CreateServerOptions) {
   try {
+    /**
+     * Ensure we are running a supported Deno version
+     */
+    options.mode === "development" && ensureMinDenoVersion();
+
     /**
      * Assert that we are provided a valid "mode"
      */
