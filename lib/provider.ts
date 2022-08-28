@@ -55,13 +55,13 @@ function AssetProvider(
 }
 
 function ServerContextProvider(
-  { children, value }: { children: ReactNode; value: Context },
+  { children, value }: { children: ReactNode; value: Context | undefined },
 ) {
   return h(ServerContext.Provider, { value }, children);
 }
 
 type UltraProviderProps = {
-  context: Context;
+  context: Context | undefined;
   assetManifest: Map<string, string>;
 };
 

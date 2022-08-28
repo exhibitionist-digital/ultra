@@ -51,18 +51,32 @@ export class UltraServer extends Hono {
 
   render(
     Component: ReactElement,
+    options?: UltraServerRenderOptions,
+  ) {
+    this.#valid();
+
+    log.debug("Rendering component");
+
+    return renderToStream(Component, undefined, {
+      assetManifest: this.assetManifest,
+      importMap: this.importMap!,
+      bootstrapModules: [this.entrypoint],
+      ...options,
+    });
+  }
+
+  renderWithContext(
+    Component: ReactElement,
     context: Context,
     options?: UltraServerRenderOptions,
   ) {
-    if (!this.importMap) {
-      throw new Error("Import map has not been parsed.");
-    }
+    this.#valid();
 
     log.debug("Rendering component");
 
     return renderToStream(Component, context, {
       assetManifest: this.assetManifest,
-      importMap: this.importMap,
+      importMap: this.importMap!,
       bootstrapModules: [this.entrypoint],
       ...options,
     });
@@ -77,6 +91,12 @@ export class UltraServer extends Hono {
     log.debug(json);
 
     return json;
+  }
+
+  #valid() {
+    if (!this.importMap) {
+      throw new Error("Import map has not been parsed.");
+    }
   }
 
   #prepareEntrypoint(importMap: ImportMap) {

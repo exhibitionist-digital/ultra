@@ -16,7 +16,7 @@ type RenderToStreamOptions = RenderToReadableStreamOptions & {
 
 export async function renderToStream(
   App: JSX.Element,
-  context: Context,
+  context: Context | undefined,
   options: RenderToStreamOptions,
 ) {
   const {
