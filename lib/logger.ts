@@ -58,4 +58,4 @@ class Logger extends logging.Logger {
   }
 }
 
-export const log = new Logger("DEBUG");
+export const log = new Logger("INFO");
