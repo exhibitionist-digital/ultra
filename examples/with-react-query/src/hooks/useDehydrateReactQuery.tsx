@@ -20,3 +20,6 @@ export function useDehydrateReactQuery(queryClient: QueryClient) {
     );
   });
 }
+
+// Note: There are known limitations to `dehydrate`, more info here.
+// https://github.com/TanStack/query/blob/main/docs/reference/hydration.md#limitations
