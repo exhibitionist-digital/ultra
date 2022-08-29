@@ -1,4 +1,4 @@
-import { createBuilder } from "ultra/build.ts";
+import { createBuilder } from "../../build.ts";
 
 const builder = createBuilder({
   browserEntrypoint: import.meta.resolve("./client.tsx"),
@@ -9,6 +9,12 @@ builder.setExcluded([
   "./README.md",
   "./fly.toml",
   "./Dockerfile",
+]);
+
+builder.setHashed([
+  "./src/**/*.+(ts|tsx|js|jsx|css)",
+  "./public/**/*.+(css)",
+  "./client.tsx",
 ]);
 
 // deno-lint-ignore no-unused-vars
