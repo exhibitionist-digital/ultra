@@ -1,4 +1,4 @@
-import { createBuilder } from "../../build.ts";
+import { createBuilder } from "ultra/build.ts";
 
 const builder = createBuilder({
   browserEntrypoint: import.meta.resolve("./client.tsx"),
@@ -7,6 +7,7 @@ const builder = createBuilder({
 
 builder.setExcluded([
   "./README.md",
+  "./content/**/*",
 ]);
 
 // deno-lint-ignore no-unused-vars

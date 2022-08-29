@@ -1,8 +1,7 @@
-import React from "react";
 import { MDXProvider } from "@mdx-js/react";
 import useAsset from "ultra/hooks/use-asset.js";
 
-const Component = React.lazy(() => import(`${location.href}mdx/docs.js`));
+import Docs from "./content/docs.js";
 
 const Image = ({ src, ...props }: any) => {
   return <img src={useAsset(src)} {...props} />;
@@ -24,7 +23,7 @@ export default function App() {
         </head>
         <body>
           <h1>Hello World</h1>
-          <Component />
+          <Docs />
         </body>
       </html>
     </MDXProvider>
