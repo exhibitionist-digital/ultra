@@ -4,13 +4,12 @@
  *
  * node-web-stream-helpers.ts: https://github.com/vercel/next.js/blob/c79b67ccedda1ae6fd9d05cfccf1d2842b94f43f/packages/next/server/node-web-streams-helper.ts
  */
-import {
-  renderToReadableStream,
-  RenderToReadableStreamOptions,
-} from "react-dom/server";
+import * as ReactDOMServer from "react-dom/server";
 import { ImportMap, RenderedReadableStream } from "./types.ts";
 import { nonNullable } from "./utils/non-nullable.ts";
 import { log } from "./logger.ts";
+import { readableStreamFromReader } from "https://deno.land/std@0.153.0/streams/conversion.ts";
+import { StringReader } from "https://deno.land/std@0.153.0/io/readers.ts";
 
 export function encodeText(input: string) {
   return new TextEncoder().encode(input);
@@ -109,10 +108,21 @@ export function renderToInitialStream({
   options,
 }: {
   element: React.ReactElement;
-  options?: RenderToReadableStreamOptions;
+  options?: ReactDOMServer.RenderToReadableStreamOptions;
 }): Promise<RenderedReadableStream> {
+  /**
+   * If the ReactDOM implementation doesn't support streams
+   * eg Preact, just use renderToString
+   */
+  if (!ReactDOMServer["renderToReadableStream"]) {
+    log.warning("react-dom/server doesn't support streams");
+    const html = ReactDOMServer.renderToString(element);
+
+    return Promise.resolve(readableStreamFromReader(new StringReader(html)));
+  }
+
   log.debug("Render to initial stream");
-  return renderToReadableStream(element, options);
+  return ReactDOMServer.renderToReadableStream(element, options);
 }
 
 type ContinueFromInitialStreamOptions = {
