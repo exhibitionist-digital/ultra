@@ -6,7 +6,7 @@ import {
 import { ensureDir, walk } from "https://deno.land/std@0.153.0/fs/mod.ts";
 import { compile } from "https://esm.sh/@mdx-js/mdx@2.1.3/lib/compile.js";
 
-const MDX_MATCH = globToRegExp("./content/**/*.mdx", {
+const MDX_MATCH = globToRegExp("**/*.mdx", {
   extended: true,
   globstar: true,
   caseInsensitive: false,
