@@ -6,6 +6,6 @@
     "react-dom/": "https://esm.sh/react-dom@18.2.0/",
     "twind": "https://esm.sh/twind@0.16.17",
     "twind/sheets": "https://esm.sh/twind@0.16.17/sheets",
-    "ultra/": "https://deno.land/x/ultra@vv2.0.0-alpha.13/"
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.14/"
   }
 }
