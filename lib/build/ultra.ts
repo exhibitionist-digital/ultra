@@ -164,7 +164,10 @@ export class UltraBuilder extends Builder {
     });
 
     const assetManifest = manifest.map(([relative, absolute]) => {
-      return [relative, absolute.replace("./public/", "./")];
+      return [
+        relative.replace("./public/", "./"),
+        absolute.replace("/public/", "/"),
+      ];
     });
 
     const assetManifestSource = new VirtualFile(
