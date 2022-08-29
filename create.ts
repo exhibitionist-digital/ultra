@@ -78,12 +78,12 @@ projectName ? config.projectName = projectName : null;
 
 const typescript = await question(
   "confirm",
-  "Do you want to use typescript?",
+  "Do you want to use TypeScript?",
   true,
 );
 typescript ? config.typescript = true : config.typescript = false;
 
-const style = await question("list", "Select a style library", [
+const style = await question("list", "Select a css / styling library", [
   "Twind",
   "Emotion",
   "Stitches",
@@ -139,13 +139,13 @@ async function execute(context: TaskContext, utils: TaskUtils) {
     fetchFileTask(
       "public/favicon.ico",
       import.meta.resolve(
-        "https://github.com/exhibitionist-digital/ultra/blob/main/examples/basic/public/favicon.ico",
+        "./examples/basic/public/favicon.ico",
       ),
     ),
     fetchFileTask(
       "public/robots.txt",
       import.meta.resolve(
-        "https://github.com/exhibitionist-digital/ultra/blob/main/examples/basic/public/robots.txt",
+        "./examples/basic/public/robots.txt",
       ),
     ),
     createFileTask("public/style.css", styleContent()),
@@ -255,10 +255,11 @@ function importMapContent() {
   return outdent`
   {
      "imports": {
-       "react": "https://esm.sh/react@18.2.0",
-       "react/": "https://esm.sh/react@18.2.0/",
-       "react-dom": "https://esm.sh/react-dom@18.2.0",
-       "react-dom/": "https://esm.sh/react-dom@18.2.0/",
+      "react": "https://esm.sh/react@18.2.0?dev",
+      "react/": "https://esm.sh/react@18.2.0/",
+      "react-dom": "https://esm.sh/react-dom@18.2.0",
+      "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
+      "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
        ${
     insertContent(
       config.twind,
