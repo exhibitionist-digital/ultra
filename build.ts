@@ -84,7 +84,7 @@ export default async function build(
 
   builder.setHashed([
     "./src/**/*.+(ts|tsx|js|jsx|css)",
-    "./public/**/*.+(css|ico|jpg|png|svg|gif|otf|ttf|woff)",
+    "./public/**/*.+(css|ico|webp|avif|jpg|png|svg|gif|otf|ttf|woff)",
     browserEntrypoint,
   ]);
 
@@ -122,7 +122,10 @@ export default async function build(
    */
   builder.log.info("Generating asset-manifest.json");
   const manifest = builder.toManifest(buildSources, {
-    exclude: ["./deno.json", "./importMap*.json"],
+    exclude: [
+      "./deno.json",
+      "./importMap*.json",
+    ],
     prefix: "/",
   });
 
