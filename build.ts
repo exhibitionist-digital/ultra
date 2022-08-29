@@ -112,14 +112,6 @@ export default async function build(
    */
   const result = await builder.build(buildSources);
 
-  for (const entrypoint of result.entrypoints.values()) {
-    const name = entrypoint.config?.vendorOutputDir;
-    await Deno.writeTextFile(
-      join(output, sprintf("importMap%s.json", name ? `.${name}` : "")),
-      JSON.stringify(entrypoint.importMap, null, 2),
-    );
-  }
-
   /**
    * Remove the dev importMap
    */
@@ -130,7 +122,7 @@ export default async function build(
    */
   builder.log.info("Generating asset-manifest.json");
   const manifest = builder.toManifest(buildSources, {
-    exclude: ["./deno.json", "./importMap.json"],
+    exclude: ["./deno.json", "./importMap*.json"],
     prefix: "/",
   });
 
@@ -158,10 +150,8 @@ export default async function build(
       if (denoConfig.compilerOptions?.jsx) {
         denoConfig.compilerOptions.jsx = "react-jsx";
       }
-      if (denoConfig.importMap) {
-        denoConfig.importMap = "./importMap.server.json";
-      }
-      await denoConfigSource.writeJson(denoConfig);
+      denoConfig.importMap = "./importMap.server.json";
+      await denoConfigSource.writeJson(denoConfig, true);
     }
   }
 

@@ -8,6 +8,9 @@ import AssetContext from "./asset-context.js";
  * @param {string} path
  */
 export default function useAsset(path) {
+  // Ensure we are using a relative path
+  path = path.startsWith("/") ? `.${path}` : path;
+
   const context = useContext(AssetContext) || new Map(window.__ULTRA_ASSET_MAP);
   return useMemo(() => context.get(path) || path, [path]);
 }
