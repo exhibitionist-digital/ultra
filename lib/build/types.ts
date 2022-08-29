@@ -1,4 +1,7 @@
-import { Builder, BuildResult } from "./deps.ts";
+import { BuildResult } from "./deps.ts";
+import { UltraBuilder } from "./ultra.ts";
+
+export type { BuildResult };
 
 export type DenoConfig = {
   tasks?: Record<string, string>;
@@ -19,6 +22,11 @@ export type BuildOptions = {
    * The server entrypoint. This should be what handles your SSR and routing.
    */
   serverEntrypoint: string;
+  /**
+   * The relative path to your importMap
+   * @default "./importMap.json"
+   */
+  importMap: string;
   /**
    * The output directory relative to the project root for built files.
    * @default ".ultra"
@@ -50,5 +58,5 @@ export type BuildPlugin = {
    * The name of the plugin.
    */
   name: string;
-  onBuild: (context: Builder, result: BuildResult) => Promise<void> | void;
+  onBuild: (context: UltraBuilder, result: BuildResult) => Promise<void> | void;
 };
