@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import useAsset from "ultra/hooks/use-asset.js";
 import { Link, Route, Switch, useLocation } from "wouter";
 import HomePage from "./components/Home.tsx";
@@ -9,6 +9,7 @@ import { Helmet } from "react-helmet-async";
 
 export default function App() {
   const [pathname] = useLocation();
+  const hasMounted = useRef(false);
 
   useEffect(() => {
     if ("serviceWorker" in navigator && location.hostname == "ultrajs.dev") {
@@ -17,7 +18,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (hasMounted.current) window.scrollTo(0, 0);
+    else hasMounted.current = true;
   }, [pathname]);
 
   const top = () => {

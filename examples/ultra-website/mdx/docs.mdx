@@ -135,9 +135,9 @@ Ultra comes with a build function. What it do:
 
 ---
 
-### [Deployment](#deployment)
+### [Deploying](#deploying)
 
-Use this `Dockerfile`
+Use this `Dockerfile`. It is multi-stage, and will both build and run the production ready app.
 
 ```bash
 FROM denoland/deno:1.25.0 as builder
@@ -149,5 +149,15 @@ FROM denoland/deno:1.25.0
 EXPOSE 8000
 COPY --from=builder /app/.ultra /app
 WORKDIR /app
+CMD ["deno", "task", "start"]
+```
+
+You can modify this as needed, another possible Dockerfile assumes you commit your build artifacts, or deploy locally from built files.
+
+```bash
+FROM denoland/deno:1.25.0
+EXPOSE 8000
+WORKDIR /app
+COPY .ultra /app
 CMD ["deno", "task", "start"]
 ```
