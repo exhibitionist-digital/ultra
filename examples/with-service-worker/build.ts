@@ -1,9 +1,8 @@
-import build from "ultra/build.ts";
+import { createBuilder } from "ultra/build.ts";
 
-await build({
+const builder = createBuilder({
   browserEntrypoint: import.meta.resolve("./client.tsx"),
   serverEntrypoint: import.meta.resolve("./server.tsx"),
-  exclude: ["./README.md", "./build.ts"],
   plugin: {
     name: "service-worker",
     async onBuild(builder, result) {
@@ -35,3 +34,10 @@ await build({
     },
   },
 });
+
+builder.setExcluded([
+  "./README.md",
+]);
+
+// deno-lint-ignore no-unused-vars
+const result = await builder.build();

@@ -7,7 +7,7 @@ import { UltraBuilder } from "./lib/build/ultra.ts";
  */
 export type { BuildPlugin };
 
-export default function createBuilder(options: Partial<BuildOptions>) {
+export function createBuilder(options: Partial<BuildOptions>) {
   return new UltraBuilder(options, (builder) => {
     // deno-fmt-ignore
     console.log(outdent`\n
