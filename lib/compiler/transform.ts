@@ -17,7 +17,7 @@ export async function transformSource(
 ): Promise<{ code: string; map?: string }> {
   const {
     filename,
-    target = "es2020",
+    target = "es2022",
     useBuiltins = true,
     externalHelpers = true,
     dynamicImport = true,
@@ -26,6 +26,7 @@ export async function transformSource(
     development,
     sourceMaps,
     minify,
+    refresh = false,
   } = options;
 
   const transformed = await transform(source, {
@@ -45,6 +46,7 @@ export async function transformSource(
           importSource: jsxImportSource,
           runtime,
           development,
+          refresh,
         },
       },
     },

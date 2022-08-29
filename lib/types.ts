@@ -45,6 +45,7 @@ export type TransformSourceOptions = {
   development?: boolean;
   sourceMaps?: boolean;
   minify?: boolean;
+  refresh?: boolean;
 };
 export type CompilerOptions = {
   mode: Mode;
