@@ -46,6 +46,11 @@ export type BuildOptions = {
    */
   sourceMaps?: boolean;
   /**
+   * The import specifier to resolve jsx-runtime.
+   * @default "react"
+   */
+  jsxImportSource?: string;
+  /**
    * A build plugin to run after completing the initial build
    *
    * @default undefined

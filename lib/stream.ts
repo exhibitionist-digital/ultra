@@ -8,8 +8,7 @@ import * as ReactDOMServer from "react-dom/server";
 import { ImportMap, RenderedReadableStream } from "./types.ts";
 import { nonNullable } from "./utils/non-nullable.ts";
 import { log } from "./logger.ts";
-import { readableStreamFromReader } from "https://deno.land/std@0.153.0/streams/conversion.ts";
-import { StringReader } from "https://deno.land/std@0.153.0/io/readers.ts";
+import { readableStreamFromReader, StringReader } from "./deps.ts";
 
 export function encodeText(input: string) {
   return new TextEncoder().encode(input);

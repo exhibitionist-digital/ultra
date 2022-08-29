@@ -14,6 +14,7 @@ export { sprintf } from "https://deno.land/std@0.153.0/fmt/printf.ts";
 export { assert } from "https://deno.land/std@0.153.0/_util/assert.ts";
 export { encode } from "https://deno.land/std@0.153.0/encoding/base64.ts";
 export { readableStreamFromReader } from "https://deno.land/std@0.153.0/streams/conversion.ts";
+export { StringReader } from "https://deno.land/std@0.153.0/io/readers.ts";
 
 export { wait } from "https://deno.land/x/wait@0.1.12/mod.ts";
 

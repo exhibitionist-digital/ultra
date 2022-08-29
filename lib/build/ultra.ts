@@ -48,6 +48,7 @@ export class UltraBuilder extends Builder {
       logLevel: "INFO",
       compiler: {
         minify: true,
+        jsxImportSource: resolvedOptions.jsxImportSource,
         sourceMaps: resolvedOptions.sourceMaps,
       },
     });
