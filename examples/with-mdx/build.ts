@@ -1,4 +1,4 @@
-import { createBuilder } from "ultra/build.ts";
+import { createBuilder } from "../../build.ts";
 
 const builder = createBuilder({
   browserEntrypoint: import.meta.resolve("./client.tsx"),
