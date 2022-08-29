@@ -40,7 +40,7 @@ export type TransformSourceOptions = {
   useBuiltins?: boolean;
   externalHelpers?: boolean;
   dynamicImport?: boolean;
-  importSource?: string;
+  jsxImportSource?: string;
   runtime?: "automatic" | "classic" | undefined;
   development?: boolean;
   sourceMaps?: boolean;

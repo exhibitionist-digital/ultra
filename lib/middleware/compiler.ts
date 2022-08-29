@@ -19,7 +19,7 @@ export const compiler = (options: CompilerOptions) => {
     useBuiltins,
     externalHelpers,
     dynamicImport,
-    importSource,
+    jsxImportSource,
     runtime,
   } = options;
 
@@ -50,7 +50,7 @@ export const compiler = (options: CompilerOptions) => {
           externalHelpers,
           useBuiltins,
           dynamicImport,
-          importSource,
+          jsxImportSource,
           runtime,
           development: true,
           sourceMaps: true,

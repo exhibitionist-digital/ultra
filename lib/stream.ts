@@ -115,8 +115,16 @@ export function renderToInitialStream({
    * eg Preact, just use renderToString
    */
   if (!ReactDOMServer["renderToReadableStream"]) {
-    log.warning("react-dom/server doesn't support streams");
-    const html = ReactDOMServer.renderToString(element);
+    const reactDomImpl = import.meta.resolve("react-dom/server");
+    log.warning(`${reactDomImpl} doesn't support streams`);
+    let html = ReactDOMServer.renderToString(element);
+
+    if (options?.bootstrapModules) {
+      for (const bootstrapModule of options.bootstrapModules) {
+        html =
+          `${html}<script src="${bootstrapModule}" type="module" async></script>`;
+      }
+    }
 
     return Promise.resolve(readableStreamFromReader(new StringReader(html)));
   }

@@ -50,6 +50,8 @@ export async function renderToStream(
     options,
   });
 
+  console.log(renderStream);
+
   return await continueFromInitialStream(renderStream, {
     generateStaticHTML,
     flushEffectsToHead,

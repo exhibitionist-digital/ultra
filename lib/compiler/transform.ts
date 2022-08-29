@@ -21,7 +21,7 @@ export async function transformSource(
     useBuiltins = true,
     externalHelpers = true,
     dynamicImport = true,
-    importSource = "react",
+    jsxImportSource = "react",
     runtime = "automatic",
     development,
     sourceMaps,
@@ -42,7 +42,7 @@ export async function transformSource(
       transform: {
         react: {
           useBuiltins,
-          importSource,
+          importSource: jsxImportSource,
           runtime,
           development,
         },
