@@ -1,7 +1,7 @@
 import { gte } from "https://deno.land/std@0.150.0/semver/mod.ts";
 import { error } from "./error.ts";
 
-const MIN_DENO_VERSION = "1.25.0";
+const MIN_DENO_VERSION = "1.24.3";
 
 export function ensureMinDenoVersion() {
   // Check that the minimum supported Deno version is being used.
