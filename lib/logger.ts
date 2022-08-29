@@ -4,7 +4,7 @@ function gradient(string: string) {
   const chars: string[] = string.split("");
 
   for (const [index, char] of chars.entries()) {
-    chars[index] = crayon.hsl(305 - (7 * index), 100, 50)(char);
+    chars[index] = crayon.hsl(305 - (7 * index), 100, 70)(char);
   }
 
   return chars.join("");

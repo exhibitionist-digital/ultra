@@ -1,11 +1,12 @@
 {
   "imports": {
-    "react": "https://esm.sh/react@18.2.0",
+    "react": "https://esm.sh/react@18.2.0?dev",
     "react/": "https://esm.sh/react@18.2.0/",
     "react-dom": "https://esm.sh/react-dom@18.2.0",
-    "react-dom/": "https://esm.sh/react-dom@18.2.0/",
+    "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.17/",
     "@emotion/react": "https://esm.sh/@emotion/react@11.10.0?external=react",
-    "@emotion/styled": "https://esm.sh/@emotion/styled@11.10.0?external=react,@emotion/react",
-    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.14/"
+    "@emotion/styled": "https://esm.sh/@emotion/styled@11.10.0?external=react,@emotion/react"
   }
 }

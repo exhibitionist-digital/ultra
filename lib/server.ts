@@ -75,6 +75,20 @@ export async function createServer(
       }),
     );
   } else {
+    /**
+     * Serve assets from "./public" at "/"
+     */
+    server.use(
+      "*",
+      serveStatic({
+        root: resolve(root, "./public"),
+        cache: true,
+      }),
+    );
+
+    /**
+     * Serve anything else static at "/"
+     */
     server.use(
       "*",
       serveStatic({

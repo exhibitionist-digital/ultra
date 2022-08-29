@@ -11,5 +11,11 @@ builder.setExcluded([
   "./Dockerfile",
 ]);
 
+builder.setHashed([
+  "./src/**/*.+(ts|tsx|js|jsx|css)",
+  "./public/**/*.+(css)",
+  "./client.tsx",
+]);
+
 // deno-lint-ignore no-unused-vars
 const result = await builder.build();
