@@ -40,8 +40,8 @@ so 2018 just saying that word).
 - Overhaul of internal source code
 - Updated Deno Deploy support
 
-\*\* _Examples include (but not limited to) `react-query` `twind` `emotion`
-`stiches` `react-router` `wouter`_ **@__@**
+\*\* _Examples include (but not limited to) `react-query` `twind` `stitches`
+`react-router` `wouter` `mdx`_ **@__@**
 
 **Does Ultra _'ship js'_?**
 
