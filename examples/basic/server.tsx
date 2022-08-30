@@ -7,6 +7,8 @@ const server = await createServer({
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 
+console.log(import.meta.url);
+
 server.get("*", async (context) => {
   /**
    * Render the request

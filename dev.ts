@@ -8,7 +8,7 @@ const cwd = join(Deno.cwd(), SEP);
 const watcher = Deno.watchFs(cwd);
 const mainModule = new URL(Deno.args[0], toFileUrl(cwd)).href;
 
-const mainWorker = new Worker(mainModule, {
+let mainWorker = new Worker(mainModule, {
   type: "module",
   name: "main",
 });
@@ -18,6 +18,14 @@ for await (const event of watcher) {
     mainWorker.postMessage({
       type: "reload",
       paths: [mainModule, ...event.paths],
+    });
+
+    queueMicrotask(() => {
+      mainWorker.terminate();
+      mainWorker = new Worker(mainModule + `?t=${new Date().getTime()}`, {
+        type: "module",
+        name: "main",
+      });
     });
   }
 }

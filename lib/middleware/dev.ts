@@ -6,12 +6,8 @@ export async function dev(context: Context, next: Next) {
   } else {
     const { socket: ws, response } = Deno.upgradeWebSocket(context.req);
 
-    globalThis.onmessage = async (event) => {
+    globalThis.onmessage = (event) => {
       const data: { type: string; paths: string[] } = event.data;
-      for (const path of data.paths) {
-        console.log("import", path);
-        await import(path);
-      }
       console.log("websocket send");
       ws.send(JSON.stringify(data));
     };
