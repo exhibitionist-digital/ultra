@@ -13,7 +13,7 @@ type UltraServerRenderOptions = {
 
 export class UltraServer extends Hono {
   public importMap: ImportMap | undefined;
-  public assetManifest: Map<string, string> = new Map();
+  public assetManifest: Map<string, string> | undefined;
 
   constructor(
     public root: string,
@@ -37,14 +37,14 @@ export class UltraServer extends Hono {
       : undefined;
 
     /**
-     * Parse the provided asset manifest
+     * Parse the provided asset manifest if we have an entrypoint
      */
     const assetManifest: [string, string][] | undefined =
-      this.mode === "production"
+      this.mode === "production" && this.entrypoint
         ? await this.#parseJsonFile(this.assetManifestPath)
         : undefined;
 
-    this.assetManifest = assetManifest ? new Map(assetManifest) : new Map();
+    this.assetManifest = assetManifest ? new Map(assetManifest) : undefined;
 
     /**
      * Prepare the entrypoint
