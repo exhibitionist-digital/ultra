@@ -105,14 +105,26 @@ export class UltraBuilder extends Builder {
      */
     await this.#patchDenoJsonConfig(buildSources);
 
+    /**
+     * If a build plugin is provided, execute it's build hooks
+     */
     if (this.options.plugin) {
-      this.log.info(
-        sprintf(
-          "Starting build plugin %s",
-          crayon.lightBlue(this.options.plugin.name),
-        ),
-      );
-      await this.options.plugin.onBuild(this, result);
+      const plugin = this.options.plugin;
+      try {
+        this.log.info(
+          sprintf(
+            "Starting build plugin %s",
+            crayon.lightBlue(plugin.name),
+          ),
+        );
+        await plugin.onBuild(this, result);
+      } catch (error) {
+        this.log.error(
+          sprintf("Build plugin %s failed", crayon.lightBlue(plugin.name)),
+        );
+        this.log.error(error);
+        Deno.exit(1);
+      }
     }
 
     this.log.success("Build complete");
@@ -143,6 +155,10 @@ export class UltraBuilder extends Builder {
   }
 
   #initExcluded() {
+    /**
+     * Deno.mainModule will most definitely be a build.ts file in the project
+     * We always exclude this.
+     */
     const mainModule = this.makeRelative(Deno.mainModule);
 
     this.setExcluded([
