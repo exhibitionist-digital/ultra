@@ -14,6 +14,7 @@ server.get("*", async (context) => {
    */
   const result = await server.render(<App request={context.req} />, {
     generateStaticHTML: true,
+    disableHydration: true,
   });
 
   return context.body(result, 200, {
