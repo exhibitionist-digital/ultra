@@ -87,7 +87,8 @@ export class UltraServer extends Hono {
   }
 
   #valid() {
-    if (!this.importMap) {
+    // Check we have an importMap if we we're provided an entrypoint
+    if (!this.importMap && this.entrypoint) {
       throw new Error("Import map has not been parsed.");
     }
   }
