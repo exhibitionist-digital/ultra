@@ -19,7 +19,7 @@ export class UltraServer extends Hono {
     public mode: Mode,
     public importMapPath: string,
     public assetManifestPath: string,
-    public entrypoint: string,
+    public entrypoint?: string,
   ) {
     super();
     this.use("*", logger((message) => log.info(message)));
@@ -60,7 +60,7 @@ export class UltraServer extends Hono {
     return renderToStream(Component, undefined, {
       assetManifest: this.assetManifest,
       importMap: this.importMap!,
-      bootstrapModules: [this.entrypoint],
+      bootstrapModules: this.entrypoint ? [this.entrypoint] : undefined,
       ...options,
     });
   }
@@ -77,7 +77,7 @@ export class UltraServer extends Hono {
     return renderToStream(Component, context, {
       assetManifest: this.assetManifest,
       importMap: this.importMap!,
-      bootstrapModules: [this.entrypoint],
+      bootstrapModules: this.entrypoint ? [this.entrypoint] : undefined,
       ...options,
     });
   }
@@ -100,7 +100,13 @@ export class UltraServer extends Hono {
   }
 
   #prepareEntrypoint(importMap: ImportMap) {
+    if (!this.entrypoint) {
+      log.debug("No entrypoint provided, hydration disabled.");
+      return this.entrypoint;
+    }
+
     log.debug(sprintf("Resolving entrypoint: %s", this.entrypoint));
+
     let entrypointSpecifier = `./${
       relative(this.root, fromFileUrl(this.entrypoint))
     }`;
