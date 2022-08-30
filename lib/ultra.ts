@@ -7,6 +7,7 @@ import { toUltraUrl } from "./utils/url.ts";
 
 type UltraServerRenderOptions = {
   generateStaticHTML?: boolean;
+  disableHydration?: boolean;
   flushEffectsToHead?: boolean;
 };
 
@@ -53,25 +54,15 @@ export class UltraServer extends Hono {
     Component: ReactElement,
     options?: UltraServerRenderOptions,
   ) {
-    this.#valid();
-
-    log.debug("Rendering component");
-
-    return renderToStream(Component, undefined, {
-      assetManifest: this.assetManifest,
-      importMap: this.importMap!,
-      bootstrapModules: this.entrypoint ? [this.entrypoint] : undefined,
-      ...options,
-    });
+    return this.renderWithContext(Component, undefined, options);
   }
 
   renderWithContext(
     Component: ReactElement,
-    context: Context,
+    context: Context | undefined,
     options?: UltraServerRenderOptions,
   ) {
     this.#valid();
-
     log.debug("Rendering component");
 
     return renderToStream(Component, context, {

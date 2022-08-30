@@ -12,6 +12,7 @@ type RenderToStreamOptions = RenderToReadableStreamOptions & {
   assetManifest: Map<string, string>;
   generateStaticHTML?: boolean;
   flushEffectsToHead?: boolean;
+  disableHydration?: boolean;
 };
 
 export async function renderToStream(
@@ -21,6 +22,7 @@ export async function renderToStream(
 ) {
   const {
     generateStaticHTML = false,
+    disableHydration = false,
     flushEffectsToHead = true,
     importMap,
     assetManifest,
@@ -30,9 +32,11 @@ export async function renderToStream(
    * For each bootstrapModule we convert from a file url (file:///project/client.tsx) to
    * a path string (/project/client.tsx).
    */
-  options.bootstrapModules = options?.bootstrapModules?.map(
-    (url) => url.startsWith("file://") ? fromFileUrl(url) : url,
-  );
+  options.bootstrapModules = disableHydration
+    ? []
+    : options?.bootstrapModules?.map(
+      (url) => url.startsWith("file://") ? fromFileUrl(url) : url,
+    );
 
   options.onError = (error) => {
     log.error(error);
@@ -52,6 +56,7 @@ export async function renderToStream(
 
   return await continueFromInitialStream(renderStream, {
     generateStaticHTML,
+    disableHydration,
     flushEffectsToHead,
     flushEffectHandler,
     importMap,

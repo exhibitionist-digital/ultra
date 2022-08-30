@@ -134,6 +134,7 @@ export function renderToInitialStream({
 
 type ContinueFromInitialStreamOptions = {
   generateStaticHTML: boolean;
+  disableHydration: boolean;
   importMap?: ImportMap;
   flushEffectHandler?: () => string;
   flushEffectsToHead: boolean;
@@ -146,6 +147,7 @@ export async function continueFromInitialStream(
   const {
     importMap,
     generateStaticHTML,
+    disableHydration,
     flushEffectHandler,
     flushEffectsToHead,
   } = options;
@@ -168,7 +170,9 @@ export async function continueFromInitialStream(
      * Inject the provided importMap to the head, before any of the other
      * transform streams below.
      */
-    importMap ? createImportMapInjectionStream(importMap) : null,
+    importMap && disableHydration === false
+      ? createImportMapInjectionStream(importMap)
+      : null,
     /**
      * Just flush the effects to the queue if flushEffectsToHead is false
      */
