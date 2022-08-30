@@ -31,6 +31,7 @@ export async function createServer(
     resolvedOptions as Required<CreateServerOptions>;
 
   const root = Deno.cwd();
+  const publicRoot = resolvedOptions.public || root;
   const importMapPath = resolveImportMapPath(mode, root, options.importMapPath);
   const assetManifestPath =
     toFileUrl(resolve(root, "asset-manifest.json")).href;
@@ -62,7 +63,7 @@ export async function createServer(
     server.use(
       "*",
       serveStatic({
-        root: resolve(root, "./public"),
+        root: resolve(publicRoot, "./public"),
         cache: false,
       }),
     );
@@ -73,7 +74,7 @@ export async function createServer(
     server.use(
       "*",
       serveStatic({
-        root: resolve(root, "./public"),
+        root: resolve(publicRoot, "./public"),
         cache: true,
       }),
     );

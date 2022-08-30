@@ -13,6 +13,10 @@ export type Context<
 export type CreateServerOptions = {
   mode?: Mode;
   /**
+   * The path to the public folder.
+   */
+  public?: string;
+  /**
    * The path to your ImportMap. Ultra will inject this into the head
    * of your rendered HTML markup.
    */
