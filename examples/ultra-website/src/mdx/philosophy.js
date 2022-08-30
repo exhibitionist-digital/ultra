@@ -14,10 +14,12 @@ function _createMdxContent(props) {
     h3: "h3",
     pre: "pre",
     code: "code",
-    h4: "h4"
+    h4: "h4",
+    span: "span"
   }, _provideComponents(), props.components);
   return _jsxs(_Fragment, {
     children: [_jsx(_components.h1, {
+      id: "philosophy",
       children: "philosophy"
     }), "\n", _jsxs(_components.p, {
       children: [_jsx(_components.strong, {
@@ -44,11 +46,13 @@ function _createMdxContent(props) {
         children: "Utilise service workers to cache your ESM source code"
       }), "\n"]
     }), "\n", _jsx(_components.hr, {}), "\n", _jsx(_components.h2, {
+      id: "give-us-esm-or-give-us-death",
       children: _jsx(_components.a, {
         href: "#give-us-esm-or-give-us-death",
         children: "Give us ESM or give us death"
       })
     }), "\n", _jsx(_components.hr, {}), "\n", _jsx(_components.h3, {
+      id: "breakdown-of-a-basic-ultra-project",
       children: _jsxs(_components.a, {
         href: "#breakdown-of-a-basic-ultra-project",
         children: ["Breakdown of a basic ", _jsx(_components.strong, {
@@ -61,32 +65,229 @@ function _createMdxContent(props) {
       }), " project."]
     }), "\n", _jsx(_components.pre, {
       children: _jsx(_components.code, {
-        className: "language-sh",
+        className: "hljs language-sh",
         children: "deno run -A -r https://deno.land/x/ultra/init.ts\n"
       })
     }), "\n", _jsx(_components.h4, {
+      id: "importmapjson",
       children: _jsx(_components.a, {
         href: "#importmapjson",
         children: "importMap.json"
       })
     }), "\n", _jsx(_components.pre, {
-      children: _jsx(_components.code, {
-        className: "language-json",
-        children: "{\n  \"imports\": {\n    \"react\": \"https://esm.sh/react@18.2.0\",\n    \"react/\": \"https://esm.sh/react@18.2.0/\",\n    \"react-dom\": \"https://esm.sh/react-dom@18.2.0\",\n    \"react-dom/\": \"https://esm.sh/react-dom@18.2.0/\",\n    \"ultra/\": \"https://deno.land/x/ultra@v2.0.0-alpha.6/\"\n  }\n}\n"
+      children: _jsxs(_components.code, {
+        className: "hljs language-json",
+        children: [_jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: "{"
+        }), "\n  ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"imports\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: "{"
+        }), "\n    ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"react\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"https://esm.sh/react@18.2.0\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ","
+        }), "\n    ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"react/\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"https://esm.sh/react@18.2.0/\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ","
+        }), "\n    ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"react-dom\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"https://esm.sh/react-dom@18.2.0\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ","
+        }), "\n    ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"react-dom/\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"https://esm.sh/react-dom@18.2.0/\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ","
+        }), "\n    ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"ultra/\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"https://deno.land/x/ultra@v2.0.0-alpha.6/\""
+        }), "\n  ", _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: "}"
+        }), "\n", _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: "}"
+        }), "\n"]
       })
     }), "\n", _jsxs(_components.p, {
       children: ["Atm, these are the only deps required to run an ", _jsx(_components.strong, {
         children: "Ultra"
       }), " project. Simple, I like it."]
     }), "\n", _jsx(_components.h4, {
+      id: "servertsx",
       children: _jsx(_components.a, {
         href: "#servertsx",
         children: "server.tsx"
       })
     }), "\n", _jsx(_components.pre, {
-      children: _jsx(_components.code, {
-        className: "language-js",
-        children: "import { serve } from \"https://deno.land/std@0.153.0/http/server.ts\";\nimport { createServer } from \"ultra/server.ts\";\nimport App from \"./src/app.tsx\";\n\nconst server = await createServer({\n  importMapPath: import.meta.resolve(\"./importMap.json\"),\n  browserEntrypoint: import.meta.resolve(\"./client.tsx\"),\n});\n\nserver.get(\"*\", async (context) => {\n  /**\n   * Render the request\n   */\n  const result = await server.render(<App />);\n\n  return context.body(result, 200, {\n    \"content-type\": \"text/html\",\n  });\n});\n\nserve(server.fetch);\n"
+      children: _jsxs(_components.code, {
+        className: "hljs language-js",
+        children: [_jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "import"
+        }), " { serve } ", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "from"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"https://deno.land/std@0.153.0/http/server.ts\""
+        }), ";\n", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "import"
+        }), " { createServer } ", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "from"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"ultra/server.ts\""
+        }), ";\n", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "import"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-title class_",
+          children: "App"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "from"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"./src/app.tsx\""
+        }), ";\n\n", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "const"
+        }), " server = ", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "await"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-title function_",
+          children: "createServer"
+        }), "({\n  ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "importMapPath"
+        }), ": ", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "import"
+        }), ".", _jsx(_components.span, {
+          className: "hljs-property",
+          children: "meta"
+        }), ".", _jsx(_components.span, {
+          className: "hljs-title function_",
+          children: "resolve"
+        }), "(", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"./importMap.json\""
+        }), "),\n  ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "browserEntrypoint"
+        }), ": ", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "import"
+        }), ".", _jsx(_components.span, {
+          className: "hljs-property",
+          children: "meta"
+        }), ".", _jsx(_components.span, {
+          className: "hljs-title function_",
+          children: "resolve"
+        }), "(", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"./client.tsx\""
+        }), "),\n});\n\nserver.", _jsx(_components.span, {
+          className: "hljs-title function_",
+          children: "get"
+        }), "(", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"*\""
+        }), ", ", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "async"
+        }), " (context) => {\n  ", _jsx(_components.span, {
+          className: "hljs-comment",
+          children: "/**\n   * Render the request\n   */"
+        }), "\n  ", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "const"
+        }), " result = ", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "await"
+        }), " server.", _jsx(_components.span, {
+          className: "hljs-title function_",
+          children: "render"
+        }), "(", _jsx(_components.span, {
+          className: "xml",
+          children: _jsxs(_components.span, {
+            className: "hljs-tag",
+            children: ["<", _jsx(_components.span, {
+              className: "hljs-name",
+              children: "App"
+            }), " />"]
+          })
+        }), ");\n\n  ", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "return"
+        }), " context.", _jsx(_components.span, {
+          className: "hljs-title function_",
+          children: "body"
+        }), "(result, ", _jsx(_components.span, {
+          className: "hljs-number",
+          children: "200"
+        }), ", {\n    ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"content-type\""
+        }), ": ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"text/html\""
+        }), ",\n  });\n});\n\n", _jsx(_components.span, {
+          className: "hljs-title function_",
+          children: "serve"
+        }), "(server.", _jsx(_components.span, {
+          className: "hljs-property",
+          children: "fetch"
+        }), ");\n"]
       })
     }), "\n", _jsx(_components.p, {
       children: "This file controls how your app will render on the server. It's using Deno's std http server, you can probably use another one if you want."
@@ -102,18 +303,56 @@ function _createMdxContent(props) {
         children: "this example"
       }), "."]
     }), "\n", _jsx(_components.h4, {
+      id: "clienttsx",
       children: _jsx(_components.a, {
         href: "#clienttsx",
         children: "client.tsx"
       })
     }), "\n", _jsx(_components.pre, {
-      children: _jsx(_components.code, {
-        className: "language-js",
-        children: "import { hydrateRoot } from \"react-dom/client\";\nimport App from \"./src/app.tsx\";\n\nhydrateRoot(document, <App />);  \n"
+      children: _jsxs(_components.code, {
+        className: "hljs language-js",
+        children: [_jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "import"
+        }), " { hydrateRoot } ", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "from"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"react-dom/client\""
+        }), ";\n", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "import"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-title class_",
+          children: "App"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-keyword",
+          children: "from"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"./src/app.tsx\""
+        }), ";\n\n", _jsx(_components.span, {
+          className: "hljs-title function_",
+          children: "hydrateRoot"
+        }), "(", _jsx(_components.span, {
+          className: "hljs-variable language_",
+          children: "document"
+        }), ", ", _jsx(_components.span, {
+          className: "xml",
+          children: _jsxs(_components.span, {
+            className: "hljs-tag",
+            children: ["<", _jsx(_components.span, {
+              className: "hljs-name",
+              children: "App"
+            }), " />"]
+          })
+        }), ");  \n"]
       })
     }), "\n", _jsx(_components.p, {
       children: "This should look familiar to most... This is your client entrypoint, and what is used for client rendering. It can be customised if needed."
     }), "\n", _jsx(_components.h4, {
+      id: "src",
       children: _jsx(_components.a, {
         href: "#src",
         children: "src/"
@@ -121,6 +360,7 @@ function _createMdxContent(props) {
     }), "\n", _jsx(_components.p, {
       children: "Put your source code here."
     }), "\n", _jsx(_components.h4, {
+      id: "public",
       children: _jsx(_components.a, {
         href: "#public",
         children: "public/"
@@ -128,14 +368,114 @@ function _createMdxContent(props) {
     }), "\n", _jsx(_components.p, {
       children: "Static files go here. When building for production, these files will be versioned."
     }), "\n", _jsx(_components.h4, {
+      id: "denojson",
       children: _jsx(_components.a, {
         href: "#denojson",
         children: "deno.json"
       })
     }), "\n", _jsx(_components.pre, {
-      children: _jsx(_components.code, {
-        className: "language-json",
-        children: "{\n  \"tasks\": {\n    \"dev\": \"deno run -A --no-check --watch ./server.tsx\",\n    \"build\": \"deno run -A ./build.ts\",\n    \"start\": \"ULTRA_MODE=production deno run -A --no-remote ./server.js\"\n  },\n  \"compilerOptions\": {\n    \"jsx\": \"react-jsxdev\",\n    \"jsxImportSource\": \"react\"\n  },\n  \"importMap\": \"./importMap.json\"\n}\n"
+      children: _jsxs(_components.code, {
+        className: "hljs language-json",
+        children: [_jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: "{"
+        }), "\n  ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"tasks\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: "{"
+        }), "\n    ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"dev\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"deno run -A --no-check --watch ./server.tsx\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ","
+        }), "\n    ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"build\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"deno run -A ./build.ts\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ","
+        }), "\n    ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"start\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"ULTRA_MODE=production deno run -A --no-remote ./server.js\""
+        }), "\n  ", _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: "}"
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ","
+        }), "\n  ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"compilerOptions\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: "{"
+        }), "\n    ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"jsx\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"react-jsxdev\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ","
+        }), "\n    ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"jsxImportSource\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"react\""
+        }), "\n  ", _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: "}"
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ","
+        }), "\n  ", _jsx(_components.span, {
+          className: "hljs-attr",
+          children: "\"importMap\""
+        }), _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: ":"
+        }), " ", _jsx(_components.span, {
+          className: "hljs-string",
+          children: "\"./importMap.json\""
+        }), "\n", _jsx(_components.span, {
+          className: "hljs-punctuation",
+          children: "}"
+        }), "\n"]
       })
     }), "\n", _jsx(_components.p, {
       children: "We use Deno's native task runner/config file."

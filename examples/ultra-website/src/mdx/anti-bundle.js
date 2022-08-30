@@ -12,6 +12,7 @@ function _createMdxContent(props) {
   }, _provideComponents(), props.components);
   return _jsxs(_Fragment, {
     children: [_jsxs(_components.h3, {
+      id: "the-quest-for-zero-legacy",
       children: ["The Quest for ", _jsx("span", {
         children: "Zero-Legacy"
       })]
