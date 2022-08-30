@@ -16,8 +16,10 @@ export type BuildOptions = {
   /**
    * The browser entrypoint. This is what initially gets sent with the server
    * rendered HTML markup. This should be what hydrates your React application.
+   *
+   * This is optional, not providing it will allow you to bypass hydration.
    */
-  browserEntrypoint: string;
+  browserEntrypoint?: string;
   /**
    * The server entrypoint. This should be what handles your SSR and routing.
    */
