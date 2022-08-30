@@ -5,24 +5,28 @@ function LiveReload() {
     <script
       dangerouslySetInnerHTML={{
         __html: `
-          console.log("Connecting to dev server...");
-          try {
+          function connect() {
+            console.log("Connecting to dev server...");
             const ws = new WebSocket("ws://localhost:8000");
+
             ws.onopen = () => {
               console.log('Connected')
             };
+            
             ws.onmessage = (message) => {
               const data = message?.data ? JSON.parse(message.data) : undefined;
               if (data) {
                 console.log(data)
+                window.location.reload()
               }
             };
-            ws.onclose = () => {
-              console.log("Disconnected from dev server...");
+            
+            ws.onerror = () => {
+              console.error('Socket encountered error: ', err.message, 'Closing socket');
+              ws.close();
             }
-          } catch (error) {
-            console.error(error)
           }
+          connect()
         `,
       }}
     >
