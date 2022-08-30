@@ -1,8 +1,9 @@
-import { FileBag } from "https://deno.land/x/mesozoic@v1.0.0-alpha.29/mod.ts";
 import {
   Builder,
   crayon,
   deepMerge,
+  EntrypointConfig,
+  FileBag,
   fromFileUrl,
   join,
   relative,
@@ -10,6 +11,7 @@ import {
   sprintf,
   VirtualFile,
 } from "./deps.ts";
+
 import type { BuildOptions, BuildResult, DenoConfig } from "./types.ts";
 
 const defaultOptions: Omit<
@@ -24,7 +26,7 @@ const defaultOptions: Omit<
 export class UltraBuilder extends Builder {
   public options: BuildOptions;
 
-  public browserEntrypoint: string;
+  public browserEntrypoint?: string;
   public serverEntrypoint: string;
 
   constructor(
@@ -54,7 +56,9 @@ export class UltraBuilder extends Builder {
     });
 
     this.options = resolvedOptions;
-    this.browserEntrypoint = this.makeRelative(this.options.browserEntrypoint);
+    this.browserEntrypoint = this.options.browserEntrypoint
+      ? this.makeRelative(this.options.browserEntrypoint)
+      : undefined;
     this.serverEntrypoint = this.makeRelative(this.options.serverEntrypoint);
 
     this.initEntrypoints();
@@ -63,16 +67,21 @@ export class UltraBuilder extends Builder {
   }
 
   initEntrypoints() {
-    this.setEntrypoints({
-      [this.browserEntrypoint]: {
+    const entrypoints: Record<string, EntrypointConfig> = {};
+
+    if (this.browserEntrypoint) {
+      entrypoints[this.browserEntrypoint] = {
         vendorOutputDir: "browser",
         target: "browser",
-      },
-      [this.serverEntrypoint]: {
-        vendorOutputDir: "server",
-        target: "deno",
-      },
-    });
+      };
+    }
+
+    entrypoints[this.serverEntrypoint] = {
+      vendorOutputDir: "server",
+      target: "deno",
+    };
+
+    this.setEntrypoints(entrypoints);
   }
 
   initExcluded() {
@@ -85,11 +94,16 @@ export class UltraBuilder extends Builder {
   }
 
   initHashed() {
-    this.setHashed([
+    const hashed = [
       "./src/**/*.+(ts|tsx|js|jsx|css)",
       "./public/**/*.+(css|ico|webp|avif|jpg|png|svg|gif|otf|ttf|woff)",
-      this.browserEntrypoint,
-    ]);
+    ];
+
+    if (this.browserEntrypoint) {
+      hashed.push(this.browserEntrypoint);
+    }
+
+    this.setHashed(hashed);
 
     this.setCompiled([
       "./**/*.+(ts|tsx|js|jsx)",

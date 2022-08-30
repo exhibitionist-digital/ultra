@@ -21,7 +21,7 @@ export type CreateServerOptions = {
    * The browser entrypoint. This is what initially gets sent with the server
    * rendered HTML markup. This should be what hydrates your React application.
    */
-  browserEntrypoint: string;
+  browserEntrypoint?: string;
   compilerOptions?: Omit<CompilerOptions, "mode">;
 };
 

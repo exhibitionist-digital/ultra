@@ -1,13 +1,5 @@
 import { ULTRA_COMPILER_PATH } from "./constants.ts";
-import {
-  assert,
-  dirname,
-  fromFileUrl,
-  Hono,
-  resolve,
-  toFileUrl,
-  wait,
-} from "./deps.ts";
+import { assert, Hono, resolve, toFileUrl, wait } from "./deps.ts";
 import { ensureMinDenoVersion } from "./dev/ensureMinDenoVersion.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
@@ -38,7 +30,7 @@ export async function createServer(
   const { mode = "development", browserEntrypoint } =
     resolvedOptions as Required<CreateServerOptions>;
 
-  const root = fromFileUrl(dirname(browserEntrypoint));
+  const root = Deno.cwd();
   const importMapPath = resolveImportMapPath(mode, root, options.importMapPath);
   const assetManifestPath =
     toFileUrl(resolve(root, "asset-manifest.json")).href;
