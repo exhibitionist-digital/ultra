@@ -3,7 +3,9 @@ import useAsset from "ultra/hooks/use-asset.js";
 
 import Docs from "./content/docs.js";
 
-const Image = ({ src, ...props }: any) => {
+const Image = (
+  { src, ...props }: React.ImgHTMLAttributes<HTMLImageElement>,
+) => {
   return <img src={useAsset(src)} {...props} />;
 };
 
