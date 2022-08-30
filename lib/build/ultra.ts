@@ -11,6 +11,7 @@ import {
   sprintf,
   VirtualFile,
 } from "./deps.ts";
+import { Logger } from "../logger.ts";
 import type { BuildOptions, BuildResult, DenoConfig } from "./types.ts";
 
 type DefaultBuildOptions = Omit<
@@ -55,6 +56,9 @@ export class UltraBuilder extends Builder {
         sourceMaps: resolvedOptions.sourceMaps,
       },
     });
+
+    // Override the logger
+    this.log = new Logger("INFO");
 
     this.options = resolvedOptions;
     this.browserEntrypoint = this.options.browserEntrypoint

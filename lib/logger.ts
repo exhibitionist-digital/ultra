@@ -32,7 +32,7 @@ function formatLevel(level: logging.LevelName) {
   }
 }
 
-class Logger extends logging.Logger {
+export class Logger extends logging.Logger {
   /**
    * @param levelName
    */
@@ -55,6 +55,10 @@ class Logger extends logging.Logger {
         }),
       ],
     });
+  }
+
+  success(message: string) {
+    return this.info(crayon.green(`✔ ${message}`));
   }
 }
 
