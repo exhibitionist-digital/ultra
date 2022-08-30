@@ -19,7 +19,7 @@ export { StringReader } from "https://deno.land/std@0.153.0/io/readers.ts";
 
 export { wait } from "https://deno.land/x/wait@0.1.12/mod.ts";
 
-export { Hono } from "https://deno.land/x/hono@v2.1.1/mod.ts";
-export { getFilePath } from "https://deno.land/x/hono@v2.1.1/utils/filepath.ts";
-export { getMimeType } from "https://deno.land/x/hono@v2.1.1/utils/mime.ts";
-export { logger } from "https://deno.land/x/hono@v2.1.1/middleware.ts";
+export { Hono } from "https://deno.land/x/hono@v2.1.2/mod.ts";
+export { getFilePath } from "https://deno.land/x/hono@v2.1.2/utils/filepath.ts";
+export { getMimeType } from "https://deno.land/x/hono@v2.1.2/utils/mime.ts";
+export { logger } from "https://deno.land/x/hono@v2.1.2/middleware.ts";
