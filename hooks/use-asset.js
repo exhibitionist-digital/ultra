@@ -14,6 +14,8 @@ export default function useAsset(path) {
   // Ensure we are using a relative path
   path = path.startsWith("/") ? `.${path}` : path;
 
-  const context = useContext(AssetContext) || new Map(window.__ULTRA_ASSET_MAP);
+  const context = useContext(AssetContext) ||
+    new Map(globalThis.__ULTRA_ASSET_MAP);
+
   return useMemo(() => context.get(path) || path, [path]);
 }

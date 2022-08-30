@@ -48,6 +48,7 @@ export async function createServer(
   if (mode === "development") {
     const spinner = wait("Loading compiler").start();
     const { compiler } = await import("./middleware/compiler.ts");
+    const { dev } = await import("./middleware/dev.ts");
     spinner.stop();
 
     server.use(
@@ -66,6 +67,8 @@ export async function createServer(
         cache: false,
       }),
     );
+
+    server.use("*", dev);
   } else {
     /**
      * Serve assets from "./public" at "/"

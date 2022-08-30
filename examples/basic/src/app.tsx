@@ -1,7 +1,36 @@
 import useAsset from "ultra/hooks/use-asset.js";
 
+function LiveReload() {
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          console.log("Connecting to dev server...");
+          try {
+            const ws = new WebSocket("ws://localhost:8000");
+            ws.onopen = () => {
+              console.log('Connected')
+            };
+            ws.onmessage = (message) => {
+              const data = message?.data ? JSON.parse(message.data) : undefined;
+              if (data) {
+                console.log(data)
+              }
+            };
+            ws.onclose = () => {
+              console.log("Disconnected from dev server...");
+            }
+          } catch (error) {
+            console.error(error)
+          }
+        `,
+      }}
+    >
+    </script>
+  );
+}
+
 export default function App() {
-  console.log("Hello world!");
   return (
     <html lang="en">
       <head>
@@ -34,6 +63,7 @@ export default function App() {
             libraries.
           </p>
         </main>
+        <LiveReload />
       </body>
     </html>
   );
