@@ -102,9 +102,7 @@ export class UltraBuilder extends Builder {
     /**
      * Generate ./asset-manifest.json
      */
-    if (this.browserEntrypoint) {
-      await this.#generateAssetManifest(buildSources);
-    }
+    await this.#generateAssetManifest(buildSources);
 
     /**
      * Patch deno.json
