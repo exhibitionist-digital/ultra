@@ -1,5 +1,4 @@
-import { gte } from "https://deno.land/std@0.150.0/semver/mod.ts";
-import { error } from "./error.ts";
+import { gte, log } from "../deps.ts";
 
 const MIN_DENO_VERSION = "1.24.3";
 
@@ -16,6 +15,7 @@ export function ensureMinDenoVersion() {
       message += "To update, run: `deno upgrade`\n";
     }
 
-    error(message);
+    log.error(message);
+    Deno.exit(1);
   }
 }
