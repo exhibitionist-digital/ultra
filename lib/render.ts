@@ -8,7 +8,7 @@ import { continueFromInitialStream, renderToInitialStream } from "./stream.ts";
 import { ImportMap } from "./types.ts";
 
 type RenderToStreamOptions = RenderToReadableStreamOptions & {
-  importMap: ImportMap;
+  importMap: ImportMap | undefined;
   assetManifest: Map<string, string>;
   generateStaticHTML?: boolean;
   flushEffectsToHead?: boolean;
