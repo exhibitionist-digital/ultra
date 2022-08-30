@@ -21,7 +21,7 @@ export default function HomePage() {
           </p>
           <pre>
             <code>
-            deno run -A -r https://deno.land/x/ultra/init.ts
+            deno run -A -r https://deno.land/x/ultra/create.ts
             </code>
           </pre>
 
