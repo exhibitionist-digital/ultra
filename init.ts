@@ -345,8 +345,12 @@ function dialectExtension(dialect: Dialect, isJsx?: boolean) {
 
 if (import.meta.main) {
   // deno-fmt-ignore
-  console.log(outdent`
-    === Welcome to Ultra ===\n
+  console.log(outdent`${brightBlue(`
+    ▄• ▄▌▄▄▌  ▄▄▄▄▄▄▄▄   ▄▄▄· 
+    █▪██▌██•  •██  ▀▄ █·▐█ ▀█ 
+    █▌▐█▌██▪   ▐█.▪▐▀▀▄ ▄█▀▀█ 
+    ▐█▄█▌▐█▌▐▌ ▐█▌·▐█•█▌▐█ ▪▐▌
+     ▀▀▀ .▀▀▀  ▀▀▀ .▀  ▀ ▀  ▀`)} \n
     Let's get you setup with your new Ultra project.\n
     But first, we need to ask just a few questions.\n
   `);
