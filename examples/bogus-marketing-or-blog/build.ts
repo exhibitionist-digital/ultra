@@ -1,6 +1,12 @@
-import build from "ultra/build.ts";
+import { createBuilder } from "ultra/build.ts";
 
-await build({
-  browserEntrypoint: import.meta.resolve("./client.tsx"),
+const builder = createBuilder({
   serverEntrypoint: import.meta.resolve("./server.tsx"),
 });
+
+builder.setExcluded([
+  "./README.md",
+]);
+
+// deno-lint-ignore no-unused-vars
+const result = await builder.build();
