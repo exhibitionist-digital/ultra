@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 import useAsset from "ultra/hooks/use-asset.js";
 import { Link, Route, Switch, useLocation } from "wouter";
 import HomePage from "./components/Home.tsx";
-import Markdown from "./components/Markdown.tsx";
-import { Suspense } from "react";
+import Docs from "./components/Docs.tsx";
+import Philosophy from "./components/Philosophy.tsx";
 import GitHub from "./components/Github.tsx";
 import { Helmet } from "react-helmet-async";
 
@@ -80,21 +80,15 @@ export default function App() {
           <Switch>
             <Route path="/">
               <Title title="The Quest for Zero-Legacy" />
-              <Suspense fallback={null}>
-                <HomePage />
-              </Suspense>
+              <HomePage />
             </Route>
             <Route path="/philosophy">
               <Title title="📖 Philosophy" />
-              <Suspense fallback={null}>
-                <Markdown page="philosophy" />
-              </Suspense>
+              <Philosophy />
             </Route>
             <Route path="/docs">
               <Title title="⚙️ Docs" />
-              <Suspense fallback={null}>
-                <Markdown page="docs" />
-              </Suspense>
+              <Docs />
             </Route>
             <Route>
               404

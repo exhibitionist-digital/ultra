@@ -7,6 +7,7 @@ const builder = createBuilder({
 
 builder.setExcluded([
   "./README.md",
+  "./content/**/*",
 ]);
 
 // deno-lint-ignore no-unused-vars

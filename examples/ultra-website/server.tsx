@@ -1,9 +1,6 @@
 // @ts-nocheck wip
 import { QueryClientProvider } from "@tanstack/react-query";
 import { serve } from "https://deno.land/std@0.152.0/http/server.ts";
-import { compileSync } from "https://esm.sh/@mdx-js/mdx@2.1.3/lib/compile?no-dts";
-import rehypeHighlight from "https://esm.sh/rehype-highlight?no-check";
-import rehypeSlug from "https://esm.sh/rehype-slug?no-check";
 import { createRouter, createServer } from "ultra/server.ts";
 import { Router } from "wouter";
 import staticLocationHook from "wouter/static-location";
@@ -51,21 +48,6 @@ api.get("/github", async (context) => {
     getCount();
   }
   return context.json(body);
-});
-
-api.get("/:slug", async (context) => {
-  const source = await Deno.readTextFile(
-    `mdx/${context.req.param("slug")}.mdx`,
-  );
-
-  const content = String(
-    compileSync(source, {
-      outputFormat: "function-body",
-      useDynamicImport: true,
-      rehypePlugins: [rehypeSlug, rehypeHighlight],
-    }),
-  );
-  return context.json({ content });
 });
 
 server.route("/api", api);

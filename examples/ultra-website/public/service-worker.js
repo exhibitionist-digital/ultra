@@ -1,13 +1,13 @@
-const CACHE_NAME = "ultra.0";
+const CACHE_NAME = "ultra.2";
 
-const CACHED_URLS = ["/api/docs", "/api/philosophy"];
+const CACHED_URLS = [];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     (async function () {
       const cache = await caches.open(CACHE_NAME);
       await cache.addAll(CACHED_URLS);
-    })(),
+    })()
   );
 });
 
@@ -65,8 +65,8 @@ self.addEventListener("activate", (event) => {
             const deleteThisCache = cacheName !== CACHE_NAME;
             return deleteThisCache;
           })
-          .map((cacheName) => caches.delete(cacheName)),
+          .map((cacheName) => caches.delete(cacheName))
       );
-    })(),
+    })()
   );
 });
