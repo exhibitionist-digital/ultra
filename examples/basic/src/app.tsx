@@ -16,8 +16,10 @@ function LiveReload() {
             ws.onmessage = (message) => {
               const data = message?.data ? JSON.parse(message.data) : undefined;
               if (data) {
-                console.log(data)
-                window.location.reload()
+                console.log(data);
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1000);
               }
             };
             
