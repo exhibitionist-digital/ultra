@@ -9,7 +9,7 @@ import { ImportMap } from "./types.ts";
 
 type RenderToStreamOptions = RenderToReadableStreamOptions & {
   importMap: ImportMap | undefined;
-  assetManifest: Map<string, string>;
+  assetManifest: Map<string, string> | undefined;
   generateStaticHTML?: boolean;
   flushEffectsToHead?: boolean;
   disableHydration?: boolean;

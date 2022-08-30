@@ -36,9 +36,19 @@ export const flushEffectHandler = (): string => {
 };
 
 function AssetProvider(
-  { children, value }: { children: ReactNode; value: Map<string, string> },
+  { children, value }: {
+    children: ReactNode;
+    value: Map<string, string> | undefined;
+  },
 ) {
   useFlushEffects(() => {
+    /**
+     * We don't need to inject if we don't have an assetManifest
+     */
+    if (!value) {
+      return;
+    }
+
     return (
       h("script", {
         type: "text/javascript",
@@ -62,7 +72,7 @@ function ServerContextProvider(
 
 type UltraProviderProps = {
   context: Context | undefined;
-  assetManifest: Map<string, string>;
+  assetManifest: Map<string, string> | undefined;
 };
 
 export function UltraProvider(
