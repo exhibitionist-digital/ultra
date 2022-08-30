@@ -35,4 +35,6 @@ server.get("*", async (context) => {
   });
 });
 
-serve(server.fetch);
+// Use Deno flash server
+// @ts-ignore flash type 404
+Deno.serve({ port: 8000 }, server.fetch);
