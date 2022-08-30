@@ -91,6 +91,11 @@ export class UltraBuilder extends Builder {
       mainModule,
       ...(this.options.exclude || []),
     ]);
+
+    // Exclude the compiler middleware from the build output
+    this.setDynamicImportExcluded([
+      import.meta.resolve("../middleware/compiler.ts"),
+    ]);
   }
 
   initHashed() {
