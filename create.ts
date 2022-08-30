@@ -392,7 +392,7 @@ if (import.meta.main) {
 
     // deno-fmt-ignore
     console.log(outdent`
-      \n 🎉 BONZA! Your new Ultra project is ready, you can now cd into "${brightBlue(output)}" and run ${underline("deno task dev")} to get started!
+      \n 🧙‍♂️ BONZA! Your new Ultra project is ready, you can now cd into "${brightBlue(output)}" and run ${underline("deno task dev")} to get started!
     `);
   } else {
     Deno.exit(0);
