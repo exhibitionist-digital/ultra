@@ -195,6 +195,10 @@ blockquote {
   height: 80px;
 }
 
+.logo:focus {
+  outline: none;
+}
+
 .home {
   text-align: center;
   padding-bottom: 3rem;
