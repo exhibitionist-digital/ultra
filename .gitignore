@@ -2,6 +2,7 @@
 .DS_Store
 NOTES.md
 *.png
+**/src/content
 
 # Local Netlify folder
 .netlify

@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import Content from "../mdx/anti-bundle.js";
+import Content from "../content/anti-bundle.js";
 
 export default function HomePage() {
   return (

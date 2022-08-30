@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run -A --no-check --watch=content ./dev.ts",
+    "dev": "deno run -A --no-check --watch=content,src/app.tsx ./dev.ts",
     "build": "deno run -A ./build.ts",
     "start": "ULTRA_MODE=production deno run -A --location http://localhost:8000 ./server.js"
   },
