@@ -184,7 +184,7 @@ function importMapContent() {
         "react-dom": "https://esm.sh/react-dom@18.2.0",
         "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
         "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
-        "ultra/": "${import.meta.url.replace("init.ts", "")}"
+        "ultra/": "${import.meta.url.replace("create.ts", "")}"
       }
     }
   `;
