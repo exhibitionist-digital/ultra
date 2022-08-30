@@ -124,7 +124,10 @@ export class UltraBuilder extends Builder {
         await plugin.onBuild(this, result);
       } catch (error) {
         this.log.error(
-          sprintf("Build plugin %s failed", crayon.lightBlue(plugin.name)),
+          sprintf(
+            "Build plugin %s failed, see below for details",
+            crayon.lightBlue(plugin.name),
+          ),
         );
         this.log.error(error);
         Deno.exit(1);
