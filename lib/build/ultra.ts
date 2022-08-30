@@ -11,13 +11,14 @@ import {
   sprintf,
   VirtualFile,
 } from "./deps.ts";
-
 import type { BuildOptions, BuildResult, DenoConfig } from "./types.ts";
 
-const defaultOptions: Omit<
+type DefaultBuildOptions = Omit<
   BuildOptions,
   "browserEntrypoint" | "serverEntrypoint" | "plugin"
-> = {
+>;
+
+const defaultOptions: DefaultBuildOptions = {
   output: ".ultra",
   importMap: "./importMap.json",
   exclude: [".git", join("**", ".DS_Store")],
@@ -61,58 +62,9 @@ export class UltraBuilder extends Builder {
       : undefined;
     this.serverEntrypoint = this.makeRelative(this.options.serverEntrypoint);
 
-    this.initEntrypoints();
-    this.initExcluded();
-    this.initHashed();
-  }
-
-  initEntrypoints() {
-    const entrypoints: Record<string, EntrypointConfig> = {};
-
-    if (this.browserEntrypoint) {
-      entrypoints[this.browserEntrypoint] = {
-        vendorOutputDir: "browser",
-        target: "browser",
-      };
-    }
-
-    entrypoints[this.serverEntrypoint] = {
-      vendorOutputDir: "server",
-      target: "deno",
-    };
-
-    this.setEntrypoints(entrypoints);
-  }
-
-  initExcluded() {
-    const mainModule = this.makeRelative(Deno.mainModule);
-
-    this.setExcluded([
-      mainModule,
-      ...(this.options.exclude || []),
-    ]);
-
-    // Exclude the compiler middleware from the build output
-    this.setDynamicImportExcluded([
-      import.meta.resolve("../middleware/compiler.ts"),
-    ]);
-  }
-
-  initHashed() {
-    const hashed = [
-      "./src/**/*.+(ts|tsx|js|jsx|css)",
-      "./public/**/*.+(css|ico|webp|avif|jpg|png|svg|gif|otf|ttf|woff)",
-    ];
-
-    if (this.browserEntrypoint) {
-      hashed.push(this.browserEntrypoint);
-    }
-
-    this.setHashed(hashed);
-
-    this.setCompiled([
-      "./**/*.+(ts|tsx|js|jsx)",
-    ]);
+    this.#initEntrypoints();
+    this.#initExcluded();
+    this.#initHashed();
   }
 
   async build(): Promise<BuildResult> {
@@ -170,6 +122,55 @@ export class UltraBuilder extends Builder {
     }
 
     return result;
+  }
+
+  #initEntrypoints() {
+    const entrypoints: Record<string, EntrypointConfig> = {};
+
+    if (this.browserEntrypoint) {
+      entrypoints[this.browserEntrypoint] = {
+        vendorOutputDir: "browser",
+        target: "browser",
+      };
+    }
+
+    entrypoints[this.serverEntrypoint] = {
+      vendorOutputDir: "server",
+      target: "deno",
+    };
+
+    this.setEntrypoints(entrypoints);
+  }
+
+  #initExcluded() {
+    const mainModule = this.makeRelative(Deno.mainModule);
+
+    this.setExcluded([
+      mainModule,
+      ...(this.options.exclude || []),
+    ]);
+
+    // Exclude the compiler middleware from the build output
+    this.setDynamicImportExcluded([
+      import.meta.resolve("../middleware/compiler.ts"),
+    ]);
+  }
+
+  #initHashed() {
+    const hashed = [
+      "./src/**/*.+(ts|tsx|js|jsx|css)",
+      "./public/**/*.+(css|ico|webp|avif|jpg|png|svg|gif|otf|ttf|woff)",
+    ];
+
+    if (this.browserEntrypoint) {
+      hashed.push(this.browserEntrypoint);
+    }
+
+    this.setHashed(hashed);
+
+    this.setCompiled([
+      "./**/*.+(ts|tsx|js|jsx)",
+    ]);
   }
 
   async #generateAssetManifest(sources: FileBag) {
