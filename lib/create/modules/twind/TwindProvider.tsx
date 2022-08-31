@@ -1,9 +1,5 @@
-import { cssomSheet, Sheet } from "twind";
-import {
-  getStyleTagProperties,
-  VirtualSheet,
-  virtualSheet,
-} from "twind/sheets";
+import { Sheet } from "twind";
+import { getStyleTagProperties, VirtualSheet } from "twind/sheets";
 import useFlushEffects from "ultra/hooks/use-flush-effects.js";
 
 /**
@@ -14,12 +10,9 @@ function isVirtualSheet(sheet: Sheet): sheet is VirtualSheet {
   return typeof Deno !== "undefined";
 }
 
-interface TwindProviderProps {
-  children: React.ReactNode;
-  sheet: Sheet;
-}
-
-export function TwindProvider({ children, sheet }: TwindProviderProps) {
+export function TwindProvider(
+  { children, sheet }: { children: React.ReactNode; sheet: Sheet },
+) {
   /**
    * useFlushEffects will inject the returned output into the rendered stream.
    */
@@ -40,8 +33,3 @@ export function TwindProvider({ children, sheet }: TwindProviderProps) {
 
   return <>{children}</>;
 }
-
-export const sheet = typeof Deno !== "undefined" ? virtualSheet() : cssomSheet({
-  target: (document.getElementById("__twind") as HTMLStyleElement).sheet ||
-    undefined,
-});

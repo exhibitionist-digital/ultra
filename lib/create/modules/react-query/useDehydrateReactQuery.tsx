@@ -1,14 +1,6 @@
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import useFlushEffects from "ultra/hooks/use-flush-effects.js";
 
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      suspense: true,
-    },
-  },
-});
-
 export function useDehydrateReactQuery(queryClient: QueryClient) {
   useFlushEffects(() => {
     /**
@@ -28,3 +20,6 @@ export function useDehydrateReactQuery(queryClient: QueryClient) {
     );
   });
 }
+
+// Note: There are known limitations to `dehydrate`, more info here.
+// https://github.com/TanStack/query/blob/main/docs/reference/hydration.md#limitations
