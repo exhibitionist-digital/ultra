@@ -1,9 +1,15 @@
 import { Link } from "wouter";
 import Content from "../content/anti-bundle.js";
+import { MDXProvider } from "@mdx-js/react";
+import Image from "./Image.tsx";
 
 export default function HomePage() {
   return (
-    <>
+    <MDXProvider
+      components={{
+        img: Image,
+      }}
+    >
       <section className="home">
         <figure>
           <h1>un-bundle the web</h1>
@@ -29,6 +35,6 @@ export default function HomePage() {
           <Link to="/docs">Docs</Link> : <em>Choose wisely</em>
         </div>
       </section>
-    </>
+    </MDXProvider>
   );
 }
