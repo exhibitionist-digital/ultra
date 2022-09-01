@@ -13,7 +13,7 @@ const builder = createBuilder({
       const serviceWorker = await serviceWorkerSource.read();
 
       const cacheManifest = builder.toManifest(result.compiled, {
-        exclude: [
+        ignore: [
           "./public/service-worker.js",
         ],
         prefix: "/",
@@ -35,9 +35,7 @@ const builder = createBuilder({
   },
 });
 
-builder.setExcluded([
-  "./README.md",
-]);
+builder.ignore("./README.md");
 
 // deno-lint-ignore no-unused-vars
 const result = await builder.build();

@@ -7,9 +7,7 @@ const builder = createBuilder({
   plugin: netlify,
 });
 
-builder.setExcluded([
-  "./README.md",
-]);
+builder.ignore("./README.md");
 
 // deno-lint-ignore no-unused-vars
 const result = await builder.build();

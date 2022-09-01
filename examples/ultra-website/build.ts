@@ -5,11 +5,10 @@ const builder = createBuilder({
   serverEntrypoint: import.meta.resolve("./server.tsx"),
 });
 
-builder.setExcluded([
-  "./README.md",
-  "./fly.toml",
-  "./Dockerfile",
-]);
+builder
+  .ignore("./README.md")
+  .ignore("./fly.toml")
+  .ignore("./DockerFile");
 
 builder.setHashed([
   "./src/**/*.+(ts|tsx|js|jsx|css)",

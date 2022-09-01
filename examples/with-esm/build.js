@@ -5,9 +5,10 @@ const builder = createBuilder({
   serverEntrypoint: import.meta.resolve("./server.js"),
 });
 
-builder.setExcluded([
-  "./README.md",
-]);
+builder
+  .ignore("./README.md")
+  .ignore("./fly.toml")
+  .ignore("./DockerFile");
 
 // deno-lint-ignore no-unused-vars
 const result = await builder.build();
