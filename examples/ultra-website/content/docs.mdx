@@ -43,6 +43,26 @@ We've prepared the following examples for you:
 
 - Hono [(with-api-routes)](https://github.com/exhibitionist-digital/ultra/tree/main/examples/with-api-routes)
 
+#### [Zero-JS™](#zero-js)
+
+**Ultra** has route-based server options which can be configured to disable hydration, as well as not ship _any_ JS to your users. Great for you young guns making your spammy marketing pages.
+
+```js
+server.get("/", async (context) => {
+  const result = await server.render(<Home />, {
+    generateStaticHTML: true,
+    disableHydration: true,
+  });
+  return context.body(result, 200, {
+    "content-type": "text/html",
+  });
+});
+```
+
+- Zero-JS™ [(bogus-marketing-or-blog)](https://github.com/exhibitionist-digital/ultra/tree/main/examples/bogus-marketing-or-blog)
+
+<small>As these options are route-based, you can make an app which mixes both types of routes/hydration. See what happens.</small>
+
 <br/>
 
 More examples can be found [here](https://github.com/exhibitionist-digital/ultra/tree/main/examples)
@@ -103,22 +123,22 @@ This hook will insert a `<link rel="preload" />` tag into the head of the server
 
 ### [Building for production](#building-for-production)
 
-Ultra comes with a build function. What it do:
+To run **Ultra** in production, we recommened using `ultra/build.ts`. It will do the following:
 
-- Creating a `.ultra` directory: ✅ Done
-- Transpiling your source code to React.createElement: ✅ Done
-- Vendoring your projects dependencies: ✅ Done
-- Auto creating 2 production import maps (browser/runtime) using vendored deps: ✅ Done
-- Versioning your `public/` dir: ✅ Done
-- Allowing your project to be run with `--no-remote`: ✅ Done
-- A build pipeline which allows easy output configuration: ✅ Done
-- Plug-ins for various edge deployment platforms: 🚧 In Progress
+- Create a `.ultra` dir inside of your project
+- Transpile your TypeScript and JSX to vanilla JS.
+- Vendor all of your dependencies
+- Auto generate 2 (two) production import maps (One for client/hydration, and the other for server)
 
-<br/>
+<small>There are many examples of builds in our [examples](https://github.com/exhibitionist-digital/ultra/tree/main/examples).</small>
 
-```bash
-deno task build
-```
+#### [Running production](#running-production)
+
+You can `cd` into `.ultra` and run `deno task start` to see the production server running.
+
+Production builds run with `--no-remote` 🔥
+
+
 
 ---
 
