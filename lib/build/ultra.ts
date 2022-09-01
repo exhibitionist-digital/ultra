@@ -21,8 +21,8 @@ type DefaultBuildOptions = Omit<
 
 const defaultOptions: DefaultBuildOptions = {
   output: ".ultra",
-  importMap: "./importMap.json",
-  exclude: [".git", join("**", ".DS_Store")],
+  importMapPath: "./importMap.json",
+  ignored: [".git", join("**", ".DS_Store")],
 };
 
 export class UltraBuilder extends Builder {
@@ -48,7 +48,7 @@ export class UltraBuilder extends Builder {
       root,
       output,
       name: "ultra",
-      importMap: resolvedOptions.importMap,
+      importMapPath: resolvedOptions.importMapPath,
       logLevel: "INFO",
       compiler: {
         minify: true,
@@ -119,7 +119,7 @@ export class UltraBuilder extends Builder {
     /**
      * Remove the dev importMap
      */
-    await buildSources.get(this.options.importMap).then((source) =>
+    await buildSources.get(this.options.importMapPath).then((source) =>
       source.remove()
     );
 
@@ -190,7 +190,7 @@ export class UltraBuilder extends Builder {
 
     this.setIgnored([
       mainModule,
-      ...(this.options.exclude || []),
+      ...(this.options.ignored || []),
     ]);
 
     // Exclude the compiler middleware from the build output
