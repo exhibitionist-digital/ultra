@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 /**
- * @type {React.Context<(Component: React.ComponentType & { url: string }, props: any) => number>}
+ * @type {React.Context<((Component: React.ComponentType & { url: string }, props: any) => number) | undefined>}
  */
 const IslandContext = createContext(() => {});
 

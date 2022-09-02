@@ -3,11 +3,11 @@ import { createElement as h, Fragment, useCallback } from "react";
 import { renderToString } from "react-dom/server";
 import AssetContext from "../hooks/asset-context.js";
 import FlushEffectsContext from "../hooks/flush-effect-context.js";
-import ServerContext from "../hooks/server-context.js";
 import IslandContext from "../hooks/island-context.js";
+import ServerContext from "../hooks/server-context.js";
 import useFlushEffects from "../hooks/use-flush-effects.js";
-import type { Context } from "./types.ts";
 import { outdent } from "./deps.ts";
+import type { Context } from "./types.ts";
 
 const flushEffectsCallbacks: Set<() => ReactNode> = new Set();
 
@@ -55,7 +55,7 @@ function AssetProvider(
       h("script", {
         type: "text/javascript",
         dangerouslySetInnerHTML: {
-          __html: `window.__ULTRA_ASSET_MAP = ${
+          __html: `globalThis.__ULTRA_ASSET_MAP = ${
             JSON.stringify(Array.from(value.entries()))
           }`,
         },
@@ -89,27 +89,28 @@ function IslandProvider({ children, baseUrl }: {
   }
 
   useFlushEffects(() => {
-    id = 0;
-
     if (!hydratorInjected && injectHydrator) {
       hydratorInjected = true;
 
-      return [
+      return h(Fragment, null, [
         h("script", {
+          key: "island-hydrator-data",
           dangerouslySetInnerHTML: {
             __html: outdent`
-              window.__ULTRA_ISLAND_URL = "${baseUrl}/";
-              window.__ULTRA_ISLAND_DATA = ${prepareData(hydrationData)};
-              window.__ULTRA_ISLAND_COMPONENT = ${prepareData(componentPaths)};
-            `,
+            globalThis.__ULTRA_ISLAND_URL = "${baseUrl}/";
+            globalThis.__ULTRA_ISLAND_DATA = ${prepareData(hydrationData)};
+            globalThis.__ULTRA_ISLAND_COMPONENT = ${
+              prepareData(componentPaths)
+            };`,
           },
         }),
         h("script", {
           type: "module",
           defer: true,
+          key: "island-hydrator-script",
           src: import.meta.resolve("ultra/hooks/island-hydrator.js"),
         }),
-      ];
+      ]);
     }
   });
 

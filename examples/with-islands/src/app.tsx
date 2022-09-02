@@ -1,9 +1,9 @@
 import { PropsWithChildren } from "react";
 import useAsset from "ultra/hooks/use-asset.js";
-import useIsland from "ultra/hooks/use-island.js";
+import island from "ultra/hooks/use-island.js";
 import Counter from "./Counter.tsx";
 
-const CounterIsland = useIsland(Counter);
+const CounterIsland = island(Counter);
 
 const FillViewportWrapper = ({ children }: PropsWithChildren) => {
   return (
@@ -21,6 +21,7 @@ const FillViewportWrapper = ({ children }: PropsWithChildren) => {
 };
 
 export default function App() {
+  console.log("hello world");
   return (
     <html lang="en">
       <head>
