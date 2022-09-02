@@ -33,6 +33,10 @@ export default function App() {
       </head>
       <body>
         <main>
+          <p>
+            Open your browser console and scroll down to see components hydrate
+            as they are scrolled into the viewport.
+          </p>
           <FillViewportWrapper>
             <CounterIsland start={100} />
           </FillViewportWrapper>
