@@ -39,13 +39,16 @@ export default function App() {
             as they are scrolled into the viewport.
           </p>
           <FillViewportWrapper>
-            <CounterIsland start={100} />
+            hydrationStrategy: load
+            <CounterIsland start={50} hydrationStrategy="load" />
           </FillViewportWrapper>
           <FillViewportWrapper>
-            <CounterIsland start={50} />
+            hydrationStrategy: idle
+            <CounterIsland start={100} hydrationStrategy="idle" />
           </FillViewportWrapper>
           <FillViewportWrapper>
-            <CounterIsland start={20} />
+            hydrationStrategy: visible
+            <CounterIsland start={20} hydrationStrategy="visible" />
           </FillViewportWrapper>
         </main>
       </body>
