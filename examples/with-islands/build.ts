@@ -6,6 +6,10 @@ const builder = createBuilder({
 
 builder.ignore("./README.md");
 
+/**
+ * Add our own browser entrypoint, since we
+ * aren't using the default
+ */
 builder.entrypoint("./src/app.tsx", {
   vendorOutputDir: "browser",
   target: "browser",

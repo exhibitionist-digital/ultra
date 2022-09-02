@@ -1,7 +1,7 @@
 import { PropsWithChildren } from "react";
 import useAsset from "ultra/hooks/use-asset.js";
 import useIsland from "ultra/hooks/use-island.js";
-import Counter from "./islands/Counter.tsx";
+import Counter from "./Counter.tsx";
 
 const CounterIsland = useIsland(Counter);
 
