@@ -30,11 +30,9 @@ export class UltraServer extends Hono {
     log.debug("Initialising server");
 
     /**
-     * Parse the provided importMap if we have an entrypoint
+     * Parse the provided importMap
      */
-    this.importMap = this.entrypoint
-      ? await this.#parseJsonFile(this.importMapPath)
-      : undefined;
+    this.importMap = await this.#parseJsonFile(this.importMapPath);
 
     /**
      * Parse the provided asset manifest if we have an entrypoint
