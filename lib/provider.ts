@@ -73,8 +73,9 @@ type IslandHydrationData = Record<number, {
 
 type IslandComponent = ComponentType & { url: string };
 
-function IslandProvider({ children }: {
+function IslandProvider({ children, baseUrl }: {
   children: ReactNode;
+  baseUrl: string;
 }) {
   let id = 0;
   let injectHydrator = false;
@@ -97,6 +98,7 @@ function IslandProvider({ children }: {
         h("script", {
           dangerouslySetInnerHTML: {
             __html: outdent`
+              window.__ULTRA_ISLAND_URL = "${baseUrl}/";
               window.__ULTRA_ISLAND_DATA = ${prepareData(hydrationData)};
               window.__ULTRA_ISLAND_COMPONENT = ${prepareData(componentPaths)};
             `,
@@ -139,11 +141,14 @@ function ServerContextProvider(
 
 type UltraProviderProps = {
   context: Context | undefined;
+  baseUrl: string;
   assetManifest: Map<string, string> | undefined;
 };
 
 export function UltraProvider(
-  { context, assetManifest, children }: PropsWithChildren<UltraProviderProps>,
+  { context, assetManifest, children, baseUrl }: PropsWithChildren<
+    UltraProviderProps
+  >,
 ) {
   return h(
     ServerContextProvider,
@@ -156,6 +161,7 @@ export function UltraProvider(
           value: assetManifest,
           children: h(IslandProvider, {
             children,
+            baseUrl,
           }),
         }),
       ),

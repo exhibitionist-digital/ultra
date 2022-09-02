@@ -1,7 +1,7 @@
 requestIdleCallback(function hydrate() {
   const data = Object.fromEntries(window.__ULTRA_ISLAND_DATA);
   const components = Object.fromEntries(window.__ULTRA_ISLAND_COMPONENT);
-  const baseUrl = window.__ULTRA_ISLAND_URL || "/_ultra/compiler/";
+  const baseUrl = window.__ULTRA_ISLAND_URL;
 
   const observer = new IntersectionObserver(async (entries, observer) => {
     const { createElement: h, lazy } = await import("react");
