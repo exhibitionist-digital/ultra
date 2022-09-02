@@ -30,6 +30,7 @@ export class UltraBuilder extends Builder {
 
   public browserEntrypoint?: string;
   public serverEntrypoint: string;
+  public publicRoot?: string;
 
   constructor(
     options: Partial<BuildOptions>,
@@ -65,6 +66,9 @@ export class UltraBuilder extends Builder {
       ? this.makeRelative(this.options.browserEntrypoint)
       : undefined;
     this.serverEntrypoint = this.makeRelative(this.options.serverEntrypoint);
+    this.publicRoot = resolvedOptions.publicRoot
+      ? this.makeRelative(resolvedOptions.publicRoot)
+      : undefined;
 
     this.#initEntrypoints();
     this.#initExcluded();
@@ -86,6 +90,16 @@ export class UltraBuilder extends Builder {
      * Copy sources to output
      */
     const buildSources = await this.copySources(sources);
+
+    /**
+     * Gather and copy custom public source
+     */
+    if (this.publicRoot) {
+      const publicSources = await this.gatherSources(this.publicRoot);
+      await this.copySources(
+        publicSources,
+      );
+    }
 
     /**
      * Execute the build
@@ -243,8 +257,8 @@ export class UltraBuilder extends Builder {
   makeRelative(path: string) {
     return `./${
       relative(
-        this.context.root,
-        fromFileUrl(path),
+      this.context.root,
+      fromFileUrl(path),
       )
     }`;
   }

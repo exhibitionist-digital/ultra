@@ -53,6 +53,10 @@ export type BuildOptions = {
    */
   jsxImportSource?: string;
   /**
+   * The path to the public folder.
+   */
+  publicRoot?: string;
+  /**
    * A build plugin to run after completing the initial build
    *
    * @default undefined
