@@ -147,7 +147,6 @@ export async function continueFromInitialStream(
   const {
     importMap,
     generateStaticHTML,
-    disableHydration,
     flushEffectHandler,
     flushEffectsToHead,
   } = options;
