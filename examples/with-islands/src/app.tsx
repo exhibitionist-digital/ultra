@@ -1,8 +1,24 @@
+import { PropsWithChildren } from "react";
 import useAsset from "ultra/hooks/use-asset.js";
 import useIsland from "ultra/hooks/use-island.js";
 import Counter from "./islands/Counter.tsx";
 
 const CounterIsland = useIsland(Counter);
+
+const FillViewportWrapper = ({ children }: PropsWithChildren) => {
+  return (
+    <div
+      style={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
 export default function App() {
   return (
@@ -17,9 +33,15 @@ export default function App() {
       </head>
       <body>
         <main>
-          <CounterIsland start={0} />
-          <Counter start={1} />
-          <Counter start={2} />
+          <FillViewportWrapper>
+            <CounterIsland start={100} />
+          </FillViewportWrapper>
+          <FillViewportWrapper>
+            <CounterIsland start={50} />
+          </FillViewportWrapper>
+          <FillViewportWrapper>
+            <CounterIsland start={20} />
+          </FillViewportWrapper>
         </main>
       </body>
     </html>

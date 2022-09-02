@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface CounterProps {
   start: number;
@@ -6,8 +6,16 @@ interface CounterProps {
 
 export default function Counter(props: CounterProps) {
   const [count, setCount] = useState(props.start);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      console.log("hydrated");
+    }
+  }, []);
+
   return (
-    <div>
+    <div ref={ref}>
       <p>{count}</p>
       <button onClick={() => setCount(count - 1)}>
         -1

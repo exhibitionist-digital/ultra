@@ -7,6 +7,7 @@ import ServerContext from "../hooks/server-context.js";
 import IslandContext from "../hooks/island-context.js";
 import useFlushEffects from "../hooks/use-flush-effects.js";
 import type { Context } from "./types.ts";
+import { outdent } from "./deps.ts";
 
 const flushEffectsCallbacks: Set<() => ReactNode> = new Set();
 
@@ -65,6 +66,13 @@ function AssetProvider(
   return h(AssetContext.Provider, { value }, children);
 }
 
+type IslandHydrationData = Record<number, {
+  props: Record<string, unknown>;
+  name: string;
+}>;
+
+type IslandComponent = ComponentType & { url: string };
+
 function IslandProvider({ children }: {
   children: ReactNode;
 }) {
@@ -72,11 +80,10 @@ function IslandProvider({ children }: {
   let injectHydrator = false;
   let hydratorInjected = false;
 
-  const hydrationData: Record<number, any> = {};
+  const hydrationData: IslandHydrationData = {};
   const componentPaths: Record<string, string> = {};
 
-  // deno-lint-ignore no-explicit-any
-  function prepare(data: any) {
+  function prepareData(data: IslandHydrationData | Record<string, string>) {
     return JSON.stringify(Object.entries(data));
   }
 
@@ -89,9 +96,9 @@ function IslandProvider({ children }: {
       return [
         h("script", {
           dangerouslySetInnerHTML: {
-            __html: `
-              window.__ULTRA_ISLAND_DATA = ${prepare(hydrationData)};
-              window.__ULTRA_ISLAND_COMPONENT = ${prepare(componentPaths)};
+            __html: outdent`
+              window.__ULTRA_ISLAND_DATA = ${prepareData(hydrationData)};
+              window.__ULTRA_ISLAND_COMPONENT = ${prepareData(componentPaths)};
             `,
           },
         }),
@@ -104,8 +111,7 @@ function IslandProvider({ children }: {
     }
   });
 
-  // deno-lint-ignore no-explicit-any
-  function add(Component: ComponentType & { url: string }, props: any) {
+  function add(Component: IslandComponent, props: Record<string, unknown>) {
     const name = Component.displayName ?? Component.name;
     injectHydrator = true;
 
