@@ -20,6 +20,7 @@ type DefaultBuildOptions = Omit<
 >;
 
 const defaultOptions: DefaultBuildOptions = {
+  root: Deno.cwd(),
   output: ".ultra",
   importMapPath: "./importMap.json",
   ignored: [".git", join("**", ".DS_Store")],
@@ -39,7 +40,8 @@ export class UltraBuilder extends Builder {
     ) => Promise<void> | void,
   ) {
     const resolvedOptions = deepMerge<BuildOptions>(defaultOptions, options);
-    const root = Deno.cwd();
+    const root = resolvedOptions.root;
+
     const output = resolvedOptions.output
       ? resolve(root, resolvedOptions.output)
       : resolve(root, ".ultra");
