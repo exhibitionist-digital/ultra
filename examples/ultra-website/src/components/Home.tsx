@@ -1,7 +1,11 @@
 import { Link } from "wouter";
 import Content from "../content/anti-bundle.js";
 import { MDXProvider } from "@mdx-js/react";
-import Image from "./Image.tsx";
+import useAsset from "ultra/hooks/use-asset.js";
+
+const Image = ({ src, alt }: { src: string; alt: string }) => {
+  return <img src={useAsset(src)} alt={alt} />;
+};
 
 export default function HomePage() {
   return (
@@ -14,8 +18,8 @@ export default function HomePage() {
         <figure>
           <h1>un-bundle the web</h1>
           <h2>Hypermodern Zero-Legacy Deno/React Framework</h2>
-          <img src="/grid_2.webp" alt="green galaxy texture" />
-          <img src="/grid_1.webp" alt="purple galaxy texture" />
+          <img src={useAsset("/grid_2.webp")} alt="green galaxy texture" />
+          <img src={useAsset("/grid_1.webp")} alt="purple galaxy texture" />
         </figure>
       </section>
       <section className="story">
