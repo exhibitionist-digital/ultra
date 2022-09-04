@@ -47,6 +47,7 @@ export function createBufferedTransformStream(
     transform(chunk, controller) {
       bufferedString += decodeText(chunk, textDecoder);
       flushBuffer(controller);
+      textDecoder.decode();
     },
 
     flush() {

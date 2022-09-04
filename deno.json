@@ -1,4 +1,7 @@
 {
+  "tasks": {
+    "test": "cd examples/basic && deno test --allow-all"
+  },
   "fmt": {
     "options": {
       "indentWidth": 2,

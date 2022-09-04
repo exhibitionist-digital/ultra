@@ -10,8 +10,6 @@ export type CompilerOptions = {
   root: string;
 } & Omit<TransformSourceOptions, "minify" | "development">;
 
-const decoder = new TextDecoder();
-
 export const compiler = (options: CompilerOptions) => {
   const {
     root,
@@ -39,7 +37,7 @@ export const compiler = (options: CompilerOptions) => {
 
     if (method === "GET" && isCompilerTarget) {
       const bytes = await fetch(url).then((response) => response.arrayBuffer());
-      const source = decoder.decode(bytes);
+      const source = new TextDecoder().decode(bytes);
 
       log.debug(sprintf("Compiling: %s", url.toString()));
 
