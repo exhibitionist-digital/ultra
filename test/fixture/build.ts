@@ -7,5 +7,9 @@ const builder = createBuilder({
 
 builder.ignore("./README.md");
 
-// deno-lint-ignore no-unused-vars
-const result = await builder.build();
+if (import.meta.main) {
+  // deno-lint-ignore no-unused-vars
+  const result = await builder.build();
+}
+
+export default builder;

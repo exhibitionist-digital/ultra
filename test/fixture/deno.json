@@ -1,4 +1,9 @@
 {
+  "test": {
+    "files": {
+      "exclude": [".ultra/"]
+    }
+  },
   "tasks": {
     "dev": "deno run -A --no-check --watch ./server.tsx",
     "build": "deno run -A ./build.ts",
