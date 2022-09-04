@@ -6,12 +6,17 @@ const importMap = JSON.parse(
 const githubSha = Deno.env.get("GITHUB_SHA");
 
 if (importMap.imports && githubSha) {
+  /**
+   * Set ultra to the latest commit
+   */
   importMap.imports["ultra/"] =
     `https://raw.githubusercontent.com/exhibitionist-digital/ultra/${githubSha}/`;
-}
 
-await Deno.writeTextFile(
-  "./test/fixture/importMap.json",
-  JSON.stringify(importMap, null, 2),
-);
-console.log(importMap);
+  /**
+   * Write it out
+   */
+  await Deno.writeTextFile(
+    "./test/fixture/importMap.json",
+    JSON.stringify(importMap, null, 2),
+  );
+}
