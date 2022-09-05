@@ -1,7 +1,7 @@
 import {
   createBufferedTransformStream,
   createHeadInjectionTransformStream,
-} from "../../../stream.ts";
+} from "ultra/stream.ts";
 
 const regex = new RegExp(
   `<style data-emotion="css ([a-zA-Z0-9-_ ]+)">(.+)<\\/style>`,
