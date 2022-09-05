@@ -18,19 +18,22 @@ export function emotionTransformStream(
 
       regex.lastIndex = 0;
 
+      /**
+       * Collect all of the <style data-emotion> tags
+       * and insert into our cache
+       */
       while ((match = regex.exec(content)) !== null) {
         const id = match[1];
-        const css = match[2];
         content = content.replace(match[0], "");
-        cache.set(id, css);
+        cache.set(id, match[0]);
       }
 
       return content;
     }),
     createHeadInjectionTransformStream(() => {
       const styles: string[] = [];
-      for (const [id, css] of cache.entries()) {
-        styles.push(`<style data-emotion="css ${id}">${css}</style>`);
+      for (const [, styleTag] of cache.entries()) {
+        styles.push(styleTag);
       }
       return styles.join("\n");
     }),
