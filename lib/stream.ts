@@ -117,6 +117,7 @@ export function renderToInitialStream({
   if (!ReactDOMServer["renderToReadableStream"]) {
     const reactDomImpl = import.meta.resolve("react-dom/server");
     log.warning(`${reactDomImpl} doesn't support streams`);
+
     let html = ReactDOMServer.renderToString(element);
 
     if (options?.bootstrapModules) {
