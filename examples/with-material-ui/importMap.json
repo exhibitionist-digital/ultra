@@ -5,14 +5,12 @@
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
-    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.18/",
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-beta.2/",
     "@mui/material": "https://esm.sh/@mui/material@5.10.3?bundle&external=react,@emotion/react,@emotion/styled",
     "@mui/material/styles": "https://esm.sh/@mui/material@5.10.3/styles",
     "@mui/material/colors": "https://esm.sh/@mui/material@5.10.3/colors",
     "@emotion/react": "https://esm.sh/@emotion/react@11.10.0?external=react",
-    "@emotion/cache": "https://esm.sh/@emotion/cache@11.10.0",
-    "@emotion/styled": "https://esm.sh/@emotion/styled@11.10.0?external=react,@emotion/react",
-    "@emotion/server": "https://esm.sh/@emotion/server@11.10.0?external=react,@emotion/react",
-    "@emotion/server/": "https://esm.sh/@emotion/server@11.10.0/"
+    "@emotion/cache": "https://esm.sh/@emotion/cache",
+    "@emotion/styled": "https://esm.sh/@emotion/styled@11.10.0?external=react,@emotion/react"
   }
 }

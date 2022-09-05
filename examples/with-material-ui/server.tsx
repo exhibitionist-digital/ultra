@@ -3,6 +3,7 @@ import { createServer } from "ultra/server.ts";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import App from "./src/app.tsx";
 import theme from "./theme.ts";
+import { emotionTransformStream } from "./server/emotion.ts";
 
 const server = await createServer({
   importMapPath: import.meta.resolve("./importMap.json"),
@@ -23,7 +24,9 @@ server.get("*", async (context) => {
     },
   );
 
-  return context.body(result, 200, {
+  const transformed = emotionTransformStream(result);
+
+  return context.body(transformed, 200, {
     "content-type": "text/html",
   });
 });
