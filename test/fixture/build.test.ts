@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.153.0/testing/asserts.ts";
-import { createBuilder } from "ultra/build.ts";
+import { createBuilder } from "../../build.ts";
 
 Deno.test("it works with a browser entrypoint", async () => {
   const builder = createBuilder({
