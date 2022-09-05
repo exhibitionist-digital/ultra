@@ -10,4 +10,4 @@ This example has two routes:
 This also uses Deno's new Flash server, the fastest in the land. Requires Deno
 v1.25.0
 
-\* No hydration is to be found here, just static HTML
+\* No hydration is to be found here, just server rendered HTML

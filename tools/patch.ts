@@ -57,7 +57,7 @@ if (import.meta.main) {
     console.log("Updating version.ts");
     await Deno.writeTextFile(
       "./version.ts",
-      `/* Do not set this manually, run tools/patch.ts if releasing a new version */\nexport const VERSION = "${version}";`,
+      `/* Do not set this manually, run tools/patch.ts if releasing a new version */\nexport const VERSION = "${version}";\n`,
     );
   }
 }

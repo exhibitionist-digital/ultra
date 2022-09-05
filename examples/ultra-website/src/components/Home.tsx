@@ -1,15 +1,25 @@
 import { Link } from "wouter";
-import Content from "../mdx/anti-bundle.js";
+import Content from "../content/anti-bundle.js";
+import { MDXProvider } from "@mdx-js/react";
+import useAsset from "ultra/hooks/use-asset.js";
+
+const Image = ({ src, alt }: { src: string; alt: string }) => {
+  return <img src={useAsset(src)} alt={alt} />;
+};
 
 export default function HomePage() {
   return (
-    <>
+    <MDXProvider
+      components={{
+        img: Image,
+      }}
+    >
       <section className="home">
         <figure>
           <h1>un-bundle the web</h1>
           <h2>Hypermodern Zero-Legacy Deno/React Framework</h2>
-          <img src="/grid_2.webp" alt="green galaxy texture" />
-          <img src="/grid_1.webp" alt="purple galaxy texture" />
+          <img src={useAsset("/grid_2.webp")} alt="green galaxy texture" />
+          <img src={useAsset("/grid_1.webp")} alt="purple galaxy texture" />
         </figure>
       </section>
       <section className="story">
@@ -21,7 +31,7 @@ export default function HomePage() {
           </p>
           <pre>
             <code>
-            deno run -A -r https://deno.land/x/ultra/init.ts
+            deno run -A -r https://deno.land/x/ultra/create.ts
             </code>
           </pre>
 
@@ -29,6 +39,6 @@ export default function HomePage() {
           <Link to="/docs">Docs</Link> : <em>Choose wisely</em>
         </div>
       </section>
-    </>
+    </MDXProvider>
   );
 }

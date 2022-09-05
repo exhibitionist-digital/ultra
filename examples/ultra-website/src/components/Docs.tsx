@@ -1,6 +1,6 @@
 import { MDXProvider } from "@mdx-js/react";
 
-import Content from "../mdx/docs.js";
+import Content from "../content/docs.js";
 
 export default function Markdown() {
   return (

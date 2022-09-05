@@ -6,10 +6,7 @@ const builder = createBuilder({
   jsxImportSource: "preact",
 });
 
-builder.setExcluded([
-  "./README.md",
-  "./build.ts",
-]);
+builder.ignore("./README.md");
 
 // deno-lint-ignore no-unused-vars
 const result = await builder.build();

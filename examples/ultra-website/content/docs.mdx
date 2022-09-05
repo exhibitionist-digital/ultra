@@ -1,0 +1,175 @@
+# docs
+
+> 📝 These docs are a WIP of the alpha 2 release.
+
+Welp, if you've made it here, you probably have a basic **Ultra** project
+running. If not try this...
+
+```bash
+deno run -A -r https://deno.land/x/ultra/create.ts
+```
+
+---
+
+### [Extending Ultra](#extending-ultra)
+
+**Ultra** gives you the control to use (or not use) many of the most popular
+React libraries out there. You will probably
+need to update your `importMap.json` `server.tsx` and `client.tsx`
+
+We've prepared the following examples for you:
+
+#### [Routing](#routing)
+
+- Wouter [(with-wouter)](https://github.com/exhibitionist-digital/ultra/tree/main/examples/with-wouter)
+- React Router [(with-react-router)](https://github.com/exhibitionist-digital/ultra/tree/main/examples/with-react-router)
+
+#### [Data Fetching](#data-fetching)
+
+- React Query [(with-react-query)](https://github.com/exhibitionist-digital/ultra/tree/main/examples/with-react-query)
+
+#### [CSS](#css)
+
+- Stitches [(with-stitches)](https://github.com/exhibitionist-digital/ultra/tree/main/examples/with-stitches)
+- Twind [(with-twind)](https://github.com/exhibitionist-digital/ultra/tree/main/examples/with-twind)
+
+<small>or just use plain old CSS, it's _way_ underrated.</small>
+
+#### [Head](#head)
+
+- React Helmet Async [(with-react-helmet-async)](https://github.com/exhibitionist-digital/ultra/tree/main/examples/with-react-helmet-async)
+
+#### [API Routes](#api-routes)
+
+- Hono [(with-api-routes)](https://github.com/exhibitionist-digital/ultra/tree/main/examples/with-api-routes)
+
+#### [Zero-JS™](#zero-js)
+
+**Ultra** has route-based server options which can be configured to disable hydration, as well as not ship _any_ JS to your users. Great for you young guns making your spammy marketing pages.
+
+```js
+server.get("/", async (context) => {
+  const result = await server.render(<Home />, {
+    generateStaticHTML: true,
+    disableHydration: true,
+  });
+  return context.body(result, 200, {
+    "content-type": "text/html",
+  });
+});
+```
+
+- Zero-JS™ [(bogus-marketing-or-blog)](https://github.com/exhibitionist-digital/ultra/tree/main/examples/bogus-marketing-or-blog)
+
+<small>As these options are route-based, you can make an app which mixes both types of routes/hydration. See what happens.</small>
+
+<br/>
+
+More examples can be found [here](https://github.com/exhibitionist-digital/ultra/tree/main/examples)
+
+<small>
+  If there is an existing library that you want to use, there is a good chance
+  you can create a custom integration. Use some of the examples above as a guide
+  -- open a PR if you are keen.
+</small>
+
+---
+
+### [Ultra Hooks](#ultra-hooks)
+
+#### [useAsset](#useasset)
+
+```js
+import useAsset from "ultra/hooks/use-asset.js";
+
+<link rel="preload" as="style" href={useAsset("./style.css")} />
+```
+
+`useAsset` allows **Ultra** to version your assets during build for deploying to production. In development it's a non-op.
+
+#### [useFlushEffects](#useflusheffects)
+
+```js
+import useFlushEffects from "ultra/hooks/use-flush-effects.js";
+
+
+const ServerApp = function () {
+  /**
+   * useFlushEffects will inject the returned output into the rendered stream.
+   */
+  useFlushEffects(() => {
+    // ...
+  });
+
+  return (
+    <App />
+  );
+};
+```
+
+Similar to the [hook](https://github.com/vercel/next.js/blob/aef60dc581f564b64cfb7667cdca0bd3e3b6e366/packages/next/shared/lib/flush-effects.tsx) [available in Next.js](https://github.com/vercel/next.js/issues/30997), for integrating 3rd party libraries with React 18 + Suspense.
+
+#### [usePreload](#usepreload)
+
+```js
+import useAsset from "ultra/hooks/use-preload.js";
+
+usePreload(${href})
+```
+
+This hook will insert a `<link rel="preload" />` tag into the head of the server render document. During client side transitions, this won't do anything.
+
+---
+
+### [Building for production](#building-for-production)
+
+To run **Ultra** in production, we recommened using `ultra/build.ts`. It will do the following:
+
+- Create a `.ultra` dir inside of your project
+- Transpile your TypeScript and JSX to vanilla JS.
+- Vendor all of your dependencies
+- Version your source and public files
+- Auto generate 2 (two) production import maps (One for client/hydration, and the other for server)
+
+<small>There are many existing build files in our [example repos](https://github.com/exhibitionist-digital/ultra/tree/main/examples).</small>
+
+#### [Running production](#running-production)
+
+You can `cd` into `.ultra` and run `deno task start` to see the production server running.
+
+Production builds run with `--no-remote` 🔥
+
+
+
+---
+
+### [Deploying](#deploying)
+
+> ⏳ Support for various edge providers coming soon!
+
+#### [Fly/Docker](#flydocker)
+
+Use this `Dockerfile`. It is multi-stage, and will both build and run the production ready app.
+
+```bash
+FROM denoland/deno:1.25.0 as builder
+WORKDIR /app
+COPY . /app
+RUN deno task build
+
+FROM denoland/deno:1.25.0
+EXPOSE 8000
+COPY --from=builder /app/.ultra /app
+WORKDIR /app
+CMD ["deno", "task", "start"]
+```
+
+You can modify this as needed, another possible Dockerfile assumes you commit your build artifacts, or deploy locally from built files.
+
+```bash
+FROM denoland/deno:1.25.0
+EXPOSE 8000
+WORKDIR /app
+COPY .ultra /app
+CMD ["deno", "task", "start"]
+```

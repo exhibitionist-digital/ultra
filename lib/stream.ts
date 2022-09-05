@@ -4,6 +4,7 @@
  *
  * node-web-stream-helpers.ts: https://github.com/vercel/next.js/blob/c79b67ccedda1ae6fd9d05cfccf1d2842b94f43f/packages/next/server/node-web-streams-helper.ts
  */
+import type { ReactElement } from "react";
 import * as ReactDOMServer from "react-dom/server";
 import { ImportMap, RenderedReadableStream } from "./types.ts";
 import { nonNullable } from "./utils/non-nullable.ts";
@@ -21,7 +22,7 @@ export function decodeText(input?: Uint8Array, textDecoder?: TextDecoder) {
 }
 
 export function createBufferedTransformStream(
-  transform: (v: string) => string | Promise<string> = (v) => v,
+  transform: (value: string) => string | Promise<string> = (value) => value,
 ): TransformStream<Uint8Array, Uint8Array> {
   let bufferedString = "";
   let pendingFlush: Promise<void> | null = null;
@@ -47,6 +48,7 @@ export function createBufferedTransformStream(
     transform(chunk, controller) {
       bufferedString += decodeText(chunk, textDecoder);
       flushBuffer(controller);
+      textDecoder.decode();
     },
 
     flush() {
@@ -106,7 +108,7 @@ export function renderToInitialStream({
   element,
   options,
 }: {
-  element: React.ReactElement;
+  element: ReactElement;
   options?: ReactDOMServer.RenderToReadableStreamOptions;
 }): Promise<RenderedReadableStream> {
   /**
@@ -116,6 +118,7 @@ export function renderToInitialStream({
   if (!ReactDOMServer["renderToReadableStream"]) {
     const reactDomImpl = import.meta.resolve("react-dom/server");
     log.warning(`${reactDomImpl} doesn't support streams`);
+
     let html = ReactDOMServer.renderToString(element);
 
     if (options?.bootstrapModules) {

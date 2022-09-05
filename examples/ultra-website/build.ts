@@ -5,17 +5,13 @@ const builder = createBuilder({
   serverEntrypoint: import.meta.resolve("./server.tsx"),
 });
 
-builder.setExcluded([
-  "./README.md",
-  "./fly.toml",
-  "./Dockerfile",
-]);
-
-builder.setHashed([
-  "./src/**/*.+(ts|tsx|js|jsx|css)",
-  "./public/**/*.+(css)",
-  "./client.tsx",
-]);
+builder
+  .ignore("./public/*.png")
+  .ignore("./content/*.mdx")
+  .ignore("./README.md")
+  .ignore("./fly.toml")
+  .ignore("./Dockerfile")
+  .ignore("./dev.ts");
 
 // deno-lint-ignore no-unused-vars
 const result = await builder.build();

@@ -179,11 +179,12 @@ function importMapContent() {
   return outdent`
     {
       "imports": {
-        "react": "https://esm.sh/react@18.2.0",
+        "react": "https://esm.sh/react@18.2.0?dev",
         "react/": "https://esm.sh/react@18.2.0/",
         "react-dom": "https://esm.sh/react-dom@18.2.0",
-        "react-dom/": "https://esm.sh/react-dom@18.2.0/",
-        "ultra/": "${import.meta.url.replace("init.ts", "")}"
+        "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
+        "ultra/": "${import.meta.url.replace("create.ts", "")}"
       }
     }
   `;
@@ -345,8 +346,12 @@ function dialectExtension(dialect: Dialect, isJsx?: boolean) {
 
 if (import.meta.main) {
   // deno-fmt-ignore
-  console.log(outdent`
-    === Welcome to Ultra ===\n
+  console.log(outdent`${brightBlue(`
+    ▄• ▄▌▄▄▌  ▄▄▄▄▄▄▄▄   ▄▄▄· 
+    █▪██▌██•  •██  ▀▄ █·▐█ ▀█ 
+    █▌▐█▌██▪   ▐█.▪▐▀▀▄ ▄█▀▀█ 
+    ▐█▄█▌▐█▌▐▌ ▐█▌·▐█•█▌▐█ ▪▐▌
+     ▀▀▀ .▀▀▀  ▀▀▀ .▀  ▀ ▀  ▀`)} \n
     Let's get you setup with your new Ultra project.\n
     But first, we need to ask just a few questions.\n
   `);
@@ -388,7 +393,7 @@ if (import.meta.main) {
 
     // deno-fmt-ignore
     console.log(outdent`
-      \n 🎉 BONZA! Your new Ultra project is ready, you can now cd into "${brightBlue(output)}" and run ${underline("deno task dev")} to get started!
+      \n 🧙‍♂️ BONZA! Your new Ultra project is ready, you can now cd into "${brightBlue(output)}" and run ${underline("deno task dev")} to get started!
     `);
   } else {
     Deno.exit(0);

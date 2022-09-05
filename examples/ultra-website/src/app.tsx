@@ -42,11 +42,14 @@ export default function App() {
         <link rel="preload" as="style" href={useAsset("/style.css")} />
         <link rel="stylesheet" href={useAsset("/style.css")} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://ultrajs.dev/share.jpg" />
+        <meta
+          property="og:image"
+          content={"https://ultrajs.dev" + useAsset("/share.webp")}
+        />
         <meta property="twitter:card" content="summary_large_image" />
         <meta
           property="twitter:image"
-          content="https://ultrajs.dev/share.jpg"
+          content={"https://ultrajs.dev" + useAsset("/share.webp")}
         />
         <meta
           property="og:description"

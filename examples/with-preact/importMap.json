@@ -5,6 +5,6 @@
     "preact/": "https://esm.sh/preact@10.10.6/",
     "react-dom": "https://esm.sh/preact@10.10.6/compat",
     "react-dom/": "https://esm.sh/preact@10.10.6/compat/",
-    "ultra/": "https://deno.land/x/ultra@v2.0.0-alpha.18/"
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-beta.2/"
   }
 }

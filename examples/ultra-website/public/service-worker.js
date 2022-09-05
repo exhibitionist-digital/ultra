@@ -1,4 +1,4 @@
-const CACHE_NAME = "ultra.2";
+const CACHE_NAME = "ultra.3";
 
 const CACHED_URLS = [];
 

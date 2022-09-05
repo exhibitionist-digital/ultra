@@ -22,7 +22,7 @@ libraries. 🧰
 Here's a basic **Ultra** project to set you on your way.
 
 ```sh
-deno run -A -r https://deno.land/x/ultra/init.ts
+deno run -A -r https://deno.land/x/ultra/create.ts
 ```
 
 ## ✨ What's new
@@ -40,8 +40,8 @@ so 2018 just saying that word).
 - Overhaul of internal source code
 - Updated Deno Deploy support
 
-\*\* _Examples include (but not limited to) `react-query` `twind` `emotion`
-`stiches` `react-router` `wouter`_ **@__@**
+\*\* _Examples include (but not limited to) `react-query` `twind` `stitches`
+`react-router` `wouter` `mdx`_ **@__@**
 
 **Does Ultra _'ship js'_?**
 

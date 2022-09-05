@@ -20,9 +20,10 @@ type DefaultBuildOptions = Omit<
 >;
 
 const defaultOptions: DefaultBuildOptions = {
+  root: Deno.cwd(),
   output: ".ultra",
-  importMap: "./importMap.json",
-  exclude: [".git", join("**", ".DS_Store")],
+  importMapPath: "./importMap.json",
+  ignored: [".git", join("**", ".DS_Store")],
 };
 
 export class UltraBuilder extends Builder {
@@ -39,7 +40,8 @@ export class UltraBuilder extends Builder {
     ) => Promise<void> | void,
   ) {
     const resolvedOptions = deepMerge<BuildOptions>(defaultOptions, options);
-    const root = Deno.cwd();
+    const root = resolvedOptions.root;
+
     const output = resolvedOptions.output
       ? resolve(root, resolvedOptions.output)
       : resolve(root, ".ultra");
@@ -48,7 +50,7 @@ export class UltraBuilder extends Builder {
       root,
       output,
       name: "ultra",
-      importMap: resolvedOptions.importMap,
+      importMapPath: resolvedOptions.importMapPath,
       logLevel: "INFO",
       compiler: {
         minify: true,
@@ -67,8 +69,32 @@ export class UltraBuilder extends Builder {
     this.serverEntrypoint = this.makeRelative(this.options.serverEntrypoint);
 
     this.#initEntrypoints();
-    this.#initExcluded();
+    this.#initIgnored();
     this.#initHashed();
+  }
+
+  entrypoint(path: string, config: EntrypointConfig) {
+    this.entrypoints.set(path, config);
+
+    return this;
+  }
+
+  ignore(path: string) {
+    this.ignored.push(super.globToRegExp(path));
+
+    return this;
+  }
+
+  dynamicImportIgnore(path: string) {
+    this.dynamicImportIgnored.push(super.globToRegExp(path));
+
+    return this;
+  }
+
+  contentHash(path: string) {
+    this.hashed.push(super.globToRegExp(path));
+
+    return this;
   }
 
   async build(): Promise<BuildResult> {
@@ -95,7 +121,7 @@ export class UltraBuilder extends Builder {
     /**
      * Remove the dev importMap
      */
-    await buildSources.get(this.options.importMap).then((source) =>
+    await buildSources.get(this.options.importMapPath).then((source) =>
       source.remove()
     );
 
@@ -144,39 +170,33 @@ export class UltraBuilder extends Builder {
   }
 
   #initEntrypoints() {
-    const entrypoints: Record<string, EntrypointConfig> = {};
-
     if (this.browserEntrypoint) {
-      entrypoints[this.browserEntrypoint] = {
+      this.entrypoint(this.browserEntrypoint, {
         vendorOutputDir: "browser",
         target: "browser",
-      };
+      });
     }
 
-    entrypoints[this.serverEntrypoint] = {
+    this.entrypoint(this.serverEntrypoint, {
       vendorOutputDir: "server",
       target: "deno",
-    };
-
-    this.setEntrypoints(entrypoints);
+    });
   }
 
-  #initExcluded() {
+  #initIgnored() {
     /**
      * Deno.mainModule will most definitely be a build.ts file in the project
      * We always exclude this.
      */
     const mainModule = this.makeRelative(Deno.mainModule);
 
-    this.setExcluded([
+    this.setIgnored([
       mainModule,
-      ...(this.options.exclude || []),
+      ...(this.options.ignored || []),
     ]);
 
     // Exclude the compiler middleware from the build output
-    this.setDynamicImportExcluded([
-      import.meta.resolve("../middleware/compiler.ts"),
-    ]);
+    this.dynamicImportIgnore(import.meta.resolve("../middleware/compiler.ts"));
   }
 
   #initHashed() {
@@ -198,8 +218,9 @@ export class UltraBuilder extends Builder {
 
   async #generateAssetManifest(sources: FileBag) {
     this.log.info("Generating asset-manifest.json");
+
     const manifest = this.toManifest(sources, {
-      exclude: [
+      ignore: [
         "./deno.json",
         "./importMap*.json",
       ],
