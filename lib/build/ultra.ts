@@ -218,6 +218,7 @@ export class UltraBuilder extends Builder {
 
   async #generateAssetManifest(sources: FileBag) {
     this.log.info("Generating asset-manifest.json");
+
     const manifest = this.toManifest(sources, {
       ignore: [
         "./deno.json",

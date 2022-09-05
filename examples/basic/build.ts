@@ -6,6 +6,7 @@ const builder = createBuilder({
 });
 
 builder.ignore("./README.md");
+builder.ignore("./*.test.ts");
 
 // deno-lint-ignore no-unused-vars
 const result = await builder.build();
