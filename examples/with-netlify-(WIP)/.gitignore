@@ -1,1 +1,2 @@
 .netlify
+!.netlify/edge-functions

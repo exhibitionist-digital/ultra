@@ -1,3 +1,13 @@
 # with-netlify
 
-> Warning: This is not ready to use.
+### Development
+
+```sh
+netlify dev
+```
+
+### Deployment
+
+```sh
+netlify deploy
+```
