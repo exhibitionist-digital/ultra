@@ -34,13 +34,14 @@ export const netlify: BuildPlugin = {
       join(dotEdgeFunctionsDir, "manifest.json"),
       JSON.stringify(
         {
-          functions: [
+          "functions": [
             {
-              function: "index",
-              pattern: "^[^.]*$",
+              "function": "index",
+              "pattern": "^[^.]*$",
             },
           ],
-          version: 1,
+          "import_map": "../../importMap.server.json",
+          "version": 1,
         },
         null,
         2,
