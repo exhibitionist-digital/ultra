@@ -1,4 +1,8 @@
 {
+  "tasks": {
+    "test": "cd test/fixture && deno test --allow-all",
+    "test:watch": "cd test/fixture && deno test --allow-all --watch"
+  },
   "fmt": {
     "options": {
       "indentWidth": 2,

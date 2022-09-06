@@ -6,9 +6,12 @@ const builder = createBuilder({
 });
 
 builder
+  .ignore("./public/*.png")
+  .ignore("./content/*.mdx")
   .ignore("./README.md")
   .ignore("./fly.toml")
-  .ignore("./DockerFile");
+  .ignore("./Dockerfile")
+  .ignore("./dev.ts");
 
 // deno-lint-ignore no-unused-vars
 const result = await builder.build();

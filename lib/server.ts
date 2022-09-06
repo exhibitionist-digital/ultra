@@ -1,9 +1,10 @@
 import { ULTRA_COMPILER_PATH } from "./constants.ts";
-import { assert, Hono, resolve, toFileUrl, wait } from "./deps.ts";
+import { assert, Hono, resolve, toFileUrl } from "./deps.ts";
 import { ensureMinDenoVersion } from "./dev/ensureMinDenoVersion.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
+import { log } from "./logger.ts";
 import { resolveImportMapPath } from "./utils/import-map.ts";
 
 /**
@@ -46,9 +47,8 @@ export async function createServer(
   await server.init();
 
   if (mode === "development") {
-    const spinner = wait("Loading compiler").start();
+    log.info("Loading compiler");
     const { compiler } = await import("./middleware/compiler.ts");
-    spinner.stop();
 
     server.use(
       `${ULTRA_COMPILER_PATH}/*`,
@@ -59,6 +59,9 @@ export async function createServer(
       }),
     );
 
+    /**
+     * Serve assets from "./public" at "/"
+     */
     server.use(
       "*",
       serveStatic({
