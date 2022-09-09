@@ -8,7 +8,7 @@ jobs:
   fmt-lint-test:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     
     permissions:
