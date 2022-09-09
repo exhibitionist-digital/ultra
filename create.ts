@@ -158,13 +158,15 @@ function resolveDialect(typescript: boolean) {
 
 function denoConfigContent(utils: TaskUtils) {
   const serverEntrypoint = utils.dialectFilename("./server", true);
+  const buildEntrypoint = utils.dialectFilename("./build", false);
+
   // deno-fmt-ignore
   return outdent`
     {
       "tasks": {
         "dev": "deno run -A --no-check --watch ${serverEntrypoint}",
-        "build": "deno run -A ./build.ts",
-        "start": "ULTRA_MODE=production deno run -A --no-remote ${serverEntrypoint}"
+        "build": "deno run -A ${buildEntrypoint}",
+        "start": "ULTRA_MODE=production deno run -A --no-remote ./server.js"
       },
       "compilerOptions": {
         "jsx": "react-jsxdev",
@@ -196,12 +198,15 @@ function buildContent(utils: TaskUtils) {
 
   // deno-fmt-ignore
   return outdent`
-    import build from "ultra/build.ts";
+    import { createBuilder } from "ultra/build.ts";
 
-    await build({
+    const builder = createBuilder({
       browserEntrypoint: import.meta.resolve("${browserEntrypoint}"),
       serverEntrypoint: import.meta.resolve("${serverEntrypoint}"),
     });
+    
+    // deno-lint-ignore no-unused-vars
+    const result = await builder.build();
   `;
 }
 
@@ -295,6 +300,8 @@ function styleContent() {
 function helloUltraContent() {
   // deno-fmt-ignore
   return outdent`
+    import useAsset from "ultra/hooks/use-asset.js";
+
     export default function App() {
       console.log("Hello world!");
       return (
@@ -303,8 +310,9 @@ function helloUltraContent() {
             <meta charSet="utf-8" />
             <title>Ultra</title>
             <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <link rel="shortcut icon" href="/favicon.ico" />
-            <link rel="stylesheet" href="/style.css" />
+            <link rel="shortcut icon" href={useAsset("./favicon.ico")} />
+            <link rel="preload" as="style" href={useAsset("./style.css")} />
+            <link rel="stylesheet" href={useAsset("./style.css")} />
           </head>
           <body>
             <main>
