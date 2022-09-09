@@ -145,7 +145,44 @@ Production builds run with `--no-remote` 🔥
 
 ### [Deploying](#deploying)
 
-> ⏳ Support for various edge providers coming soon!
+> ⏳ Support for more edge providers coming soon!
+
+#### [Deno Deploy](#deno-deploy)
+
+Use this GitHub Action:
+
+```yml
+name: Deploy
+on: [push]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Needed for auth with Deno Deploy
+      contents: read # Needed to clone the repository
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+
+      - name: Install Deno
+        uses: denoland/setup-deno@main
+        with:
+          deno-version: 1.25.1
+
+      - name: Build site
+        run: deno run -A ./build.ts # Your build script
+
+      - name: Upload to Deno Deploy
+        uses: denoland/deployctl@v1
+        with:
+          project: "PROJECT_NAME" # Your deploy project name
+          entrypoint: "server.js"
+          root: .ultra
+          import-map: importMap.server.json
+```
 
 #### [Fly/Docker](#flydocker)
 
