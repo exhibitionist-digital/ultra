@@ -1,6 +1,6 @@
 import type { Environment } from "https://deno.land/x/hono@v2.1.2/hono.ts";
 import type { Context as HonoContext } from "https://deno.land/x/hono@v2.1.2/mod.ts";
-import type { JscTarget } from "https://esm.sh/@swc/core@1.2.212/types.d.ts";
+import type { JscTarget } from "https://esm.sh/@swc/core@1.3.0/types.d.ts";
 export type { Next } from "https://deno.land/x/hono@v2.1.2/mod.ts";
 
 export type Mode = "development" | "production";
