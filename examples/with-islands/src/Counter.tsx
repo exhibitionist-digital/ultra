@@ -6,16 +6,18 @@ interface CounterProps {
 
 export default function Counter(props: CounterProps) {
   const [count, setCount] = useState(props.start);
+  const [hydrated, setHydrated] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (ref.current) {
-      console.log("hydrated");
+      setHydrated(true);
     }
   }, []);
 
   return (
     <div ref={ref}>
+      {hydrated && <p style={{ color: "red" }}>Hydrated</p>}
       <p>{count}</p>
       <button onClick={() => setCount(count - 1)}>
         -1
@@ -27,4 +29,7 @@ export default function Counter(props: CounterProps) {
   );
 }
 
+/**
+ * This is key to make a component island compatible
+ */
 Counter.url = import.meta.url;
