@@ -108,7 +108,9 @@ function IslandProvider({ children, baseUrl }: {
           type: "module",
           defer: true,
           key: "island-hydrator-script",
-          src: import.meta.resolve("ultra/hooks/island-hydrator.js"),
+          dangerouslySetInnerHTML: {
+            __html: `import 'ultra/hooks/island-hydrator.js';`,
+          },
         }),
       ]);
     }
