@@ -8,6 +8,7 @@ import { continueFromInitialStream, renderToInitialStream } from "./stream.ts";
 import { ImportMap } from "./types.ts";
 
 type RenderToStreamOptions = RenderToReadableStreamOptions & {
+  baseUrl: string;
   importMap: ImportMap | undefined;
   assetManifest: Map<string, string> | undefined;
   generateStaticHTML?: boolean;
@@ -21,6 +22,7 @@ export async function renderToStream(
   options: RenderToStreamOptions,
 ) {
   const {
+    baseUrl,
     generateStaticHTML = false,
     disableHydration = false,
     flushEffectsToHead = true,
@@ -46,6 +48,7 @@ export async function renderToStream(
     element: h(
       UltraProvider,
       {
+        baseUrl,
         context,
         assetManifest,
         children: App,

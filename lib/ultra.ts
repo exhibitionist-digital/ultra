@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { ULTRA_COMPILER_PATH } from "./constants.ts";
 import { fromFileUrl, Hono, logger, relative, sprintf } from "./deps.ts";
 import { log } from "./logger.ts";
 import { renderToStream } from "./render.ts";
@@ -30,11 +31,9 @@ export class UltraServer extends Hono {
     log.debug("Initialising server");
 
     /**
-     * Parse the provided importMap if we have an entrypoint
+     * Parse the provided importMap
      */
-    this.importMap = this.entrypoint
-      ? await this.#parseJsonFile(this.importMapPath)
-      : undefined;
+    this.importMap = await this.#parseJsonFile(this.importMapPath);
 
     /**
      * Parse the provided asset manifest if we have an entrypoint
@@ -68,6 +67,7 @@ export class UltraServer extends Hono {
     log.debug("Rendering component");
 
     return renderToStream(Component, context, {
+      baseUrl: this.mode === "development" ? `${ULTRA_COMPILER_PATH}/` : "/",
       assetManifest: this.assetManifest,
       importMap: this.importMap,
       bootstrapModules: this.entrypoint ? [this.entrypoint] : undefined,
