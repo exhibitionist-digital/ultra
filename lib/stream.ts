@@ -21,40 +21,19 @@ export function decodeText(input?: Uint8Array, textDecoder?: TextDecoder) {
     : new TextDecoder().decode(input);
 }
 
-export function createBufferedTransformStream(
+export function createTransformStream(
   transform: (value: string) => string | Promise<string> = (value) => value,
 ): TransformStream<Uint8Array, Uint8Array> {
-  let bufferedString = "";
-  let pendingFlush: Promise<void> | null = null;
-
-  const flushBuffer = (controller: TransformStreamDefaultController) => {
-    if (!pendingFlush) {
-      pendingFlush = new Promise((resolve) => {
-        setTimeout(async () => {
-          const buffered = await transform(bufferedString);
-          controller.enqueue(encodeText(buffered));
-          bufferedString = "";
-          pendingFlush = null;
-          resolve();
-        }, 0);
-      });
-    }
-    return pendingFlush;
-  };
-
   const textDecoder = new TextDecoder();
 
   return new TransformStream({
-    transform(chunk, controller) {
-      bufferedString += decodeText(chunk, textDecoder);
-      flushBuffer(controller);
-      textDecoder.decode();
+    async transform(chunk, controller) {
+      const decoded = decodeText(chunk, textDecoder);
+      const transformed = await transform(decoded);
+      controller.enqueue(encodeText(transformed));
     },
-
     flush() {
-      if (pendingFlush) {
-        return pendingFlush;
-      }
+      textDecoder.decode();
     },
   });
 }
@@ -79,7 +58,9 @@ export function createHeadInjectionTransformStream(
   return new TransformStream({
     transform(chunk, controller) {
       const content = decodeText(chunk);
+
       let index;
+
       const headIndex = content.indexOf("</head");
 
       if (!injected && (index = headIndex) !== -1) {
@@ -168,7 +149,7 @@ export async function continueFromInitialStream(
   }
 
   const transforms: Array<TransformStream<Uint8Array, Uint8Array>> = [
-    createBufferedTransformStream(),
+    createTransformStream(),
     /**
      * Inject the provided importMap to the head, before any of the other
      * transform streams below.

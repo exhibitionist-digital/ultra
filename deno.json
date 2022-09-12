@@ -15,7 +15,9 @@
     "jsxImportSource": "react",
     "lib": [
       "deno.ns",
-      "dom"
+      "dom",
+      "dom.iterable",
+      "dom.asynciterable"
     ]
   },
   "importMap": "./importMap.dev.json"
