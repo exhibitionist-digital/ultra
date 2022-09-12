@@ -1,5 +1,6 @@
 import { createElement as h, Fragment, useContext } from "react";
 import IslandContext from "./island-context.js";
+import "ultra/hooks/island-hydrator.js";
 
 /**
  * @template Props

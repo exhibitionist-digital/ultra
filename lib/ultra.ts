@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import { ULTRA_COMPILER_PATH, ULTRA_STATIC_PATH } from "./constants.ts";
+import { ULTRA_COMPILER_PATH } from "./constants.ts";
 import { fromFileUrl, Hono, logger, relative, sprintf } from "./deps.ts";
 import { log } from "./logger.ts";
 import { renderToStream } from "./render.ts";
@@ -67,9 +67,7 @@ export class UltraServer extends Hono {
     log.debug("Rendering component");
 
     return renderToStream(Component, context, {
-      baseUrl: this.mode === "development"
-        ? ULTRA_COMPILER_PATH
-        : ULTRA_STATIC_PATH,
+      baseUrl: this.mode === "development" ? `${ULTRA_COMPILER_PATH}/` : "/",
       assetManifest: this.assetManifest,
       importMap: this.importMap,
       bootstrapModules: this.entrypoint ? [this.entrypoint] : undefined,

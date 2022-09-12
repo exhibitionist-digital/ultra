@@ -97,7 +97,7 @@ function IslandProvider({ children, baseUrl }: {
           key: "island-hydrator-data",
           dangerouslySetInnerHTML: {
             __html: outdent`
-            globalThis.__ULTRA_ISLAND_URL = "${baseUrl}/";
+            globalThis.__ULTRA_ISLAND_URL = "${baseUrl}";
             globalThis.__ULTRA_ISLAND_DATA = ${prepareData(hydrationData)};
             globalThis.__ULTRA_ISLAND_COMPONENT = ${
               prepareData(componentPaths)
@@ -109,7 +109,10 @@ function IslandProvider({ children, baseUrl }: {
           defer: true,
           key: "island-hydrator-script",
           dangerouslySetInnerHTML: {
-            __html: `import 'ultra/hooks/island-hydrator.js';`,
+            __html: `
+              import { hydrateIslands } from 'ultra/hooks/island-hydrator.js';
+              hydrateIslands();
+            `,
           },
         }),
       ]);

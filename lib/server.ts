@@ -46,6 +46,28 @@ export async function createServer(
 
   await server.init();
 
+  /**
+   * Serve assets from "./public" at "/"
+   */
+  server.use(
+    "*",
+    serveStatic({
+      root: resolve(root, "./public"),
+      cache: mode !== "development",
+    }),
+  );
+
+  /**
+   * Serve anything else static at "/"
+   */
+  server.use(
+    "*",
+    serveStatic({
+      root: resolve(root, "./"),
+      cache: mode !== "development",
+    }),
+  );
+
   if (mode === "development") {
     log.info("Loading compiler");
     const { compiler } = await import("./middleware/compiler.ts");
@@ -56,39 +78,6 @@ export async function createServer(
         mode,
         root,
         ...options.compilerOptions,
-      }),
-    );
-
-    /**
-     * Serve assets from "./public" at "/"
-     */
-    server.use(
-      "*",
-      serveStatic({
-        root: resolve(root, "./public"),
-        cache: false,
-      }),
-    );
-  } else {
-    /**
-     * Serve assets from "./public" at "/"
-     */
-    server.use(
-      "*",
-      serveStatic({
-        root: resolve(root, "./public"),
-        cache: true,
-      }),
-    );
-
-    /**
-     * Serve anything else static at "/"
-     */
-    server.use(
-      "*",
-      serveStatic({
-        root: resolve(root, "./"),
-        cache: true,
       }),
     );
   }
