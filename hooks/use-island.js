@@ -1,12 +1,8 @@
+/// <reference types="./use-island.d.ts" />
 import { createElement as h, Fragment, useContext } from "react";
 import IslandContext from "./island-context.js";
 import "ultra/hooks/island-hydrator.js";
 
-/**
- * @template Props
- * @param {React.ComponentType<Props> & { url: string }} Component
- * @returns {React.FunctionComponent<Props & { hydrationStrategy?: 'visible' | 'load' | 'idle' }>}
- */
 export default function island(Component) {
   const name = Component.displayName || Component.name;
 
