@@ -3,7 +3,7 @@ import { createElement as h, Fragment, useContext } from "react";
 import IslandContext from "./island-context.js";
 import "ultra/hooks/island-hydrator.js";
 
-export default function island(Component) {
+export default function useIsland(Component) {
   const name = Component.displayName || Component.name;
 
   if (!Component.url) {
