@@ -154,7 +154,6 @@ export function renderToInitialStream({
 
 type ContinueFromInitialStreamOptions = {
   generateStaticHTML: boolean;
-  disableHydration: boolean;
   dataStream?: TransformStream<Uint8Array, Uint8Array>;
   importMap?: ImportMap;
   flushEffectHandler?: () => string;
@@ -169,7 +168,6 @@ export async function continueFromInitialStream(
   const {
     importMap,
     generateStaticHTML,
-    disableHydration,
     dataStream,
     flushEffectHandler,
     flushDataStreamHandler,
