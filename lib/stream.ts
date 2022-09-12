@@ -194,9 +194,7 @@ export async function continueFromInitialStream(
      * Inject the provided importMap to the head, before any of the other
      * transform streams below.
      */
-    importMap && disableHydration === false
-      ? createImportMapInjectionStream(importMap)
-      : null,
+    importMap ? createImportMapInjectionStream(importMap) : null,
     /**
      * Just flush the effects to the queue if flushEffectsToHead is false
      */
