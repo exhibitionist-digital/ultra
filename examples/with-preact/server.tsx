@@ -4,7 +4,6 @@ import App from "./src/app.tsx";
 
 const server = await createServer({
   importMapPath: import.meta.resolve("./importMap.json"),
-  browserEntrypoint: import.meta.resolve("./client.tsx"),
   compilerOptions: {
     jsxImportSource: "preact",
   },

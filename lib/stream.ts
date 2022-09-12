@@ -179,7 +179,7 @@ export async function continueFromInitialStream(
   /**
    * @see https://reactjs.org/docs/react-dom-server.html#rendertoreadablestream
    */
-  if (generateStaticHTML) {
+  if (generateStaticHTML && typeof renderStream.allReady !== undefined) {
     log.debug(
       "Waiting for stream to complete, generateStaticHTML was requested",
     );

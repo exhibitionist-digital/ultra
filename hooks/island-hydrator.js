@@ -16,7 +16,7 @@ export function hydrateIslands() {
   const load = filterMarkers("load");
 
   async function hydrateIsland(id, container) {
-    const { createElement: h, lazy } = await import("react");
+    const { createElement: h } = await import("react");
     const { createRoot } = await import("react-dom/client");
     const { props, name } = data[id];
 
@@ -26,7 +26,8 @@ export function hydrateIslands() {
     );
 
     const root = createRoot(container);
-    root.render(h(lazy(() => import(url)), props));
+    const { default: Component } = await import(url);
+    root.render(h(Component, props));
   }
 
   if (visible.length) {
