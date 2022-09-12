@@ -3,28 +3,30 @@ import DataStreamContext from "./data-stream-context.js";
 
 /**
  * @template T
- * @param {Promise<T>} promise
- * @returns {Promise<T>}
+ * @param {() => Promise<T>} callback
+ * @returns {callback}
  */
-export default function useAsync(promise) {
+export default function useAsync(callback) {
   const id = useId();
   const key = `ultra-async-data-stream-${id}`;
-  const addDataPromise = useContext(DataStreamContext);
+  const addDataStreamCallback = useContext(DataStreamContext);
 
-  if (addDataPromise) {
-    addDataPromise(key, promise);
-    return promise;
+  if (addDataStreamCallback) {
+    addDataStreamCallback(key, callback);
+    return callback;
   } else {
     try {
       const element = document.getElementById(key);
       if (element) {
-        return Promise.resolve(JSON.parse(element.innerText));
+        return function resolvedCallback() {
+          return Promise.resolve(JSON.parse(element.innerText));
+        };
       } else {
-        return promise;
+        return callback;
       }
     } catch (error) {
       console.error(error);
-      return promise;
+      return callback;
     }
   }
 }

@@ -5,16 +5,21 @@ type TodoProps = {
   id: number;
 };
 
-export default function Todo({ id }: TodoProps) {
-  const promise = useAsync(
-    fetch(
-      `https://jsonplaceholder.typicode.com/todos/${id}`,
-    ).then((response) => response.json()),
-  );
+type Todo = {
+  id: number;
+  userId: number;
+  title: string;
+  completed: boolean;
+};
 
+export default function Todo({ id }: TodoProps) {
   const query = useQuery(
     ["todo", { id }],
-    () => promise,
+    useAsync<Todo>(() =>
+      fetch(
+        `https://jsonplaceholder.typicode.com/todos/${id}`,
+      ).then((response) => response.json())
+    ),
   );
 
   return <pre>{JSON.stringify(query.data, null, 2)}</pre>;

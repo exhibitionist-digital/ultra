@@ -1,7 +1,8 @@
 import { createContext } from "react";
 
 /**
- * @type {React.Context<null | (id: string, promise: Promise<any>) => void>}
+ * @template T
+ * @type {React.Context<null | (id: string, callback: () => Promise<T>) => void>}
  */
 const DataStreamContext = createContext(
   null,

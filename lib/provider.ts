@@ -36,40 +36,43 @@ export const flushEffectHandler = (): string => {
   );
 };
 
-// deno-lint-ignore no-explicit-any
-const dataStreamPromises = new Map<string, Promise<any>>();
+const dataStreamCallbacks = new Map<string, () => Promise<unknown>>();
 
 export function createFlushDataStreamHandler(
   writer: WritableStreamDefaultWriter<Uint8Array>,
 ) {
   return async function flushDataStreamHandler() {
     const encoder = new TextEncoder();
-    for (const [id, promise] of dataStreamPromises) {
-      const result = await promise;
-      writer.write(
-        encoder.encode(
-          `<script id="${id}" type="application/json">${
-            JSON.stringify(result)
-          }</script>`,
-        ),
-      );
+    for (const [id, callback] of dataStreamCallbacks) {
+      try {
+        const result = await callback();
+        writer.write(
+          encoder.encode(
+            `<script id="${id}" type="application/json">${
+              JSON.stringify(result)
+            }</script>`,
+          ),
+        );
+      } catch (error) {
+        console.error(error);
+      }
     }
     writer.close();
   };
 }
 
+function addDataStreamCallback<T>(id: string, callback: () => Promise<T>) {
+  dataStreamCallbacks.set(id, callback);
+}
+
 function FlushDataStream({ children }: { children: JSX.Element }) {
-  dataStreamPromises.clear();
+  dataStreamCallbacks.clear();
 
-  const addPromise = useCallback(
-    // deno-lint-ignore no-explicit-any
-    (id: string, promise: Promise<any>) => {
-      dataStreamPromises.set(id, promise);
-    },
-    [],
+  return h(
+    DataStreamContext.Provider,
+    { value: addDataStreamCallback },
+    children,
   );
-
-  return h(DataStreamContext.Provider, { value: addPromise }, children);
 }
 
 function AssetProvider(
