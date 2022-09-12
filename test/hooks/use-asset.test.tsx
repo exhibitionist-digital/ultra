@@ -1,18 +1,14 @@
 import { assertEquals } from "https://deno.land/std@0.155.0/testing/asserts.ts";
 import { renderToStream } from "../../lib/render.ts";
-import useAsync from "../../hooks/use-async.js";
+import useAsset from "../../hooks/use-asset.js";
 
-Deno.test("useAsync hook", async () => {
+Deno.test("useAsset hook", async () => {
   const App = () => {
-    useAsync(() =>
-      fetch(
-        "https://jsonplaceholder.typicode.com/todos/1",
-      ).then((response) => response.json())
-    );
     return (
       <html>
         <head>
           <title>Testing</title>
+          <link rel="shortcut icon" href={useAsset("./favicon.ico")} />
         </head>
         <body>
           <div>Hello World</div>
@@ -21,13 +17,18 @@ Deno.test("useAsync hook", async () => {
     );
   };
 
+  const assetManifest = new Map([[
+    "./favicon.ico",
+    "./favicon.1234567890.ico",
+  ]]);
+
   const stream = await renderToStream(
     <App />,
     undefined,
     {
       baseUrl: "/",
       importMap: { imports: {} },
-      assetManifest: undefined,
+      assetManifest,
     },
   );
 
@@ -36,7 +37,7 @@ Deno.test("useAsync hook", async () => {
 
   assertEquals(
     text.includes(
-      '<script id="ultra-async-data-stream-:R0:" type="application/json">{"userId":1,"id":1,"title":"delectus aut autem","completed":false}</script>',
+      '<link rel="shortcut icon" href="./favicon.1234567890.ico"/>',
     ),
     true,
   );
