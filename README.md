@@ -1,6 +1,6 @@
 <div align="center">
 <br />
-<img src="https://ultrajs.dev/ultra.svg" height="250" />
+<img src="https://raw.githubusercontent.com/exhibitionist-digital/ultra/main/examples/ultra-website/public/ultra.svg" height="250" />
 
 ### Ultra 2.0 (Milky Way)
 
