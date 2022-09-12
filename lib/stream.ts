@@ -21,40 +21,19 @@ export function decodeText(input?: Uint8Array, textDecoder?: TextDecoder) {
     : new TextDecoder().decode(input);
 }
 
-export function createBufferedTransformStream(
+export function createTransformStream(
   transform: (value: string) => string | Promise<string> = (value) => value,
 ): TransformStream<Uint8Array, Uint8Array> {
-  let bufferedString = "";
-  let pendingFlush: Promise<void> | null = null;
-
-  const flushBuffer = (controller: TransformStreamDefaultController) => {
-    if (!pendingFlush) {
-      pendingFlush = new Promise((resolve) => {
-        setTimeout(async () => {
-          const buffered = await transform(bufferedString);
-          controller.enqueue(encodeText(buffered));
-          bufferedString = "";
-          pendingFlush = null;
-          resolve();
-        }, 0);
-      });
-    }
-    return pendingFlush;
-  };
-
   const textDecoder = new TextDecoder();
 
   return new TransformStream({
-    transform(chunk, controller) {
-      bufferedString += decodeText(chunk, textDecoder);
-      flushBuffer(controller);
-      textDecoder.decode();
+    async transform(chunk, controller) {
+      const decoded = decodeText(chunk, textDecoder);
+      const transformed = await transform(decoded);
+      controller.enqueue(encodeText(transformed));
     },
-
     flush() {
-      if (pendingFlush) {
-        return pendingFlush;
-      }
+      textDecoder.decode();
     },
   });
 }
@@ -79,7 +58,9 @@ export function createHeadInjectionTransformStream(
   return new TransformStream({
     transform(chunk, controller) {
       const content = decodeText(chunk);
+
       let index;
+
       const headIndex = content.indexOf("</head");
 
       if (!injected && (index = headIndex) !== -1) {
@@ -101,6 +82,42 @@ export function createImportMapInjectionStream(importMap: ImportMap) {
       `<script async src="https://ga.jspm.io/npm:es-module-shims@1.5.1/dist/es-module-shims.js" crossorigin="anonymous"></script>`,
       `<script type="importmap">${JSON.stringify(importMap)}</script>`,
     ].join("\n");
+  });
+}
+
+export function createInlineDataStream(
+  dataStream: ReadableStream<Uint8Array>,
+): TransformStream<Uint8Array, Uint8Array> {
+  let dataStreamFinished: Promise<void> | null = null;
+  return new TransformStream({
+    transform(chunk, controller) {
+      controller.enqueue(chunk);
+
+      if (!dataStreamFinished) {
+        const dataStreamReader = dataStream.getReader();
+        dataStreamFinished = new Promise((resolve) => {
+          setTimeout(async () => {
+            try {
+              while (true) {
+                const { done, value } = await dataStreamReader.read();
+                if (done) {
+                  return resolve();
+                }
+                controller.enqueue(value);
+              }
+            } catch (error) {
+              controller.error(error);
+            }
+            resolve();
+          }, 0);
+        });
+      }
+    },
+    flush() {
+      if (dataStreamFinished) {
+        return dataStreamFinished;
+      }
+    },
   });
 }
 
@@ -138,8 +155,10 @@ export function renderToInitialStream({
 type ContinueFromInitialStreamOptions = {
   generateStaticHTML: boolean;
   disableHydration: boolean;
+  dataStream?: TransformStream<Uint8Array, Uint8Array>;
   importMap?: ImportMap;
   flushEffectHandler?: () => string;
+  flushDataStreamHandler?: () => void;
   flushEffectsToHead: boolean;
 };
 
@@ -150,7 +169,10 @@ export async function continueFromInitialStream(
   const {
     importMap,
     generateStaticHTML,
+    disableHydration,
+    dataStream,
     flushEffectHandler,
+    flushDataStreamHandler,
     flushEffectsToHead,
   } = options;
 
@@ -167,7 +189,7 @@ export async function continueFromInitialStream(
   }
 
   const transforms: Array<TransformStream<Uint8Array, Uint8Array>> = [
-    createBufferedTransformStream(),
+    createTransformStream(),
     /**
      * Inject the provided importMap to the head, before any of the other
      * transform streams below.
@@ -180,6 +202,10 @@ export async function continueFromInitialStream(
       ? createFlushEffectStream(flushEffectHandler)
       : null,
     /**
+     * Handles useAsync calls
+     */
+    dataStream ? createInlineDataStream(dataStream.readable) : null,
+    /**
      * Flush effects to the head if flushEffectsToHead is true
      */
     createHeadInjectionTransformStream(() => {
@@ -189,6 +215,8 @@ export async function continueFromInitialStream(
         : "";
     }),
   ].filter(nonNullable);
+
+  flushDataStreamHandler && flushDataStreamHandler();
 
   return transforms.reduce(
     (readable, transform) => readable.pipeThrough(transform),

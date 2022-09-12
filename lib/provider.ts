@@ -2,6 +2,7 @@ import type { ComponentType, PropsWithChildren, ReactNode } from "react";
 import { createElement as h, Fragment, useCallback } from "react";
 import { renderToString } from "react-dom/server";
 import AssetContext from "../hooks/asset-context.js";
+import DataStreamContext from "../hooks/data-stream-context.js";
 import FlushEffectsContext from "../hooks/flush-effect-context.js";
 import IslandContext from "../hooks/island-context.js";
 import ServerContext from "../hooks/server-context.js";
@@ -36,6 +37,45 @@ export const flushEffectHandler = (): string => {
     ),
   );
 };
+
+const dataStreamCallbacks = new Map<string, () => Promise<unknown>>();
+
+export function createFlushDataStreamHandler(
+  writer: WritableStreamDefaultWriter<Uint8Array>,
+) {
+  return async function flushDataStreamHandler() {
+    const encoder = new TextEncoder();
+    for (const [id, callback] of dataStreamCallbacks) {
+      try {
+        const result = await callback();
+        writer.write(
+          encoder.encode(
+            `<script id="${id}" type="application/json">${
+              JSON.stringify(result)
+            }</script>`,
+          ),
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    writer.close();
+  };
+}
+
+function addDataStreamCallback<T>(id: string, callback: () => Promise<T>) {
+  dataStreamCallbacks.set(id, callback);
+}
+
+function FlushDataStream({ children }: { children: JSX.Element }) {
+  dataStreamCallbacks.clear();
+
+  return h(
+    DataStreamContext.Provider,
+    { value: addDataStreamCallback },
+    children,
+  );
+}
 
 function AssetProvider(
   { children, value }: {
@@ -160,17 +200,19 @@ export function UltraProvider(
     ServerContextProvider,
     {
       value: context,
-      children: h(
-        FlushEffects,
-        null,
-        h(AssetProvider, {
-          value: assetManifest,
-          children: h(IslandProvider, {
-            children,
-            baseUrl,
+      children: h(FlushDataStream, {
+        children: h(
+          FlushEffects,
+          null,
+          h(AssetProvider, {
+            value: assetManifest,
+            children: h(IslandProvider, {
+              children,
+              baseUrl,
+            }),
           }),
-        }),
-      ),
+        ),
+      }),
     },
   );
 }

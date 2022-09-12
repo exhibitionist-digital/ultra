@@ -1,6 +1,10 @@
 import { createElement as h } from "react";
 import { RenderToReadableStreamOptions } from "react-dom/server";
-import { flushEffectHandler, UltraProvider } from "./provider.ts";
+import {
+  createFlushDataStreamHandler,
+  flushEffectHandler,
+  UltraProvider,
+} from "./provider.ts";
 import { fromFileUrl } from "./deps.ts";
 import type { Context } from "./types.ts";
 import { log } from "./logger.ts";
@@ -57,11 +61,18 @@ export async function renderToStream(
     options,
   });
 
+  const dataStream = new TransformStream<Uint8Array, Uint8Array>();
+  const flushDataStreamHandler = createFlushDataStreamHandler(
+    dataStream.writable.getWriter(),
+  );
+
   return await continueFromInitialStream(renderStream, {
     generateStaticHTML,
     disableHydration,
     flushEffectsToHead,
     flushEffectHandler,
+    flushDataStreamHandler,
+    dataStream,
     importMap,
   });
 }

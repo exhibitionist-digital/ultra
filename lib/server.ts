@@ -47,7 +47,8 @@ export async function createServer(
   await server.init();
 
   /**
-   * Serve assets from "./public" at "/"
+   * We always try to serve public assets before
+   * anything else.
    */
   server.use(
     "*",
