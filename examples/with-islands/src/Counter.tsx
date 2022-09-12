@@ -11,6 +11,7 @@ export default function Counter(props: CounterProps) {
 
   useEffect(() => {
     if (ref.current) {
+      console.log("hydrated");
       setHydrated(true);
     }
   }, []);
