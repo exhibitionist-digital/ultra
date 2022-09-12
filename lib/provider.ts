@@ -2,6 +2,7 @@ import type { PropsWithChildren, ReactNode } from "react";
 import { createElement as h, Fragment, useCallback } from "react";
 import { renderToString } from "react-dom/server";
 import AssetContext from "../hooks/asset-context.js";
+import DataStreamContext from "../hooks/data-stream-context.js";
 import FlushEffectsContext from "../hooks/flush-effect-context.js";
 import ServerContext from "../hooks/server-context.js";
 import useFlushEffects from "../hooks/use-flush-effects.js";
@@ -34,6 +35,42 @@ export const flushEffectHandler = (): string => {
     ),
   );
 };
+
+// deno-lint-ignore no-explicit-any
+const dataStreamPromises = new Map<string, Promise<any>>();
+
+export function createFlushDataStreamHandler(
+  writer: WritableStreamDefaultWriter<Uint8Array>,
+) {
+  return async function flushDataStreamHandler() {
+    const encoder = new TextEncoder();
+    for (const [id, promise] of dataStreamPromises) {
+      const result = await promise;
+      writer.write(
+        encoder.encode(
+          `<script id="${id}" type="application/json">${
+            JSON.stringify(result)
+          }</script>`,
+        ),
+      );
+    }
+    writer.close();
+  };
+}
+
+function FlushDataStream({ children }: { children: JSX.Element }) {
+  dataStreamPromises.clear();
+
+  const addPromise = useCallback(
+    // deno-lint-ignore no-explicit-any
+    (id: string, promise: Promise<any>) => {
+      dataStreamPromises.set(id, promise);
+    },
+    [],
+  );
+
+  return h(DataStreamContext.Provider, { value: addPromise }, children);
+}
 
 function AssetProvider(
   { children, value }: {
@@ -82,11 +119,13 @@ export function UltraProvider(
     ServerContextProvider,
     {
       value: context,
-      children: h(
-        FlushEffects,
-        null,
-        h(AssetProvider, { value: assetManifest, children }),
-      ),
+      children: h(FlushDataStream, {
+        children: h(
+          FlushEffects,
+          null,
+          h(AssetProvider, { value: assetManifest, children }),
+        ),
+      }),
     },
   );
 }

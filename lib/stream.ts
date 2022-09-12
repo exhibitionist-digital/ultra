@@ -85,6 +85,42 @@ export function createImportMapInjectionStream(importMap: ImportMap) {
   });
 }
 
+export function createInlineDataStream(
+  dataStream: ReadableStream<Uint8Array>,
+): TransformStream<Uint8Array, Uint8Array> {
+  let dataStreamFinished: Promise<void> | null = null;
+  return new TransformStream({
+    transform(chunk, controller) {
+      controller.enqueue(chunk);
+
+      if (!dataStreamFinished) {
+        const dataStreamReader = dataStream.getReader();
+        dataStreamFinished = new Promise((resolve) => {
+          setTimeout(async () => {
+            try {
+              while (true) {
+                const { done, value } = await dataStreamReader.read();
+                if (done) {
+                  return resolve();
+                }
+                controller.enqueue(value);
+              }
+            } catch (error) {
+              controller.error(error);
+            }
+            resolve();
+          }, 0);
+        });
+      }
+    },
+    flush() {
+      if (dataStreamFinished) {
+        return dataStreamFinished;
+      }
+    },
+  });
+}
+
 export function renderToInitialStream({
   element,
   options,
@@ -119,8 +155,10 @@ export function renderToInitialStream({
 type ContinueFromInitialStreamOptions = {
   generateStaticHTML: boolean;
   disableHydration: boolean;
+  dataStream?: TransformStream<Uint8Array, Uint8Array>;
   importMap?: ImportMap;
   flushEffectHandler?: () => string;
+  flushDataStreamHandler?: () => void;
   flushEffectsToHead: boolean;
 };
 
@@ -132,7 +170,9 @@ export async function continueFromInitialStream(
     importMap,
     generateStaticHTML,
     disableHydration,
+    dataStream,
     flushEffectHandler,
+    flushDataStreamHandler,
     flushEffectsToHead,
   } = options;
 
@@ -164,6 +204,10 @@ export async function continueFromInitialStream(
       ? createFlushEffectStream(flushEffectHandler)
       : null,
     /**
+     * Handles useAsync calls
+     */
+    dataStream ? createInlineDataStream(dataStream.readable) : null,
+    /**
      * Flush effects to the head if flushEffectsToHead is true
      */
     createHeadInjectionTransformStream(() => {
@@ -173,6 +217,8 @@ export async function continueFromInitialStream(
         : "";
     }),
   ].filter(nonNullable);
+
+  flushDataStreamHandler && flushDataStreamHandler();
 
   return transforms.reduce(
     (readable, transform) => readable.pipeThrough(transform),
