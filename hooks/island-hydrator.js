@@ -6,19 +6,15 @@ const markers = Array.from(
   document.querySelectorAll("template[data-hydration-marker]"),
 );
 
-const hydrateVisible = markers.filter((m) =>
-  m.dataset.hydrationStrategy === "visible"
-);
+function filterMarkers(strategy) {
+  return markers.filter((m) => m.dataset.hydrationStrategy === strategy);
+}
 
-const hydrateIdle = markers.filter((m) =>
-  m.dataset.hydrationStrategy === "idle"
-);
+const visible = filterMarkers("visible");
+const idle = filterMarkers("idle");
+const load = filterMarkers("load");
 
-const hydrateLoad = markers.filter((m) =>
-  m.dataset.hydrationStrategy === "load"
-);
-
-async function hydrateIsland(id, container, strategy) {
+async function hydrateIsland(id, container) {
   const { createElement: h, lazy } = await import("react");
   const { createRoot } = await import("react-dom/client");
   const { props, name } = data[id];
@@ -28,45 +24,37 @@ async function hydrateIsland(id, container, strategy) {
     new URL(baseUrl, window.location.href),
   );
 
-  console.log("Hydrating Island", {
-    id,
-    name,
-    props,
-    strategy,
-    url: String(url),
-  });
-
   const root = createRoot(container);
   root.render(h(lazy(() => import(url)), props));
 }
 
-if (hydrateVisible.length) {
+if (visible.length) {
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach(async (entry) => {
       if (entry.isIntersecting) {
         const m = entry.target.previousElementSibling;
         const id = m.dataset.hydrationMarker;
-        await hydrateIsland(id, entry.target, "visible");
+        await hydrateIsland(id, entry.target);
         observer.unobserve(entry.target);
       }
     });
   });
 
-  hydrateVisible.map((marker) => observer.observe(marker.nextElementSibling));
+  visible.map((marker) => observer.observe(marker.nextElementSibling));
 }
 
-if (hydrateIdle.length) {
+if (idle.length) {
   requestIdleCallback(() => {
-    hydrateIdle.map(async (m) => {
+    idle.map(async (m) => {
       const id = m.dataset.hydrationMarker;
-      await hydrateIsland(id, m.nextElementSibling, "idle");
+      await hydrateIsland(id, m.nextElementSibling);
     });
   });
 }
 
-if (hydrateLoad.length) {
-  hydrateLoad.map(async (m) => {
+if (load.length) {
+  load.map(async (m) => {
     const id = m.dataset.hydrationMarker;
-    await hydrateIsland(id, m.nextElementSibling, "load");
+    await hydrateIsland(id, m.nextElementSibling);
   });
 }
