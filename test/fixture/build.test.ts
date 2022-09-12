@@ -1,29 +1,39 @@
 import { assertEquals } from "https://deno.land/std@0.153.0/testing/asserts.ts";
 import { createBuilder } from "../../build.ts";
 
-Deno.test("it works with a browser entrypoint", async () => {
-  const builder = createBuilder({
-    browserEntrypoint: import.meta.resolve("./client.tsx"),
-    serverEntrypoint: import.meta.resolve("./server.tsx"),
-  });
+const TEST_FIXTURES = !Deno.env.get("TEST_FIXTURE");
 
-  builder.ignore("./README.md");
-  builder.ignore("./*.test.*");
+Deno.test(
+  "it works with a browser entrypoint",
+  { ignore: TEST_FIXTURES },
+  async () => {
+    const builder = createBuilder({
+      browserEntrypoint: import.meta.resolve("./client.tsx"),
+      serverEntrypoint: import.meta.resolve("./server.tsx"),
+    });
 
-  const result = await builder.build();
+    builder.ignore("./README.md");
+    builder.ignore("./*.test.*");
 
-  assertEquals(result.sources.size, 9);
-});
+    const result = await builder.build();
 
-Deno.test("it works without a browser entrypoint", async () => {
-  const builder = createBuilder({
-    serverEntrypoint: import.meta.resolve("./server.tsx"),
-  });
+    assertEquals(result.sources.size, 9);
+  },
+);
 
-  builder.ignore("./README.md");
-  builder.ignore("./*.test.*");
+Deno.test(
+  "it works without a browser entrypoint",
+  { ignore: TEST_FIXTURES },
+  async () => {
+    const builder = createBuilder({
+      serverEntrypoint: import.meta.resolve("./server.tsx"),
+    });
 
-  const result = await builder.build();
+    builder.ignore("./README.md");
+    builder.ignore("./*.test.*");
 
-  assertEquals(result.sources.size, 9);
-});
+    const result = await builder.build();
+
+    assertEquals(result.sources.size, 9);
+  },
+);
