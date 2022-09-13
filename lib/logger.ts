@@ -62,4 +62,6 @@ export class Logger extends logging.Logger {
   }
 }
 
-export const log = new Logger("INFO");
+export const log = new Logger(
+  (Deno.env.get("ULTRA_LOG_LEVEL") as logging.LevelName) || "INFO",
+);
