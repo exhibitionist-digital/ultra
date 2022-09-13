@@ -28,8 +28,8 @@ export default function App() {
               path="about"
               element={<AboutPage />}
             />
+            <Route path="*" element={<RouteNotFound />} />
           </Route>
-          <Route path="*" element={<RouteNotFound />} />
         </Routes>
       </body>
     </html>
