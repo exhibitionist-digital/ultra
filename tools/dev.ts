@@ -68,6 +68,24 @@ serve((request) => {
 
       console.log(`Dev file server listening http://${hostname}:${port}`);
 
+      const serverEntrypoints = ["./server.tsx", "./server.js"];
+
+      /**
+       * Find the entrypoint
+       */
+      const serverEntrypoint = await Promise.any<string>(
+        serverEntrypoints.map((entrypoint) => {
+          return new Promise((resolve, reject) => {
+            const fileInfo = Deno.lstatSync(join(examplePath, entrypoint));
+            if (fileInfo.isFile) {
+              resolve(entrypoint);
+            } else {
+              reject();
+            }
+          });
+        }),
+      );
+
       /**
        * Run the server with generated dev config
        */
@@ -80,7 +98,7 @@ serve((request) => {
           `--reload=http://localhost:${port}`,
           "--config",
           "deno.dev.json",
-          "./server.tsx",
+          serverEntrypoint,
         ],
         cwd: examplePath,
       });
