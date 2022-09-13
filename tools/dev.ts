@@ -68,7 +68,13 @@ serve((request) => {
 
       console.log(`Dev file server listening http://${hostname}:${port}`);
 
-      const serverEntrypoints = ["./server.tsx", "./server.js"];
+      // Valid entrypoints for our examples
+      const serverEntrypoints = [
+        "./server.tsx",
+        "./server.jsx",
+        "./server.ts",
+        "./server.js",
+      ];
 
       /**
        * Find the entrypoint
