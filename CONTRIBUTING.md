@@ -24,7 +24,6 @@ error:
 deno fmt
 deno lint
 deno task test
-deno task test:puppeteer
 ```
 
 Note that `deno fmt` needs to be run on any changes to markdown or other
