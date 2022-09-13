@@ -12,14 +12,16 @@ type Todo = {
   completed: boolean;
 };
 
+function fetchTodo(id: number): Promise<Todo> {
+  return fetch(
+    `https://jsonplaceholder.typicode.com/todos/${id}`,
+  ).then((response) => response.json());
+}
+
 export default function Todo({ id }: TodoProps) {
   const query = useQuery(
     ["todo", { id }],
-    useAsync<Todo>(() =>
-      fetch(
-        `https://jsonplaceholder.typicode.com/todos/${id}`,
-      ).then((response) => response.json())
-    ),
+    useAsync(() => fetchTodo(id)),
   );
 
   return <pre>{JSON.stringify(query.data, null, 2)}</pre>;
