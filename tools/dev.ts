@@ -2,20 +2,16 @@ import { serve } from "https://deno.land/std@0.155.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.155.0/http/file_server.ts";
 import { join } from "https://deno.land/std@0.155.0/path/mod.ts";
 
-async function ask<T = string>(question = ":", answers?: T[]) {
-  await Deno.stdout.write(new TextEncoder().encode(question + " "));
-  const buf = new Uint8Array(1024);
-  const n = <number> await Deno.stdin.read(buf);
-  const answer = new TextDecoder().decode(buf.subarray(0, n));
-  if (answers) {
-    return answers[parseInt(answer.trim())] || answers[0];
-  }
-  return answer.trim();
-}
-
 type ImportMap = {
   imports: Record<string, string>;
 };
+
+/**
+ * This tool helps with developing and contributing to Ultra. It will start a file server for serving
+ * Ultra source, from the root of the workspace. It will ask which example the user
+ * would like to work on, generate a `deno.dev.json` and `importMap.dev.json`
+ * in that examples project directory, and run the ./server.tsx in dev mode.
+ */
 
 /**
  * Start the dev file server
@@ -96,3 +92,14 @@ serve((request) => {
     }
   },
 });
+
+async function ask<T = string>(question = ":", answers?: T[]) {
+  await Deno.stdout.write(new TextEncoder().encode(question + " "));
+  const buf = new Uint8Array(1024);
+  const n = <number> await Deno.stdin.read(buf);
+  const answer = new TextDecoder().decode(buf.subarray(0, n));
+  if (answers) {
+    return answers[parseInt(answer.trim())] || answers[0];
+  }
+  return answer.trim();
+}
