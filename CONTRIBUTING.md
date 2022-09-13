@@ -7,7 +7,9 @@ will ask you which example you would like to work on and start that example in
 dev mode, so it can be used to test and work on changes to the Ultra codebase
 easily.
 
-- `deno task dev`
+```
+deno task dev
+```
 
 ---
 
