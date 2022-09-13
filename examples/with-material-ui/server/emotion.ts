@@ -1,7 +1,7 @@
 import {
-  createBufferedTransformStream,
   createHeadInjectionTransformStream,
-} from "../../../stream.ts";
+  createTransformStream,
+} from "ultra/stream.ts";
 
 const regex = new RegExp(
   `<style data-emotion="css ([a-zA-Z0-9-_ ]+)">(.+)<\\/style>`,
@@ -18,7 +18,7 @@ export function emotionTransformStream(
   cache: Map<string, string> = new Map(),
 ) {
   const transforms = [
-    createBufferedTransformStream((content) => {
+    createTransformStream((content) => {
       let match;
 
       regex.lastIndex = 0;
