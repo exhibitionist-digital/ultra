@@ -30,9 +30,8 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
     try {
       const response = await fetch(toFileUrl(path));
       const headers = new Headers(response.headers);
-      const file = await response.body;
 
-      if (file) {
+      if (response.ok) {
         if (options.cache) {
           headers.append(
             "Cache-Control",
@@ -47,7 +46,7 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
         }
 
         return new Response(
-          file,
+          response.body,
           { status: 200, headers },
         );
       } else {
