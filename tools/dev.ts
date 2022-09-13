@@ -81,7 +81,7 @@ serve((request) => {
           "run",
           "-A",
           "--watch",
-          "--reload",
+          `--reload=http://localhost:${port}`,
           "--config",
           "deno.dev.json",
           "./server.tsx",
