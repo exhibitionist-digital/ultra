@@ -1,5 +1,8 @@
-import { createElement as h } from "react";
-import { RenderToReadableStreamOptions } from "react-dom/server";
+import { createElement as h, version as reactVersion } from "react";
+import {
+  RenderToReadableStreamOptions,
+  version as reactDomServerVersion,
+} from "react-dom/server";
 import {
   createFlushDataStreamHandler,
   flushEffectHandler,
@@ -19,6 +22,9 @@ type RenderToStreamOptions = RenderToReadableStreamOptions & {
   flushEffectsToHead?: boolean;
   disableHydration?: boolean;
 };
+
+log.debug(`react: ${reactVersion}`);
+log.debug(`react-dom/server: ${reactDomServerVersion}`);
 
 export async function renderToStream(
   App: JSX.Element,
