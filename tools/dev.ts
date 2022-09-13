@@ -84,8 +84,6 @@ serve((request) => {
           "--reload",
           "--config",
           "deno.dev.json",
-          "--import-map",
-          "importMap.dev.json",
           "./server.tsx",
         ],
         cwd: examplePath,
