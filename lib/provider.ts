@@ -179,10 +179,15 @@ function IslandProvider({ children, baseUrl }: {
   return h(IslandContext.Provider, { value: add }, children);
 }
 
+type ServerContextProviderProps = {
+  children: JSX.Element;
+  context: Context | undefined;
+};
+
 function ServerContextProvider(
-  { children, value }: { children: ReactNode; value: Context | undefined },
+  { children, context }: ServerContextProviderProps,
 ) {
-  return h(ServerContext.Provider, { value }, children);
+  return h(ServerContext.Provider, { value: context, children });
 }
 
 type UltraProviderProps = {
@@ -199,7 +204,7 @@ export function UltraProvider(
   return h(
     ServerContextProvider,
     {
-      value: context,
+      context,
       children: h(FlushDataStream, {
         children: h(
           FlushEffects,

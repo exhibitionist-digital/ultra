@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 /**
- * @type {React.Context<undefined | import('../lib/types.ts').Context>}
+ * @type {React.Context<import('../lib/types.ts').Context | undefined>}
  */
 const ServerContext = createContext(undefined);
 
