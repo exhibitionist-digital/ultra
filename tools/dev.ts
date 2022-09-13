@@ -1,3 +1,4 @@
+import { crayon } from "https://deno.land/x/crayon@3.3.2/mod.ts";
 import { serve } from "https://deno.land/std@0.155.0/http/server.ts";
 import { serveDir } from "https://deno.land/std@0.155.0/http/file_server.ts";
 import { join } from "https://deno.land/std@0.155.0/path/mod.ts";
@@ -34,7 +35,7 @@ serve((request) => {
     const examplesSorted = examples.sort();
 
     const example = await ask(
-      `Which example are you working on? ${
+      `${crayon.lightBlue("Which example are you working on?")} ${
         examplesSorted.map((example, index) => `\n(${index}) ${example}`)
       }\n`,
       examplesSorted,
