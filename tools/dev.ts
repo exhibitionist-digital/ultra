@@ -22,6 +22,7 @@ serve((request) => {
     showDirListing: true,
     showDotfiles: false,
     quiet: true,
+    enableCors: true,
   });
 }, {
   port: 4507,
@@ -108,6 +109,9 @@ serve((request) => {
           serverEntrypoint,
         ],
         cwd: examplePath,
+        env: {
+          ULTRA_MODE: "development",
+        },
       });
 
       await process.status();

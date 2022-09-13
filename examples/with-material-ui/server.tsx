@@ -6,7 +6,9 @@ import theme from "./theme.ts";
 import { emotionTransformStream } from "./server/emotion.ts";
 
 const server = await createServer({
-  importMapPath: import.meta.resolve("./importMap.json"),
+  importMapPath: Deno.env.get("ULTRA_MODE") === "development"
+    ? import.meta.resolve("./importMap.dev.json")
+    : import.meta.resolve("./importMap.json"),
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 

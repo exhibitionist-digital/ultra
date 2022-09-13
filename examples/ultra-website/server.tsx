@@ -12,7 +12,9 @@ import useFlushEffects from "ultra/hooks/use-flush-effects.js";
 import { getStarCount } from "./src/api/github.ts";
 
 const server = await createServer({
-  importMapPath: import.meta.resolve("./importMap.json"),
+  importMapPath: Deno.env.get("ULTRA_MODE") === "development"
+    ? import.meta.resolve("./importMap.dev.json")
+    : import.meta.resolve("./importMap.json"),
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 
