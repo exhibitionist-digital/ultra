@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Todo from "./todo.tsx";
 
 const SlowTodo = lazy(() => import("./slow-todo.tsx"));
@@ -19,6 +20,7 @@ export default function App() {
         <Suspense fallback={<div>Loading</div>}>
           <SlowTodo id={4} />
         </Suspense>
+        <ReactQueryDevtools />
       </body>
     </html>
   );
