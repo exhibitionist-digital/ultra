@@ -34,7 +34,7 @@ serve((request) => {
     const examplesSorted = examples.sort();
 
     const example = await ask(
-      `What example are you working on? ${
+      `Which example are you working on? ${
         examplesSorted.map((example, index) => `\n(${index}) ${example}`)
       }\n`,
       examplesSorted,
