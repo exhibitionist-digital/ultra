@@ -4,5 +4,9 @@ NOTES.md
 *.png
 **/src/content
 
+# tools/dev.ts generated files
+examples/*/deno.dev.json
+examples/*/importMap.dev.json
+
 # Local Netlify folder
 .netlify
