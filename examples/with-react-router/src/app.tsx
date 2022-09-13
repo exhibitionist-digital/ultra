@@ -1,7 +1,15 @@
 import { Route, Routes } from "react-router-dom";
+import useServerContext from "ultra/hooks/use-server-context.js";
 import { DefaultLayout } from "./layouts/DefaultLayout.tsx";
-import HomePage from "./pages/Home.tsx";
 import AboutPage from "./pages/About.tsx";
+import HomePage from "./pages/Home.tsx";
+
+function RouteNotFound() {
+  useServerContext((context) => {
+    context.status(404);
+  });
+  return <div>Not found</div>;
+}
 
 export default function App() {
   return (
@@ -21,6 +29,7 @@ export default function App() {
               element={<AboutPage />}
             />
           </Route>
+          <Route path="*" element={<RouteNotFound />} />
         </Routes>
       </body>
     </html>

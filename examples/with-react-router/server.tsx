@@ -10,16 +10,17 @@ const server = await createServer({
 
 server.get("*", async (context) => {
   /**
-   * Render the request
+   * Render the request with context
    */
-  const result = await server.render(
+  const result = await server.renderWithContext(
     <StaticRouter location={new URL(context.req.url).pathname}>
       <App />
     </StaticRouter>,
+    context,
   );
 
-  return context.body(result, 200, {
-    "content-type": "text/html",
+  return context.body(result, undefined, {
+    "content-type": "text/html; charset=utf-8",
   });
 });
 
