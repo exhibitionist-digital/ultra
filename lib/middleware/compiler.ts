@@ -62,7 +62,7 @@ export const compiler = (options: CompilerOptions) => {
         }
 
         return context.body(code, 200, {
-          "content-type": "text/javascript",
+          "content-type": "text/javascript; charset=utf-8",
         });
       } catch (error) {
         console.error(error);

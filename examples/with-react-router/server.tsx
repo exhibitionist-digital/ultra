@@ -19,8 +19,8 @@ server.get("*", async (context) => {
     context,
   );
 
-  return context.body(result, 200, {
-    "content-type": "text/html",
+  return context.body(result, undefined, {
+    "content-type": "text/html; charset=utf-8",
   });
 });
 
