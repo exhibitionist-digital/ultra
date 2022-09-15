@@ -3,11 +3,9 @@ import {
   RenderToReadableStreamOptions,
   version as reactDomServerVersion,
 } from "react-dom/server";
-import {
-  createFlushDataStreamHandler,
-  flushEffectHandler,
-  UltraProvider,
-} from "./provider.ts";
+import { UltraProvider } from "./provider.ts";
+import { flushEffectHandler } from "./context/flushEffects.ts";
+import { createFlushDataStreamHandler } from "./context/dataStream.ts";
 import { fromFileUrl } from "./deps.ts";
 import type { Context } from "./types.ts";
 import { log } from "./logger.ts";
