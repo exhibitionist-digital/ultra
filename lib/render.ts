@@ -1,8 +1,5 @@
-import { createElement as h, version as reactVersion } from "react";
-import {
-  RenderToReadableStreamOptions,
-  version as reactDomServerVersion,
-} from "react-dom/server";
+import * as React from "react";
+import * as ReactDOMServer from "react-dom/server";
 import { UltraProvider } from "./provider.ts";
 import { flushEffectHandler } from "./context/flushEffects.ts";
 import { createFlushDataStreamHandler } from "./context/dataStream.ts";
@@ -12,7 +9,7 @@ import { log } from "./logger.ts";
 import { continueFromInitialStream, renderToInitialStream } from "./stream.ts";
 import { ImportMap } from "./types.ts";
 
-type RenderToStreamOptions = RenderToReadableStreamOptions & {
+type RenderToStreamOptions = ReactDOMServer.RenderToReadableStreamOptions & {
   baseUrl: string;
   importMap: ImportMap | undefined;
   assetManifest: Map<string, string> | undefined;
@@ -21,8 +18,12 @@ type RenderToStreamOptions = RenderToReadableStreamOptions & {
   disableHydration?: boolean;
 };
 
-log.debug(`react: ${reactVersion}`);
-log.debug(`react-dom/server: ${reactDomServerVersion}`);
+log.debug(`react: ${React.version} ${import.meta.resolve("react")}`);
+log.debug(
+  `react-dom/server: ${ReactDOMServer.version} ${
+    import.meta.resolve("react-dom/server")
+  }`,
+);
 
 export async function renderToStream(
   App: JSX.Element,
@@ -53,7 +54,7 @@ export async function renderToStream(
   };
 
   const renderStream = await renderToInitialStream({
-    element: h(
+    element: React.createElement(
       UltraProvider,
       {
         baseUrl,
