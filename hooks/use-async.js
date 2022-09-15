@@ -3,20 +3,20 @@ import DataStreamContext from "./data-stream-context.js";
 
 /**
  * @typedef {Object} Options
- * @property {boolean} [false] returnCallback - Should the streamed data or callback be returned on the client.
- * @property {number} [5000] streamTimeout - How long to wait for the stream to finish before returning a rejected promise.
+ * @property {boolean} [returnCallback=false] Should the streamed data or callback be returned on the client.
+ * @property {number} [streamTimeout=5000] How long to wait for the stream to finish before returning a rejected promise.
  */
 
 /**
  * @template T
- * @param {() => Promise<T>} callback - A function that returns a promise. On the server, this function will be called and the result streamed to the client.
+ * @param {() => Promise<T>} callback A function that returns a promise. On the server, this function will be called and the result streamed to the client.
  * @param {Options} Options
  * @returns {(callback | Promise<T>)}
  */
 
 export default function useAsync(
   callback,
-  { returnCallback = false, streamTimeout = 5000 } = {}
+  { returnCallback = false, streamTimeout = 5000 } = {},
 ) {
   const id = useId();
   const key = `ultra-async-data-stream-${id}`;
@@ -70,7 +70,7 @@ export default function useAsync(
       if (returnCallback) {
         return callback;
       }
-      // Or else just return a function to return a rejected promise.
+      // Or else just return a function that rejects with the error.
       return function reject() {
         return Promise.reject(error);
       };
