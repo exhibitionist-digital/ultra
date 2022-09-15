@@ -11,7 +11,7 @@ import DataStreamContext from "./data-stream-context.js";
  * @template T
  * @param {() => Promise<T>} callback A function that returns a promise. On the server, this function will be called and the result streamed to the client.
  * @param {Options} Options
- * @returns {(callback | Promise<T>)}
+ * @returns {callback}
  */
 
 export default function useAsync(
@@ -27,7 +27,10 @@ export default function useAsync(
     return callback;
   } else {
     try {
-      if (returnCallback) return callback;
+      if (returnCallback) {
+        return callback;
+      }
+
       const element = document.getElementById(key);
       // If the element doesn't exist, the data hasn't streamed in yet.
       // Let's wait for the data to stream in.
