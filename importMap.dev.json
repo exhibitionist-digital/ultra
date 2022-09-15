@@ -6,6 +6,8 @@
     "react-dom/": "https://esm.sh/react-dom@18.2.0/",
     "react-router-dom": "https://esm.sh/react-router-dom@6.3.0?external=react",
     "react-router-dom/server": "https://esm.sh/react-router-dom@6.3.0/server?external=react",
+    "preact": "https://esm.sh/preact@10.11.0",
+    "preact/": "https://esm.sh/preact@10.11.0/",
     "wouter": "https://esm.sh/wouter?external=react",
     "wouter/static-location": "https://esm.sh/wouter/static-location?external=react",
     "@tanstack/react-query": "https://esm.sh/@tanstack/react-query@4.1.3?external=react",
