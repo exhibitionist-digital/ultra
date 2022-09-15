@@ -5,7 +5,7 @@
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
-    "ultra/": "https://deno.land/x/ultra@v2.0.0-beta.6/",
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-beta.7/",
     "@mui/material": "https://esm.sh/@mui/material@5.10.3?bundle&external=react,@emotion/react,@emotion/styled",
     "@mui/material/styles": "https://esm.sh/@mui/material@5.10.3/styles",
     "@mui/material/colors": "https://esm.sh/@mui/material@5.10.3/colors",
