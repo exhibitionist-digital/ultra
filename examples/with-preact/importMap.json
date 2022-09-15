@@ -3,8 +3,8 @@
     "react": "https://esm.sh/preact@10.11.0/compat",
     "preact": "https://esm.sh/preact@10.11.0",
     "preact/": "https://esm.sh/preact@10.11.0/",
-    "react-dom": "https://esm.sh/preact@10.11.0/compat",
-    "react-dom/": "https://esm.sh/preact@10.11.0/compat/",
+    "react-dom": "https://esm.sh/preact@10.11.0&external=preact/compat",
+    "react-dom/": "https://esm.sh/preact@10.11.0&external=preact/compat/",
     "ultra/": "https://deno.land/x/ultra@v2.0.0-beta.6/"
   }
 }
