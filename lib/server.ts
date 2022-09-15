@@ -1,11 +1,16 @@
 import { ULTRA_COMPILER_PATH } from "./constants.ts";
-import { assert, Hono, resolve, toFileUrl } from "./deps.ts";
+import { assert, dotenv, Hono, resolve, toFileUrl } from "./deps.ts";
 import { ensureMinDenoVersion } from "./dev/ensureMinDenoVersion.ts";
+import { log } from "./logger.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
-import { log } from "./logger.ts";
 import { resolveImportMapPath } from "./utils/import-map.ts";
+
+/**
+ * Dotenv
+ */
+await dotenv({ export: true });
 
 /**
  * Check if we are running on Deno Deploy and set the mode to production

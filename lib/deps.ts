@@ -8,6 +8,7 @@ export {
   resolve,
   toFileUrl,
 } from "https://deno.land/std@0.153.0/path/mod.ts";
+export { config as dotenv } from "https://deno.land/std@0.153.0/dotenv/mod.ts";
 export { default as outdent } from "https://deno.land/x/outdent@v0.8.0/mod.ts";
 export { gte } from "https://deno.land/std@0.153.0/semver/mod.ts";
 export { crayon } from "https://deno.land/x/crayon@3.3.2/mod.ts";
