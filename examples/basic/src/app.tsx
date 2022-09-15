@@ -1,7 +1,6 @@
 import useAsset from "ultra/hooks/use-asset.js";
 
 export default function App() {
-  console.log("Hello world!");
   return (
     <html lang="en">
       <head>
