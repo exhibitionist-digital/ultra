@@ -38,7 +38,6 @@ export function styleContent() {
      }
      
      p {
-       max-width: 600px;
        margin: 0 auto 1em;
      }
    `;
