@@ -4,8 +4,12 @@ import { Color } from "https://deno.land/x/color/mod.ts";
 export function gradient(string: string, size = 6) {
   const chars: string[] = string.split("");
   for (const [index, char] of chars.entries()) {
-    const rgb = Color.hsl(305 - (size * index), 100, 70).toType("rgb")
-    const eightbit = rgbToAnsi8(rgb.channels[0], rgb.channels[1], rgb.channels[2]);
+    const rgb = Color.hsl(305 - (size * index), 100, 70).toType("rgb");
+    const eightbit = rgbToAnsi8(
+      rgb.channels[0],
+      rgb.channels[1],
+      rgb.channels[2],
+    );
     chars[index] = crayon.ansi8(eightbit)(char);
   }
   return chars.join("");
@@ -13,8 +17,12 @@ export function gradient(string: string, size = 6) {
 
 export function c(option: number, string?: string) {
   const chars = `(${option})`;
-  const rgb = Color.hsl(285 - (20 * option), 100, 70).toType("rgb")
-  const eightbit = rgbToAnsi8(rgb.channels[0], rgb.channels[1], rgb.channels[2]);
+  const rgb = Color.hsl(285 - (20 * option), 100, 70).toType("rgb");
+  const eightbit = rgbToAnsi8(
+    rgb.channels[0],
+    rgb.channels[1],
+    rgb.channels[2],
+  );
   return crayon.ansi8(eightbit)(string ?? chars);
 }
 

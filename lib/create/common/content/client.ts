@@ -8,11 +8,11 @@ export function clientContent(config: Config) {
 
   return `
 import { hydrateRoot } from "react-dom/client";
-import App from "${ext('./src/app', true)}";
+import App from "${ext("./src/app", true)}";
 
 ${
     p.twind(`// Twind
-import "${ext('./src/twind/twind', false)}";
+import "${ext("./src/twind/twind", false)}";
 `)
   }
 
@@ -25,7 +25,7 @@ import { BrowserRouter } from "react-router-dom";
 ${
     p.wouter(`// Wouter
 import { Router } from "wouter";
-import { SearchParamsProvider } from "${ext('./src/wouter/index', true)}";
+import { SearchParamsProvider } from "${ext("./src/wouter/index", true)}";
 `)
   }
 
@@ -34,7 +34,7 @@ ${p.reactHelmetAsync('import { HelmetProvider } from "react-helmet-async";')}
 ${
     p.reactQuery(`// React Query
 import { Hydrate, QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "${ext('./src/react-query/query-client', false)}";
+import { queryClient } from "${ext("./src/react-query/query-client", false)}";
 ${config.ts ? "declare const __REACT_QUERY_DEHYDRATED_STATE: unknown;" : ""}
 `)
   }

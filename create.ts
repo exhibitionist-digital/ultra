@@ -72,7 +72,6 @@ const queryLibrary = await ask<Libraries>(
   ["none", "react-query"],
 );
 
-
 // CONFIG GENERATION
 
 function parseImports() {

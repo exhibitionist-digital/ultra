@@ -52,7 +52,7 @@ import { queryClient } from "${ext("./src/react-query/query-client", false)}";
     importMapPath: Deno.env.get("ULTRA_MODE") === "development"
       ? import.meta.resolve("./importMap.dev.json")
       : import.meta.resolve("./importMap.json"),
-    browserEntrypoint: import.meta.resolve("${ext('./client', true)}"),
+    browserEntrypoint: import.meta.resolve("${ext("./client", true)}"),
   });
 
 ${

@@ -3,8 +3,8 @@ import { fileExtension } from "../io.ts";
 import { printer } from "../printer.ts";
 
 export function appContent(config: Config) {
-  const p = printer(config)
-  const ext = fileExtension(config)
+  const p = printer(config);
+  const ext = fileExtension(config);
   // deno-fmt-ignore
   return`
 

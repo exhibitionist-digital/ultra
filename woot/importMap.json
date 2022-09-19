@@ -1,0 +1,16 @@
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0?dev",
+    "react/": "https://esm.sh/react@18.2.0/",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
+
+    "@stitches/react": "https://esm.sh/@stitches/react@1.2.8?external=react",
+
+    "wouter": "https://esm.sh/wouter?external=react",
+    "wouter/static-location": "https://esm.sh/wouter/static-location?external=react",
+
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-beta.7/"
+  }
+}
