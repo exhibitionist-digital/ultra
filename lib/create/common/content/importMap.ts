@@ -3,10 +3,6 @@ import { printer } from "../printer.ts";
 
 export function importMapContent(config: Config) {
   const p = printer(config);
-  function trpc(content: string) {
-    if (config.includes.includes("trpc")) return "";
-    return content;
-  }
   return `
       {
          "imports": {
@@ -45,7 +41,7 @@ export function importMapContent(config: Config) {
 
             ${
     p.reactQuery(
-      '"@tanstack/react-query": "https://esm.sh/@tanstack/react-query@4.2.3",',
+      '"@tanstack/react-query": "https://esm.sh/@tanstack/react-query@4.2.3?external=react",',
     )
   }
             

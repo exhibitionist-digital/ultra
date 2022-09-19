@@ -40,7 +40,7 @@ export async function createUltraApp(config: Config) {
   await create(ext("build", false), buildContent(config));
   await create(ext("client", true), clientContent(config));
   await create(ext("server", true), serverContent(config));
-  await create(ext("/src/app", true), appContent());
+  await create(ext("/src/app", true), appContent(config));
   await create("public/style.css", styleContent());
   await dl(
     "/public/favicon.ico",

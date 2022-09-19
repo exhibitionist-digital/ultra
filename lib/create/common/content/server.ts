@@ -9,11 +9,11 @@ export function serverContent(config: Config) {
   return `
 import { serve } from "https://deno.land/std@0.153.0/http/server.ts";
 import { createServer, createRouter } from "ultra/server.ts";
-import App from "${ext("src/app", true)}";
+import App from "${ext("./src/app", true)}";
 
 ${
     p.twind(`// Twind
-import "${ext(".src/twind/twind", false)}";
+import "${ext("./src/twind/twind", false)}";
 `)
   }
 
@@ -42,7 +42,7 @@ ${
     p.reactQuery(`// React Query
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useDehydrateReactQuery } from "${
-      ext(".src/react-query/useDehydrateReactQuery", true)
+      ext("./src/react-query/useDehydrateReactQuery", true)
     }";
 import { queryClient } from "${ext("./src/react-query/query-client", false)}";
 `)

@@ -42,7 +42,7 @@ export function appContent(config: Config) {
              </main>
            </body>
          </html>
-         ${p.twind('</StitchesProvider>')}
+         ${p.stitches('</StitchesProvider>')}
          ${p.twind('</TwindProvider>')}
        );
      }
