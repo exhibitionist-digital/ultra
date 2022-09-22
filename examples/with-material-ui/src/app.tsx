@@ -18,8 +18,8 @@ export default function App() {
         />
         <link rel="shortcut icon" href={useAsset("./favicon.ico")} />
       </head>
-      <body>
-        <Button>Hello World</Button>
+      <body style={{padding: "1em"}} >
+        <Button variant="contained" onClick={() => alert("Hello World from a Material UI button!!")}>Say Hello World</Button>
       </body>
     </html>
   );
