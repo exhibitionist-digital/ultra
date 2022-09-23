@@ -61,8 +61,11 @@ export const compiler = (options: CompilerOptions) => {
           code = insertSourceMap(code, map, url);
         }
 
-        return context.body(code, 200, {
-          "content-type": "text/javascript; charset=utf-8",
+        return new Response(code, {
+          status: 200,
+          headers: {
+            "content-type": "text/javascript; charset=utf-8",
+          },
         });
       } catch (error) {
         console.error(error);
