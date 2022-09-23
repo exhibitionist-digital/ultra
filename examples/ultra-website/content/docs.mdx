@@ -1,6 +1,6 @@
 # docs
 
-> 📝 These docs are a WIP of the alpha 2 release.
+> 📝 These docs are a WIP of the beta release.
 
 Welp, if you've made it here, you probably have a basic **Ultra** project
 running. If not try this...
@@ -15,7 +15,7 @@ deno run -A -r https://deno.land/x/ultra/create.ts
 
 **Ultra** gives you the control to use (or not use) many of the most popular
 React libraries out there. You will probably
-need to update your `importMap.json` `server.tsx` and `client.tsx`
+need to update your `importMap.json`,  `server.tsx` and `client.tsx`
 
 We've prepared the following examples for you:
 
@@ -42,6 +42,20 @@ We've prepared the following examples for you:
 #### [API Routes](#api-routes)
 
 - Hono [(with-api-routes)](https://github.com/exhibitionist-digital/ultra/tree/main/examples/with-api-routes)
+
+#### [Middleware](#middleware)
+Since **Ultra** uses Hono under-the-covers, it includes middleware support. Here is an example snippet added to `server.tsx` that will add a 'Server' header to every response:
+```js
+server.use('*', async (c, next) => {
+  c.res.headers.set("Server", "Ultra Hono");
+  await next();
+});
+```
+If you look in the Dev Tools Network tab and click on localhost, you'll see this line in the Headers tab added to the Response Headers section:
+```
+server: Ultra Hono
+```
+See the [Hono middleware docs](https://honojs.dev/docs/api/middleware/) for more details.
 
 #### [Zero-JS™](#zero-js)
 
