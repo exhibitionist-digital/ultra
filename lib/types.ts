@@ -18,6 +18,7 @@ export type CreateServerOptions = {
    * of your rendered HTML markup.
    */
   importMapPath: string;
+  esModuleShimsPath: string;
   /**
    * The browser entrypoint. This is what initially gets sent with the server
    * rendered HTML markup. This should be what hydrates your React application.

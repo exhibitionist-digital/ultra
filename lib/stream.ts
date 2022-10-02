@@ -75,11 +75,15 @@ export function createHeadInjectionTransformStream(
   });
 }
 
-export function createImportMapInjectionStream(importMap: ImportMap) {
+export function createImportMapInjectionStream(
+  importMap: ImportMap,
+  esModuleShimsPath: string,
+) {
   log.debug("Stream inject importMap");
+
   return createHeadInjectionTransformStream(() => {
     return [
-      `<script async src="https://ga.jspm.io/npm:es-module-shims@1.5.1/dist/es-module-shims.js" crossorigin="anonymous"></script>`,
+      `<script async src="${esModuleShimsPath}" crossorigin="anonymous"></script>`,
       `<script type="importmap">${JSON.stringify(importMap)}</script>`,
     ].join("\n");
   });
@@ -156,6 +160,7 @@ type ContinueFromInitialStreamOptions = {
   generateStaticHTML: boolean;
   dataStream?: TransformStream<Uint8Array, Uint8Array>;
   importMap?: ImportMap;
+  esModuleShimsPath: string;
   flushEffectHandler?: () => string;
   flushDataStreamHandler?: () => void;
   flushEffectsToHead: boolean;
@@ -167,6 +172,7 @@ export async function continueFromInitialStream(
 ): Promise<ReadableStream<Uint8Array>> {
   const {
     importMap,
+    esModuleShimsPath,
     generateStaticHTML,
     dataStream,
     flushEffectHandler,
@@ -192,7 +198,9 @@ export async function continueFromInitialStream(
      * Inject the provided importMap to the head, before any of the other
      * transform streams below.
      */
-    importMap ? createImportMapInjectionStream(importMap) : null,
+    importMap
+      ? createImportMapInjectionStream(importMap, esModuleShimsPath)
+      : null,
     /**
      * Just flush the effects to the queue if flushEffectsToHead is false
      */
