@@ -3,7 +3,7 @@ import { createElement as h } from "react";
 import { AssetProvider } from "./context/asset.ts";
 import { DataStreamProvider } from "./context/dataStream.ts";
 import { EnvProvider } from "./context/env.ts";
-import { FlushEffectsProvider } from "./context/flushEffects.ts";
+import { InsertedHTML } from "./context/serverInsertedHtml.ts";
 import { IslandProvider } from "./context/island.ts";
 import { ServerContextProvider } from "./context/server.ts";
 import type { Context } from "./types.ts";
@@ -23,7 +23,7 @@ export function UltraProvider(
     context,
     children: h(DataStreamProvider, {
       children: h(
-        FlushEffectsProvider,
+        InsertedHTML,
         {
           children: h(
             EnvProvider,

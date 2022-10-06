@@ -1,12 +1,16 @@
 import * as React from "react";
 import * as ReactDOMServer from "react-dom/server";
 import { UltraProvider } from "./provider.ts";
-import { flushEffectHandler } from "./context/flushEffects.ts";
+import { getServerInsertedHTML } from "./context/serverInsertedHtml.ts";
 import { createFlushDataStreamHandler } from "./context/dataStream.ts";
 import { fromFileUrl } from "./deps.ts";
 import type { Context } from "./types.ts";
 import { log } from "./logger.ts";
-import { continueFromInitialStream, renderToInitialStream } from "./stream.ts";
+import {
+  continueFromInitialStream,
+  renderToInitialStream,
+  streamToString,
+} from "./stream.ts";
 import { ImportMap } from "./types.ts";
 
 type RenderToStreamOptions = ReactDOMServer.RenderToReadableStreamOptions & {
@@ -14,7 +18,7 @@ type RenderToStreamOptions = ReactDOMServer.RenderToReadableStreamOptions & {
   importMap: ImportMap | undefined;
   assetManifest: Map<string, string> | undefined;
   generateStaticHTML?: boolean;
-  flushEffectsToHead?: boolean;
+  serverInsertedHTMLToHead?: boolean;
   disableHydration?: boolean;
 };
 
@@ -25,6 +29,13 @@ log.debug(
   }`,
 );
 
+export async function renderToString(element: React.ReactElement) {
+  // if (!shouldUseReactRoot) return ReactDOMServer.renderToString(element)
+  const renderStream = await ReactDOMServer.renderToReadableStream(element);
+  await renderStream.allReady;
+  return streamToString(renderStream);
+}
+
 export async function renderToStream(
   App: JSX.Element,
   context: Context | undefined,
@@ -34,7 +45,7 @@ export async function renderToStream(
     baseUrl,
     generateStaticHTML = false,
     disableHydration = false,
-    flushEffectsToHead = true,
+    serverInsertedHTMLToHead = true,
     importMap,
     assetManifest,
   } = options;
@@ -73,8 +84,8 @@ export async function renderToStream(
 
   return await continueFromInitialStream(renderStream, {
     generateStaticHTML,
-    flushEffectsToHead,
-    flushEffectHandler,
+    getServerInsertedHTML,
+    serverInsertedHTMLToHead,
     flushDataStreamHandler,
     dataStream,
     importMap,

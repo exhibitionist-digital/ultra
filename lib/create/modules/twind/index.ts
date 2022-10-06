@@ -43,7 +43,7 @@ export function twindProviderContent(config: Config) {
    import { Sheet } from "twind";
    import { getStyleTagProperties, VirtualSheet } from "twind/sheets";
    import { sheet } from "./twind${config.ts ? ".ts" : ".js"}";
-   import useFlushEffects from "ultra/hooks/use-flush-effects.js";
+   import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
    
    /**
     * This is just a guard to make sure we are dealing with
@@ -61,9 +61,9 @@ export function twindProviderContent(config: Config) {
     config.ts ? ": PropsWithChildren" : ""
   }) {
      /**
-      * useFlushEffects will inject the returned output into the rendered stream.
+      * useServerInsertedHTML will inject the returned output into the rendered stream.
       */
-     useFlushEffects(() => {
+     useServerInsertedHTML(() => {
        if (isVirtualSheet(sheet)) {
          const styleTag = getStyleTagProperties(sheet);
          sheet.reset();

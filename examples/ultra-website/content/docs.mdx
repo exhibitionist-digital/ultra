@@ -101,17 +101,17 @@ import useAsset from "ultra/hooks/use-asset.js";
 
 `useAsset` allows **Ultra** to version your assets during build for deploying to production. In development it's a non-op.
 
-#### [useFlushEffects](#useflusheffects)
+#### [useServerInsertedHTML](#useflusheffects)
 
 ```js
-import useFlushEffects from "ultra/hooks/use-flush-effects.js";
+import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
 
 
 const ServerApp = function () {
   /**
-   * useFlushEffects will inject the returned output into the rendered stream.
+   * useServerInsertedHTML will inject the returned output into the rendered stream.
    */
-  useFlushEffects(() => {
+  useServerInsertedHTML(() => {
     // ...
   });
 

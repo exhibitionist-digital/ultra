@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { createElement as h } from "react";
 import AssetContext from "../../hooks/asset-context.js";
-import useFlushEffects from "../../hooks/use-flush-effects.js";
+import useServerInsertedHTML from "../../hooks/use-server-inserted-html.js";
 
 export function AssetProvider(
   { children, value }: {
@@ -9,7 +9,7 @@ export function AssetProvider(
     value: Map<string, string> | undefined;
   },
 ) {
-  useFlushEffects(() => {
+  useServerInsertedHTML(() => {
     /**
      * We don't need to inject if we don't have an assetManifest
      */

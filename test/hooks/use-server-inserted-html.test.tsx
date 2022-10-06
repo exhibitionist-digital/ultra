@@ -1,12 +1,13 @@
 import { assertEquals } from "https://deno.land/std@0.155.0/testing/asserts.ts";
 import { renderToStream } from "../../lib/render.ts";
-import useFlushEffect from "../../hooks/use-flush-effects.js";
+import useServerInsertedHTML from "../../hooks/use-server-inserted-html.js";
 
-Deno.test("useFlushEffect hook", async () => {
+Deno.test("useServerInsertedHTML hook", async () => {
   const App = () => {
-    useFlushEffect(() => {
-      return <div>Testing use-flush-effect</div>;
+    useServerInsertedHTML(() => {
+      return <div>Testing useServerInsertedHTML</div>;
     });
+
     return (
       <html>
         <head>
@@ -33,7 +34,7 @@ Deno.test("useFlushEffect hook", async () => {
   const text = await response.text();
 
   assertEquals(
-    text.includes("Testing use-flush-effect"),
+    text.includes("Testing useServerInsertedHTML"),
     true,
   );
 });
