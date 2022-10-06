@@ -1,8 +1,8 @@
-import { hydrateRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import hydrate from "ultra/hydrate.js";
 import App from "./src/app.tsx";
 
-hydrateRoot(
+hydrate(
   document,
   <BrowserRouter>
     <App />

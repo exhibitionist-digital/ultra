@@ -1,9 +1,9 @@
-import { hydrateRoot } from "react-dom/client";
+import hydrate from "ultra/hydrate.js";
 import { Router } from "wouter";
 import App from "./src/app.tsx";
 import { SearchParamsProvider } from "./src/context/SearchParams.tsx";
 
-hydrateRoot(
+hydrate(
   document,
   <Router>
     <SearchParamsProvider value={new URLSearchParams(window.location.search)}>

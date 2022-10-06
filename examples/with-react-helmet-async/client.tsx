@@ -1,8 +1,8 @@
-import { hydrateRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
+import hydrate from "ultra/hydrate.js";
 import App from "./src/app.tsx";
 
-hydrateRoot(
+hydrate(
   document,
   <HelmetProvider>
     <App />
