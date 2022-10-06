@@ -96,7 +96,7 @@ More examples can be found [here](https://github.com/exhibitionist-digital/ultra
 ```js
 import useAsset from "ultra/hooks/use-asset.js";
 
-<link rel="preload" as="style" href={useAsset("./style.css")} />
+<link rel="preload" as="style" href={useAsset("/style.css")} />
 ```
 
 `useAsset` allows **Ultra** to version your assets during build for deploying to production. In development it's a non-op.
