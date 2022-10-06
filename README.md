@@ -2,7 +2,7 @@
 <br />
 <img src="https://raw.githubusercontent.com/exhibitionist-digital/ultra/main/examples/ultra-website/public/ultra.svg" height="250" />
 
-### Ultra 2.0 (Milky Way)
+### Ultra 2.0
 
 #### Hypermodern Zero-Legacy Deno/React Framework<sup>*</sup>
 
