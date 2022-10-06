@@ -71,10 +71,11 @@ export class UltraBuilder extends Builder {
     this.#initEntrypoints();
     this.#initIgnored();
     this.#initHashed();
+    this.#initCompiled();
   }
 
-  entrypoint(path: string, config: EntrypointConfig) {
-    this.entrypoints.set(path, config);
+  entrypoint(name: string, config: EntrypointConfig) {
+    this.addEntrypoint(name, config);
 
     return this;
   }
@@ -109,31 +110,37 @@ export class UltraBuilder extends Builder {
     const sources = await this.gatherSources();
 
     /**
-     * Copy sources to output
-     */
-    const buildSources = await this.copySources(sources);
-
-    /**
      * Execute the build
      */
-    const result = await super.build(buildSources);
+    const result = await super.build(sources);
+    const generated = new FileBag();
 
-    /**
-     * Remove the dev importMap
-     */
-    await buildSources.get(this.options.importMapPath).then((source) =>
-      source.remove()
-    );
+    for (const [entrypointName, importMap] of result.importMaps.entries()) {
+      generated.add(
+        new VirtualFile(
+          `./importMap.${entrypointName}.json`,
+          this.context.output,
+          JSON.stringify(importMap, null, 2),
+        ),
+      );
+    }
 
     /**
      * Generate ./asset-manifest.json
      */
-    await this.#generateAssetManifest(buildSources);
+    const assetManifest = await this.#generateAssetManifest(result);
+    generated.add(assetManifest);
+    this.log.success("Generated asset-manifest.json");
 
     /**
      * Patch deno.json
      */
-    await this.#patchDenoJsonConfig(buildSources);
+    await this.#patchDenoJsonConfig(result);
+
+    /**
+     * Copy any generated files to the output
+     */
+    await generated.copyTo(this.context.output);
 
     /**
      * If a build plugin is provided, execute it's build hooks
@@ -171,14 +178,14 @@ export class UltraBuilder extends Builder {
 
   #initEntrypoints() {
     if (this.browserEntrypoint) {
-      this.entrypoint(this.browserEntrypoint, {
-        vendorOutputDir: "browser",
+      this.entrypoint("browser", {
+        path: this.browserEntrypoint,
         target: "browser",
       });
     }
 
-    this.entrypoint(this.serverEntrypoint, {
-      vendorOutputDir: "server",
+    this.entrypoint("server", {
+      path: this.serverEntrypoint,
       target: "deno",
     });
   }
@@ -203,49 +210,47 @@ export class UltraBuilder extends Builder {
     const hashed = [
       "./src/**/*.+(ts|tsx|js|jsx|css)",
       "./public/**/*.+(css|ico|webp|avif|jpg|png|svg|gif|otf|ttf|woff)",
+      "./client.+(ts|tsx|js|jsx)",
     ];
 
-    if (this.browserEntrypoint) {
-      hashed.push(this.browserEntrypoint);
-    }
-
     this.setHashed(hashed);
+  }
 
+  #initCompiled() {
     this.setCompiled([
-      "./**/*.+(ts|tsx|js|jsx)",
+      "./src/**/*.+(ts|tsx|js|jsx)",
+      "./vendor/browser/**/*.+(ts|tsx|js|jsx)",
+      "./+(client|server).+(ts|tsx|js|jsx)",
     ]);
   }
 
-  async #generateAssetManifest(sources: FileBag) {
+  #generateAssetManifest(result: BuildResult) {
     this.log.info("Generating asset-manifest.json");
 
+    const sources = result.outputSources.filter((source) =>
+      source.relativePath().startsWith("./public")
+    );
+
     const manifest = this.toManifest(sources, {
-      ignore: [
-        "./deno.json",
-        "./importMap*.json",
-      ],
       prefix: "/",
     });
 
     const assetManifest = manifest.map(([relative, absolute]) => {
       return [
-        relative.replace("./public/", "./"),
+        relative.replace("./public/", "/"),
         absolute.replace("/public/", "/"),
       ];
     });
 
-    const assetManifestSource = new VirtualFile(
+    return new VirtualFile(
       "./asset-manifest.json",
       this.context.output,
       JSON.stringify(assetManifest, null, 2),
     );
-
-    await this.copySource(assetManifestSource, this.context.output);
   }
 
-  async #patchDenoJsonConfig(sources: FileBag) {
-    this.log.info("Patching deno.json");
-    const source = await sources.get("./deno.json");
+  async #patchDenoJsonConfig(result: BuildResult) {
+    const source = await result.outputSources.get("./deno.json");
 
     if (source) {
       const denoConfig = await source.readAsJson<DenoConfig>();
@@ -253,8 +258,10 @@ export class UltraBuilder extends Builder {
         if (denoConfig.compilerOptions?.jsx) {
           denoConfig.compilerOptions.jsx = "react-jsx";
         }
+
         denoConfig.importMap = "./importMap.server.json";
-        await source.writeJson(denoConfig, true);
+        await source.write(JSON.stringify(denoConfig, null, 2), true);
+        this.log.success("Patched deno.json");
       }
     }
 

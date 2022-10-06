@@ -11,8 +11,8 @@ Deno.test("useAsset hook", async () => {
       <html>
         <head>
           <title>Testing</title>
-          <link rel="shortcut icon" href={useAsset("./favicon.ico")} />
-          <link rel="stylesheet" href={useAsset("./style.css")} />
+          <link rel="shortcut icon" href={useAsset("/favicon.ico")} />
+          <link rel="stylesheet" href={useAsset("/style.css")} />
         </head>
         <body>
           <div>Hello World</div>

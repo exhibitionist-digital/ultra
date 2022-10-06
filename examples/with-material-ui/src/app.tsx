@@ -16,7 +16,7 @@ export default function App() {
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
-        <link rel="shortcut icon" href={useAsset("./favicon.ico")} />
+        <link rel="shortcut icon" href={useAsset("/favicon.ico")} />
       </head>
       <body style={{ padding: "1em" }}>
         <Button
