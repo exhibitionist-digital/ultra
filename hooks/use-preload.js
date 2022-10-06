@@ -1,5 +1,5 @@
 import { createElement as h } from "react";
-import useFlushEffects from "./use-flush-effects.js";
+import useServerInsertedHTML from "./use-server-inserted-html.js";
 
 /**
  * This hook will insert a `<link rel="preload" />` tag into the head of the
@@ -9,7 +9,7 @@ import useFlushEffects from "./use-flush-effects.js";
  * @param {React.LinkHTMLAttributes<HTMLLinkElement>} props
  */
 export default function usePreload(href, props) {
-  useFlushEffects(() => {
+  useServerInsertedHTML(() => {
     return h("link", {
       rel: "preload",
       href,

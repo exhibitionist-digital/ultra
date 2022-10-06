@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.153.0/http/server.ts";
 import { HelmetProvider } from "react-helmet-async";
-import useFlushEffects from "ultra/hooks/use-flush-effects.js";
+import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
 import { createServer } from "ultra/server.ts";
 import App from "./src/app.tsx";
 
@@ -15,7 +15,7 @@ const server = await createServer({
 const helmetContext: Record<string, any> = {};
 
 const ServerApp = function () {
-  useFlushEffects(() => {
+  useServerInsertedHTML(() => {
     const { helmet } = helmetContext;
     return (
       <>
