@@ -1,10 +1,7 @@
-import React from "react";
-import { hydrateRoot } from "react-dom/client";
+import hydrate from "ultra/hydrate.js";
 import App from "./src/app.tsx";
 
-hydrateRoot(
+hydrate(
   document,
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <App />,
 );
