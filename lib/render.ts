@@ -17,6 +17,8 @@ type RenderToStreamOptions = ReactDOMServer.RenderToReadableStreamOptions & {
   baseUrl: string;
   importMap: ImportMap | undefined;
   assetManifest: Map<string, string> | undefined;
+  enableEsModuleShims: boolean;
+  esModuleShimsPath: string;
   generateStaticHTML?: boolean;
   serverInsertedHTMLToHead?: boolean;
   disableHydration?: boolean;
@@ -47,6 +49,8 @@ export async function renderToStream(
     disableHydration = false,
     serverInsertedHTMLToHead = true,
     importMap,
+    enableEsModuleShims,
+    esModuleShimsPath,
     assetManifest,
   } = options;
 
@@ -90,5 +94,7 @@ export async function renderToStream(
     flushDataStreamHandler,
     dataStream,
     importMap,
+    enableEsModuleShims,
+    esModuleShimsPath,
   });
 }

@@ -21,6 +21,9 @@ const modeFromEnv = Deno.env.get("ULTRA_MODE") ||
 
 const defaultOptions = {
   mode: (modeFromEnv || "development") as Mode,
+  enableEsModuleShims: true,
+  esModuleShimsPath:
+    "https://ga.jspm.io/npm:es-module-shims@1.6.0/dist/es-module-shims.js",
 };
 
 export async function createServer(
@@ -33,8 +36,12 @@ export async function createServer(
 
   assertServerOptions(resolvedOptions);
 
-  const { mode = "development", browserEntrypoint } =
-    resolvedOptions as Required<CreateServerOptions>;
+  const {
+    mode = "development",
+    browserEntrypoint,
+    enableEsModuleShims,
+    esModuleShimsPath,
+  } = resolvedOptions as Required<CreateServerOptions>;
 
   const root = Deno.cwd();
   const importMapPath = resolveImportMapPath(mode, root, options.importMapPath);
@@ -46,6 +53,8 @@ export async function createServer(
     mode,
     importMapPath,
     assetManifestPath,
+    enableEsModuleShims,
+    esModuleShimsPath,
     browserEntrypoint,
   );
 
