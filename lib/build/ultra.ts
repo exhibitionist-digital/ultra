@@ -1,18 +1,24 @@
 import {
+  BuildContextBuilder,
   Builder,
   crayon,
   deepMerge,
   EntrypointConfig,
   FileBag,
-  fromFileUrl,
   join,
-  relative,
   resolve,
   sprintf,
   VirtualFile,
 } from "./deps.ts";
+import { makeRelative } from "../utils/fs.ts";
 import { Logger } from "../logger.ts";
-import type { BuildOptions, BuildResult, DenoConfig } from "./types.ts";
+import type {
+  BuildOptions,
+  BuildPlugin,
+  BuildResult,
+  DenoConfig,
+  PatternLike,
+} from "./types.ts";
 
 type DefaultBuildOptions = Omit<
   BuildOptions,
@@ -27,15 +33,15 @@ const defaultOptions: DefaultBuildOptions = {
 };
 
 export class UltraBuilder extends Builder {
-  public options: BuildOptions;
-
   public browserEntrypoint?: string;
   public serverEntrypoint: string;
+
+  private plugin?: BuildPlugin;
 
   constructor(
     options: Partial<BuildOptions>,
     private onSuccessCallback?: (
-      context: UltraBuilder,
+      builder: UltraBuilder,
       result: BuildResult,
     ) => Promise<void> | void,
   ) {
@@ -46,13 +52,40 @@ export class UltraBuilder extends Builder {
       ? resolve(root, resolvedOptions.output)
       : resolve(root, ".ultra");
 
-    super({
+    const browserEntrypoint = resolvedOptions.browserEntrypoint
+      ? makeRelative(root, resolvedOptions.browserEntrypoint)
+      : undefined;
+
+    const serverEntrypoint = makeRelative(
       root,
-      output,
+      resolvedOptions.serverEntrypoint,
+    );
+
+    const context = new BuildContextBuilder()
+      .setRoot(root)
+      .setOutput(output)
+      .setImportMapPath(resolvedOptions.importMapPath)
+      .ignore([
+        makeRelative(root, Deno.mainModule),
+      ])
+      .dynamicImportIgnore([
+        import.meta.resolve("../middleware/compiler.ts"),
+      ])
+      .contentHash([
+        "./src/**/*.+(ts|tsx|js|jsx|css)",
+        "./public/**/*.+(css|ico|webp|avif|jpg|png|svg|gif|otf|ttf|woff)",
+        "./client.+(ts|tsx|js|jsx)",
+      ])
+      .compile([
+        "./**/*.+(ts|tsx|js|jsx)",
+        "!./vendor/server/**/*",
+      ])
+      .build();
+
+    super(context, {
       name: "ultra",
-      importMapPath: resolvedOptions.importMapPath,
       logLevel: "INFO",
-      compiler: {
+      compilerOptions: {
         minify: true,
         jsxImportSource: resolvedOptions.jsxImportSource,
         sourceMaps: resolvedOptions.sourceMaps,
@@ -61,17 +94,12 @@ export class UltraBuilder extends Builder {
 
     // Override the logger
     this.log = new Logger("INFO");
+    this.plugin = options.plugin;
 
-    this.options = resolvedOptions;
-    this.browserEntrypoint = this.options.browserEntrypoint
-      ? this.makeRelative(this.options.browserEntrypoint)
-      : undefined;
-    this.serverEntrypoint = this.makeRelative(this.options.serverEntrypoint);
+    this.browserEntrypoint = browserEntrypoint;
+    this.serverEntrypoint = serverEntrypoint;
 
     this.#initEntrypoints();
-    this.#initIgnored();
-    this.#initHashed();
-    this.#initCompiled();
   }
 
   entrypoint(name: string, config: EntrypointConfig) {
@@ -80,20 +108,26 @@ export class UltraBuilder extends Builder {
     return this;
   }
 
-  ignore(path: string) {
-    this.ignored.push(super.globToRegExp(path));
+  ignore(path: PatternLike) {
+    this.context.ignored.add(path);
 
     return this;
   }
 
-  dynamicImportIgnore(path: string) {
-    this.dynamicImportIgnored.push(super.globToRegExp(path));
+  dynamicImportIgnore(path: PatternLike) {
+    this.context.dynamicImportIgnored.add(path);
 
     return this;
   }
 
-  contentHash(path: string) {
-    this.hashed.push(super.globToRegExp(path));
+  compile(path: PatternLike) {
+    this.context.compiled.add(path);
+
+    return this;
+  }
+
+  contentHash(path: PatternLike) {
+    this.context.hashed.add(path);
 
     return this;
   }
@@ -145,8 +179,8 @@ export class UltraBuilder extends Builder {
     /**
      * If a build plugin is provided, execute it's build hooks
      */
-    if (this.options.plugin) {
-      const plugin = this.options.plugin;
+    if (this.plugin) {
+      const plugin = this.plugin;
       try {
         this.log.info(
           sprintf(
@@ -188,40 +222,6 @@ export class UltraBuilder extends Builder {
       path: this.serverEntrypoint,
       target: "deno",
     });
-  }
-
-  #initIgnored() {
-    /**
-     * Deno.mainModule will most definitely be a build.ts file in the project
-     * We always exclude this.
-     */
-    const mainModule = this.makeRelative(Deno.mainModule);
-
-    this.setIgnored([
-      mainModule,
-      ...(this.options.ignored || []),
-    ]);
-
-    // Exclude the compiler middleware from the build output
-    this.dynamicImportIgnore(import.meta.resolve("../middleware/compiler.ts"));
-  }
-
-  #initHashed() {
-    const hashed = [
-      "./src/**/*.+(ts|tsx|js|jsx|css)",
-      "./public/**/*.+(css|ico|webp|avif|jpg|png|svg|gif|otf|ttf|woff)",
-      "./client.+(ts|tsx|js|jsx)",
-    ];
-
-    this.setHashed(hashed);
-  }
-
-  #initCompiled() {
-    this.setCompiled([
-      "./src/**/*.+(ts|tsx|js|jsx)",
-      "./vendor/browser/**/*.+(ts|tsx|js|jsx)",
-      "./+(client|server).+(ts|tsx|js|jsx)",
-    ]);
   }
 
   #generateAssetManifest(result: BuildResult) {
@@ -269,11 +269,9 @@ export class UltraBuilder extends Builder {
   }
 
   makeRelative(path: string) {
-    return `./${
-      relative(
-        this.context.root,
-        fromFileUrl(path),
-      )
-    }`;
+    return makeRelative(
+      this.context.root,
+      path,
+    );
   }
 }

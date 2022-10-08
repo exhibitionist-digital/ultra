@@ -1,7 +1,7 @@
-import { BuildResult } from "./deps.ts";
+import { BuildResult, PatternLike } from "./deps.ts";
 import { UltraBuilder } from "./ultra.ts";
 
-export type { BuildResult };
+export type { BuildResult, PatternLike };
 
 export type DenoConfig = {
   tasks?: Record<string, string>;
