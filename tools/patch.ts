@@ -38,6 +38,15 @@ const listFormatter = new Intl.ListFormat("default", {
   type: "disjunction",
 });
 
+async function patchFile(path: string, newVersion: string) {
+  console.log(`Patching: ${path}`);
+  const content = await Deno.readTextFile(path);
+  await Deno.writeTextFile(
+    path,
+    content.replace(DENOLAND_REGEX, `//deno.land/x/ultra@v${newVersion}/`),
+  );
+}
+
 if (import.meta.main) {
   const releaseTypes = [
     "pre",
@@ -77,38 +86,17 @@ if (import.meta.main) {
 
   if (version) {
     const newDenoLandVersion = `//deno.land/x/ultra@v${version}/`;
-    const readme = await Deno.readTextFile("./README.md");
 
-    console.log("Patching README.md");
-    await Deno.writeTextFile(
-      "./README.md",
-      readme.replace(
-        DENOLAND_REGEX,
-        `//deno.land/x/ultra@v${version}/`,
-      ),
-    );
+    await patchFile("./README.md", version);
+    await patchFile("./lib/create/common/content/importMap.ts", version);
 
-    const importMap = await Deno.readTextFile(
-      "./lib/create/common/content/importMap.ts",
-    );
-    console.log("Patching lib/create/common/content/importMap.ts");
-    await Deno.writeTextFile(
-      "./lib/create/common/content/importMap.ts",
-      importMap.replace(DENOLAND_REGEX, `//deno.land/x/ultra@v${version}/`),
-    );
-
-    console.log("Patching examples importMaps");
     for await (
       const entry of walk("./", {
         match: [IMPORT_MAP_REGEX],
         skip: [ULTRA_OUTPUT_REGEX],
       })
     ) {
-      const content = await Deno.readTextFile(entry.path);
-      await Deno.writeTextFile(
-        entry.path,
-        content.replace(DENOLAND_REGEX, newDenoLandVersion),
-      );
+      await patchFile(entry.path, newDenoLandVersion);
     }
 
     /**
