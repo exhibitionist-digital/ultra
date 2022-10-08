@@ -88,6 +88,15 @@ if (import.meta.main) {
       ),
     );
 
+    const importMap = await Deno.readTextFile(
+      "./lib/create/common/content/importMap.ts",
+    );
+    console.log("Patching lib/create/common/content/importMap.ts");
+    await Deno.writeTextFile(
+      "./lib/create/common/content/importMap.ts",
+      importMap.replace(DENOLAND_REGEX, `//deno.land/x/ultra@v${version}/`),
+    );
+
     console.log("Patching examples importMaps");
     for await (
       const entry of walk("./", {
