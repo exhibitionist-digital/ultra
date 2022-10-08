@@ -49,9 +49,7 @@ import { queryClient } from "${ext("./src/react-query/query-client", false)}";
   }
 
   const server = await createServer({
-    importMapPath: Deno.env.get("ULTRA_MODE") === "development"
-      ? import.meta.resolve("./importMap.dev.json")
-      : import.meta.resolve("./importMap.json"),
+    importMapPath: import.meta.resolve("./importMap.json"),
     browserEntrypoint: import.meta.resolve("${ext("./client", true)}"),
   });
 
