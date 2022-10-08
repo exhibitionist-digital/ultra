@@ -6,13 +6,13 @@ const builder = createBuilder({
   plugin: {
     name: "service-worker",
     async onBuild(builder, result) {
-      const serviceWorkerSource = await result.sources.get(
+      const serviceWorkerSource = await result.outputSources.get(
         "./public/service-worker.js",
       );
 
       const serviceWorker = await serviceWorkerSource.read();
 
-      const cacheManifest = builder.toManifest(result.compiled, {
+      const cacheManifest = builder.toManifest(result.outputSources, {
         ignore: [
           "./public/service-worker.js",
         ],
@@ -35,7 +35,12 @@ const builder = createBuilder({
   },
 });
 
-builder.ignore("./README.md");
+builder.ignore([
+  "./README.md",
+  "./importMap.json",
+  "./*.dev.json",
+  "./*.test.ts",
+]);
 
 // deno-lint-ignore no-unused-vars
 const result = await builder.build();

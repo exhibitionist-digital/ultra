@@ -6,9 +6,13 @@ const builder = createBuilder({
   serverEntrypoint: import.meta.resolve("./server.tsx"),
 });
 
-builder
-  .ignore("./README.md")
-  .ignore("./content/**/*");
+builder.ignore([
+  "./content/**/*",
+  "./README.md",
+  "./importMap.json",
+  "./*.dev.json",
+  "./*.test.ts",
+]);
 
 /**
  * Compile our mdx

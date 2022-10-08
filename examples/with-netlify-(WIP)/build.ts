@@ -7,7 +7,12 @@ const builder = createBuilder({
   plugin: netlify,
 });
 
-builder.ignore("./README.md");
+builder.ignore([
+  "./README.md",
+  "./importMap.json",
+  "./*.dev.json",
+  "./*.test.ts",
+]);
 
 // deno-lint-ignore no-unused-vars
 const result = await builder.build();
