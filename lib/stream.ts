@@ -96,15 +96,15 @@ export function createHeadInjectionTransformStream(
 
 export function createImportMapInjectionStream(
   importMap: ImportMap,
-  enableEsModuleShims: boolean,
-  esModuleShimsPath: string,
+  enableEsModuleShims?: boolean,
+  esModuleShimsPath?: string,
 ) {
   log.debug("Stream inject importMap");
   return createHeadInjectionTransformStream(() => {
     const scripts = [
       `<script type="importmap">${JSON.stringify(importMap)}</script>`,
     ];
-    if (enableEsModuleShims) {
+    if (enableEsModuleShims && esModuleShimsPath) {
       scripts.unshift(
         `<script async src="${esModuleShimsPath}" crossorigin="anonymous"></script>`,
       );
@@ -185,8 +185,8 @@ type ContinueFromInitialStreamOptions = {
   disableHydration: boolean;
   dataStream?: TransformStream<Uint8Array, Uint8Array>;
   importMap?: ImportMap;
-  enableEsModuleShims: boolean;
-  esModuleShimsPath: string;
+  enableEsModuleShims?: boolean;
+  esModuleShimsPath?: string;
   getServerInsertedHTML?: () => Promise<string>;
   serverInsertedHTMLToHead: boolean;
   flushDataStreamHandler?: () => void;
