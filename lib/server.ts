@@ -28,7 +28,7 @@ const defaultOptions = {
 
 export async function createServer(
   options: CreateServerOptions,
-) {
+): Promise<UltraServer> {
   const resolvedOptions = {
     ...defaultOptions,
     ...options,
@@ -41,18 +41,16 @@ export async function createServer(
     browserEntrypoint,
     enableEsModuleShims,
     esModuleShimsPath,
-  } = resolvedOptions as Required<CreateServerOptions>;
+  } = resolvedOptions;
 
   const root = Deno.cwd();
-  const importMapPath = resolveImportMapPath(mode, root, options.importMapPath);
-  const assetManifestPath =
-    toFileUrl(resolve(root, "asset-manifest.json")).href;
+  const assetManifestPath = toFileUrl(resolve(root, "asset-manifest.json"));
 
   const server = new UltraServer(root, {
     mode,
     entrypoint: browserEntrypoint,
-    importMapPath,
-    assetManifestPath,
+    importMapPath: resolveImportMapPath(mode, root, options.importMapPath),
+    assetManifestPath: String(assetManifestPath),
     enableEsModuleShims,
     esModuleShimsPath,
   });
@@ -100,11 +98,12 @@ export async function createServer(
 }
 
 export function createRouter() {
-  const router = new Hono();
-  return router;
+  return new Hono();
 }
 
-export function assertServerOptions(options: CreateServerOptions) {
+export function assertServerOptions(
+  options: CreateServerOptions,
+): options is Required<CreateServerOptions> {
   try {
     /**
      * Ensure we are running a supported Deno version
@@ -130,6 +129,8 @@ export function assertServerOptions(options: CreateServerOptions) {
     assert(
       `A browser entrypoint was not provided "${options.browserEntrypoint}"`,
     );
+
+    return true;
   } catch (error) {
     throw new Error(error.message);
   }
