@@ -96,14 +96,20 @@ export function createHeadInjectionTransformStream(
 
 export function createImportMapInjectionStream(
   importMap: ImportMap,
+  enableEsModuleShims: boolean,
   esModuleShimsPath: string,
 ) {
   log.debug("Stream inject importMap");
   return createHeadInjectionTransformStream(() => {
-    return Promise.resolve([
-      `<script async src="${esModuleShimsPath}" crossorigin="anonymous"></script>`,
+    const scripts = [
       `<script type="importmap">${JSON.stringify(importMap)}</script>`,
-    ].join("\n"));
+    ];
+    if (enableEsModuleShims) {
+      scripts.unshift(
+        `<script async src="${esModuleShimsPath}" crossorigin="anonymous"></script>`,
+      );
+    }
+    return Promise.resolve(scripts.join("\n"));
   });
 }
 
@@ -178,6 +184,7 @@ type ContinueFromInitialStreamOptions = {
   generateStaticHTML: boolean;
   dataStream?: TransformStream<Uint8Array, Uint8Array>;
   importMap?: ImportMap;
+  enableEsModuleShims: boolean;
   esModuleShimsPath: string;
   getServerInsertedHTML?: () => Promise<string>;
   serverInsertedHTMLToHead: boolean;
@@ -190,6 +197,7 @@ export async function continueFromInitialStream(
 ): Promise<ReadableStream<Uint8Array>> {
   const {
     importMap,
+    enableEsModuleShims,
     esModuleShimsPath,
     generateStaticHTML,
     dataStream,
@@ -217,7 +225,11 @@ export async function continueFromInitialStream(
      * transform streams below.
      */
     importMap
-      ? createImportMapInjectionStream(importMap, esModuleShimsPath)
+      ? createImportMapInjectionStream(
+        importMap,
+        enableEsModuleShims,
+        esModuleShimsPath,
+      )
       : null,
     /**
      * Enqueue server injected html if serverInsertedHTMLToHead is false

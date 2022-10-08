@@ -21,6 +21,7 @@ export class UltraServer extends Hono {
     public mode: Mode,
     public importMapPath: string,
     public assetManifestPath: string,
+    public enableEsModuleShims: boolean,
     public esModuleShimsPath: string,
     public entrypoint?: string,
   ) {
@@ -71,6 +72,7 @@ export class UltraServer extends Hono {
       baseUrl: this.mode === "development" ? `${ULTRA_COMPILER_PATH}/` : "/",
       assetManifest: this.assetManifest,
       importMap: this.importMap,
+      enableEsModuleShims: this.enableEsModuleShims,
       esModuleShimsPath: this.esModuleShimsPath,
       bootstrapModules: this.entrypoint ? [this.entrypoint] : undefined,
       ...options,

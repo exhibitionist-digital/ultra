@@ -18,6 +18,7 @@ export type CreateServerOptions = {
    * of your rendered HTML markup.
    */
   importMapPath: string;
+  enableEsModuleShims: boolean;
   esModuleShimsPath: string;
   /**
    * The browser entrypoint. This is what initially gets sent with the server
