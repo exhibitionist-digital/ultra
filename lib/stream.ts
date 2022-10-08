@@ -173,6 +173,7 @@ export function renderToInitialStream({
 
 type ContinueFromInitialStreamOptions = {
   generateStaticHTML: boolean;
+  disableHydration: boolean;
   dataStream?: TransformStream<Uint8Array, Uint8Array>;
   importMap?: ImportMap;
   getServerInsertedHTML?: () => Promise<string>;
@@ -187,6 +188,7 @@ export async function continueFromInitialStream(
   const {
     importMap,
     generateStaticHTML,
+    disableHydration,
     dataStream,
     getServerInsertedHTML,
     flushDataStreamHandler,
@@ -211,7 +213,9 @@ export async function continueFromInitialStream(
      * Inject the provided importMap to the head, before any of the other
      * transform streams below.
      */
-    importMap ? createImportMapInjectionStream(importMap) : null,
+    importMap && !disableHydration
+      ? createImportMapInjectionStream(importMap)
+      : null,
     /**
      * Enqueue server injected html if serverInsertedHTMLToHead is false
      */
