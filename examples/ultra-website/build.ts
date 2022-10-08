@@ -8,13 +8,16 @@ const builder = createBuilder({
   serverEntrypoint: import.meta.resolve("./server.tsx"),
 });
 
-builder
-  .ignore("./public/*.png")
-  .ignore("./content/*.mdx")
-  .ignore("./README.md")
-  .ignore("./fly.toml")
-  .ignore("./Dockerfile")
-  .ignore("./dev.ts");
+builder.ignore([
+  "./public/*.png",
+  "./content/*.mdx",
+  "./README.md",
+  "./fly.toml",
+  "./Dockerfile",
+  "./dev.ts",
+  "./importMap.json",
+  "./*.dev.json",
+]);
 
 // deno-lint-ignore no-unused-vars
 const result = await builder.build();
