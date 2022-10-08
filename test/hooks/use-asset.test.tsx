@@ -22,8 +22,8 @@ Deno.test("useAsset hook", async () => {
   };
 
   const assetManifest = new Map([[
-    "./favicon.ico",
-    "./favicon.1234567890.ico",
+    "/favicon.ico",
+    "/favicon.1234567890.ico",
   ]]);
 
   const stream = await renderToStream(
@@ -41,14 +41,14 @@ Deno.test("useAsset hook", async () => {
 
   // Test for an asset not available in the assetManifest
   assertEquals(
-    text.includes('<link rel="stylesheet" href="./style.css"/>'),
+    text.includes('<link rel="stylesheet" href="/style.css"/>'),
     true,
   );
 
   // Test for an asset defined in the assetManifest
   assertEquals(
     text.includes(
-      '<link rel="shortcut icon" href="./favicon.1234567890.ico"/>',
+      '<link rel="shortcut icon" href="/favicon.1234567890.ico"/>',
     ),
     true,
   );
