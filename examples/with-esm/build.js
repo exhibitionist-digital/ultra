@@ -12,4 +12,4 @@ builder.ignore([
   "./*.test.ts",
 ]);
 
-const result = await builder.build();
+await builder.build();
