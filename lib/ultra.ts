@@ -21,8 +21,8 @@ export class UltraServer extends Hono {
     public mode: Mode,
     public importMapPath: string,
     public assetManifestPath: string,
-    public enableEsModuleShims: boolean,
-    public esModuleShimsPath: string,
+    public enableEsModuleShims?: boolean,
+    public esModuleShimsPath?: string,
     public entrypoint?: string,
   ) {
     super();
