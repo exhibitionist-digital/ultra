@@ -57,41 +57,30 @@ export async function createServer(
 
   await server.init();
 
-  /**
-   * We always try to serve public assets before
-   * anything else.
-   */
-  server.use(
-    "*",
-    serveStatic({
-      root: resolve(root, "./public"),
-      cache: mode !== "development",
-    }),
-  );
+  // We always try to serve public assets before anything else.
+  // deno-fmt-ignore
+  server.get("*", serveStatic({
+    root: resolve(root, "./public"),
+    cache: mode !== "development",
+  }));
 
-  /**
-   * Serve anything else static at "/"
-   */
-  server.use(
-    "*",
-    serveStatic({
-      root: resolve(root, "./"),
-      cache: mode !== "development",
-    }),
-  );
+  // Serve anything else static at "/"
+  // deno-fmt-ignore
+  server.get("*", serveStatic({
+    root: resolve(root, "./"),
+    cache: mode !== "development",
+  }));
 
   if (mode === "development") {
     log.info("Loading compiler");
     const { compiler } = await import("./middleware/compiler.ts");
 
-    server.use(
-      `${ULTRA_COMPILER_PATH}/*`,
-      compiler({
-        mode,
-        root,
-        ...options.compilerOptions,
-      }),
-    );
+    // deno-fmt-ignore
+    server.get(`${ULTRA_COMPILER_PATH}/*`, compiler({
+      mode,
+      root,
+      ...options.compilerOptions,
+    }));
   }
 
   return server;
