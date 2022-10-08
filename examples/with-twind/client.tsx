@@ -1,5 +1,5 @@
-import { hydrateRoot } from "react-dom/client";
-import "./twind.ts";
+import hydrate from "ultra/hydrate.js";
 import App from "./src/app.tsx";
+import "./twind.ts";
 
-hydrateRoot(document, <App />);
+hydrate(document, <App />);

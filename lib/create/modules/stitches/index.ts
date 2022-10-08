@@ -43,16 +43,16 @@ export const {
 export function stitchesProviderContent(config: Config) {
   return `
 ${config.ts ? 'import { PropsWithChildren } from "react";' : ""}
-import useFlushEffects from "ultra/hooks/use-flush-effects.js";
+import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
 import { getCssText } from "./stitches.config${config.ts ? ".ts" : ".js"}";
 
 export function StitchesProvider({ children }${
     config.ts ? ": PropsWithChildren" : ""
   }) {
   /**
-   * useFlushEffects will inject the returned output into the rendered stream.
+   * useServerInsertedHTML will inject the returned output into the rendered stream.
    */
-  useFlushEffects(() => {
+  useServerInsertedHTML(() => {
     return (
       <style
         id="stitches"

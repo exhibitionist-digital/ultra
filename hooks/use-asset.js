@@ -12,8 +12,11 @@ export default function useAsset(path) {
     throw new Error("a path must be supplied");
   }
 
-  // Ensure we are using a relative path
-  path = path.startsWith("/") ? `.${path}` : path;
+  if (path.startsWith("/") === false) {
+    throw new Error(
+      `The path provided to the useAsset hook must begin with "/" received: ${path}`,
+    );
+  }
 
   const context = useContext(AssetContext) ||
     new Map(globalThis.__ULTRA_ASSET_MAP);

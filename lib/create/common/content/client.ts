@@ -7,7 +7,7 @@ export function clientContent(config: Config) {
   const ext = fileExtension(config);
 
   return `
-import { hydrateRoot } from "react-dom/client";
+import hydrate from "ultra/hydrate.js";
 import App from "${ext("./src/app", true)}";
 
 ${
@@ -68,6 +68,6 @@ ${p.reactHelmetAsync("</HelmetProvider>")}
 )
 }
 
-hydrateRoot(document, <ClientApp />)
+hydrate(document, <ClientApp />)
 `;
 }

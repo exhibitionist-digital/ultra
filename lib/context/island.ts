@@ -1,7 +1,7 @@
 import type { ComponentType, ReactNode } from "react";
 import { createElement as h, Fragment } from "react";
 import IslandContext from "../../hooks/island-context.js";
-import useFlushEffects from "../../hooks/use-flush-effects.js";
+import useServerInsertedHTML from "../../hooks/use-server-inserted-html.js";
 import { outdent } from "../deps.ts";
 
 type IslandHydrationData = Record<number, {
@@ -26,7 +26,7 @@ export function IslandProvider({ children, baseUrl }: {
     return JSON.stringify(Object.entries(data));
   }
 
-  useFlushEffects(() => {
+  useServerInsertedHTML(() => {
     if (!hydratorInjected && injectHydrator) {
       hydratorInjected = true;
 

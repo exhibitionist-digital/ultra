@@ -1,6 +1,6 @@
 import { createElement as h } from "react";
 import EnvContext from "../../hooks/env-context.js";
-import useFlushEffects from "../../hooks/use-flush-effects.js";
+import useServerInsertedHTML from "../../hooks/use-server-inserted-html.js";
 
 export function EnvProvider({ children }: { children: JSX.Element }) {
   const env = Object.entries(Deno.env.toObject()).filter(([key]) =>
@@ -9,7 +9,7 @@ export function EnvProvider({ children }: { children: JSX.Element }) {
 
   const value = new Map<string, string>(env);
 
-  useFlushEffects(() => {
+  useServerInsertedHTML(() => {
     return (
       h("script", {
         type: "text/javascript",

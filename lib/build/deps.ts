@@ -2,9 +2,9 @@ export {
   Builder,
   FileBag,
   VirtualFile,
-} from "https://deno.land/x/mesozoic@v1.0.0-alpha.40/mod.ts";
-export type { BuildResult } from "https://deno.land/x/mesozoic@v1.0.0-alpha.40/mod.ts";
-export type { EntrypointConfig } from "https://deno.land/x/mesozoic@v1.0.0-alpha.40/lib/entrypoint.ts";
+} from "https://deno.land/x/mesozoic@v1.0.0-alpha.47/mod.ts";
+export type { BuildResult } from "https://deno.land/x/mesozoic@v1.0.0-alpha.47/mod.ts";
+export type { EntrypointConfig } from "https://deno.land/x/mesozoic@v1.0.0-alpha.47/lib/entrypoint.ts";
 export { deepMerge } from "https://deno.land/std@0.153.0/collections/deep_merge.ts";
 export { crayon } from "https://deno.land/x/crayon@3.3.2/mod.ts";
 export {

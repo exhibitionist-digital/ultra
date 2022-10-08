@@ -34,7 +34,7 @@ import { SearchParamsProvider } from "${ext("./src/wouter/index", true)}";
 ${
     p.reactHelmetAsync(`// React Helmet Async
 import { HelmetProvider } from "react-helmet-async";
-import useFlushEffects from "ultra/hooks/use-flush-effects.js";
+import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
 `)
   }
 
@@ -75,7 +75,7 @@ ${
 
 ${
     p.reactHelmetAsync(`
-useFlushEffects(() => {
+useServerInsertedHTML(() => {
    const { helmet } = helmetContext;
    return (
      <>

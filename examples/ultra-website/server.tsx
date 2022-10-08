@@ -8,7 +8,7 @@ import App from "./src/app.tsx";
 import { useDehydrateReactQuery } from "./src/hooks/useDehydrateReactQuery.tsx";
 import { queryClient } from "./src/query-client.ts";
 import { HelmetProvider } from "react-helmet-async";
-import useFlushEffects from "ultra/hooks/use-flush-effects.js";
+import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
 import { getStarCount } from "./src/api/github.ts";
 
 const server = await createServer({
@@ -39,7 +39,7 @@ server.get("*", async (context) => {
   const helmetContext: Record<string, any> = {};
 
   function ServerApp() {
-    useFlushEffects(() => {
+    useServerInsertedHTML(() => {
       const { helmet } = helmetContext;
       return (
         <>

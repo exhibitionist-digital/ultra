@@ -77,10 +77,10 @@ You can also look at creating API routes here by following [this example](https:
 #### [client.tsx](#clienttsx)
 
 ```js
-import { hydrateRoot } from "react-dom/client";
+import hydrate from "ultra/hydrate.js";
 import App from "./src/app.tsx";
 
-hydrateRoot(document, <App />);  
+hydrate(document, <App />);  
 ```
 
 This should look familiar to most... This is your client entrypoint, and what is used for client rendering. It can be customised if needed.
