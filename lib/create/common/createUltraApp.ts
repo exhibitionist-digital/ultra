@@ -4,7 +4,7 @@ import {
   brightBlue,
   underline,
   yellow,
-} from "https://deno.land/std@0.153.0/fmt/colors.ts";
+} from "https://deno.land/std@0.159.0/fmt/colors.ts";
 import { createFile, fetchFile, fileExtension } from "./io.ts";
 import {
   appContent,

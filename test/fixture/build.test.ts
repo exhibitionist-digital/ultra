@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.153.0/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.159.0/testing/asserts.ts";
 import { createBuilder } from "../../build.ts";
 
 const TEST_FIXTURES = !Deno.env.get("TEST_FIXTURE");
