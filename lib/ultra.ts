@@ -12,21 +12,39 @@ type UltraServerRenderOptions = {
   flushEffectsToHead?: boolean;
 };
 
+type UltraServerOptions = {
+  mode: Mode;
+  importMapPath: string;
+  assetManifestPath: string;
+  enableEsModuleShims?: boolean;
+  esModuleShimsPath?: string;
+  entrypoint?: string;
+};
+
 export class UltraServer extends Hono {
   public importMap: ImportMap | undefined;
   public assetManifest: Map<string, string> | undefined;
 
+  public mode: Mode;
+  public importMapPath: string;
+  public assetManifestPath: string;
+  public enableEsModuleShims?: boolean;
+  public esModuleShimsPath?: string;
+  public entrypoint?: string;
+
   constructor(
     public root: string,
-    public mode: Mode,
-    public importMapPath: string,
-    public assetManifestPath: string,
-    public enableEsModuleShims?: boolean,
-    public esModuleShimsPath?: string,
-    public entrypoint?: string,
+    options: UltraServerOptions,
   ) {
     super();
     this.use("*", logger((message) => log.info(message)));
+
+    this.mode = options.mode;
+    this.importMapPath = options.importMapPath;
+    this.assetManifestPath = options.assetManifestPath;
+    this.enableEsModuleShims = options.enableEsModuleShims;
+    this.esModuleShimsPath = options.esModuleShimsPath;
+    this.entrypoint = options.entrypoint;
   }
 
   async init() {

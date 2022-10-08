@@ -48,15 +48,14 @@ export async function createServer(
   const assetManifestPath =
     toFileUrl(resolve(root, "asset-manifest.json")).href;
 
-  const server = new UltraServer(
-    root,
+  const server = new UltraServer(root, {
     mode,
+    entrypoint: browserEntrypoint,
     importMapPath,
     assetManifestPath,
     enableEsModuleShims,
     esModuleShimsPath,
-    browserEntrypoint,
-  );
+  });
 
   await server.init();
 
