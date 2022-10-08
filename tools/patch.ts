@@ -85,8 +85,6 @@ if (import.meta.main) {
   const version = prompt("Whats the new version?", nextVersion || undefined);
 
   if (version) {
-    const newDenoLandVersion = `//deno.land/x/ultra@v${version}/`;
-
     await patchFile("./README.md", version);
     await patchFile("./lib/create/common/content/importMap.ts", version);
 
@@ -96,7 +94,7 @@ if (import.meta.main) {
         skip: [ULTRA_OUTPUT_REGEX],
       })
     ) {
-      await patchFile(entry.path, newDenoLandVersion);
+      await patchFile(entry.path, version);
     }
 
     /**
