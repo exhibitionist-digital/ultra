@@ -12,8 +12,11 @@ Deno.test(
       serverEntrypoint: import.meta.resolve("./server.tsx"),
     });
 
-    builder.ignore("./README.md");
-    builder.ignore("./*.test.*");
+    builder.ignore([
+      "./README.md",
+      "./importMap.json",
+      "./*.test.*",
+    ]);
 
     const result = await builder.build();
 
@@ -29,8 +32,11 @@ Deno.test(
       serverEntrypoint: import.meta.resolve("./server.tsx"),
     });
 
-    builder.ignore("./README.md");
-    builder.ignore("./*.test.*");
+    builder.ignore([
+      "./README.md",
+      "./importMap.json",
+      "./*.test.*",
+    ]);
 
     const result = await builder.build();
 
