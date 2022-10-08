@@ -88,6 +88,7 @@ export async function renderToStream(
 
   return await continueFromInitialStream(renderStream, {
     generateStaticHTML,
+    disableHydration,
     getServerInsertedHTML,
     serverInsertedHTMLToHead,
     flushDataStreamHandler,
