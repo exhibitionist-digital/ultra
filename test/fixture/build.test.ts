@@ -17,7 +17,7 @@ Deno.test(
 
     const result = await builder.build();
 
-    assertEquals(result.sources.size, 9);
+    assertEquals(result.outputSources.size, 9);
   },
 );
 
@@ -34,6 +34,6 @@ Deno.test(
 
     const result = await builder.build();
 
-    assertEquals(result.sources.size, 9);
+    assertEquals(result.outputSources.size, 9);
   },
 );
