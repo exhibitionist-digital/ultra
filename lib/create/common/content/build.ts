@@ -11,7 +11,10 @@ const builder = createBuilder({
   serverEntrypoint: import.meta.resolve("${ext("./server", true)}"),
 });
 
-builder.ignore("./README.md");
+builder.ignore([
+  "./README.md",
+  "./importMap.json"
+]);
 
 // deno-lint-ignore no-unused-vars
 const result = await builder.build();

@@ -65,9 +65,8 @@ export class UltraBuilder extends Builder {
       .setRoot(root)
       .setOutput(output)
       .setImportMapPath(resolvedOptions.importMapPath)
-      .ignore([
-        makeRelative(root, Deno.mainModule),
-      ])
+      .ignore(makeRelative(root, Deno.mainModule))
+      .ignore(options.ignored || [])
       .dynamicImportIgnore([
         import.meta.resolve("../middleware/compiler.ts"),
       ])
