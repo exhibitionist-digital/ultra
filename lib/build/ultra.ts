@@ -2,8 +2,8 @@ import { Logger } from "../logger.ts";
 import { makeRelative } from "../utils/fs.ts";
 import { assertEntrypointExists } from "./assert.ts";
 import {
-  BuildContextBuilder,
   Builder,
+  ContextBuilder,
   crayon,
   deepMerge,
   EntrypointConfig,
@@ -64,7 +64,7 @@ export class UltraBuilder extends Builder {
       resolvedOptions.serverEntrypoint,
     );
 
-    const context = new BuildContextBuilder()
+    const context = new ContextBuilder()
       .setRoot(root)
       .setOutput(output)
       .setImportMapPath(resolvedOptions.importMapPath)
