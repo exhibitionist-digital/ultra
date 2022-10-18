@@ -1,3 +1,6 @@
+import { Logger } from "../logger.ts";
+import { makeRelative } from "../utils/fs.ts";
+import { assertEntrypointExists } from "./assert.ts";
 import {
   BuildContextBuilder,
   Builder,
@@ -10,8 +13,6 @@ import {
   sprintf,
   VirtualFile,
 } from "./deps.ts";
-import { makeRelative } from "../utils/fs.ts";
-import { Logger } from "../logger.ts";
 import type {
   BuildOptions,
   BuildPlugin,
@@ -32,6 +33,11 @@ const defaultOptions: DefaultBuildOptions = {
   ignored: [".git", join("**", ".DS_Store")],
 };
 
+type OnSuccessCallback = (
+  builder: UltraBuilder,
+  result: BuildResult,
+) => Promise<void> | void;
+
 export class UltraBuilder extends Builder {
   public browserEntrypoint?: string;
   public serverEntrypoint: string;
@@ -40,10 +46,7 @@ export class UltraBuilder extends Builder {
 
   constructor(
     options: Partial<BuildOptions>,
-    private onSuccessCallback?: (
-      builder: UltraBuilder,
-      result: BuildResult,
-    ) => Promise<void> | void,
+    private onSuccessCallback?: OnSuccessCallback,
   ) {
     const resolvedOptions = deepMerge<BuildOptions>(defaultOptions, options);
     const root = resolvedOptions.root;
@@ -133,6 +136,11 @@ export class UltraBuilder extends Builder {
 
   async build(): Promise<BuildResult> {
     /**
+     * Validate the build
+     */
+    await this.#validate();
+
+    /**
      * Clean the output directory
      */
     await this.cleanOutput();
@@ -207,6 +215,23 @@ export class UltraBuilder extends Builder {
     }
 
     return result;
+  }
+
+  async #validate() {
+    this.log.debug("Validating build");
+
+    try {
+      // Assert that the entrypoints exist
+      if (this.browserEntrypoint) {
+        await assertEntrypointExists(this.browserEntrypoint, "browser");
+      }
+
+      await assertEntrypointExists(this.serverEntrypoint!, "server");
+      this.log.success("Build is valid");
+    } catch (error) {
+      this.log.error(error.message);
+      Deno.exit(1);
+    }
   }
 
   #initEntrypoints() {
