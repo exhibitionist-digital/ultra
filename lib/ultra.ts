@@ -33,12 +33,13 @@ export class UltraServer extends Hono {
   public esModuleShimsPath?: string;
   public entrypoint?: string;
 
+  #bootstrapModules?: string[];
+
   constructor(
     public root: string,
     options: UltraServerOptions,
   ) {
     super();
-    this.use("*", logger((message) => log.info(message)));
 
     this.mode = options.mode;
     this.importMapPath = options.importMapPath;
@@ -49,6 +50,12 @@ export class UltraServer extends Hono {
     this.baseUrl = this.mode === "development"
       ? `${ULTRA_COMPILER_PATH}/`
       : "/";
+
+    const logFn = options.mode === "development"
+      ? (message: string) => log.info(message)
+      : (message: string) => console.info(message);
+
+    this.use("*", logger(logFn));
   }
 
   async init() {
@@ -74,6 +81,14 @@ export class UltraServer extends Hono {
      */
     this.entrypoint = this.#prepareEntrypoint(this.importMap!);
 
+    if (this.entrypoint) {
+      this.#bootstrapModules = [
+        this.entrypoint.startsWith("file://")
+          ? fromFileUrl(this.entrypoint)
+          : this.entrypoint,
+      ];
+    }
+
     // Validate
     this.#valid();
   }
@@ -98,7 +113,7 @@ export class UltraServer extends Hono {
       importMap: this.importMap,
       enableEsModuleShims: this.enableEsModuleShims,
       esModuleShimsPath: this.esModuleShimsPath,
-      bootstrapModules: this.entrypoint ? [this.entrypoint] : undefined,
+      bootstrapModules: this.#bootstrapModules,
       ...options,
     });
   }

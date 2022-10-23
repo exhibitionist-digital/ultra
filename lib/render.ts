@@ -3,7 +3,6 @@ import * as ReactDOMServer from "react-dom/server";
 import { UltraProvider } from "./provider.ts";
 import { getServerInsertedHTML } from "./context/serverInsertedHtml.ts";
 import { createFlushDataStreamHandler } from "./context/dataStream.ts";
-import { fromFileUrl } from "./deps.ts";
 import type { Context } from "./types.ts";
 import { log } from "./logger.ts";
 import {
@@ -54,15 +53,9 @@ export async function renderToStream(
     assetManifest,
   } = options;
 
-  /**
-   * For each bootstrapModule we convert from a file url (file:///project/client.tsx) to
-   * a path string (/project/client.tsx).
-   */
   options.bootstrapModules = disableHydration
-    ? []
-    : options?.bootstrapModules?.map(
-      (url) => url.startsWith("file://") ? fromFileUrl(url) : url,
-    );
+    ? undefined
+    : options.bootstrapModules;
 
   options.onError = (error) => {
     log.error(error);
