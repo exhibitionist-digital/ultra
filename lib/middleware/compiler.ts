@@ -1,14 +1,8 @@
 import { transformSource } from "../compiler/transform.ts";
 import { ULTRA_COMPILER_PATH } from "../constants.ts";
 import { encode, extname, join, sprintf, toFileUrl } from "../deps.ts";
-import type { Context, Next } from "../types.ts";
 import { log } from "../logger.ts";
-import type { Mode, TransformSourceOptions } from "../types.ts";
-
-export type CompilerOptions = {
-  mode: Mode;
-  root: string;
-} & Omit<TransformSourceOptions, "minify" | "development">;
+import type { CompilerOptions, Context, Next } from "../types.ts";
 
 export const compiler = (options: CompilerOptions) => {
   const {

@@ -13,6 +13,8 @@ export type Context<
 
 export type CreateServerOptions = {
   mode?: Mode;
+
+  responseCache?: Cache;
   /**
    * The path to your ImportMap. Ultra will inject this into the head
    * of your rendered HTML markup.
@@ -25,7 +27,7 @@ export type CreateServerOptions = {
    * rendered HTML markup. This should be what hydrates your React application.
    */
   browserEntrypoint?: string;
-  compilerOptions?: Omit<CompilerOptions, "mode">;
+  compilerOptions?: CompilerOptions;
 };
 
 export type ImportMap = {
@@ -36,6 +38,10 @@ export type ImportMap = {
 export type RenderedReadableStream = ReadableStream<Uint8Array> & {
   allReady?: Promise<void> | undefined;
 };
+
+export type CompilerOptions = {
+  root: string;
+} & Omit<TransformSourceOptions, "minify" | "development">;
 
 export type TransformSourceOptions = {
   filename?: string;
@@ -50,7 +56,3 @@ export type TransformSourceOptions = {
   minify?: boolean;
   refresh?: boolean;
 };
-
-export type CompilerOptions = {
-  mode: Mode;
-} & Omit<TransformSourceOptions, "minify" | "development">;
