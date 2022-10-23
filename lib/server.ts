@@ -77,7 +77,6 @@ export async function createServer(
 
     // deno-fmt-ignore
     server.get(`${ULTRA_COMPILER_PATH}/*`, compiler({
-      mode,
       root,
       ...options.compilerOptions,
     }));

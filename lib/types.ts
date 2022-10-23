@@ -13,8 +13,6 @@ export type Context<
 
 export type CreateServerOptions = {
   mode?: Mode;
-
-  responseCache?: Cache;
   /**
    * The path to your ImportMap. Ultra will inject this into the head
    * of your rendered HTML markup.
