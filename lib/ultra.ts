@@ -69,6 +69,9 @@ export class UltraServer extends Hono {
      * Prepare the entrypoint
      */
     this.entrypoint = this.#prepareEntrypoint(this.importMap!);
+
+    // Validate
+    this.#valid();
   }
 
   render(
@@ -83,7 +86,6 @@ export class UltraServer extends Hono {
     context: Context | undefined,
     options?: UltraServerRenderOptions,
   ) {
-    this.#valid();
     log.debug("Rendering component");
 
     return renderToStream(Component, context, {
