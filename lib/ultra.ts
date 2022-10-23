@@ -26,6 +26,7 @@ export class UltraServer extends Hono {
   public assetManifest: Map<string, string> | undefined;
 
   public mode: Mode;
+  public baseUrl: string;
   public importMapPath: string;
   public assetManifestPath: string;
   public enableEsModuleShims?: boolean;
@@ -45,6 +46,9 @@ export class UltraServer extends Hono {
     this.enableEsModuleShims = options.enableEsModuleShims;
     this.esModuleShimsPath = options.esModuleShimsPath;
     this.entrypoint = options.entrypoint;
+    this.baseUrl = this.mode === "development"
+      ? `${ULTRA_COMPILER_PATH}/`
+      : "/";
   }
 
   async init() {
@@ -89,7 +93,7 @@ export class UltraServer extends Hono {
     log.debug("Rendering component");
 
     return renderToStream(Component, context, {
-      baseUrl: this.mode === "development" ? `${ULTRA_COMPILER_PATH}/` : "/",
+      baseUrl: this.baseUrl,
       assetManifest: this.assetManifest,
       importMap: this.importMap,
       enableEsModuleShims: this.enableEsModuleShims,
