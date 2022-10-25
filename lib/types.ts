@@ -1,8 +1,8 @@
-import type { Environment } from "https://deno.land/x/hono@v2.2.5/hono.ts";
-import type { Context as HonoContext } from "https://deno.land/x/hono@v2.2.5/mod.ts";
-export type { StatusCode } from "https://deno.land/x/hono@v2.2.5/utils/http-status.ts";
+import type { Environment } from "https://deno.land/x/hono@v2.3.0/hono.ts";
+import type { Context as HonoContext } from "https://deno.land/x/hono@v2.3.0/mod.ts";
+export type { StatusCode } from "https://deno.land/x/hono@v2.3.0/utils/http-status.ts";
 import type { JscTarget } from "https://esm.sh/@swc/core@1.3.0/types.d.ts";
-export type { Next } from "https://deno.land/x/hono@v2.2.5/mod.ts";
+export type { Next } from "https://deno.land/x/hono@v2.3.0/mod.ts";
 
 export type Mode = "development" | "production";
 
