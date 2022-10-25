@@ -15,9 +15,8 @@ const server = await createServer({
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 
-function ServerApp({ context }: any) {
+function ServerApp() {
   useDehydrateReactQuery(queryClient);
-
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
@@ -43,7 +42,7 @@ server.get("*", async (context) => {
   /**
    * Render the request
    */
-  const result = await server.render(<ServerApp context={context} />);
+  const result = await server.render(<ServerApp />);
 
   return context.body(result, 200, {
     "content-type": "text/html; charset=utf-8",
