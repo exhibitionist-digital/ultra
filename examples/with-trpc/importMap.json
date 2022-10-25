@@ -1,0 +1,16 @@
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0?dev",
+    "react/": "https://esm.sh/react@18.2.0&dev/",
+    "react-dom": "https://esm.sh/react-dom@18.2.0?dev",
+    "react-dom/": "https://esm.sh/react-dom@18.2.0&dev/",
+    "@tanstack/react-query": "https://esm.sh/@tanstack/react-query@4.2.3?external=react",
+    "@trpc/server": "https://esm.sh/@trpc/server@10.0.0-proxy-beta.25",
+    "@trpc/server/": "https://esm.sh/@trpc/server@10.0.0-proxy-beta.25/",
+    "@trpc/client": "https://esm.sh/*@trpc/client@10.0.0-proxy-beta.25",
+    "@trpc/client/": "https://esm.sh/*@trpc/client@10.0.0-proxy-beta.25/",
+    "@trpc/react": "https://esm.sh/*@trpc/react@10.0.0-proxy-beta.20",
+    "zod": "https://deno.land/x/zod@v3.19.1/mod.ts",
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-beta.11/"
+  }
+}
