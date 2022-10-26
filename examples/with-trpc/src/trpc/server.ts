@@ -4,7 +4,7 @@ import { observable } from "@trpc/server/observable";
 import { type AppRouter, appRouter } from "../server/router.ts";
 import { trpc } from "./trpc.ts";
 
-const customLink: TRPCLink<AppRouter> = () => {
+const procedureLink: TRPCLink<AppRouter> = () => {
   return ({ op }) => {
     if (op.type === "query") {
       return observable((observer) => {
@@ -29,10 +29,10 @@ const customLink: TRPCLink<AppRouter> = () => {
       });
     }
 
-    throw new Error("only query supported");
+    throw new Error("Only query operations are supported on the server");
   };
 };
 
 export const trpcClient = trpc.createClient({
-  links: [customLink],
+  links: [procedureLink],
 });
