@@ -1,6 +1,9 @@
 import type { TRPCLink } from "@trpc/client";
 import type { AnyProcedure } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { type ReactNode } from "react";
+import { queryClient, useDehydrateReactQuery } from "../query-client.tsx";
 import { type AppRouter, appRouter } from "../server/router.ts";
 import { trpc } from "./trpc.ts";
 
@@ -33,6 +36,15 @@ const procedureLink: TRPCLink<AppRouter> = () => {
   };
 };
 
-export const trpcClient = trpc.createClient({
+const trpcClient = trpc.createClient({
   links: [procedureLink],
 });
+
+export function TRPCServerProvider({ children }: { children?: ReactNode }) {
+  useDehydrateReactQuery(queryClient);
+  return (
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </trpc.Provider>
+  );
+}
