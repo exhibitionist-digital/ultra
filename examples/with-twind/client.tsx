@@ -1,5 +1,11 @@
 import hydrate from "ultra/hydrate.js";
 import App from "./src/app.tsx";
-import "./twind.ts";
+import { TWProvider } from "./src/context/twind.tsx";
+import { cssomSheet } from "twind";
 
-hydrate(document, <App />);
+hydrate(
+  document,
+  <TWProvider sheet={cssomSheet()}>
+    <App />
+  </TWProvider>,
+);

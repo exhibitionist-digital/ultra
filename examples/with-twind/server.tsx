@@ -1,7 +1,9 @@
 import { serve } from "https://deno.land/std@0.159.0/http/server.ts";
+import { getStyleTag } from "twind/sheets";
 import { createServer } from "ultra/server.ts";
-import "./twind.ts";
+import { createHeadInjectionTransformStream } from "ultra/stream.ts";
 import App from "./src/app.tsx";
+import { serverSheet, TWProvider } from "./src/context/twind.tsx";
 
 const server = await createServer({
   importMapPath: Deno.env.get("ULTRA_MODE") === "development"
@@ -11,12 +13,28 @@ const server = await createServer({
 });
 
 server.get("*", async (context) => {
+  const sheet = serverSheet();
+
   /**
    * Render the request
    */
-  const result = await server.render(<App />);
+  const result = await server.render(
+    <TWProvider sheet={sheet}>
+      <App />
+    </TWProvider>,
+    {
+      disableHydration: true,
+    },
+  );
 
-  return context.body(result, 200, {
+  // Inject the style tag into the head of the streamed response
+  const stylesInject = createHeadInjectionTransformStream(() =>
+    Promise.resolve(getStyleTag(Array.from(sheet.target)))
+  );
+
+  const transformed = result.pipeThrough(stylesInject);
+
+  return context.body(transformed, 200, {
     "content-type": "text/html",
   });
 });
