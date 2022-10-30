@@ -7,7 +7,7 @@
 #### Hypermodern Zero-Legacy Deno/React Framework<sup>*</sup>
 
 [![Discord][discord-badge]][discord]
-[![GitHub Workflow Status][actions-badge]][actions]
+![GitHub Workflow Status](https://github.com/exhibitionist-digital/ultra/actions/workflows/ci.yml/badge.svg)
 [![Deno module](https://shield.deno.dev/x/ultra)](https://deno.land/x/ultra)
 ![Deno compatibility](https://shield.deno.dev/deno/^1.24.3)
 
@@ -107,5 +107,3 @@ Here some things we are interested in for the future of JS and/or Ultra:
 [docs]: https://ultrajs.dev/docs
 [discord-badge]: https://img.shields.io/discord/956480805088153620?logo=discord&label=Discord&color=000000&&logoColor=ffffff
 [discord]: https://discord.gg/XDC5WxGHb2
-[actions-badge]: https://img.shields.io/github/workflow/status/exhibitionist-digital/ultra/fmt%20+%20lint?color=000000&logo=github&label=Tests
-[actions]: https://github.com/exhibitionist-digital/ultra/actions
