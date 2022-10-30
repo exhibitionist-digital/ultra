@@ -4,6 +4,7 @@ import { createServer } from "ultra/server.ts";
 import { createHeadInjectionTransformStream } from "ultra/stream.ts";
 import App from "./src/app.tsx";
 import { serverSheet, TWProvider } from "./src/context/twind.tsx";
+import { theme } from "./theme.ts";
 
 const server = await createServer({
   importMapPath: Deno.env.get("ULTRA_MODE") === "development"
@@ -19,7 +20,7 @@ server.get("*", async (context) => {
    * Render the request
    */
   const result = await server.render(
-    <TWProvider sheet={sheet}>
+    <TWProvider sheet={sheet} theme={theme}>
       <App />
     </TWProvider>,
   );
