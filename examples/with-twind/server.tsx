@@ -22,9 +22,6 @@ server.get("*", async (context) => {
     <TWProvider sheet={sheet}>
       <App />
     </TWProvider>,
-    {
-      disableHydration: true,
-    },
   );
 
   // Inject the style tag into the head of the streamed response
