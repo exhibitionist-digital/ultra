@@ -51,7 +51,7 @@ export function emotionTransformStream(
       for (const [, styleTag] of cache.entries()) {
         styles.push(styleTag);
       }
-      return styles.join("\n");
+      return Promise.resolve(styles.join("\n"));
     }),
   ];
 
