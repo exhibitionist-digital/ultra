@@ -31,9 +31,9 @@ log.debug(
 );
 
 export async function renderToString(element: React.ReactElement) {
-  // if (!shouldUseReactRoot) return ReactDOMServer.renderToString(element)
   const renderStream = await ReactDOMServer.renderToReadableStream(element);
   await renderStream.allReady;
+
   return streamToString(renderStream);
 }
 

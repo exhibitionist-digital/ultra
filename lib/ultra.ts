@@ -8,6 +8,7 @@ import { toUltraUrl } from "./utils/url.ts";
 
 type UltraServerRenderOptions = {
   generateStaticHTML?: boolean;
+  enableEsModuleShims?: boolean;
   disableHydration?: boolean;
   flushEffectsToHead?: boolean;
 };
