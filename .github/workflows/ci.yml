@@ -40,6 +40,7 @@ jobs:
         run: deno lint
 
       - name: Type Check
+        if: matrix.os == 'ubuntu-latest'
         run: deno check ./*.ts
 
       - name: Setup tests
