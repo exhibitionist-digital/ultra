@@ -10,6 +10,11 @@ export function EnvProvider({ children }: { children: JSX.Element }) {
   const value = new Map<string, string>(env);
 
   useServerInsertedHTML(() => {
+    const entries = Array.from(value.entries());
+    if (!entries.length) {
+      return null;
+    }
+
     return (
       h("script", {
         type: "text/javascript",

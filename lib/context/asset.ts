@@ -17,6 +17,12 @@ export function AssetProvider(
       return;
     }
 
+    const entries = Array.from(value.entries());
+
+    if (!entries.length) {
+      return;
+    }
+
     return (
       h("script", {
         type: "text/javascript",

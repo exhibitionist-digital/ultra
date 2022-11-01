@@ -19,7 +19,7 @@ export default function useAsset(path) {
   }
 
   const context = useContext(AssetContext) ||
-    new Map(globalThis.__ULTRA_ASSET_MAP);
+    new Map(globalThis.__ULTRA_ASSET_MAP || []);
 
   return useMemo(() => context.get(path) || path, [path]);
 }
