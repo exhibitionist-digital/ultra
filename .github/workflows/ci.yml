@@ -39,6 +39,9 @@ jobs:
       - name: Run linter
         run: deno lint
 
+      - name: Type Check
+        run: deno check ./*.ts
+
       - name: Setup tests
         run: deno run -A test/setup.ts
       
