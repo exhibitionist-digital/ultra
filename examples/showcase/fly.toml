@@ -1,6 +1,6 @@
-# fly.toml file generated for ultra-showcase on 2022-11-01T16:59:32+11:00
+# fly.toml file generated for ultra-experimental on 2022-11-01T22:26:39+11:00
 
-app = "ultra-showcase"
+app = "ultra-experimental"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []

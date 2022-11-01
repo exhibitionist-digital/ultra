@@ -4,6 +4,7 @@ const Counter = () => {
   const [count, setCount] = useState(0);
   return (
     <>
+      <title>Ultra: Hydrating</title>
       <figure>
         <h2>{count}</h2>
         <button onClick={() => setCount(count + 1)}>ADD COUNT</button>

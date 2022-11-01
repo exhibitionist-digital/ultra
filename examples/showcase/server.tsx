@@ -14,21 +14,8 @@ const server = await createServer({
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 
-server.get("/", async (context) => {
-  const inspected = context.req.query("inspector") || "";
-  /**
-   * Render the request
-   */
-  const result = await server.render(<App inspected={inspected} />, {
-    disableHydration: true,
-  });
-
-  return context.body(result, 200, {
-    "content-type": "text/html; charset=utf-8",
-  });
-});
-
 server.get("*", async (context) => {
+  const inspected = context.req.query("inspector") || "";
   const pathname = new URL(context.req.url).pathname;
   const sheet = serverSheet();
 
@@ -37,8 +24,9 @@ server.get("*", async (context) => {
    */
   const result = await server.render(
     <TWProvider sheet={sheet}>
-      <App pathname={pathname} />
+      <App pathname={pathname} inspected={inspected} />
     </TWProvider>,
+    { disableHydration: pathname !== "/hydration" },
   );
 
   // Inject the style tag into the head of the streamed response

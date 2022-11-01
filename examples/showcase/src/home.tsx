@@ -1,6 +1,7 @@
 const Home = ({ inspected = "" }) => {
   return (
     <>
+      <title>Ultra: Experimental</title>
       <p>
         Welcome to{" "}
         <strong>Ultra</strong>. The little web-framework which has no bundler
@@ -16,13 +17,14 @@ const Home = ({ inspected = "" }) => {
         This is the homepage. It is static HTML, it ships Zero-JS™.
       </p>
       <p>
-        Can you please do us a favour and open your inspector and refresh this
+        Can you please do us a favour and open your network tab and refresh this
         page?
       </p>
       {!inspected && (
         <p>
+          OPEN NETWORK TAB AND{" "}
           <a href="/?inspector=yes">
-            OPEN INSPECTOR AND CLICK THIS TO REFRESH THE PAGE
+            CLICK THIS TO REFRESH THE PAGE
           </a>
         </p>
       )}
