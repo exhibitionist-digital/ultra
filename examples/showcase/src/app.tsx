@@ -23,25 +23,26 @@ export default function App({ inspected = "", pathname = "/" }) {
           <h1>
             <span></span>__<span></span>
           </h1>
-
-          {(() => {
-            switch (pathname) {
-              case "/":
-                return <Home inspected={inspected} />;
-              case "/hydration":
-                return <Counter />;
-              case "/tw":
-                return <Tailwind />;
-              case "/data":
-                return <Data />;
-              case "/head":
-                return <Head />;
-              case "/conclusion":
-                return <Conclusion />;
-              default:
-                return <h2>404</h2>;
-            }
-          })()}
+          <Suspense fallback={null}>
+            {(() => {
+              switch (pathname) {
+                case "/":
+                  return <Home inspected={inspected} />;
+                case "/hydration":
+                  return <Counter />;
+                case "/tw":
+                  return <Tailwind />;
+                case "/data":
+                  return <Data />;
+                case "/head":
+                  return <Head />;
+                case "/conclusion":
+                  return <Conclusion />;
+                default:
+                  return <h2>404</h2>;
+              }
+            })()}
+          </Suspense>
         </main>
       </body>
     </html>

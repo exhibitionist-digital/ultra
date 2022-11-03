@@ -5,7 +5,7 @@ import App from "./src/app.tsx";
 // tw
 import { serverSheet, TWProvider } from "./src/context/twind.tsx";
 import { getStyleTag } from "twind/sheets";
-import { createHeadInjectionTransformStream } from "ultra/stream.ts";
+import { createHeadInsertionTransformStream } from "ultra/stream.ts";
 
 const server = await createServer({
   importMapPath: Deno.env.get("ULTRA_MODE") === "development"
@@ -30,7 +30,7 @@ server.get("*", async (context) => {
   );
 
   // Inject the style tag into the head of the streamed response
-  const stylesInject = createHeadInjectionTransformStream(() =>
+  const stylesInject = createHeadInsertionTransformStream(() =>
     Promise.resolve(getStyleTag(Array.from(sheet.target)))
   );
 
