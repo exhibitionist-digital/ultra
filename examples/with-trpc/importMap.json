@@ -12,6 +12,6 @@
     "@trpc/client/": "https://esm.sh/*@trpc/client@10.0.0-rc.1/",
     "@trpc/react-query": "https://esm.sh/*@trpc/react-query@10.0.0-rc.1",
     "zod": "https://deno.land/x/zod@v3.19.1/mod.ts",
-    "ultra/": "https://deno.land/x/ultra@v2.0.0-beta.13/"
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-beta.14/"
   }
 }
