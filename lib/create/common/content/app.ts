@@ -7,7 +7,7 @@ export function appContent(config: Config) {
   const ext = fileExtension(config);
   // deno-fmt-ignore
   return`
-
+  import useAsset from "ultra/hooks/use-asset.js";
   ${p.twind(`// Twind
   import { TwindProvider } from "${ext('./twind/TwindProvider', true)}";
   `)}
@@ -15,36 +15,35 @@ export function appContent(config: Config) {
   import { StitchesProvider } from "${ext('./stitches/StitchesProvider', true)}";
   `)}
 
-
-     export default function App() {
-       console.log("Hello world!");
-       return (
-        ${p.twind('<TwindProvider>')} 
-        ${p.stitches('<StitchesProvider>')}
-         <html lang="en">
-           <head>
-             <meta charSet="utf-8" />
-             <title>Ultra</title>
-             <meta name="viewport" content="width=device-width, initial-scale=1" />
-             <link rel="shortcut icon" href="/favicon.ico" />
-             <link rel="stylesheet" href="/style.css" />
-           </head>
-           <body>
-             <main>
-               <h1>
-                 <span></span>__<span></span>
-               </h1>
-               <p>
-                 Welcome to{" "}
-                 <strong>Ultra</strong>. This is a barebones starter for your web
-                 app.
-               </p>
-             </main>
-           </body>
-         </html>
-         ${p.stitches('</StitchesProvider>')}
-         ${p.twind('</TwindProvider>')}
-       );
-     }
+  export default function App() {
+    console.log("Hello world!");
+    return (
+    ${p.twind('<TwindProvider>')} 
+    ${p.stitches('<StitchesProvider>')}
+      <html lang="en">
+        <head>
+          <meta charSet="utf-8" />
+          <title>Ultra</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link rel="shortcut icon" href={useAsset("/favicon.ico")} />
+          <link rel="stylesheet" href={useAsset("/style.css")} />
+        </head>
+        <body>
+          <main>
+            <h1>
+              <span></span>__<span></span>
+            </h1>
+            <p>
+              Welcome to{" "}
+              <strong>Ultra</strong>. This is a barebones starter for your web
+              app.
+            </p>
+          </main>
+        </body>
+      </html>
+      ${p.stitches('</StitchesProvider>')}
+      ${p.twind('</TwindProvider>')}
+    );
+  }
    `;
 }

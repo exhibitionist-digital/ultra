@@ -15,6 +15,7 @@ Your app will probably need --
 **`Data Fetching`:**
 
 - React Query (with-react-query)
+- tRPC (with-trpc)
 
 **`CSS Styling`:**
 

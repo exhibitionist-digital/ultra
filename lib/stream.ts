@@ -70,25 +70,43 @@ export function createInsertedHTMLStream(
   });
 }
 
-export function createHeadInjectionTransformStream(
-  inject: () => Promise<string>,
+export function createHeadInsertionTransformStream(
+  insert: () => Promise<string>,
 ): TransformStream<Uint8Array, Uint8Array> {
-  let injected = false;
+  let inserted = false;
+  let freezing = false;
+
   return new TransformStream({
     async transform(chunk, controller) {
-      const content = decodeText(chunk);
-
-      let index;
-
-      const headIndex = content.indexOf("</head");
-
-      if (!injected && (index = headIndex) !== -1) {
-        injected = true;
-        const injectedContent = content.slice(0, index) + (await inject()) +
-          content.slice(index);
-        controller.enqueue(encodeText(injectedContent));
-      } else {
+      // While react is flushing chunks, we don't apply insertions
+      if (freezing) {
         controller.enqueue(chunk);
+        return;
+      }
+
+      const insertion = await insert();
+      if (inserted) {
+        controller.enqueue(encodeText(insertion));
+        controller.enqueue(chunk);
+        freezing = true;
+      } else {
+        const content = decodeText(chunk);
+        const index = content.indexOf("</head");
+        if (index !== -1) {
+          const insertedHeadContent = content.slice(0, index) + insertion +
+            content.slice(index);
+          controller.enqueue(encodeText(insertedHeadContent));
+          freezing = true;
+          inserted = true;
+        }
+      }
+
+      if (!inserted) {
+        controller.enqueue(chunk);
+      } else {
+        setTimeout(() => {
+          freezing = false;
+        });
       }
     },
   });
@@ -100,7 +118,7 @@ export function createImportMapInjectionStream(
   esModuleShimsPath?: string,
 ) {
   log.debug("Stream inject importMap");
-  return createHeadInjectionTransformStream(() => {
+  return createHeadInsertionTransformStream(() => {
     const scripts = [
       `<script type="importmap">${JSON.stringify(importMap)}</script>`,
     ];
@@ -246,7 +264,7 @@ export async function continueFromInitialStream(
     /**
      * Insert server injected html to the head if serverInsertedHTMLToHead is true
      */
-    createHeadInjectionTransformStream(async () => {
+    createHeadInsertionTransformStream(async () => {
       log.debug("Stream Insert server side html", { serverInsertedHTMLToHead });
       // Insert server side html to end of head in app layout rendering, to avoid
       // hydration errors. Remove this once it's ready to be handled by react itself.

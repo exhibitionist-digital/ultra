@@ -1,5 +1,5 @@
 import {
-  createHeadInjectionTransformStream,
+  createHeadInsertionTransformStream,
   createTransformStream,
 } from "ultra/stream.ts";
 
@@ -30,7 +30,7 @@ export function emotionTransformStream(
 
       return content;
     }),
-    createHeadInjectionTransformStream(() => {
+    createHeadInsertionTransformStream(() => {
       const styles: string[] = [];
       for (const [, styleTag] of cache.entries()) {
         styles.push(styleTag);

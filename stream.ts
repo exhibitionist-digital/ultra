@@ -1,4 +1,4 @@
 export {
-  createHeadInjectionTransformStream,
+  createHeadInsertionTransformStream,
   createTransformStream,
 } from "./lib/stream.ts";
