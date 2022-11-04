@@ -4,12 +4,12 @@
 
 ### Ultra 2.0
 
-#### Hypermodern Zero-Legacy Deno/React Framework<sup>*</sup>
+#### Zero-Legacy Deno/React Suspense SSR Framework<sup>*</sup>
 
 [![Discord][discord-badge]][discord]
 ![GitHub Workflow Status](https://github.com/exhibitionist-digital/ultra/actions/workflows/ci.yml/badge.svg)
 [![Deno module](https://shield.deno.dev/x/ultra)](https://deno.land/x/ultra)
-![Deno compatibility](https://shield.deno.dev/deno/^1.24.3)
+![Deno compatibility](https://shield.deno.dev/deno/^1.27.1)
 
 </div>
 
@@ -92,10 +92,11 @@ Here some things we are interested in for the future of JS and/or Ultra:
 - [AbTs: Anything but TypeScript](https://tc39.es/proposal-type-annotations)
 - Libraries supporting
   [optimal JavaScript module design](https://jaydenseric.com/blog/optimal-javascript-module-design)
-- React
-  [resources](https://github.com/facebook/react/commit/796d31809b3683083d3b62ccbab4f00dec8ffb1f)
-  for streaming head management
-- [Native import maps](https://caniuse.com/import-maps) support in Safari
+- React [resources](https://github.com/reactjs/rfcs/pull/219) for streaming head
+  management
+- React [async/await support](https://github.com/reactjs/rfcs/pull/229)
+- [Native import maps](https://caniuse.com/import-maps) support in Safari and
+  Firefox
 - [Dynamic import](https://github.com/denoland/deploy_feedback/issues/1) support
   on Deno Deploy
 - [Native CSS modules](https://css-tricks.com/css-modules-the-native-ones/)
