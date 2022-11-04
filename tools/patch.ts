@@ -1,5 +1,12 @@
-import { walk } from "https://deno.land/std@0.153.0/fs/mod.ts";
-import { globToRegExp } from "https://deno.land/std@0.153.0/path/glob.ts";
+import { walk } from "https://deno.land/std@0.159.0/fs/mod.ts";
+import {
+  inc,
+  parse as parseSemver,
+  ReleaseType,
+} from "https://deno.land/std@0.159.0/semver/mod.ts";
+import { globToRegExp } from "https://deno.land/std@0.159.0/path/glob.ts";
+import { parse } from "https://deno.land/std@0.159.0/flags/mod.ts";
+import { assert } from "https://deno.land/std@0.159.0/_util/assert.ts";
 
 /**
  * This tool will update deno.land import strings in readme's and importMaps
@@ -22,33 +29,72 @@ export const IMPORT_MAP_REGEX = globToRegExp("examples/**/importMap.json", {
   caseInsensitive: false,
 });
 
+const parsedArgs = parse(Deno.args, {
+  string: "release",
+});
+
+const listFormatter = new Intl.ListFormat("default", {
+  style: "short",
+  type: "disjunction",
+});
+
+async function patchFile(path: string, newVersion: string) {
+  console.log(`Patching: ${path}`);
+  const content = await Deno.readTextFile(path);
+  await Deno.writeTextFile(
+    path,
+    content.replace(DENOLAND_REGEX, `//deno.land/x/ultra@v${newVersion}/`),
+  );
+}
+
 if (import.meta.main) {
-  const version = prompt("Whats the new version?");
+  const releaseTypes = [
+    "pre",
+    "major",
+    "premajor",
+    "minor",
+    "preminor",
+    "patch",
+    "prepatch",
+    "prerelease",
+  ];
+  const release = parsedArgs.release;
+
+  assert(release !== undefined, "Must provide a release type.");
+  assert(
+    releaseTypes.includes(release),
+    `Not a valid release type. Accepted values: ${
+      listFormatter.format(releaseTypes)
+    }`,
+  );
+
+  const { VERSION: currentVersion } = await import("../version.ts");
+  const parsedVersion = parseSemver(currentVersion, {
+    includePrerelease: true,
+  });
+
+  if (!parsedVersion) {
+    throw new Error("Failed to parse current version as semver.");
+  }
+
+  console.log(`Current version: ${parsedVersion.toString()}`);
+  const nextVersion = inc(parsedVersion, release as ReleaseType, {
+    includePrerelease: true,
+  }, release === "pre" ? "beta" : undefined);
+
+  const version = prompt("Whats the new version?", nextVersion || undefined);
+
   if (version) {
-    const newDenoLandVersion = `//deno.land/x/ultra@v${version}/`;
-    const readme = await Deno.readTextFile("./README.md");
+    await patchFile("./README.md", version);
+    await patchFile("./lib/create/common/content/importMap.ts", version);
 
-    console.log("Patching README.md");
-    await Deno.writeTextFile(
-      "./README.md",
-      readme.replace(
-        DENOLAND_REGEX,
-        `//deno.land/x/ultra@v${version}/`,
-      ),
-    );
-
-    console.log("Patching examples importMaps");
     for await (
       const entry of walk("./", {
         match: [IMPORT_MAP_REGEX],
         skip: [ULTRA_OUTPUT_REGEX],
       })
     ) {
-      const content = await Deno.readTextFile(entry.path);
-      await Deno.writeTextFile(
-        entry.path,
-        content.replace(DENOLAND_REGEX, newDenoLandVersion),
-      );
+      await patchFile(entry.path, version);
     }
 
     /**

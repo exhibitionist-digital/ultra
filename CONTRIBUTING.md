@@ -2,12 +2,14 @@
 
 ## Developer Setup
 
-The easiest way to work on Ultra is to clone this repo and navigate to the
-`/workspace` directory. It contains a simple webapp that imports Ultra from a
-relative URL, so it can be used to test changes to the Ultra codebase.
+The easiest way to work on Ultra is to clone this repo and run the dev task. It
+will ask you which example you would like to work on and start that example in
+dev mode, so it can be used to test and work on changes to the Ultra codebase
+easily.
 
-- `cd workspace`
-- `deno task dev`
+```
+deno task dev
+```
 
 ---
 
@@ -22,7 +24,6 @@ error:
 deno fmt
 deno lint
 deno task test
-deno task test:puppeteer
 ```
 
 Note that `deno fmt` needs to be run on any changes to markdown or other

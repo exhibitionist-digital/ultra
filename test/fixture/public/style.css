@@ -7,6 +7,10 @@ body {
   text-align: center;
 }
 
+body {
+  background-image: url('./share.webp');
+}
+
 h1 {
   text-align: center;
   margin: 1rem auto 3rem;

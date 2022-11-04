@@ -1,6 +1,6 @@
 # docs
 
-> 📝 These docs are a WIP of the alpha 2 release.
+> 📝 These docs are a WIP of the beta release.
 
 Welp, if you've made it here, you probably have a basic **Ultra** project
 running. If not try this...
@@ -15,7 +15,7 @@ deno run -A -r https://deno.land/x/ultra/create.ts
 
 **Ultra** gives you the control to use (or not use) many of the most popular
 React libraries out there. You will probably
-need to update your `importMap.json` `server.tsx` and `client.tsx`
+need to update your `importMap.json`,  `server.tsx` and `client.tsx`
 
 We've prepared the following examples for you:
 
@@ -42,6 +42,20 @@ We've prepared the following examples for you:
 #### [API Routes](#api-routes)
 
 - Hono [(with-api-routes)](https://github.com/exhibitionist-digital/ultra/tree/main/examples/with-api-routes)
+
+#### [Middleware](#middleware)
+Since **Ultra** uses Hono under-the-covers, it includes middleware support. Here is an example snippet added to `server.tsx` that will add a 'Server' header to every response:
+```js
+server.use('*', async (c, next) => {
+  c.res.headers.set("Server", "Ultra Hono");
+  await next();
+});
+```
+If you look in the Dev Tools Network tab and click on localhost, you'll see this line in the Headers tab added to the Response Headers section:
+```
+server: Ultra Hono
+```
+See the [Hono middleware docs](https://honojs.dev/docs/api/middleware/) for more details.
 
 #### [Zero-JS™](#zero-js)
 
@@ -82,22 +96,22 @@ More examples can be found [here](https://github.com/exhibitionist-digital/ultra
 ```js
 import useAsset from "ultra/hooks/use-asset.js";
 
-<link rel="preload" as="style" href={useAsset("./style.css")} />
+<link rel="preload" as="style" href={useAsset("/style.css")} />
 ```
 
 `useAsset` allows **Ultra** to version your assets during build for deploying to production. In development it's a non-op.
 
-#### [useFlushEffects](#useflusheffects)
+#### [useServerInsertedHTML](#useflusheffects)
 
 ```js
-import useFlushEffects from "ultra/hooks/use-flush-effects.js";
+import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
 
 
 const ServerApp = function () {
   /**
-   * useFlushEffects will inject the returned output into the rendered stream.
+   * useServerInsertedHTML will inject the returned output into the rendered stream.
    */
-  useFlushEffects(() => {
+  useServerInsertedHTML(() => {
     // ...
   });
 
@@ -112,7 +126,7 @@ Similar to the [hook](https://github.com/vercel/next.js/blob/aef60dc581f564b64cf
 #### [usePreload](#usepreload)
 
 ```js
-import useAsset from "ultra/hooks/use-preload.js";
+import usePreload from "ultra/hooks/use-preload.js";
 
 usePreload(${href})
 ```
@@ -145,7 +159,44 @@ Production builds run with `--no-remote` 🔥
 
 ### [Deploying](#deploying)
 
-> ⏳ Support for various edge providers coming soon!
+> ⏳ Support for more edge providers coming soon!
+
+#### [Deno Deploy](#deno-deploy)
+
+Use this GitHub Action:
+
+```yml
+name: Deploy
+on: [push]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Needed for auth with Deno Deploy
+      contents: read # Needed to clone the repository
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+
+      - name: Install Deno
+        uses: denoland/setup-deno@main
+        with:
+          deno-version: 1.25.1
+
+      - name: Build site
+        run: deno run -A ./build.ts # Your build script
+
+      - name: Upload to Deno Deploy
+        uses: denoland/deployctl@v1
+        with:
+          project: "PROJECT_NAME" # Your deploy project name
+          entrypoint: "server.js"
+          root: .ultra
+          import-map: importMap.server.json
+```
 
 #### [Fly/Docker](#flydocker)
 

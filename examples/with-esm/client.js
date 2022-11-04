@@ -1,5 +1,5 @@
 import React from "react";
-import { hydrateRoot } from "react-dom/client";
+import hydrate from "ultra/hydrate.js";
 import App from "./src/app.js";
 
-hydrateRoot(document, React.createElement(App));
+hydrate(document, React.createElement(App));

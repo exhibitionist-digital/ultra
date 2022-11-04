@@ -1,92 +1,44 @@
-import type { PropsWithChildren, ReactNode } from "react";
-import { createElement as h, Fragment, useCallback } from "react";
-import { renderToString } from "react-dom/server";
-import AssetContext from "../hooks/asset-context.js";
-import FlushEffectsContext from "../hooks/flush-effect-context.js";
-import ServerContext from "../hooks/server-context.js";
-import useFlushEffects from "../hooks/use-flush-effects.js";
+import type { PropsWithChildren } from "react";
+import { createElement as h } from "react";
+import { AssetProvider } from "./context/asset.ts";
+import { DataStreamProvider } from "./context/dataStream.ts";
+import { EnvProvider } from "./context/env.ts";
+import { InsertedHTML } from "./context/serverInsertedHtml.ts";
+import { IslandProvider } from "./context/island.ts";
+import { ServerContextProvider } from "./context/server.ts";
 import type { Context } from "./types.ts";
-
-const flushEffectsCallbacks: Set<() => ReactNode> = new Set();
-
-function FlushEffects({ children }: { children: JSX.Element }) {
-  // Reset flushEffectsHandler on each render
-  flushEffectsCallbacks.clear();
-
-  const addFlushEffects = useCallback(
-    (handler: () => ReactNode) => {
-      flushEffectsCallbacks.add(handler);
-    },
-    [],
-  );
-
-  return (
-    h(FlushEffectsContext.Provider, { value: addFlushEffects }, children)
-  );
-}
-
-export const flushEffectHandler = (): string => {
-  return renderToString(
-    h(
-      Fragment,
-      null,
-      Array.from(flushEffectsCallbacks).map((callback) => callback()),
-    ),
-  );
-};
-
-function AssetProvider(
-  { children, value }: {
-    children: ReactNode;
-    value: Map<string, string> | undefined;
-  },
-) {
-  useFlushEffects(() => {
-    /**
-     * We don't need to inject if we don't have an assetManifest
-     */
-    if (!value) {
-      return;
-    }
-
-    return (
-      h("script", {
-        type: "text/javascript",
-        dangerouslySetInnerHTML: {
-          __html: `window.__ULTRA_ASSET_MAP = ${
-            JSON.stringify(Array.from(value.entries()))
-          }`,
-        },
-      })
-    );
-  });
-
-  return h(AssetContext.Provider, { value }, children);
-}
-
-function ServerContextProvider(
-  { children, value }: { children: ReactNode; value: Context | undefined },
-) {
-  return h(ServerContext.Provider, { value }, children);
-}
 
 type UltraProviderProps = {
   context: Context | undefined;
+  baseUrl: string;
   assetManifest: Map<string, string> | undefined;
 };
 
 export function UltraProvider(
-  { context, assetManifest, children }: PropsWithChildren<UltraProviderProps>,
+  { context, assetManifest, children, baseUrl }: PropsWithChildren<
+    UltraProviderProps
+  >,
 ) {
-  return h(
-    ServerContextProvider,
-    {
-      value: context,
+  return h(ServerContextProvider, {
+    context,
+    children: h(DataStreamProvider, {
       children: h(
-        FlushEffects,
-        null,
-        h(AssetProvider, { value: assetManifest, children }),
+        InsertedHTML,
+        {
+          children: h(
+            EnvProvider,
+            {
+              children: h(AssetProvider, {
+                value: assetManifest,
+                children: h(IslandProvider, {
+                  children,
+                  baseUrl,
+                }),
+              }),
+            },
+          ),
+        },
       ),
-    },
-  );
+    }),
+  });
 }

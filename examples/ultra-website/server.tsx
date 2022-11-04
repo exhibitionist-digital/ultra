@@ -8,10 +8,13 @@ import App from "./src/app.tsx";
 import { useDehydrateReactQuery } from "./src/hooks/useDehydrateReactQuery.tsx";
 import { queryClient } from "./src/query-client.ts";
 import { HelmetProvider } from "react-helmet-async";
-import useFlushEffects from "ultra/hooks/use-flush-effects.js";
+import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
+import { getStarCount } from "./src/api/github.ts";
 
 const server = await createServer({
-  importMapPath: import.meta.resolve("./importMap.json"),
+  importMapPath: Deno.env.get("ULTRA_MODE") === "development"
+    ? import.meta.resolve("./importMap.dev.json")
+    : import.meta.resolve("./importMap.json"),
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 
@@ -21,44 +24,22 @@ const server = await createServer({
 const api = createRouter();
 
 api.get("/github", async (context) => {
-  const getCount = async () => {
-    let data = await fetch(
-      `https://api.github.com/repos/exhibitionist-digital/ultra`,
-    );
-    data = await data.json();
-    if (data?.stargazers_count) {
-      localStorage.setItem("count", data?.stargazers_count);
-      localStorage.setItem("stamp", +new Date());
-    }
-    return data?.stargazers_count;
-  };
-  // get count and timestamp from cache
-  let count = localStorage.getItem("count");
-  const stamp = +localStorage.getItem("stamp");
-
-  // if nothing in cache, this request will be a bit slower
-  if (!count) count = await getCount();
-
-  const body = {
-    stargazers_count: count || "GitHub",
-  };
-  // if timestamp is longer than 30 mins...
-  // update the cache, but don't await response
-  if (stamp && +new Date() > stamp + 1800000) {
-    getCount();
-  }
-  return context.json(body);
+  const data = await getStarCount();
+  return context.json(data);
 });
 
 server.route("/api", api);
 
 server.get("*", async (context) => {
   queryClient.clear();
+
+  await queryClient.prefetchQuery(getStarCount.keys(), getStarCount);
+
   // deno-lint-ignore no-explicit-any
   const helmetContext: Record<string, any> = {};
 
   function ServerApp() {
-    useFlushEffects(() => {
+    useServerInsertedHTML(() => {
       const { helmet } = helmetContext;
       return (
         <>

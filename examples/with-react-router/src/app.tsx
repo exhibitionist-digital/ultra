@@ -1,7 +1,17 @@
+import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
+import useServerContext from "ultra/hooks/use-server-context.js";
 import { DefaultLayout } from "./layouts/DefaultLayout.tsx";
-import HomePage from "./pages/Home.tsx";
-import AboutPage from "./pages/About.tsx";
+
+const HomePage = lazy(() => import("./pages/Home.tsx"));
+const AboutPage = lazy(() => import("./pages/About.tsx"));
+
+function RouteNotFound() {
+  useServerContext((context) => {
+    context.status(404);
+  });
+  return <div>Not found</div>;
+}
 
 export default function App() {
   return (
@@ -13,15 +23,15 @@ export default function App() {
         <link rel="shortcut icon" href="/favicon.ico" />
       </head>
       <body>
-        <Routes>
-          <Route path="/" element={<DefaultLayout />}>
-            <Route index element={<HomePage />} />
-            <Route
-              path="about"
-              element={<AboutPage />}
-            />
-          </Route>
-        </Routes>
+        <Suspense fallback={<div>Page is Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<DefaultLayout />}>
+              <Route index element={<HomePage />} />
+              <Route path="about" element={<AboutPage />} />
+              <Route path="*" element={<RouteNotFound />} />
+            </Route>
+          </Routes>
+        </Suspense>
       </body>
     </html>
   );

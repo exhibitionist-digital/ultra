@@ -1,9 +1,11 @@
-import { serve } from "https://deno.land/std@0.153.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.159.0/http/server.ts";
 import { createServer } from "ultra/server.ts";
 import App from "./src/app.tsx";
 
 const server = await createServer({
-  importMapPath: import.meta.resolve("./importMap.json"),
+  importMapPath: Deno.env.get("ULTRA_MODE") === "development"
+    ? import.meta.resolve("./importMap.dev.json")
+    : import.meta.resolve("./importMap.json"),
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 

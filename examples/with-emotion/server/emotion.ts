@@ -1,6 +1,6 @@
 import {
-  createBufferedTransformStream,
-  createHeadInjectionTransformStream,
+  createHeadInsertionTransformStream,
+  createTransformStream,
 } from "ultra/stream.ts";
 
 const regex = new RegExp(
@@ -13,7 +13,7 @@ export function emotionTransformStream(
   cache: Map<string, string> = new Map(),
 ) {
   const transforms = [
-    createBufferedTransformStream((content) => {
+    createTransformStream((content) => {
       let match;
 
       regex.lastIndex = 0;
@@ -30,12 +30,12 @@ export function emotionTransformStream(
 
       return content;
     }),
-    createHeadInjectionTransformStream(() => {
+    createHeadInsertionTransformStream(() => {
       const styles: string[] = [];
       for (const [, styleTag] of cache.entries()) {
         styles.push(styleTag);
       }
-      return styles.join("\n");
+      return Promise.resolve(styles.join("\n"));
     }),
   ];
 

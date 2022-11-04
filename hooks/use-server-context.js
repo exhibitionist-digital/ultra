@@ -4,7 +4,7 @@ import ServerContext from "./server-context.js";
 /**
  * @callback contextCallback
  * @param {import('../lib/types.ts').Context} context
- * @returns {void}
+ * @returns {Response | void}
  */
 
 /**
@@ -13,6 +13,12 @@ import ServerContext from "./server-context.js";
 export default function useServerContext(callback) {
   const context = useContext(ServerContext);
   if (context && callback) {
-    callback(context);
+    const response = callback(context);
+    if (response) {
+      /**
+       * TODO(deckchairlabs) how to set the response here, while keeping the server rendered markup
+       * if desired
+       */
+    }
   }
 }

@@ -1,11 +1,16 @@
 import { ULTRA_COMPILER_PATH } from "./constants.ts";
-import { assert, Hono, resolve, toFileUrl } from "./deps.ts";
+import { assert, dotenv, Hono, resolve, toFileUrl } from "./deps.ts";
 import { ensureMinDenoVersion } from "./dev/ensureMinDenoVersion.ts";
+import { log } from "./logger.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
-import { log } from "./logger.ts";
 import { resolveImportMapPath } from "./utils/import-map.ts";
+
+/**
+ * Dotenv
+ */
+await dotenv({ export: true });
 
 /**
  * Check if we are running on Deno Deploy and set the mode to production
@@ -16,11 +21,14 @@ const modeFromEnv = Deno.env.get("ULTRA_MODE") ||
 
 const defaultOptions = {
   mode: (modeFromEnv || "development") as Mode,
+  enableEsModuleShims: true,
+  esModuleShimsPath:
+    "https://ga.jspm.io/npm:es-module-shims@1.6.2/dist/es-module-shims.js",
 };
 
 export async function createServer(
   options: CreateServerOptions,
-) {
+): Promise<UltraServer> {
   const resolvedOptions = {
     ...defaultOptions,
     ...options,
@@ -28,80 +36,62 @@ export async function createServer(
 
   assertServerOptions(resolvedOptions);
 
-  const { mode = "development", browserEntrypoint } =
-    resolvedOptions as Required<CreateServerOptions>;
+  const {
+    mode = "development",
+    browserEntrypoint,
+    enableEsModuleShims,
+    esModuleShimsPath,
+  } = resolvedOptions;
 
   const root = Deno.cwd();
-  const importMapPath = resolveImportMapPath(mode, root, options.importMapPath);
-  const assetManifestPath =
-    toFileUrl(resolve(root, "asset-manifest.json")).href;
+  const assetManifestPath = toFileUrl(resolve(root, "asset-manifest.json"));
 
-  const server = new UltraServer(
-    root,
+  const server = new UltraServer(root, {
     mode,
-    importMapPath,
-    assetManifestPath,
-    browserEntrypoint,
-  );
+    entrypoint: browserEntrypoint,
+    importMapPath: resolveImportMapPath(mode, root, options.importMapPath),
+    assetManifestPath: String(assetManifestPath),
+    enableEsModuleShims,
+    esModuleShimsPath,
+  });
 
   await server.init();
+
+  // We always try to serve public assets before anything else.
+  // deno-fmt-ignore
+  server.get("*", serveStatic({
+    root: resolve(root, "./public"),
+    cache: mode !== "development",
+  }));
+
+  // Serve anything else static at "/"
+  // deno-fmt-ignore
+  server.get("*", serveStatic({
+    root: resolve(root, "./"),
+    cache: mode !== "development",
+  }));
 
   if (mode === "development") {
     log.info("Loading compiler");
     const { compiler } = await import("./middleware/compiler.ts");
 
-    server.use(
-      `${ULTRA_COMPILER_PATH}/*`,
-      compiler({
-        mode,
-        root,
-        ...options.compilerOptions,
-      }),
-    );
-
-    /**
-     * Serve assets from "./public" at "/"
-     */
-    server.use(
-      "*",
-      serveStatic({
-        root: resolve(root, "./public"),
-        cache: false,
-      }),
-    );
-  } else {
-    /**
-     * Serve assets from "./public" at "/"
-     */
-    server.use(
-      "*",
-      serveStatic({
-        root: resolve(root, "./public"),
-        cache: true,
-      }),
-    );
-
-    /**
-     * Serve anything else static at "/"
-     */
-    server.use(
-      "*",
-      serveStatic({
-        root: resolve(root, "./"),
-        cache: true,
-      }),
-    );
+    // deno-fmt-ignore
+    server.get(`${ULTRA_COMPILER_PATH}/*`, compiler({
+      root,
+      ...options.compilerOptions,
+    }));
   }
 
   return server;
 }
 
 export function createRouter() {
-  const router = new Hono();
-  return router;
+  return new Hono();
 }
 
-export function assertServerOptions(options: CreateServerOptions) {
+export function assertServerOptions(
+  options: CreateServerOptions,
+): options is Required<CreateServerOptions> {
   try {
     /**
      * Ensure we are running a supported Deno version
@@ -127,6 +117,8 @@ export function assertServerOptions(options: CreateServerOptions) {
     assert(
       `A browser entrypoint was not provided "${options.browserEntrypoint}"`,
     );
+
+    return true;
   } catch (error) {
     throw new Error(error.message);
   }

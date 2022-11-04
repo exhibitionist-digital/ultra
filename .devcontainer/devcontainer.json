@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.205.1/containers/deno
 {
-  "name": "Ultra.js",
+  "name": "ultra-dev",
   "build": {
     "dockerfile": "Dockerfile",
     // Update 'VARIANT' to pick an Debian OS version: bullseye, buster

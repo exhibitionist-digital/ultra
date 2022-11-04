@@ -1,19 +1,41 @@
-import { createElement as h } from "react";
-import { RenderToReadableStreamOptions } from "react-dom/server";
-import { flushEffectHandler, UltraProvider } from "./provider.ts";
-import { fromFileUrl } from "./deps.ts";
+import * as React from "react";
+import * as ReactDOMServer from "react-dom/server";
+import { UltraProvider } from "./provider.ts";
+import { getServerInsertedHTML } from "./context/serverInsertedHtml.ts";
+import { createFlushDataStreamHandler } from "./context/dataStream.ts";
 import type { Context } from "./types.ts";
 import { log } from "./logger.ts";
-import { continueFromInitialStream, renderToInitialStream } from "./stream.ts";
+import {
+  continueFromInitialStream,
+  renderToInitialStream,
+  streamToString,
+} from "./stream.ts";
 import { ImportMap } from "./types.ts";
 
-type RenderToStreamOptions = RenderToReadableStreamOptions & {
+type RenderToStreamOptions = ReactDOMServer.RenderToReadableStreamOptions & {
+  baseUrl: string;
   importMap: ImportMap | undefined;
   assetManifest: Map<string, string> | undefined;
+  enableEsModuleShims?: boolean;
+  esModuleShimsPath?: string;
   generateStaticHTML?: boolean;
-  flushEffectsToHead?: boolean;
+  serverInsertedHTMLToHead?: boolean;
   disableHydration?: boolean;
 };
+
+log.debug(`react: ${React.version} ${import.meta.resolve("react")}`);
+log.debug(
+  `react-dom/server: ${ReactDOMServer.version} ${
+    import.meta.resolve("react-dom/server")
+  }`,
+);
+
+export async function renderToString(element: React.ReactElement) {
+  const renderStream = await ReactDOMServer.renderToReadableStream(element);
+  await renderStream.allReady;
+
+  return streamToString(renderStream);
+}
 
 export async function renderToStream(
   App: JSX.Element,
@@ -21,31 +43,29 @@ export async function renderToStream(
   options: RenderToStreamOptions,
 ) {
   const {
+    baseUrl,
     generateStaticHTML = false,
     disableHydration = false,
-    flushEffectsToHead = true,
+    serverInsertedHTMLToHead = true,
     importMap,
+    enableEsModuleShims,
+    esModuleShimsPath,
     assetManifest,
   } = options;
 
-  /**
-   * For each bootstrapModule we convert from a file url (file:///project/client.tsx) to
-   * a path string (/project/client.tsx).
-   */
   options.bootstrapModules = disableHydration
-    ? []
-    : options?.bootstrapModules?.map(
-      (url) => url.startsWith("file://") ? fromFileUrl(url) : url,
-    );
+    ? undefined
+    : options.bootstrapModules;
 
   options.onError = (error) => {
     log.error(error);
   };
 
   const renderStream = await renderToInitialStream({
-    element: h(
+    element: React.createElement(
       UltraProvider,
       {
+        baseUrl,
         context,
         assetManifest,
         children: App,
@@ -54,11 +74,20 @@ export async function renderToStream(
     options,
   });
 
+  const dataStream = new TransformStream<Uint8Array, Uint8Array>();
+  const flushDataStreamHandler = createFlushDataStreamHandler(
+    dataStream.writable.getWriter(),
+  );
+
   return await continueFromInitialStream(renderStream, {
     generateStaticHTML,
     disableHydration,
-    flushEffectsToHead,
-    flushEffectHandler,
+    getServerInsertedHTML,
+    serverInsertedHTMLToHead,
+    flushDataStreamHandler,
+    dataStream,
     importMap,
+    enableEsModuleShims,
+    esModuleShimsPath,
   });
 }

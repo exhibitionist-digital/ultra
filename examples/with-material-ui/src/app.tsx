@@ -16,10 +16,15 @@ export default function App() {
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
-        <link rel="shortcut icon" href={useAsset("./favicon.ico")} />
+        <link rel="shortcut icon" href={useAsset("/favicon.ico")} />
       </head>
-      <body>
-        <Button>Hello World</Button>
+      <body style={{ padding: "1em" }}>
+        <Button
+          variant="contained"
+          onClick={() => alert("Hello World from a Material UI button!!")}
+        >
+          Say Hello World
+        </Button>
       </body>
     </html>
   );

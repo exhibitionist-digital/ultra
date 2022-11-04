@@ -1,8 +1,8 @@
 import { dehydrate, QueryClient } from "@tanstack/react-query";
-import useFlushEffects from "ultra/hooks/use-flush-effects.js";
+import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
 
 export function useDehydrateReactQuery(queryClient: QueryClient) {
-  useFlushEffects(() => {
+  useServerInsertedHTML(() => {
     /**
      * Dehydrate the state from queryClient
      */

@@ -1,7 +1,7 @@
-import { hydrateRoot } from "react-dom/client";
+import hydrate from "ultra/hydrate.js";
 import App from "./src/app.tsx";
 
-hydrateRoot(document, <App />);
+hydrate(document, <App />);
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./service-worker.js");

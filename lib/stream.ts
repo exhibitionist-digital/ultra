@@ -21,18 +21,37 @@ export function decodeText(input?: Uint8Array, textDecoder?: TextDecoder) {
     : new TextDecoder().decode(input);
 }
 
-export function createBufferedTransformStream(
-  transform: (value: string) => string | Promise<string> = (value) => value,
-): TransformStream<Uint8Array, Uint8Array> {
+export async function streamToString(
+  stream: ReadableStream<Uint8Array>,
+): Promise<string> {
+  const reader = stream.getReader();
+  const textDecoder = new TextDecoder();
+
+  let bufferedString = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+
+    if (done) {
+      return bufferedString;
+    }
+
+    bufferedString += decodeText(value, textDecoder);
+  }
+}
+
+export function createBufferedTransformStream(): TransformStream<
+  Uint8Array,
+  Uint8Array
+> {
   let bufferedString = "";
   let pendingFlush: Promise<void> | null = null;
 
   const flushBuffer = (controller: TransformStreamDefaultController) => {
     if (!pendingFlush) {
       pendingFlush = new Promise((resolve) => {
-        setTimeout(async () => {
-          const buffered = await transform(bufferedString);
-          controller.enqueue(encodeText(buffered));
+        setTimeout(() => {
+          controller.enqueue(encodeText(bufferedString));
           bufferedString = "";
           pendingFlush = null;
           resolve();
@@ -48,59 +67,143 @@ export function createBufferedTransformStream(
     transform(chunk, controller) {
       bufferedString += decodeText(chunk, textDecoder);
       flushBuffer(controller);
-      textDecoder.decode();
     },
 
     flush() {
       if (pendingFlush) {
+        textDecoder.decode();
         return pendingFlush;
       }
     },
   });
 }
 
-export function createFlushEffectStream(
-  handleFlushEffect: () => string,
+export function createTransformStream(
+  transform: (value: string) => string | Promise<string> = (value) => value,
+): TransformStream<Uint8Array, Uint8Array> {
+  const textDecoder = new TextDecoder();
+
+  return new TransformStream({
+    async transform(chunk, controller) {
+      const decoded = decodeText(chunk, textDecoder);
+      const transformed = await transform(decoded);
+      controller.enqueue(encodeText(transformed));
+    },
+    flush() {
+      textDecoder.decode();
+    },
+  });
+}
+
+export function createInsertedHTMLStream(
+  getServerInsertedHTML: () => Promise<string>,
 ): TransformStream<Uint8Array, Uint8Array> {
   return new TransformStream({
-    transform(chunk, controller) {
-      const flushedChunk = encodeText(handleFlushEffect());
+    async transform(chunk, controller) {
+      const insertedHTMLChunk = encodeText(await getServerInsertedHTML());
 
-      controller.enqueue(flushedChunk);
+      controller.enqueue(insertedHTMLChunk);
       controller.enqueue(chunk);
     },
   });
 }
 
-export function createHeadInjectionTransformStream(
-  inject: () => string,
+export function createHeadInsertionTransformStream(
+  insert: () => Promise<string>,
 ): TransformStream<Uint8Array, Uint8Array> {
-  let injected = false;
-  return new TransformStream({
-    transform(chunk, controller) {
-      const content = decodeText(chunk);
-      let index;
-      const headIndex = content.indexOf("</head");
+  let inserted = false;
+  let freezing = false;
 
-      if (!injected && (index = headIndex) !== -1) {
-        injected = true;
-        const injectedContent = content.slice(0, index) + inject() +
-          content.slice(index);
-        controller.enqueue(encodeText(injectedContent));
-      } else {
+  return new TransformStream({
+    async transform(chunk, controller) {
+      console.log({ freezing, inserted });
+      // While react is flushing chunks, we don't apply insertions
+      if (freezing) {
         controller.enqueue(chunk);
+        return;
+      }
+
+      const insertion = await insert();
+
+      if (inserted) {
+        controller.enqueue(encodeText(insertion));
+        controller.enqueue(chunk);
+        freezing = true;
+      } else {
+        const content = decodeText(chunk);
+        const index = content.indexOf("</head");
+        if (index !== -1) {
+          const insertedHeadContent = content.slice(0, index) + insertion +
+            content.slice(index);
+          controller.enqueue(encodeText(insertedHeadContent));
+          freezing = true;
+          inserted = true;
+        }
+      }
+
+      if (!inserted) {
+        controller.enqueue(chunk);
+      } else {
+        setTimeout(() => {
+          freezing = false;
+        });
       }
     },
   });
 }
 
-export function createImportMapInjectionStream(importMap: ImportMap) {
+export function createImportMapInjectionStream(
+  importMap: ImportMap,
+  enableEsModuleShims?: boolean,
+  esModuleShimsPath?: string,
+) {
   log.debug("Stream inject importMap");
-  return createHeadInjectionTransformStream(() => {
-    return [
-      `<script async src="https://ga.jspm.io/npm:es-module-shims@1.5.1/dist/es-module-shims.js" crossorigin="anonymous"></script>`,
+  return createHeadInsertionTransformStream(() => {
+    const scripts = [
       `<script type="importmap">${JSON.stringify(importMap)}</script>`,
-    ].join("\n");
+    ];
+    if (enableEsModuleShims && esModuleShimsPath) {
+      scripts.unshift(
+        `<script async src="${esModuleShimsPath}" crossorigin="anonymous"></script>`,
+      );
+    }
+    return Promise.resolve(scripts.join("\n"));
+  });
+}
+
+export function createInlineDataStream(
+  dataStream: ReadableStream<Uint8Array>,
+): TransformStream<Uint8Array, Uint8Array> {
+  let dataStreamFinished: Promise<void> | null = null;
+  return new TransformStream({
+    transform(chunk, controller) {
+      controller.enqueue(chunk);
+
+      if (!dataStreamFinished) {
+        const dataStreamReader = dataStream.getReader();
+        dataStreamFinished = new Promise((resolve) => {
+          setTimeout(async () => {
+            try {
+              while (true) {
+                const { done, value } = await dataStreamReader.read();
+                if (done) {
+                  return resolve();
+                }
+                controller.enqueue(value);
+              }
+            } catch (error) {
+              controller.error(error);
+            }
+            resolve();
+          }, 0);
+        });
+      }
+    },
+    flush() {
+      if (dataStreamFinished) {
+        return dataStreamFinished;
+      }
+    },
   });
 }
 
@@ -138,9 +241,13 @@ export function renderToInitialStream({
 type ContinueFromInitialStreamOptions = {
   generateStaticHTML: boolean;
   disableHydration: boolean;
+  dataStream?: TransformStream<Uint8Array, Uint8Array>;
   importMap?: ImportMap;
-  flushEffectHandler?: () => string;
-  flushEffectsToHead: boolean;
+  enableEsModuleShims?: boolean;
+  esModuleShimsPath?: string;
+  getServerInsertedHTML?: () => Promise<string>;
+  serverInsertedHTMLToHead: boolean;
+  flushDataStreamHandler?: () => void;
 };
 
 export async function continueFromInitialStream(
@@ -149,10 +256,14 @@ export async function continueFromInitialStream(
 ): Promise<ReadableStream<Uint8Array>> {
   const {
     importMap,
+    enableEsModuleShims,
+    esModuleShimsPath,
     generateStaticHTML,
     disableHydration,
-    flushEffectHandler,
-    flushEffectsToHead,
+    dataStream,
+    getServerInsertedHTML,
+    flushDataStreamHandler,
+    serverInsertedHTMLToHead,
   } = options;
 
   log.debug("Continue from initial stream");
@@ -160,7 +271,7 @@ export async function continueFromInitialStream(
   /**
    * @see https://reactjs.org/docs/react-dom-server.html#rendertoreadablestream
    */
-  if (generateStaticHTML) {
+  if (generateStaticHTML && typeof renderStream.allReady !== undefined) {
     log.debug(
       "Waiting for stream to complete, generateStaticHTML was requested",
     );
@@ -173,25 +284,40 @@ export async function continueFromInitialStream(
      * Inject the provided importMap to the head, before any of the other
      * transform streams below.
      */
-    importMap && disableHydration === false
-      ? createImportMapInjectionStream(importMap)
+    importMap && !disableHydration
+      ? createImportMapInjectionStream(
+        importMap,
+        enableEsModuleShims,
+        esModuleShimsPath,
+      )
       : null,
     /**
-     * Just flush the effects to the queue if flushEffectsToHead is false
+     * Enqueue server injected html if serverInsertedHTMLToHead is false
      */
-    flushEffectHandler && !flushEffectsToHead
-      ? createFlushEffectStream(flushEffectHandler)
+    getServerInsertedHTML && !serverInsertedHTMLToHead
+      ? createInsertedHTMLStream(getServerInsertedHTML)
       : null,
     /**
-     * Flush effects to the head if flushEffectsToHead is true
+     * Handles useAsync calls
      */
-    createHeadInjectionTransformStream(() => {
-      log.debug("Stream flush effects", { flushEffectsToHead });
-      return flushEffectHandler && flushEffectsToHead
-        ? flushEffectHandler()
-        : "";
+    dataStream ? createInlineDataStream(dataStream.readable) : null,
+    /**
+     * Insert server injected html to the head if serverInsertedHTMLToHead is true
+     */
+    createHeadInsertionTransformStream(async () => {
+      log.debug("Stream Insert server side html", { serverInsertedHTMLToHead });
+      // Insert server side html to end of head in app layout rendering, to avoid
+      // hydration errors. Remove this once it's ready to be handled by react itself.
+      const serverInsertedHTML =
+        getServerInsertedHTML && serverInsertedHTMLToHead
+          ? await getServerInsertedHTML()
+          : "";
+
+      return serverInsertedHTML;
     }),
   ].filter(nonNullable);
+
+  flushDataStreamHandler && flushDataStreamHandler();
 
   return transforms.reduce(
     (readable, transform) => readable.pipeThrough(transform),

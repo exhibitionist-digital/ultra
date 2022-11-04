@@ -28,24 +28,27 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
     path = `/${path}`;
 
     try {
-      const file = await fetch(toFileUrl(path)).then((response) =>
-        response.body
-      );
+      const response = await fetch(toFileUrl(path));
+      const headers = new Headers(response.headers);
 
-      if (file) {
+      if (response.ok) {
         if (options.cache) {
-          context.header(
+          headers.append(
             "Cache-Control",
             "public, max-age=31536000, immutable",
           );
         }
 
-        const mimeType = getMimeType(path);
+        const mimeType = getMimeType(path) || headers.get("content-type");
+
         if (mimeType) {
-          context.header("Content-Type", mimeType);
+          headers.append("Content-Type", mimeType);
         }
-        // Return Response object
-        return context.body(file, 200);
+
+        return new Response(
+          response.body,
+          { status: 200, headers },
+        );
       } else {
         log.warning(`Static file: ${path} is not found`);
         await next();

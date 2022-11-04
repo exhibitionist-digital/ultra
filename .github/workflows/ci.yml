@@ -1,6 +1,8 @@
 name: Format, Lint, Test
 
 on:
+  pull_request:
+    types: [opened, review_requested, ready_for_review, synchronize]
   push:
     branches: [main]
 
@@ -17,7 +19,7 @@ jobs:
 
     steps:
       - name: Setup repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Deno
         uses: denoland/setup-deno@v1
@@ -36,6 +38,10 @@ jobs:
 
       - name: Run linter
         run: deno lint
+
+      - name: Type Check
+        if: matrix.os == 'ubuntu-latest'
+        run: deno check ./*.ts
 
       - name: Setup tests
         run: deno run -A test/setup.ts

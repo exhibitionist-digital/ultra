@@ -18,8 +18,5 @@
     "./examples/with-twind",
     "./examples/with-wouter",
     "./"
-  ],
-  "[typescript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
-  }
+  ]
 }
