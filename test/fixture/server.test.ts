@@ -5,7 +5,7 @@ const TEST_FIXTURES = !Deno.env.get("TEST_FIXTURE");
 
 Deno.test(
   "server works in development mode",
-  { ignore: TEST_FIXTURES, sanitizeResources: false },
+  { ignore: TEST_FIXTURES, sanitizeResources: false, sanitizeOps: false },
   async (t) => {
     const response = await server.request("http://localhost/");
     const content = await response.text();
