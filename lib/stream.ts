@@ -40,6 +40,43 @@ export async function streamToString(
   }
 }
 
+export function createBufferedTransformStream(): TransformStream<
+  Uint8Array,
+  Uint8Array
+> {
+  let bufferedString = "";
+  let pendingFlush: Promise<void> | null = null;
+
+  const flushBuffer = (controller: TransformStreamDefaultController) => {
+    if (!pendingFlush) {
+      pendingFlush = new Promise((resolve) => {
+        setTimeout(() => {
+          controller.enqueue(encodeText(bufferedString));
+          bufferedString = "";
+          pendingFlush = null;
+          resolve();
+        }, 0);
+      });
+    }
+    return pendingFlush;
+  };
+
+  const textDecoder = new TextDecoder();
+
+  return new TransformStream({
+    transform(chunk, controller) {
+      bufferedString += decodeText(chunk, textDecoder);
+      flushBuffer(controller);
+    },
+
+    flush() {
+      if (pendingFlush) {
+        return pendingFlush;
+      }
+    },
+  });
+}
+
 export function createTransformStream(
   transform: (value: string) => string | Promise<string> = (value) => value,
 ): TransformStream<Uint8Array, Uint8Array> {
@@ -86,6 +123,7 @@ export function createHeadInsertionTransformStream(
       }
 
       const insertion = await insert();
+
       if (inserted) {
         controller.enqueue(encodeText(insertion));
         controller.enqueue(chunk);
@@ -240,7 +278,7 @@ export async function continueFromInitialStream(
   }
 
   const transforms: Array<TransformStream<Uint8Array, Uint8Array>> = [
-    createTransformStream(),
+    createBufferedTransformStream(),
     /**
      * Inject the provided importMap to the head, before any of the other
      * transform streams below.
