@@ -71,6 +71,7 @@ export function createBufferedTransformStream(): TransformStream<
 
     flush() {
       if (pendingFlush) {
+        textDecoder.decode();
         return pendingFlush;
       }
     },

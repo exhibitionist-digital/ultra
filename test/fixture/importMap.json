@@ -4,6 +4,16 @@
     "react/": "https://esm.sh/react@18.2.0&dev/",
     "react-dom": "https://esm.sh/react-dom@18.2.0?dev",
     "react-dom/": "https://esm.sh/react-dom@18.2.0&dev/",
+    "@tanstack/react-query": "https://esm.sh/@tanstack/react-query@4.13.0?external=react",
+    "@tanstack/react-query-devtools": "https://esm.sh/@tanstack/react-query-devtools@4.13.0?external=react,@tanstack/react-query&dev",
+    "@trpc/server": "https://esm.sh/@trpc/server@10.0.0-rc.1",
+    "@trpc/server/": "https://esm.sh/@trpc/server@10.0.0-rc.1/",
+    "@trpc/client": "https://esm.sh/*@trpc/client@10.0.0-rc.1",
+    "@trpc/client/": "https://esm.sh/*@trpc/client@10.0.0-rc.1/",
+    "@trpc/react-query": "https://esm.sh/*@trpc/react-query@10.0.0-rc.1",
+    "zod": "https://deno.land/x/zod@v3.19.1/mod.ts",
+    "twind": "https://esm.sh/twind@0.16.17",
+    "twind/sheets": "https://esm.sh/twind@0.16.17/sheets",
     "ultra/": "https://gwar.deno.dev/exhibitionist-digital/ultra/main/"
   }
 }
