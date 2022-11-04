@@ -78,6 +78,7 @@ export function createHeadInsertionTransformStream(
 
   return new TransformStream({
     async transform(chunk, controller) {
+      console.log({ freezing, inserted });
       // While react is flushing chunks, we don't apply insertions
       if (freezing) {
         controller.enqueue(chunk);
