@@ -1,5 +1,10 @@
+[dev]
+command = "deno task dev"
+targetPort = 8000
+
 [build]
-publish = "."
+command = "deno task build"
+publish = ".ultra"
 
 [[edge_functions]]
 path = "/*"
