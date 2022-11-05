@@ -157,7 +157,9 @@ export function createImportMapInjectionStream(
   esModuleShimsPath?: string,
 ) {
   log.debug("Stream inject importMap");
+  let injected = false;
   return createHeadInsertionTransformStream(() => {
+    if (injected) return Promise.resolve("");
     const scripts = [
       `<script type="importmap">${JSON.stringify(importMap)}</script>`,
     ];
@@ -166,6 +168,7 @@ export function createImportMapInjectionStream(
         `<script async src="${esModuleShimsPath}" crossorigin="anonymous"></script>`,
       );
     }
+    injected = true;
     return Promise.resolve(scripts.join("\n"));
   });
 }
