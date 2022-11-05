@@ -81,15 +81,15 @@ export default function App() {
           </nav>
           <Switch>
             <Route path="/">
-              <title>Ultra: The Quest for Zero-Legacy</title>
+              <Title />
               <HomePage />
             </Route>
             <Route path="/philosophy">
-              <title>Ultra: 📖 Philosophy</title>
+              <Title title="Ultra: 📖 Philosophy" />
               <Philosophy />
             </Route>
             <Route path="/docs">
-              <title>Ultra: ⚙️ Docs</title>
+              <Title title="Ultra: ⚙️ Docs" />
               <Docs />
             </Route>
             <Route>
@@ -119,5 +119,15 @@ const Ultra = () => {
         <path d="m144 230 81 114-15-167z" />
       </g>
     </svg>
+  );
+};
+
+const Title = ({ title = "Ultra: The Quest for Zero-Legacy" }) => {
+  return (
+    <>
+      <title>{`${title}`}</title>
+      <meta property="twitter:title" content={`${title}`} />
+      <meta property="og:title" content={`${title}`} />
+    </>
   );
 };
