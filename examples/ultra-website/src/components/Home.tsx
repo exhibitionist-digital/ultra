@@ -17,7 +17,7 @@ export default function HomePage() {
       <section className="home">
         <figure>
           <h1>un-bundle the web</h1>
-          <h2>Hypermodern Zero-Legacy Deno/React Framework</h2>
+          <h2>Zero-Legacy Deno/React Suspense SSR Framework</h2>
           <img src={useAsset("/grid_2.webp")} alt="green galaxy texture" />
           <img src={useAsset("/grid_1.webp")} alt="purple galaxy texture" />
         </figure>
