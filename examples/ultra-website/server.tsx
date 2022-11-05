@@ -7,8 +7,7 @@ import staticLocationHook from "wouter/static-location";
 import App from "./src/app.tsx";
 import { useDehydrateReactQuery } from "./src/hooks/useDehydrateReactQuery.tsx";
 import { queryClient } from "./src/query-client.ts";
-import { HelmetProvider } from "react-helmet-async";
-import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
+
 import { getStarCount } from "./src/api/github.ts";
 
 const server = await createServer({
@@ -35,31 +34,14 @@ server.get("*", async (context) => {
 
   await queryClient.prefetchQuery(getStarCount.keys(), getStarCount);
 
-  // deno-lint-ignore no-explicit-any
-  const helmetContext: Record<string, any> = {};
-
   function ServerApp() {
-    useServerInsertedHTML(() => {
-      const { helmet } = helmetContext;
-      return (
-        <>
-          {helmet.title.toComponent()}
-          {helmet.priority.toComponent()}
-          {helmet.meta.toComponent()}
-          {helmet.link.toComponent()}
-          {helmet.script.toComponent()}
-        </>
-      );
-    });
     useDehydrateReactQuery(queryClient);
     return (
-      <HelmetProvider context={helmetContext}>
-        <QueryClientProvider client={queryClient}>
-          <Router hook={staticLocationHook(new URL(context.req.url).pathname)}>
-            <App />
-          </Router>
-        </QueryClientProvider>
-      </HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <Router hook={staticLocationHook(new URL(context.req.url).pathname)}>
+          <App />
+        </Router>
+      </QueryClientProvider>
     );
   }
   /**
