@@ -48,7 +48,7 @@ export async function createUltraApp(config: Config) {
   );
   await dl(
     "/public/robots.txt",
-    "https://github.com/exhibitionist-digital/ultra/blob/main/examples/basic/public/robots.txt",
+    "https://raw.githubusercontent.com/exhibitionist-digital/ultra/main/examples/basic/public/robots.txt",
   );
 
   // Write conditional files
