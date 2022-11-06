@@ -1,7 +1,6 @@
 export function styleContent() {
   // deno-fmt-ignore
-  return`
-html,
+  return`html,
 body {
   margin: 0;
   padding: 1rem;
