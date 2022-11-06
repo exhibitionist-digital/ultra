@@ -5,7 +5,7 @@
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
-    "ultra/": "https://deno.land/x/ultra@v2.0.0-beta.16/",
+    "ultra/": "https://deno.land/x/ultra@v2.0.0-beta.17/",
     "react-helmet-async": "https://esm.sh/react-helmet-async@1.3.0?external=react"
   }
 }
