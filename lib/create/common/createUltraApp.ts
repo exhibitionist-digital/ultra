@@ -44,7 +44,7 @@ export async function createUltraApp(config: Config) {
   await create("public/style.css", styleContent());
   await dl(
     "/public/favicon.ico",
-    "https://github.com/exhibitionist-digital/ultra/blob/main/examples/basic/public/favicon.ico",
+    "https://raw.githubusercontent.com/exhibitionist-digital/ultra/main/examples/basic/public/favicon.ico",
   );
   await dl(
     "/public/robots.txt",
