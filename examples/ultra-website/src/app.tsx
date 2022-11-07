@@ -11,12 +11,6 @@ export default function App() {
   const hasMounted = useRef(false);
 
   useEffect(() => {
-    if ("serviceWorker" in navigator && location.hostname == "ultrajs.dev") {
-      navigator.serviceWorker.register("/service-worker.js");
-    }
-  }, []);
-
-  useEffect(() => {
     if (hasMounted.current) window.scrollTo(0, 0);
     else hasMounted.current = true;
   }, [pathname]);
@@ -28,6 +22,7 @@ export default function App() {
       behavior: "smooth",
     });
   };
+
   return (
     <html lang="en">
       <head>
@@ -100,6 +95,14 @@ export default function App() {
             <span></span>__<span></span>
           </button>
         </main>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              `if ("serviceWorker" in navigator && location.hostname == "ultrajs.dev") {
+                navigator.serviceWorker.register("/service-worker.js");
+              }`,
+          }}
+        />
       </body>
     </html>
   );

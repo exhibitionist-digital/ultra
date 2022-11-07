@@ -1,18 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import { getStarCount } from "../api/github.ts";
 
 const href = "https://github.com/exhibitionist-digital/ultra";
+const starCount = getStarCount();
 
 export default function GitHub() {
-  const stars = useQuery(getStarCount.keys(), async () => {
-    return await fetch(
-      `/api/github`,
-    ).then((response) => response.json());
-  });
-
+  //@ts-ignore whatever
+  const stars = React.use(starCount);
   return (
     <a id="github" href={href} target="_blank">
-      ★ <span>{stars?.data?.stargazers_count}</span>
+      ★ <span>{stars?.stargazers_count}</span>
     </a>
   );
 }
