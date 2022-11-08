@@ -1,0 +1,26 @@
+.docs-layout {
+    display: flex;
+    flex-direction: row;
+}
+
+.docs-nav {
+    width: 100%;
+    max-width: min-content;
+    padding-inline: 1rem 2rem;
+    padding-block: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.docs-nav nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-left: 1rem;
+}
+
+.docs-nav a {
+    display: block;
+    text-decoration: none;
+}

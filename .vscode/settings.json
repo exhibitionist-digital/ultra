@@ -3,6 +3,9 @@
   "deno.lint": true,
   "deno.config": "./deno.json",
   "editor.defaultFormatter": "denoland.vscode-deno",
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
   "deno.enablePaths": [
     "./examples/ultra-website",
     "./examples/basic",

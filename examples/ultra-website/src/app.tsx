@@ -5,6 +5,7 @@ import HomePage from "./components/Home.tsx";
 import Docs from "./components/Docs.tsx";
 import Philosophy from "./components/Philosophy.tsx";
 import GitHub from "./components/Github.tsx";
+import { DocsLayout } from "./layout/Docs.tsx";
 
 export default function App() {
   const [pathname] = useLocation();
@@ -61,9 +62,9 @@ export default function App() {
               <Ultra />
               <span>Ultra</span>
             </Link>
-            <GitHub />
+            {/* <GitHub /> */}
           </div>
-          <nav>
+          <nav className="site-nav">
             <Link href="/philosophy">
               Philosophy
             </Link>
@@ -83,9 +84,18 @@ export default function App() {
               <Title title="Ultra: 📖 Philosophy" />
               <Philosophy />
             </Route>
-            <Route path="/docs">
+            <Route path="/docs/:section?">
               <Title title="Ultra: ⚙️ Docs" />
-              <Docs />
+              <DocsLayout>
+                <Switch>
+                  <Route path="/docs">
+                    <Docs />
+                  </Route>
+                  <Route path="/docs/use-island">
+                    useIsland
+                  </Route>
+                </Switch>
+              </DocsLayout>
             </Route>
             <Route>
               404
