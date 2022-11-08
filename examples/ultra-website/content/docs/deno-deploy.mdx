@@ -34,3 +34,5 @@ jobs:
           root: .ultra
           import-map: importMap.server.json
 ```
+
+> Please note: Deno Deploy does not currently [support dynamic imports](https://github.com/denoland/deploy_feedback/issues/1). Please refrain from using `lazy` in your codebase if Deno Deploy is your intended target.

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import useAsset from "ultra/hooks/use-asset.js";
 import { Link, Route, Switch, useLocation } from "wouter";
 import HomePage from "./components/Home.tsx";
@@ -8,26 +8,30 @@ import GitHub from "./components/Github.tsx";
 import { DocsLayout } from "./layout/Docs.tsx";
 
 // Getting Started
-import KnowledgeBase from "./content/docs/knowledge-base.js";
-import Prerequisites from "./content/docs/prerequisites.js";
-import CreateProject from "./content/docs/create-project.js";
-import Routing from "./content/docs/routing.js";
-import Middleware from "./content/docs/middleware.js";
-import Styling from "./content/docs/styling.js";
-import DataFetching from "./content/docs/data-fetching.js";
-import Building from "./content/docs/building.js";
+const KnowledgeBase = lazy(() => import("./content/docs/knowledge-base.js"));
+const Prerequisites = lazy(() => import("./content/docs/prerequisites.js"));
+const CreateProject = lazy(() => import("./content/docs/create-project.js"));
+const Routing = lazy(() => import("./content/docs/routing.js"));
+const Middleware = lazy(() => import("./content/docs/middleware.js"));
+const Styling = lazy(() => import("./content/docs/styling.js"));
+const DataFetching = lazy(() => import("./content/docs/data-fetching.js"));
+const Building = lazy(() => import("./content/docs/building.js"));
 // Hooks
-import Hooks from "./content/docs/hooks.js";
-import UseAssetHook from "./content/docs/use-asset.js";
-import UseAsyncHook from "./content/docs/use-async.js";
-import UseEnvHook from "./content/docs/use-env.js";
-import UseIslandHook from "./content/docs/use-island.js";
-import UsePreloadHook from "./content/docs/use-preload.js";
-import UseServerContextHook from "./content/docs/use-server-context.js";
-import UseServerInsertedHTMLHook from "./content/docs/use-server-inserted-html.js";
+const Hooks = lazy(() => import("./content/docs/hooks.js"));
+const UseAssetHook = lazy(() => import("./content/docs/use-asset.js"));
+const UseAsyncHook = lazy(() => import("./content/docs/use-async.js"));
+const UseEnvHook = lazy(() => import("./content/docs/use-env.js"));
+const UseIslandHook = lazy(() => import("./content/docs/use-island.js"));
+const UsePreloadHook = lazy(() => import("./content/docs/use-preload.js"));
+const UseServerContextHook = lazy(() =>
+  import("./content/docs/use-server-context.js")
+);
+const UseServerInsertedHTMLHook = lazy(() =>
+  import("./content/docs/use-server-inserted-html.js")
+);
 // Deployment
-import DenoDeploy from "./content/docs/deno-deploy.js";
-import Fly from "./content/docs/fly.js";
+const DenoDeploy = lazy(() => import("./content/docs/deno-deploy.js"));
+const Fly = lazy(() => import("./content/docs/fly.js"));
 
 export default function App() {
   const [pathname] = useLocation();
@@ -94,6 +98,7 @@ export default function App() {
             </nav>
             {/* <GitHub /> */}
           </header>
+
           <Switch>
             <Route path="/">
               <Title />
@@ -108,89 +113,92 @@ export default function App() {
             <Route path="/docs/:section*">
               <Title title="Ultra: ⚙️ Docs" />
               <DocsLayout>
-                <Switch>
-                  <Route path="/docs">
-                    <Philosophy />
-                  </Route>
-                  <Route path="/docs/knowledge-base">
-                    <KnowledgeBase />
-                  </Route>
-                  {/* Getting Started */}
-                  <Route path="/docs/prerequisites">
-                    <Prerequisites />
-                  </Route>
-                  <Route path="/docs/create-project">
-                    <CreateProject />
-                  </Route>
-                  <Route path="/docs/routing">
-                    <Routing />
-                  </Route>
-                  <Route path="/docs/middleware">
-                    <Middleware />
-                  </Route>
-                  <Route path="/docs/styling">
-                    <Styling />
-                  </Route>
-                  <Route path="/docs/data-fetching">
-                    <DataFetching />
-                  </Route>
-                  <Route path="/docs/building-for-deployment">
-                    <Building />
-                  </Route>
-                  {/* Deploy */}
-                  <Route path="/docs/deploy">
-                    <NotFound />
-                  </Route>
-                  <Route path="/docs/deploy/deno-deploy">
-                    <DenoDeploy />
-                  </Route>
-                  <Route path="/docs/deploy/fly-docker">
-                    <Fly />
-                  </Route>
-                  <Route path="/docs/deploy/vercel">
-                    <NotFound />
-                  </Route>
-                  <Route path="/docs/deploy/netlify">
-                    <NotFound />
-                  </Route>
-                  <Route path="/docs/deploy/cloudflare">
-                    <NotFound />
-                  </Route>
-                  {/* Hooks */}
-                  <Route path="/docs/hooks">
-                    <Hooks />
-                  </Route>
-                  <Route path="/docs/hooks/use-asset">
-                    <UseAssetHook />
-                  </Route>
-                  <Route path="/docs/hooks/use-async">
-                    <UseAsyncHook />
-                  </Route>
-                  <Route path="/docs/hooks/use-env">
-                    <UseEnvHook />
-                  </Route>
-                  <Route path="/docs/hooks/use-island">
-                    <UseIslandHook />
-                  </Route>
-                  <Route path="/docs/hooks/use-preload">
-                    <UsePreloadHook />
-                  </Route>
-                  <Route path="/docs/hooks/use-server-context">
-                    <UseServerContextHook />
-                  </Route>
-                  <Route path="/docs/hooks/use-server-inserted-html">
-                    <UseServerInsertedHTMLHook />
-                  </Route>
-                  <Route>
-                    <NotFound />
-                  </Route>
-                </Switch>
+                <Suspense>
+                  <Switch>
+                    <Route path="/docs">
+                      <Philosophy />
+                    </Route>
+                    <Route path="/docs/knowledge-base">
+                      <KnowledgeBase />
+                    </Route>
+                    {/* Getting Started */}
+                    <Route path="/docs/prerequisites">
+                      <Prerequisites />
+                    </Route>
+                    <Route path="/docs/create-project">
+                      <CreateProject />
+                    </Route>
+                    <Route path="/docs/routing">
+                      <Routing />
+                    </Route>
+                    <Route path="/docs/middleware">
+                      <Middleware />
+                    </Route>
+                    <Route path="/docs/styling">
+                      <Styling />
+                    </Route>
+                    <Route path="/docs/data-fetching">
+                      <DataFetching />
+                    </Route>
+                    <Route path="/docs/building-for-deployment">
+                      <Building />
+                    </Route>
+                    {/* Deploy */}
+                    <Route path="/docs/deploy">
+                      <NotFound />
+                    </Route>
+                    <Route path="/docs/deploy/deno-deploy">
+                      <DenoDeploy />
+                    </Route>
+                    <Route path="/docs/deploy/fly-docker">
+                      <Fly />
+                    </Route>
+                    <Route path="/docs/deploy/vercel">
+                      <NotFound />
+                    </Route>
+                    <Route path="/docs/deploy/netlify">
+                      <NotFound />
+                    </Route>
+                    <Route path="/docs/deploy/cloudflare">
+                      <NotFound />
+                    </Route>
+                    {/* Hooks */}
+                    <Route path="/docs/hooks">
+                      <Hooks />
+                    </Route>
+                    <Route path="/docs/hooks/use-asset">
+                      <UseAssetHook />
+                    </Route>
+                    <Route path="/docs/hooks/use-async">
+                      <UseAsyncHook />
+                    </Route>
+                    <Route path="/docs/hooks/use-env">
+                      <UseEnvHook />
+                    </Route>
+                    <Route path="/docs/hooks/use-island">
+                      <UseIslandHook />
+                    </Route>
+                    <Route path="/docs/hooks/use-preload">
+                      <UsePreloadHook />
+                    </Route>
+                    <Route path="/docs/hooks/use-server-context">
+                      <UseServerContextHook />
+                    </Route>
+                    <Route path="/docs/hooks/use-server-inserted-html">
+                      <UseServerInsertedHTMLHook />
+                    </Route>
+                    <Route>
+                      <NotFound />
+                    </Route>
+                  </Switch>
+                </Suspense>
               </DocsLayout>
             </Route>
             <Route>
               404
             </Route>
           </Switch>
+
           <button className="lil-ultra" onClick={top}>
             <span></span>__<span></span>
             <small>oh, hey, you wanna go back up?</small>
