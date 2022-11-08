@@ -18,6 +18,9 @@ export function DocsLayout({ children }: { children: ReactNode }) {
             <strong>
               <Link href="/docs">Philosophy</Link>
             </strong>
+            <strong>
+              <Link href="/docs/knowledge-base">Knowledge Base</Link>
+            </strong>
           </nav>
           <nav>
             <strong>Getting Started</strong>

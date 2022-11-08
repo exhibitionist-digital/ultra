@@ -7,8 +7,14 @@ import Philosophy from "./components/Philosophy.tsx";
 import GitHub from "./components/Github.tsx";
 import { DocsLayout } from "./layout/Docs.tsx";
 
-// Docs
+// Getting Started
+import KnowledgeBase from "./content/docs/knowledge-base.js";
 import CreateProject from "./content/docs/create-project.js";
+import Routing from "./content/docs/routing.js";
+import Middleware from "./content/docs/middleware.js";
+import Styling from "./content/docs/styling.js";
+import DataFetching from "./content/docs/data-fetching.js";
+// Hooks
 import UseAssetHook from "./content/docs/use-asset.js";
 import UseAsyncHook from "./content/docs/use-async.js";
 import UseEnvHook from "./content/docs/use-env.js";
@@ -16,6 +22,7 @@ import UseIslandHook from "./content/docs/use-island.js";
 import UsePreloadHook from "./content/docs/use-preload.js";
 import UseServerContextHook from "./content/docs/use-server-context.js";
 import UseServerInsertedHTMLHook from "./content/docs/use-server-inserted-html.js";
+// Deployment
 
 export default function App() {
   const [pathname] = useLocation();
@@ -101,9 +108,24 @@ export default function App() {
                   <Route path="/docs">
                     <Docs />
                   </Route>
+                  <Route path="/docs/knowledge-base">
+                    <KnowledgeBase />
+                  </Route>
                   {/* Getting Started */}
                   <Route path="/docs/create-project">
                     <CreateProject />
+                  </Route>
+                  <Route path="/docs/routing">
+                    <Routing />
+                  </Route>
+                  <Route path="/docs/middleware">
+                    <Middleware />
+                  </Route>
+                  <Route path="/docs/styling">
+                    <Styling />
+                  </Route>
+                  <Route path="/docs/data-fetching">
+                    <DataFetching />
                   </Route>
                   {/* Hooks */}
                   <Route path="/docs/use-asset">
@@ -126,6 +148,9 @@ export default function App() {
                   </Route>
                   <Route path="/docs/use-server-inserted-html">
                     <UseServerInsertedHTMLHook />
+                  </Route>
+                  <Route>
+                    <NotFound />
                   </Route>
                 </Switch>
               </DocsLayout>
@@ -176,4 +201,8 @@ const Title = ({ title = "Ultra: The Quest for Zero-Legacy" }) => {
       <meta property="og:title" content={`${title}`} />
     </>
   );
+};
+
+const NotFound = () => {
+  return <h1>Not Found</h1>;
 };

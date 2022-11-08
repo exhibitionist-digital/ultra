@@ -111,7 +111,7 @@ h6 a::before {
 }
 
 h1 {
-  font-size: clamp(2rem, 10vw, 6rem);
+  font-size: clamp(2rem, 10vw, 4rem);
   font-weight: 700;
   margin: auto;
   text-shadow: 3px 3px 0 black;
@@ -342,6 +342,7 @@ figure {
 .page small {
   max-width: 80ch;
   margin: 0 0 2rem;
+  line-height: 1.7rem;
   display: block;
 }
 

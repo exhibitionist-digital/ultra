@@ -187,12 +187,12 @@ jobs:
 
     steps:
       - name: Clone repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Install Deno
-        uses: denoland/setup-deno@main
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
         with:
-          deno-version: 1.25.1
+          deno-version: v1.x
 
       - name: Build site
         run: deno run -A ./build.ts # Your build script
@@ -211,12 +211,12 @@ jobs:
 Use this `Dockerfile`. It is multi-stage, and will both build and run the production ready app.
 
 ```dockerfile
-FROM denoland/deno:1.25.0 as builder
+FROM denoland/deno as builder
 WORKDIR /app
 COPY . /app
 RUN deno task build
 
-FROM denoland/deno:1.25.0
+FROM denoland/deno
 EXPOSE 8000
 COPY --from=builder /app/.ultra /app
 WORKDIR /app
@@ -226,7 +226,7 @@ CMD ["deno", "task", "start"]
 You can modify this as needed, another possible Dockerfile assumes you commit your build artifacts, or deploy locally from built files.
 
 ```dockerfile
-FROM denoland/deno:1.25.0
+FROM denoland/deno
 EXPOSE 8000
 WORKDIR /app
 COPY .ultra /app

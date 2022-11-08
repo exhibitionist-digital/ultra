@@ -1,5 +1,28 @@
 # Create a Project
 
-## Quick Start
+#### [Quick Start](#quick-start)
 
-## Manually
+```bash
+deno run --allow-all --reload https://deno.land/x/ultra/create.ts
+```
+
+#### [Manual Setup](#manual-setup)
+
+Setting up an Ultra project manually requires a few steps, but it will give you a better understanding
+of how Ultra works, and Deno projects in general.
+
+##### 1. importMap.json
+```json
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0?dev",
+    "react/": "https://esm.sh/react@18.2.0&dev/",
+    "react-dom": "https://esm.sh/react-dom@18.2.0?dev",
+    "react-dom/": "https://esm.sh/react-dom@18.2.0&dev/",
+    "ultra/": "https://deno.land/x/ultra@v2.0.0/"
+  }
+}
+```
+##### 2. app.tsx
+##### 3. server.tsx
+##### 4. client.tsx
