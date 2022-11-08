@@ -30,7 +30,7 @@ export function DocsLayout({ children }: { children: ReactNode }) {
             </strong>
           </nav>
           <nav>
-            <strong>Getting Started</strong>
+            <em>Getting Started</em>
             <Link href="/docs/prerequisites">Prerequisites</Link>
             <Link href="/docs/create-project">Create a Project</Link>
             <Link href="/docs/routing">Routing</Link>
@@ -40,9 +40,7 @@ export function DocsLayout({ children }: { children: ReactNode }) {
             <Link href="/docs/build">Building for Deployment</Link>
           </nav>
           <nav>
-            <strong>
-              <Link href="/docs/deploy">Deployment</Link>
-            </strong>
+            <em>Deployment</em>
             <Link href="/docs/deploy/deno-deploy">Deno Deploy</Link>
             <Link href="/docs/deploy/fly-docker">fly.io / Docker</Link>
             <Link href="/docs/deploy/vercel">Vercel</Link>

@@ -25,6 +25,13 @@
     text-decoration: none;
 }
 
+.docs-nav em {
+    color: #666;
+    font-size: 80%;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+}
+
 .hot-tip {
     background-color: rebeccapurple;
     padding: 1rem;
