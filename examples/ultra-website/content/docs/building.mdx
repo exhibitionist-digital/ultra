@@ -8,7 +8,27 @@ To run **Ultra** in production, we recommened using `ultra/build.ts`. It will do
 - Version your source and public files
 - Auto generate 2 (two) production import maps (One for client/hydration, and the other for server)
 
-<small>There are many existing build files in our [example repos](https://github.com/exhibitionist-digital/ultra/tree/main/examples).</small>
+```js
+import { createBuilder } from "ultra/build.ts";
+
+// Pass in your entry points here
+const builder = createBuilder({
+  browserEntrypoint: import.meta.resolve("./client.tsx"),
+  serverEntrypoint: import.meta.resolve("./server.tsx"),
+});
+
+// You can use globs to ignore certain files from the build pipeline
+builder.ignore([
+  "./README.md",
+  "./importMap.json",
+  "./*.dev.json",
+  "./*.test.ts",
+]);
+
+// This will return an array of build asset, if you wanted to use
+// them for any reason...
+const result = await builder.build();
+```
 
 #### [Running production](#running-production)
 

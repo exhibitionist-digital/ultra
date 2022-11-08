@@ -7,7 +7,7 @@ import { HotTip } from "../components/HotTip.tsx";
 
 const Blank = ({ href, children }) => {
   return (
-    <a href={href} target={href.startsWith("/") ? "_self" : "_blank"}>
+    <a href={href} target={href.indexOf("#") == 0 ? "_self" : "_blank"}>
       {children}
     </a>
   );
