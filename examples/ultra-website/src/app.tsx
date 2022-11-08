@@ -207,5 +207,17 @@ const Title = ({ title = "Ultra: The Quest for Zero-Legacy" }) => {
 };
 
 const NotFound = () => {
-  return <h1>Not Found</h1>;
+  return (
+    <>
+      <h1>Not Found</h1>
+      <p>
+        Hey there, sorry about this, we're probably still working on this
+        section of the documentation. Join our{" "}
+        <a href="https://discord.com/invite/XDC5WxGHb2" target="_blank">
+          Discord
+        </a>{" "}
+        if you haven't already so we can keep you updated!
+      </p>
+    </>
+  );
 };

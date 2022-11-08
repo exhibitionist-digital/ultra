@@ -51,7 +51,7 @@ export function DocsLayout({ children }: { children: ReactNode }) {
             </Link>
           </nav>
           <nav>
-            <strong>Customising Build</strong>
+            <strong>Production Build</strong>
           </nav>
           <nav>
             <strong>Deployment</strong>

@@ -90,6 +90,7 @@ h5 a::before,
 h6 a::before {
   content: "# ";
   color: #777;
+  font-weight: bold;
 }
 
 h4 a::before,
@@ -97,6 +98,7 @@ h5 a::before,
 h6 a::before {
   content: "→ ";
   color: #777;
+  font-weight: bold;
 }
 
 h1 {
@@ -254,7 +256,7 @@ code::-webkit-scrollbar {
 
 .story p {
   margin: 1em 0;
-  color: #777;
+  color: #aeaeae;
   display: block;
 }
 
@@ -262,7 +264,7 @@ code::-webkit-scrollbar {
 .page h2 {
   font-family: "Fancy";
   font-size: clamp(2.5em, 7vw, 5em);
-  color: #777;
+  color: #aeaeae;
   text-align: center;
   padding: 1rem 0;
   margin: 0 auto;
