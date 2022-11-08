@@ -25,6 +25,7 @@ import UsePreloadHook from "./content/docs/use-preload.js";
 import UseServerContextHook from "./content/docs/use-server-context.js";
 import UseServerInsertedHTMLHook from "./content/docs/use-server-inserted-html.js";
 // Deployment
+import DenoDeploy from "./content/docs/deno-deploy.js";
 
 export default function App() {
   const [pathname] = useLocation();
@@ -139,7 +140,7 @@ export default function App() {
                     <NotFound />
                   </Route>
                   <Route path="/docs/deploy/deno-deploy">
-                    <NotFound />
+                    <DenoDeploy />
                   </Route>
                   <Route path="/docs/deploy/fly-docker">
                     <NotFound />

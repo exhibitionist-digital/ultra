@@ -1,0 +1,36 @@
+# Deno Deploy
+
+Use this GitHub Action:
+
+```yml
+name: Deploy
+on: [push]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Needed for auth with Deno Deploy
+      contents: read # Needed to clone the repository
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Build site
+        run: deno run -A ./build.ts # Your build script
+
+      - name: Upload to Deno Deploy
+        uses: denoland/deployctl@v1
+        with:
+          project: "PROJECT_NAME" # Your deploy project name
+          entrypoint: "server.js"
+          root: .ultra
+          import-map: importMap.server.json
+```
