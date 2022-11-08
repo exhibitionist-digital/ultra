@@ -7,6 +7,7 @@ import { ensureDir, walk } from "https://deno.land/std@0.159.0/fs/mod.ts";
 import { compile as compileMDX } from "https://esm.sh/@mdx-js/mdx@2.1.3/lib/compile.js";
 import rehypeHighlight from "https://esm.sh/rehype-highlight@6.0.0";
 import rehypeSlug from "https://esm.sh/rehype-slug@5.1.0";
+import bash from "https://esm.sh/highlight.js@11.6.0/es/languages/bash.js";
 import dockerfile from "https://esm.sh/highlight.js@11.6.0/es/languages/dockerfile.js";
 
 export async function compile(path: string) {
@@ -34,7 +35,12 @@ export async function compile(path: string) {
         providerImportSource: "@mdx-js/react",
         rehypePlugins: [
           rehypeSlug,
-          rehypeHighlight,
+          [rehypeHighlight, {
+            languages: {
+              "bash": bash,
+              "dockerfile": dockerfile,
+            },
+          }],
         ],
       });
 
