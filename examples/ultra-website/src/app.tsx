@@ -9,6 +9,7 @@ import { DocsLayout } from "./layout/Docs.tsx";
 
 // Getting Started
 import KnowledgeBase from "./content/docs/knowledge-base.js";
+import Prerequisites from "./content/docs/prerequisites.js";
 import CreateProject from "./content/docs/create-project.js";
 import Routing from "./content/docs/routing.js";
 import Middleware from "./content/docs/middleware.js";
@@ -114,6 +115,9 @@ export default function App() {
                     <KnowledgeBase />
                   </Route>
                   {/* Getting Started */}
+                  <Route path="/docs/prerequisites">
+                    <Prerequisites />
+                  </Route>
                   <Route path="/docs/create-project">
                     <CreateProject />
                   </Route>
