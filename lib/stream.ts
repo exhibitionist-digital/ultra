@@ -130,7 +130,7 @@ export function createHeadInsertionTransformStream(
         freezing = true;
       } else {
         const content = decodeText(chunk);
-        const index = content.indexOf("</head");
+        const index = content.indexOf("</head>");
         if (index !== -1) {
           const insertedHeadContent = content.slice(0, index) + insertion +
             content.slice(index);
