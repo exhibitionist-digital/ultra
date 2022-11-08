@@ -50,6 +50,15 @@ a:focus {
   outline: 1px dotted #777;
 }
 
+a[disabled] {
+  color: #666;
+  cursor: not-allowed;
+}
+
+a[disabled]::after {
+  content: " ⏳"
+}
+
 hr {
   border: none;
   background: #212121;

@@ -43,9 +43,9 @@ export function DocsLayout({ children }: { children: ReactNode }) {
             <em>Deployment</em>
             <Link href="/docs/deploy/deno-deploy">🦕 Deno Deploy</Link>
             <Link href="/docs/deploy/fly-docker">🪰 fly.io / Docker</Link>
-            <Link href="/docs/deploy/vercel">Vercel</Link>
-            <Link href="/docs/deploy/netlify">Netlify</Link>
-            <Link href="/docs/deploy/cloudflare">Cloudflare</Link>
+            <Link href="/docs/deploy/vercel" disabled>Vercel</Link>
+            <Link href="/docs/deploy/netlify" disabled>Netlify</Link>
+            <Link href="/docs/deploy/cloudflare" disabled>Cloudflare</Link>
           </nav>
           <nav>
             <strong>
