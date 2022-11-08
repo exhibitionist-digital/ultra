@@ -7,6 +7,16 @@ import Philosophy from "./components/Philosophy.tsx";
 import GitHub from "./components/Github.tsx";
 import { DocsLayout } from "./layout/Docs.tsx";
 
+// Docs
+import CreateProject from "./content/docs/create-project.js";
+import UseAssetHook from "./content/docs/use-asset.js";
+import UseAsyncHook from "./content/docs/use-async.js";
+import UseEnvHook from "./content/docs/use-env.js";
+import UseIslandHook from "./content/docs/use-island.js";
+import UsePreloadHook from "./content/docs/use-preload.js";
+import UseServerContextHook from "./content/docs/use-server-context.js";
+import UseServerInsertedHTMLHook from "./content/docs/use-server-inserted-html.js";
+
 export default function App() {
   const [pathname] = useLocation();
   const hasMounted = useRef(false);
@@ -34,8 +44,8 @@ export default function App() {
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="shortcut icon" href={useAsset("/favicon.ico")} />
-        <link rel="preload" as="style" href={useAsset("/style.css")} />
-        <link rel="stylesheet" href={useAsset("/style.css")} />
+        <link rel="preload" as="style" href={useAsset("/styles/style.css")} />
+        <link rel="stylesheet" href={useAsset("/styles/style.css")} />
         <meta property="og:type" content="website" />
         <meta
           property="og:image"
@@ -91,8 +101,31 @@ export default function App() {
                   <Route path="/docs">
                     <Docs />
                   </Route>
+                  {/* Getting Started */}
+                  <Route path="/docs/create-project">
+                    <CreateProject />
+                  </Route>
+                  {/* Hooks */}
+                  <Route path="/docs/use-asset">
+                    <UseAssetHook />
+                  </Route>
+                  <Route path="/docs/use-async">
+                    <UseAsyncHook />
+                  </Route>
+                  <Route path="/docs/use-env">
+                    <UseEnvHook />
+                  </Route>
                   <Route path="/docs/use-island">
-                    useIsland
+                    <UseIslandHook />
+                  </Route>
+                  <Route path="/docs/use-preload">
+                    <UsePreloadHook />
+                  </Route>
+                  <Route path="/docs/use-server-context">
+                    <UseServerContextHook />
+                  </Route>
+                  <Route path="/docs/use-server-inserted-html">
+                    <UseServerInsertedHTMLHook />
                   </Route>
                 </Switch>
               </DocsLayout>
@@ -108,7 +141,7 @@ export default function App() {
         <script
           dangerouslySetInnerHTML={{
             __html:
-              `if ("serviceWorker" in navigator && location.hostname == "ultrajs.dev") {
+              `if ("serviceWorker" in navigator && location.hostname === "ultrajs.dev") {
                 navigator.serviceWorker.register("/service-worker.js");
               }`,
           }}

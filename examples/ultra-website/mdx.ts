@@ -5,8 +5,9 @@ import {
 } from "https://deno.land/std@0.159.0/path/mod.ts";
 import { ensureDir, walk } from "https://deno.land/std@0.159.0/fs/mod.ts";
 import { compile as compileMDX } from "https://esm.sh/@mdx-js/mdx@2.1.3/lib/compile.js";
-import rehypeHighlight from "https://esm.sh/rehype-highlight?no-check";
-import rehypeSlug from "https://esm.sh/rehype-slug?no-check";
+import rehypeHighlight from "https://esm.sh/rehype-highlight@6.0.0";
+import rehypeSlug from "https://esm.sh/rehype-slug@5.1.0";
+import dockerfile from "https://esm.sh/highlight.js@11.6.0/es/languages/dockerfile.js";
 
 export async function compile(path: string) {
   const MDX_MATCH = globToRegExp("**/*.mdx", {
@@ -31,7 +32,10 @@ export async function compile(path: string) {
         jsxRuntime: "automatic",
         jsxImportSource: "react",
         providerImportSource: "@mdx-js/react",
-        rehypePlugins: [rehypeSlug, rehypeHighlight],
+        rehypePlugins: [
+          rehypeSlug,
+          rehypeHighlight,
+        ],
       });
 
       const outputPath = join(

@@ -210,7 +210,7 @@ jobs:
 
 Use this `Dockerfile`. It is multi-stage, and will both build and run the production ready app.
 
-```bash
+```dockerfile
 FROM denoland/deno:1.25.0 as builder
 WORKDIR /app
 COPY . /app
@@ -225,7 +225,7 @@ CMD ["deno", "task", "start"]
 
 You can modify this as needed, another possible Dockerfile assumes you commit your build artifacts, or deploy locally from built files.
 
-```bash
+```dockerfile
 FROM denoland/deno:1.25.0
 EXPOSE 8000
 WORKDIR /app
