@@ -15,6 +15,7 @@ const Routing = lazy(() => import("./content/docs/routing.js"));
 const Middleware = lazy(() => import("./content/docs/middleware.js"));
 const Styling = lazy(() => import("./content/docs/styling.js"));
 const DataFetching = lazy(() => import("./content/docs/data-fetching.js"));
+const CodeSplitting = lazy(() => import("./content/docs/code-splitting.js"));
 const Building = lazy(() => import("./content/docs/building.js"));
 // Hooks
 const Hooks = lazy(() => import("./content/docs/hooks.js"));
@@ -139,6 +140,9 @@ export default function App() {
                     </Route>
                     <Route path="/docs/data-fetching">
                       <DataFetching />
+                    </Route>
+                    <Route path="/docs/code-splitting">
+                      <CodeSplitting />
                     </Route>
                     <Route path="/docs/building-for-deployment">
                       <Building />
