@@ -21,13 +21,23 @@ Instead of using `package.json` and define your dependencies and their versions,
 }
 ```
 
+`index.jsx`
+
+```js
+// use like you normally would...
+// this works in your browser too!!!
+import { useEffect } from 'react'
+```
+
+What is extra cool about Import Maps is that when we deploy to production, we can just replace the CDN urls above with locally resolved versions. The same source code 'just works'!
+
 [Learn more about Import Maps](https://html.spec.whatwg.org/multipage/webappapis.html#import-maps)
 
 #### [ESM (ECMAScript Modules)](#esm-ecmascript-modules)
 
 You've probably been writing ESM for years and haven't noticed. It's the defacto standard for modern code bases, and just like Import Maps above, these can be used natively in your browser as well!
 
-This is a good thing — browsers can optimize loading of modules, making it more efficient than having to use a library and do all of that extra client-side processing and extra round trips.
+This is a good thing — browsers can optimize loading of modules, making it more efficient than having to use a library/bundler and do overly complex processing. Our goal is to write browser optimised code from the start. No robotic bundling overlords required.
 
 [Learn more about ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
 

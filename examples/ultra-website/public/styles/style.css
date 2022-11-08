@@ -1,13 +1,13 @@
 @font-face {
   font-family: "Space Grotesk";
-  src: url(/SG-Linear.woff2) format("woff2");
+  src: url(./SG-Linear.woff2) format("woff2");
   font-weight: 100 700;
   font-display: block;
 }
 
 @font-face {
   font-family: "Fancy";
-  src: url(/fancy.woff2) format("woff2");
+  src: url(./fancy.woff2) format("woff2");
   font-weight: 100 700;
   font-display: block;
 }

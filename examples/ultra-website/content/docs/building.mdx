@@ -1,5 +1,7 @@
 # Building for Deployment
 
+Our build pipeline is powered internally by [Mesozoic](https://github.com/deckchairlabs/mesozoic).
+
 To run **Ultra** in production, we recommened using `ultra/build.ts`. It will do the following:
 
 - Create a `.ultra` dir inside of your project
@@ -7,6 +9,8 @@ To run **Ultra** in production, we recommened using `ultra/build.ts`. It will do
 - Vendor all of your dependencies
 - Version your source and public files
 - Auto generate 2 (two) production import maps (One for client/hydration, and the other for server)
+
+[Learn more about how to customise Mesozoic](https://github.com/deckchairlabs/mesozoic)
 
 ---
 
