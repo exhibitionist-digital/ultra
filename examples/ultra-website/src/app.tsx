@@ -74,24 +74,26 @@ export default function App() {
       </head>
       <body>
         <main>
-          <div className="top">
+          <header id="site-header">
             <Link href="/" className="logo">
               <Ultra />
               <span>Ultra</span>
             </Link>
-            {/* <GitHub /> */}
-          </div>
-          <nav className="site-nav">
-            <Link href="/philosophy">
+            <nav id="site-nav">
+              {
+                /* <Link href="/philosophy">
               Philosophy
-            </Link>
-            <Link href="/docs">
-              Docs
-            </Link>
-            <a href="https://discord.com/invite/XDC5WxGHb2" target="_blank">
-              Discord
-            </a>
-          </nav>
+            </Link> */
+              }
+              <Link href="/docs">
+                Docs
+              </Link>
+              <a href="https://discord.com/invite/XDC5WxGHb2" target="_blank">
+                Discord
+              </a>
+            </nav>
+            {/* <GitHub /> */}
+          </header>
           <Switch>
             <Route path="/">
               <Title />
@@ -161,6 +163,7 @@ export default function App() {
           </Switch>
           <button className="lil-ultra" onClick={top}>
             <span></span>__<span></span>
+            <small>oh, hey, you wanna go back up?</small>
           </button>
         </main>
         <script

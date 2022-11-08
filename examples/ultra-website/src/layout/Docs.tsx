@@ -2,10 +2,15 @@ import { Link } from "wouter";
 import { MDXProvider } from "@mdx-js/react";
 import { ReactNode } from "react";
 import useAsset from "ultra/hooks/use-asset.js";
+import { ModuleSource } from "../components/ModuleSource.tsx";
 
 export function DocsLayout({ children }: { children: ReactNode }) {
   return (
-    <MDXProvider>
+    <MDXProvider
+      components={{
+        ModuleSource: ModuleSource,
+      }}
+    >
       <div className="docs-layout">
         <link
           rel="stylesheet"

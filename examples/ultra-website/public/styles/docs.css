@@ -6,8 +6,8 @@
 .docs-nav {
     width: 100%;
     max-width: min-content;
+    padding-block: 1rem;
     padding-inline: 1rem 2rem;
-    padding-block: 3rem;
     display: flex;
     flex-direction: column;
     gap: 2rem;

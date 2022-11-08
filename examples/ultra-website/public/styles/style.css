@@ -50,17 +50,6 @@ a:focus {
   outline: 1px dotted #777;
 }
 
-.site-nav {
-  display: flex;
-  align-items: center;
-  padding: 0 2rem 3rem;
-  flex-wrap: wrap;
-}
-
-.site-nav a {
-  margin-right: 1em;
-}
-
 hr {
   border: none;
   background: #212121;
@@ -134,11 +123,23 @@ h4 {
   margin: 0 auto;
 }
 
-.top {
+#site-header {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 1rem;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+#site-nav {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 2rem;
+  flex-wrap: wrap;
+}
+
+#site-nav a {
+  margin-right: 1em;
 }
 
 #github {
@@ -400,6 +401,12 @@ ul {
 .lil-ultra:focus {
   color: #6666ff;
   cursor: not-allowed;
+}
+
+.lil-ultra small {
+  display: block;
+  font-size: 1rem;
+  margin-top: 1rem;
 }
 
 .lil-ultra span::before {

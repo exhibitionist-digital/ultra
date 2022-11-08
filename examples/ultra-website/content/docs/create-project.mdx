@@ -2,9 +2,15 @@
 
 #### [Quick Start](#quick-start)
 
+If you made it this far, you probably just want to hit the ground running. Run the command
+below in your terminal and follow the prompts.
+
+
 ```bash
 deno run --allow-all --reload https://deno.land/x/ultra/create.ts
 ```
+
+*Otherwise, you can learn about how an Ultra project is structured by [setting it up manually.](#manual-setup)*
 
 #### [Manual Setup](#manual-setup)
 
@@ -24,5 +30,75 @@ of how Ultra works, and Deno projects in general.
 }
 ```
 ##### 2. app.tsx
+
+```tsx
+export default function App() {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <title>Ultra</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+      <body>
+        <h1>Yep, hello</h1>
+      </body>
+    </html>
+  );
+}
+```
+
 ##### 3. server.tsx
+
+```tsx
+import { serve } from "https://deno.land/std/http/server.ts";
+import { createServer } from "ultra/server.ts";
+
+// This is your main app entrypoint that you created earlier,
+// you can adjust the path if you named it differently.
+import App from "./src/app.tsx";
+
+const server = await createServer({
+  importMapPath: import.meta.resolve("./importMap.json"),
+  browserEntrypoint: import.meta.resolve("./client.tsx"),
+});
+
+// Add a route that will handle all incoming GET requests
+server.get("*", async (context) => {
+  // Render the incoming request to a ReadableStream.
+  const stream = await server.render(<App />);
+
+  // Return a response with the server rendered HTML.
+  return context.body(stream, 200, {
+    "content-type": "text/html; charset=utf-8",
+  });
+});
+
+// Start listening for incoming requests
+serve(server.fetch);
+```
+
 ##### 4. client.tsx
+
+```tsx
+import hydrate from "ultra/hydrate.js";
+import App from "./src/app.tsx";
+
+hydrate(document, <App />);
+```
+
+#### 5. deno.json
+
+```json
+{
+  "tasks": {
+    "dev": "deno run --allow-all --watch ./server.tsx",
+    "test": "deno test --allow-all"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsxdev",
+    "jsxImportSource": "react"
+  },
+  "importMap": "./importMap.json"
+}
+```
