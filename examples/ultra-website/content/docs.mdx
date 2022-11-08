@@ -101,17 +101,25 @@ More examples can be found [here](https://github.com/exhibitionist-digital/ultra
 
 #### [useAsset](#useasset)
 
-```js
+```jsx
 import useAsset from "ultra/hooks/use-asset.js";
 
-<link rel="preload" as="style" href={useAsset("/style.css")} />
+export function App() {
+  return (
+    <html>
+      <head>
+        <link rel="stylesheet" href={useAsset("/style.css")} />
+      </head>
+    </html>
+  )
+}
 ```
 
 `useAsset` allows **Ultra** to version your assets during build for deploying to production. In development it's a non-op.
 
 #### [useServerInsertedHTML](#useflusheffects)
 
-```js
+```jsx
 import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
 
 
@@ -133,10 +141,10 @@ Similar to the [hook](https://github.com/vercel/next.js/blob/aef60dc581f564b64cf
 
 #### [usePreload](#usepreload)
 
-```js
+```tsx
 import usePreload from "ultra/hooks/use-preload.js";
 
-usePreload(${href})
+usePreload(href)
 ```
 
 This hook will insert a `<link rel="preload" />` tag into the head of the server render document. During client side transitions, this won't do anything.
