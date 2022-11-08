@@ -24,3 +24,15 @@
     display: block;
     text-decoration: none;
 }
+
+.hot-tip {
+    background-color: rebeccapurple;
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 1rem;
+}
+
+.hot-tip-title {
+    display: block;
+    margin-bottom: 0.5rem;
+}
