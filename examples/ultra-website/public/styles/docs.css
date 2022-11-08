@@ -33,10 +33,15 @@
 }
 
 .hot-tip {
-    background-color: rebeccapurple;
+    background-color: #7ee787;
+    color: #333;
     padding: 1rem;
     font-size: 1rem;
     border-radius: 1rem;
+}
+
+.hot-tip code {
+    color: white;
 }
 
 .hot-tip-title {
