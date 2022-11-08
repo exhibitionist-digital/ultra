@@ -17,7 +17,7 @@ deno run --allow-all --reload https://deno.land/x/ultra/create.ts
 Setting up an Ultra project manually requires a few steps, but it will give you a better understanding
 of how Ultra works, and Deno projects in general.
 
-##### 1. importMap.json
+##### [importMap.json](#importmapjson)
 ```json
 {
   "imports": {
@@ -29,7 +29,8 @@ of how Ultra works, and Deno projects in general.
   }
 }
 ```
-##### 2. app.tsx
+
+##### [app.tsx](#apptsx)
 
 ```tsx
 export default function App() {
@@ -48,7 +49,7 @@ export default function App() {
 }
 ```
 
-##### 3. server.tsx
+##### [server.tsx](#servertsx)
 
 ```tsx
 import { serve } from "https://deno.land/std/http/server.ts";
@@ -56,14 +57,18 @@ import { createServer } from "ultra/server.ts";
 
 // This is your main app entrypoint that you created earlier,
 // you can adjust the path if you named it differently.
-import App from "./src/app.tsx";
+import App from "./app.tsx";
 
 const server = await createServer({
+  // This is the path to the importMap you created earlier.
   importMapPath: import.meta.resolve("./importMap.json"),
+
+  // This is the entrypoint that is sent along with the
+  // server rendered HTML to the browser.
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 
-// Add a route that will handle all incoming GET requests
+// Add a route to the server that will handle all incoming GET requests.
 server.get("*", async (context) => {
   // Render the incoming request to a ReadableStream.
   const stream = await server.render(<App />);
@@ -78,16 +83,16 @@ server.get("*", async (context) => {
 serve(server.fetch);
 ```
 
-##### 4. client.tsx
+##### [client.tsx](#clienttsx)
 
 ```tsx
 import hydrate from "ultra/hydrate.js";
-import App from "./src/app.tsx";
+import App from "./app.tsx";
 
 hydrate(document, <App />);
 ```
 
-#### 5. deno.json
+##### [deno.json](#denojson)
 
 ```json
 {
