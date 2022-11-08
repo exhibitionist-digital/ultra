@@ -8,6 +8,10 @@ To run **Ultra** in production, we recommened using `ultra/build.ts`. It will do
 - Version your source and public files
 - Auto generate 2 (two) production import maps (One for client/hydration, and the other for server)
 
+---
+
+A basic `build.ts`
+
 ```js
 import { createBuilder } from "ultra/build.ts";
 
@@ -29,6 +33,10 @@ builder.ignore([
 // them for any reason...
 const result = await builder.build();
 ```
+
+Run this with `deno run -A ./build.ts`
+
+---
 
 #### [Running production](#running-production)
 
