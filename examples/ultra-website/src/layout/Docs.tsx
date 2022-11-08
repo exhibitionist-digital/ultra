@@ -37,7 +37,9 @@ export function DocsLayout({ children }: { children: ReactNode }) {
             <Link href="/docs/middleware">Middleware</Link>
             <Link href="/docs/styling">Styling</Link>
             <Link href="/docs/data-fetching">Data Fetching</Link>
-            <Link href="/docs/build">Building for Deployment</Link>
+            <Link href="/docs/building-for-deployment">
+              Building for Deployment
+            </Link>
           </nav>
           <nav>
             <em>Deployment</em>

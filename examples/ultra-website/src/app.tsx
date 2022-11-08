@@ -15,6 +15,7 @@ import Routing from "./content/docs/routing.js";
 import Middleware from "./content/docs/middleware.js";
 import Styling from "./content/docs/styling.js";
 import DataFetching from "./content/docs/data-fetching.js";
+import Building from "./content/docs/building.js";
 // Hooks
 import Hooks from "./content/docs/hooks.js";
 import UseAssetHook from "./content/docs/use-asset.js";
@@ -33,7 +34,7 @@ export default function App() {
   const hasMounted = useRef(false);
 
   useEffect(() => {
-    if (hasMounted.current) window.scrollTo(0, 0);
+    if (hasMounted.current) top();
     else hasMounted.current = true;
   }, [pathname]);
 
@@ -135,6 +136,9 @@ export default function App() {
                   </Route>
                   <Route path="/docs/data-fetching">
                     <DataFetching />
+                  </Route>
+                  <Route path="/docs/building-for-deployment">
+                    <Building />
                   </Route>
                   {/* Deploy */}
                   <Route path="/docs/deploy">
