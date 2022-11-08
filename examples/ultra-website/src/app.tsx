@@ -16,6 +16,7 @@ import Middleware from "./content/docs/middleware.js";
 import Styling from "./content/docs/styling.js";
 import DataFetching from "./content/docs/data-fetching.js";
 // Hooks
+import Hooks from "./content/docs/hooks.js";
 import UseAssetHook from "./content/docs/use-asset.js";
 import UseAsyncHook from "./content/docs/use-async.js";
 import UseEnvHook from "./content/docs/use-env.js";
@@ -153,6 +154,9 @@ export default function App() {
                     <NotFound />
                   </Route>
                   {/* Hooks */}
+                  <Route path="/docs/hooks">
+                    <Hooks />
+                  </Route>
                   <Route path="/docs/hooks/use-asset">
                     <UseAssetHook />
                   </Route>
