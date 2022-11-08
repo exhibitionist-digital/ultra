@@ -1,1 +1,14 @@
 # Middleware
+
+Since **Ultra** uses Hono under-the-covers, it includes middleware support. Here is an example snippet added to `server.tsx` that will add a 'Server' header to every response:
+```js
+server.use('*', async (c, next) => {
+  c.res.headers.set("Server", "Ultra Hono");
+  await next();
+});
+```
+If you look in the Dev Tools Network tab and click on localhost, you'll see this line in the Headers tab added to the Response Headers section:
+```
+server: Ultra Hono
+```
+See the [Hono middleware docs](https://honojs.dev/docs/api/middleware/) for more details.
