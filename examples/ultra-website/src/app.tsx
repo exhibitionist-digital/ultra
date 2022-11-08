@@ -85,11 +85,6 @@ export default function App() {
               <span>Ultra</span>
             </Link>
             <nav id="site-nav">
-              {
-                /* <Link href="/philosophy">
-              Philosophy
-            </Link> */
-              }
               <Link href="/docs">
                 Docs
               </Link>
@@ -106,7 +101,9 @@ export default function App() {
             </Route>
             <Route path="/philosophy">
               <Title title="Ultra: 📖 Philosophy" />
-              <Philosophy />
+              <DocsLayout>
+                <Philosophy />
+              </DocsLayout>
             </Route>
             <Route path="/docs/:section*">
               <Title title="Ultra: ⚙️ Docs" />
