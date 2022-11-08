@@ -23,10 +23,10 @@ export function DocsLayout({ children }: { children: ReactNode }) {
         <div className="docs-nav">
           <nav>
             <strong>
-              <Link href="/docs">Philosophy</Link>
+              <Link href="/docs">📖 Philosophy</Link>
             </strong>
             <strong>
-              <Link href="/docs/knowledge-base">Knowledge Base</Link>
+              <Link href="/docs/knowledge-base">🧠 Knowledge Base</Link>
             </strong>
           </nav>
           <nav>
@@ -41,15 +41,15 @@ export function DocsLayout({ children }: { children: ReactNode }) {
           </nav>
           <nav>
             <em>Deployment</em>
-            <Link href="/docs/deploy/deno-deploy">Deno Deploy</Link>
-            <Link href="/docs/deploy/fly-docker">fly.io / Docker</Link>
+            <Link href="/docs/deploy/deno-deploy">🦕 Deno Deploy</Link>
+            <Link href="/docs/deploy/fly-docker">🪰 fly.io / Docker</Link>
             <Link href="/docs/deploy/vercel">Vercel</Link>
             <Link href="/docs/deploy/netlify">Netlify</Link>
             <Link href="/docs/deploy/cloudflare">Cloudflare</Link>
           </nav>
           <nav>
             <strong>
-              <Link href="/docs/hooks">Hooks</Link>
+              <Link href="/docs/hooks">🪝 Hooks</Link>
             </strong>
             <Link href="/docs/hooks/use-asset">useAsset</Link>
             <Link href="/docs/hooks/use-async">useAsync</Link>
