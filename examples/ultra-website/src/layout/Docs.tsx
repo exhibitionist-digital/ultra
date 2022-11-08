@@ -35,31 +35,31 @@ export function DocsLayout({ children }: { children: ReactNode }) {
             <Link href="/docs/middleware">Middleware</Link>
             <Link href="/docs/styling">Styling</Link>
             <Link href="/docs/data-fetching">Data Fetching</Link>
+            <Link href="/docs/build">Building for Deployment</Link>
+          </nav>
+          <nav>
+            <strong>
+              <Link href="/docs/deploy">Deployment</Link>
+            </strong>
+            <Link href="/docs/deploy/deno-deploy">Deno Deploy</Link>
+            <Link href="/docs/deploy/fly-docker">fly.io / Docker</Link>
+            <Link href="/docs/deploy/vercel">Vercel</Link>
+            <Link href="/docs/deploy/netlify">Netlify</Link>
+            <Link href="/docs/deploy/cloudflare">Cloudflare</Link>
           </nav>
           <nav>
             <strong>
               <Link href="/docs/hooks">Hooks</Link>
             </strong>
-            <Link href="/docs/use-asset">useAsset</Link>
-            <Link href="/docs/use-async">useAsync</Link>
-            <Link href="/docs/use-env">useEnv</Link>
-            <Link href="/docs/use-island">useIsland</Link>
-            <Link href="/docs/use-preload">usePreload</Link>
-            <Link href="/docs/use-server-context">useServerContext</Link>
-            <Link href="/docs/use-server-inserted-html">
+            <Link href="/docs/hooks/use-asset">useAsset</Link>
+            <Link href="/docs/hooks/use-async">useAsync</Link>
+            <Link href="/docs/hooks/use-env">useEnv</Link>
+            <Link href="/docs/hooks/use-island">useIsland</Link>
+            <Link href="/docs/hooks/use-preload">usePreload</Link>
+            <Link href="/docs/hooks/use-server-context">useServerContext</Link>
+            <Link href="/docs/hooks/use-server-inserted-html">
               useServerInsertedHTML
             </Link>
-          </nav>
-          <nav>
-            <strong>Production Build</strong>
-          </nav>
-          <nav>
-            <strong>Deployment</strong>
-            <Link href="/docs/deno-deploy">Deno Deploy</Link>
-            <Link href="/docs/fly-docker">fly.io / Docker</Link>
-            <Link href="/docs/vercel">Vercel</Link>
-            <Link href="/docs/netlify">Netlify</Link>
-            <Link href="/docs/cloudflare">Cloudflare</Link>
           </nav>
         </div>
         <div className="page docs">

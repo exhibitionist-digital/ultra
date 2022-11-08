@@ -103,7 +103,7 @@ export default function App() {
               <Title title="Ultra: 📖 Philosophy" />
               <Philosophy />
             </Route>
-            <Route path="/docs/:section?">
+            <Route path="/docs/:section*">
               <Title title="Ultra: ⚙️ Docs" />
               <DocsLayout>
                 <Switch>
@@ -129,26 +129,45 @@ export default function App() {
                   <Route path="/docs/data-fetching">
                     <DataFetching />
                   </Route>
+                  {/* Deploy */}
+                  <Route path="/docs/deploy">
+                    <NotFound />
+                  </Route>
+                  <Route path="/docs/deploy/deno-deploy">
+                    <NotFound />
+                  </Route>
+                  <Route path="/docs/deploy/fly-docker">
+                    <NotFound />
+                  </Route>
+                  <Route path="/docs/deploy/vercel">
+                    <NotFound />
+                  </Route>
+                  <Route path="/docs/deploy/netlify">
+                    <NotFound />
+                  </Route>
+                  <Route path="/docs/deploy/cloudflare">
+                    <NotFound />
+                  </Route>
                   {/* Hooks */}
-                  <Route path="/docs/use-asset">
+                  <Route path="/docs/hooks/use-asset">
                     <UseAssetHook />
                   </Route>
-                  <Route path="/docs/use-async">
+                  <Route path="/docs/hooks/use-async">
                     <UseAsyncHook />
                   </Route>
-                  <Route path="/docs/use-env">
+                  <Route path="/docs/hooks/use-env">
                     <UseEnvHook />
                   </Route>
-                  <Route path="/docs/use-island">
+                  <Route path="/docs/hooks/use-island">
                     <UseIslandHook />
                   </Route>
-                  <Route path="/docs/use-preload">
+                  <Route path="/docs/hooks/use-preload">
                     <UsePreloadHook />
                   </Route>
-                  <Route path="/docs/use-server-context">
+                  <Route path="/docs/hooks/use-server-context">
                     <UseServerContextHook />
                   </Route>
-                  <Route path="/docs/use-server-inserted-html">
+                  <Route path="/docs/hooks/use-server-inserted-html">
                     <UseServerInsertedHTMLHook />
                   </Route>
                   <Route>
