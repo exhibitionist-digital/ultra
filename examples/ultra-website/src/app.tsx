@@ -110,7 +110,7 @@ export default function App() {
               <DocsLayout>
                 <Switch>
                   <Route path="/docs">
-                    <Docs />
+                    <Philosophy />
                   </Route>
                   <Route path="/docs/knowledge-base">
                     <KnowledgeBase />
