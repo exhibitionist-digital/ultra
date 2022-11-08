@@ -3,12 +3,14 @@ import { MDXProvider } from "@mdx-js/react";
 import { ReactNode } from "react";
 import useAsset from "ultra/hooks/use-asset.js";
 import { ModuleSource } from "../components/ModuleSource.tsx";
+import { HotTip } from "../components/HotTip.tsx";
 
 export function DocsLayout({ children }: { children: ReactNode }) {
   return (
     <MDXProvider
       components={{
-        ModuleSource: ModuleSource,
+        ModuleSource,
+        HotTip,
       }}
     >
       <div className="docs-layout">
