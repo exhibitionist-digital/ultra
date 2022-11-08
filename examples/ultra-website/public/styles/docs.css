@@ -1,16 +1,33 @@
 .docs-layout {
     display: flex;
     flex-direction: row;
+    padding-left: 300px;
 }
 
 .docs-nav {
     width: 100%;
     max-width: min-content;
-    padding-block: 1rem;
+    padding-block: 3rem;
     padding-inline: 1rem 2rem;
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    max-width: 300px;
+    background: #1a1a1a;
+    position: fixed;
+    box-sizing: border-box;
+    height: 100vh;
+    height: 100svh;
+    top: 0;
+    left: 0;
+    overflow: scroll;
+    z-index: 5;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.docs-nav::-webkit-scrollbar {
+    display: none;
 }
 
 .docs-nav nav {

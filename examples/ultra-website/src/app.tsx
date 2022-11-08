@@ -84,36 +84,23 @@ export default function App() {
       </head>
       <body>
         <main>
-          <header id="site-header">
-            <Link href="/" className="logo">
-              <Ultra />
-              <span>Ultra</span>
-            </Link>
-            <nav id="site-nav">
-              <Link href="/docs">
-                Docs
-              </Link>
-              <a href="https://discord.com/invite/XDC5WxGHb2" target="_blank">
-                Discord
-              </a>
-            </nav>
-            {/* <GitHub /> */}
-          </header>
-
           <Switch>
             <Route path="/">
               <Title />
+              <Header />
               <HomePage />
             </Route>
             <Route path="/philosophy">
               <Title title="Ultra: 📖 Philosophy" />
               <DocsLayout>
+                <Header />
                 <Philosophy />
               </DocsLayout>
             </Route>
             <Route path="/docs/:section*">
               <Title title="Ultra: ⚙️ Docs" />
               <DocsLayout>
+                <Header />
                 <Suspense>
                   <Switch>
                     <Route path="/docs">
@@ -220,6 +207,29 @@ export default function App() {
     </html>
   );
 }
+
+const Header = () => {
+  return (
+    <header id="site-header">
+      <Link href="/" className="logo">
+        <Ultra />
+        <span>Ultra</span>
+      </Link>
+      <nav id="site-nav">
+        <Link href="/docs">
+          Docs
+        </Link>
+        <a
+          href="https://discord.com/invite/XDC5WxGHb2"
+          target="_blank"
+        >
+          Discord
+        </a>
+      </nav>
+      {/* <GitHub /> */}
+    </header>
+  );
+};
 
 const Ultra = () => {
   return (
