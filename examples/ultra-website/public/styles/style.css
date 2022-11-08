@@ -203,9 +203,11 @@ blockquote {
 }
 
 .logo svg {
-  margin: 0 -0.25em;
+  margin: 0 0.5rem 0 -0.5rem;
   width: 80px;
   height: 80px;
+  background: #1a1a1a;
+  border-radius: 50%;
 }
 
 .logo:focus {
