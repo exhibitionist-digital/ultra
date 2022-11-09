@@ -91,14 +91,14 @@ export default function App() {
               <HomePage />
             </Route>
             <Route path="/philosophy">
-              <Title title="Ultra: 📖 Philosophy" />
+              <Title title="Ultra: 👩‍🏫 ESM University" />
               <DocsLayout>
                 <Header />
                 <Philosophy />
               </DocsLayout>
             </Route>
             <Route path="/docs/:section*">
-              <Title title="Ultra: ⚙️ Docs" />
+              <Title title="Ultra: 👩‍🏫 ESM University" />
               <DocsLayout>
                 <Header />
                 <Suspense>
