@@ -396,51 +396,6 @@ ul {
   margin: 0;
 }
 
-.lil-ultra {
-  appearance: none;
-  border: none;
-  background: none;
-  display: block;
-  text-align: center;
-  font-family: monospace;
-  color: #777;
-  margin: 5rem auto 3rem auto;
-  font-size: clamp(3em, 15vw, 8em);
-  font-weight: 400;
-}
-
-.lil-ultra:hover,
-.lil-ultra:focus {
-  color: #6666ff;
-  cursor: not-allowed;
-}
-
-.lil-ultra small {
-  display: block;
-  font-size: 1rem;
-  margin-top: 1rem;
-}
-
-.lil-ultra span::before {
-  content: "@";
-  animation: blink 3s infinite;
-}
-
-@keyframes blink {
-
-  0%,
-  50%,
-  70%,
-  95% {
-    content: "@";
-  }
-
-  65%,
-  90% {
-    content: "—";
-  }
-}
-
 pre {
   max-width: 100%;
   overflow: auto;

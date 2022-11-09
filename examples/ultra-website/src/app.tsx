@@ -189,11 +189,6 @@ export default function App() {
               404
             </Route>
           </Switch>
-
-          <button className="lil-ultra" onClick={top}>
-            <span></span>__<span></span>
-            <small>oh, hey, you wanna go back up?</small>
-          </button>
         </main>
         <script
           dangerouslySetInnerHTML={{

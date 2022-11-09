@@ -24,7 +24,8 @@ export default function HomePage() {
       </section>
       <section className="story">
         <Content />
-        <div style={{ margin: "0 1rem" }}>
+        {
+          /* <div style={{ margin: "0 1rem" }}>
           <h4 style={{ fontSize: "300%" }}>🧙</h4>
           <p>
             Now it's up to you, oh wise and adventurous one.
@@ -37,7 +38,8 @@ export default function HomePage() {
 
           <Link to="/philosophy">Philosophy</Link> or{" "}
           <Link to="/docs">Docs</Link> : <em>Choose wisely</em>
-        </div>
+        </div> */
+        }
       </section>
     </MDXProvider>
   );
