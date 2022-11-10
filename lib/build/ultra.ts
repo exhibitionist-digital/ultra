@@ -29,6 +29,8 @@ type DefaultBuildOptions = Omit<
 const defaultOptions: DefaultBuildOptions = {
   root: Deno.cwd(),
   output: ".ultra",
+  vendorPath: "vendor",
+  vendorDependencies: true,
   importMapPath: "./importMap.json",
   ignored: [".git", join("**", ".DS_Store")],
 };
@@ -67,6 +69,8 @@ export class UltraBuilder extends Builder {
     const context = new ContextBuilder()
       .setRoot(root)
       .setOutput(output)
+      .setVendorPath(resolvedOptions.vendorPath)
+      .setVendorDependencies(resolvedOptions.vendorDependencies)
       .setImportMapPath(resolvedOptions.importMapPath)
       .ignore(makeRelative(root, Deno.mainModule))
       .ignore(options.ignored || [])
