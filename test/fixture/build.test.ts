@@ -25,6 +25,28 @@ Deno.test(
 );
 
 Deno.test(
+  "it works with vendorDependencies false",
+  { ignore: TEST_FIXTURES },
+  async () => {
+    const builder = createBuilder({
+      browserEntrypoint: import.meta.resolve("./client.tsx"),
+      serverEntrypoint: import.meta.resolve("./server.tsx"),
+      vendorDependencies: false,
+    });
+
+    builder.ignore([
+      "./README.md",
+      "./importMap.json",
+      "./*.test.*",
+    ]);
+
+    const result = await builder.build();
+
+    assertEquals(result.outputSources.size > 0, true);
+  },
+);
+
+Deno.test(
   "it works without a browser entrypoint",
   { ignore: TEST_FIXTURES },
   async () => {
