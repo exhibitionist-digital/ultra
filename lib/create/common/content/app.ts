@@ -8,8 +8,11 @@ export function appContent(config: Config) {
   // deno-fmt-ignore
   return`
   import useAsset from "ultra/hooks/use-asset.js";
-  ${p.twind(`// Twind
+  ${p.twind(`// Twind Provider
   import { TwindProvider } from "${ext('./twind/TwindProvider', true)}";
+  `)}
+  ${p.twind(`// Twind
+  import { tw } from "twind";
   `)}
   ${p.stitches(`// Stitches
   import { StitchesProvider } from "${ext('./stitches/StitchesProvider', true)}";
@@ -30,7 +33,7 @@ export function appContent(config: Config) {
         </head>
         <body>
           <main>
-            <h1>
+            <h1 ${p.twind('className={tw`text-8xl font-mono margin mb-8`}')}>
               <span></span>__<span></span>
             </h1>
             <p>
