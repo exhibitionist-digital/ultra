@@ -24,6 +24,16 @@ export type BuildOptions = {
    */
   output?: string;
   /**
+   * A relative path of the output directory to place vendored remote dependencies.
+   * @default "vendor"
+   */
+  vendorPath: string;
+  /**
+   * A flag to enable or disable vendoring remote dependencies.
+   * @default true
+   */
+  vendorDependencies: boolean;
+  /**
    * The relative path to your importMap
    * @default "./importMap.json"
    */
