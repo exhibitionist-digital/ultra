@@ -6,7 +6,7 @@
     "react/": "https://esm.sh/react@0.0.0-experimental-2ac77aab9-20221029/",
     "react-dom": "https://esm.sh/react-dom@0.0.0-experimental-2ac77aab9-20221029",
     "react-dom/": "https://esm.sh/react-dom@0.0.0-experimental-2ac77aab9-20221029/",
-    "ultra/": "https://deno.land/x/ultra@v2.0.1/",
+    "ultra/": "https://deno.land/x/ultra@v2.1.0/",
     "wouter": "https://esm.sh/*wouter@2.8.1",
     "wouter/static-location": "https://esm.sh/*wouter@2.8.1/static-location"
   }
