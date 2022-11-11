@@ -8,6 +8,7 @@
     width: 100%;
     max-width: min-content;
     padding-block: 3rem;
+    font-size: 90%;
     padding-inline: 1rem 2rem;
     display: flex;
     flex-direction: column;

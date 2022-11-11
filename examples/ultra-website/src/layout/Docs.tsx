@@ -64,12 +64,14 @@ export function DocsLayout({ children }: { children: ReactNode }) {
               <Link href="/docs/hooks">🪝 Hooks</Link>
             </strong>
             <Link href="/docs/hooks/use-asset">useAsset</Link>
-            <Link href="/docs/hooks/use-async">useAsync</Link>
-            <Link href="/docs/hooks/use-env">useEnv</Link>
-            <Link href="/docs/hooks/use-island">useIsland</Link>
+            {/* <Link href="/docs/hooks/use-async" disabled>useAsync</Link> */}
+            <Link href="/docs/hooks/use-env" disabled>useEnv</Link>
+            {/* <Link href="/docs/hooks/use-island" disabled>useIsland</Link> */}
             <Link href="/docs/hooks/use-preload">usePreload</Link>
-            <Link href="/docs/hooks/use-server-context">useServerContext</Link>
-            <Link href="/docs/hooks/use-server-inserted-html">
+            <Link href="/docs/hooks/use-server-context" disabled>
+              useServerContext
+            </Link>
+            <Link href="/docs/hooks/use-server-inserted-html" disabled>
               useServerInsertedHTML
             </Link>
           </nav>

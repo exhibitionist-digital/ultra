@@ -399,6 +399,7 @@ ul {
 pre {
   max-width: 100%;
   overflow: auto;
+  display: table;
 }
 
 pre code {
