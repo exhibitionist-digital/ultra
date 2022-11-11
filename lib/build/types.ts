@@ -50,6 +50,10 @@ export type BuildOptions = {
    */
   serverEntrypoint: string;
   /**
+   * @default true
+   */
+  inlineServerDynamicImports: boolean;
+  /**
    * An array of files relative to the project root to be ignored from the build process.
    * They won't be copied to the output directory or participate in any further processing.
    *
