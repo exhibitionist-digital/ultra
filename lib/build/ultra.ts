@@ -31,6 +31,7 @@ const defaultOptions: DefaultBuildOptions = {
   output: ".ultra",
   vendorPath: "vendor",
   vendorDependencies: true,
+  inlineServerDynamicImports: false,
   importMapPath: "./importMap.json",
   ignored: [".git", join("**", ".DS_Store")],
 };
@@ -43,6 +44,7 @@ type OnSuccessCallback = (
 export class UltraBuilder extends Builder {
   public browserEntrypoint?: string;
   public serverEntrypoint: string;
+  public inlineServerDynamicImports: boolean;
 
   private plugin?: BuildPlugin;
 
@@ -101,6 +103,8 @@ export class UltraBuilder extends Builder {
     // Override the logger
     this.log = new Logger("INFO");
     this.plugin = options.plugin;
+    this.inlineServerDynamicImports =
+      resolvedOptions.inlineServerDynamicImports;
 
     this.browserEntrypoint = browserEntrypoint;
     this.serverEntrypoint = serverEntrypoint;
@@ -168,6 +172,32 @@ export class UltraBuilder extends Builder {
           JSON.stringify(importMap, null, 2),
         ),
       );
+    }
+
+    /**
+     * Inject dyanmic imports into the server entrypoint
+     */
+    if (this.inlineServerDynamicImports) {
+      const serverEntrypointSource = result.outputSources.find((source) => {
+        return source.originalPath().relativePath() === this.serverEntrypoint;
+      });
+
+      if (serverEntrypointSource) {
+        const dynamicImports = Array.from(result.dynamicImports).map(
+          (dynamicImport) => `import "${dynamicImport.relativePath()}";`,
+        ).join("");
+
+        const content = await serverEntrypointSource.read();
+        const serverInlinedContent = dynamicImports + content;
+
+        generated.add(
+          new VirtualFile(
+            serverEntrypointSource.path(),
+            serverEntrypointSource.root(),
+            serverInlinedContent,
+          ),
+        );
+      }
     }
 
     /**

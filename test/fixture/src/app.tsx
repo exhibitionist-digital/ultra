@@ -1,6 +1,8 @@
-import { Suspense } from "react";
+import { lazy, Suspense } from "react";
 import useAsset from "ultra/hooks/use-asset.js";
-import { Post } from "./components/Post.tsx";
+import Post from "./components/Post.tsx";
+
+const LazyPost = lazy(() => import("./components/Post.tsx"));
 
 export default function App() {
   return (
@@ -38,6 +40,7 @@ export default function App() {
             <Post id={1} />
             <Post id={2} />
             <Post id={3} />
+            <LazyPost id={4} />
           </Suspense>
         </main>
       </body>
