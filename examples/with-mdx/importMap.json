@@ -5,7 +5,7 @@
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
-    "ultra/": "https://deno.land/x/ultra@v2.0.1/",
+    "ultra/": "https://deno.land/x/ultra@v2.1.0/",
     "@mdx-js/run": "https://esm.sh/@mdx-js/mdx@2.1.3/lib/run.js",
     "@mdx-js/react": "https://esm.sh/@mdx-js/react@2.1.3?external=react"
   }
