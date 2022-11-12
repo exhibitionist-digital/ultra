@@ -24,6 +24,16 @@ export type BuildOptions = {
    */
   output?: string;
   /**
+   * A relative path of the output directory to place vendored remote dependencies.
+   * @default "vendor"
+   */
+  vendorPath: string;
+  /**
+   * A flag to enable or disable vendoring remote dependencies.
+   * @default true
+   */
+  vendorDependencies: boolean;
+  /**
    * The relative path to your importMap
    * @default "./importMap.json"
    */
@@ -39,6 +49,10 @@ export type BuildOptions = {
    * The server entrypoint. This should be what handles your SSR and routing.
    */
   serverEntrypoint: string;
+  /**
+   * @default true
+   */
+  inlineServerDynamicImports: boolean;
   /**
    * An array of files relative to the project root to be ignored from the build process.
    * They won't be copied to the output directory or participate in any further processing.

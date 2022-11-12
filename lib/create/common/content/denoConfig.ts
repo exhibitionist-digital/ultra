@@ -12,7 +12,11 @@ export function denoConfigContent(config: Config) {
    },
    "compilerOptions": {
      "jsx": "react-jsxdev",
-     "jsxImportSource": "react"
+     "jsxImportSource": "react",
+     "lib": ["dom", "dom.iterable", "dom.asynciterable", "deno.ns"]
+   },
+   "fmt": {
+     "files": { "exclude": [".ultra"] }
    },
    "importMap": "./importMap.json"
  }`;

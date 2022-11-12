@@ -29,6 +29,9 @@ type DefaultBuildOptions = Omit<
 const defaultOptions: DefaultBuildOptions = {
   root: Deno.cwd(),
   output: ".ultra",
+  vendorPath: "vendor",
+  vendorDependencies: true,
+  inlineServerDynamicImports: false,
   importMapPath: "./importMap.json",
   ignored: [".git", join("**", ".DS_Store")],
 };
@@ -41,8 +44,10 @@ type OnSuccessCallback = (
 export class UltraBuilder extends Builder {
   public browserEntrypoint?: string;
   public serverEntrypoint: string;
+  public inlineServerDynamicImports: boolean;
 
   private plugin?: BuildPlugin;
+  private resolvedOptions: BuildOptions;
 
   constructor(
     options: Partial<BuildOptions>,
@@ -67,6 +72,8 @@ export class UltraBuilder extends Builder {
     const context = new ContextBuilder()
       .setRoot(root)
       .setOutput(output)
+      .setVendorPath(resolvedOptions.vendorPath)
+      .setVendorDependencies(resolvedOptions.vendorDependencies)
       .setImportMapPath(resolvedOptions.importMapPath)
       .ignore(makeRelative(root, Deno.mainModule))
       .ignore(options.ignored || [])
@@ -94,9 +101,13 @@ export class UltraBuilder extends Builder {
       },
     });
 
+    this.resolvedOptions = resolvedOptions;
+
     // Override the logger
     this.log = new Logger("INFO");
     this.plugin = options.plugin;
+    this.inlineServerDynamicImports =
+      resolvedOptions.inlineServerDynamicImports;
 
     this.browserEntrypoint = browserEntrypoint;
     this.serverEntrypoint = serverEntrypoint;
@@ -167,6 +178,32 @@ export class UltraBuilder extends Builder {
     }
 
     /**
+     * Inject dyanmic imports into the server entrypoint
+     */
+    if (this.inlineServerDynamicImports) {
+      const serverEntrypointSource = result.outputSources.find((source) => {
+        return source.originalPath().relativePath() === this.serverEntrypoint;
+      });
+
+      if (serverEntrypointSource) {
+        const dynamicImports = Array.from(result.dynamicImports).map(
+          (dynamicImport) => `import "${dynamicImport.relativePath()}";`,
+        ).join("");
+
+        const content = await serverEntrypointSource.read();
+        const serverInlinedContent = dynamicImports + content;
+
+        generated.add(
+          new VirtualFile(
+            serverEntrypointSource.path(),
+            serverEntrypointSource.root(),
+            serverInlinedContent,
+          ),
+        );
+      }
+    }
+
+    /**
      * Generate ./asset-manifest.json
      */
     const assetManifest = await this.#generateAssetManifest(result);
@@ -176,7 +213,7 @@ export class UltraBuilder extends Builder {
     /**
      * Patch deno.json
      */
-    await this.#patchDenoJsonConfig(result);
+    await this.#patchDenoJsonConfig(this.resolvedOptions, result);
 
     /**
      * Copy any generated files to the output
@@ -273,7 +310,7 @@ export class UltraBuilder extends Builder {
     );
   }
 
-  async #patchDenoJsonConfig(result: BuildResult) {
+  async #patchDenoJsonConfig(options: BuildOptions, result: BuildResult) {
     const source = await result.outputSources.get("./deno.json");
 
     if (source) {
@@ -281,6 +318,11 @@ export class UltraBuilder extends Builder {
       if (denoConfig) {
         if (denoConfig.compilerOptions?.jsx) {
           denoConfig.compilerOptions.jsx = "react-jsx";
+        }
+
+        if (!options.vendorDependencies && denoConfig.tasks?.start) {
+          denoConfig.tasks.start = denoConfig.tasks.start
+            .replace(" --no-remote", "");
         }
 
         denoConfig.importMap = "./importMap.server.json";

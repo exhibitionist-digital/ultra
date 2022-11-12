@@ -88,7 +88,7 @@ The **Ultra** community welcomes outside contributions. See the
 
 Here some things we are interested in for the future of JS and/or Ultra:
 
-- React [ESM exports](https://github.com/facebook/react/issues/11503)
+- React [ESM exports](https://github.com/facebook/react/issues/10021)
 - [AbTs: Anything but TypeScript](https://tc39.es/proposal-type-annotations)
 - Libraries supporting
   [optimal JavaScript module design](https://jaydenseric.com/blog/optimal-javascript-module-design)

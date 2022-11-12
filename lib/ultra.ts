@@ -152,7 +152,7 @@ export class UltraServer extends Hono {
     if (this.mode === "production") {
       for (const [specifier, resolved] of Object.entries(importMap.imports)) {
         if (specifier === entrypointSpecifier) {
-          entrypointSpecifier = resolved;
+          entrypointSpecifier = resolved.replace("./", "/");
         }
       }
     } else {
