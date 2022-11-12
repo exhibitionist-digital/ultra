@@ -1,19 +1,29 @@
 .docs-layout {
     display: flex;
     flex-direction: row;
-    padding-left: 300px;
+    z-index: 2;
+    position: relative;
+}
+
+button {
+
+    border: none;
+    background: none;
+    color: black;
+    background: #7ee787;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .docs-nav {
-    width: 100%;
-    max-width: min-content;
-    padding-block: 3rem;
+    width: 80%;
+    padding-block: 1rem 3rem;
     font-size: 90%;
     padding-inline: 1rem 2rem;
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    max-width: 300px;
     background: #1a1a1a;
     position: fixed;
     box-sizing: border-box;
@@ -22,9 +32,31 @@
     top: 0;
     left: 0;
     overflow: scroll;
-    z-index: 5;
+    z-index: 20;
+    left: -100vw;
     -ms-overflow-style: none;
     scrollbar-width: none;
+    transition: 0.5s;
+}
+
+.docs-nav.open {
+    left: 0;
+}
+
+@media (min-width:800px) {
+    button {
+        display: none;
+    }
+
+    .docs-layout {
+        padding-left: 300px;
+    }
+
+    .docs-nav {
+        min-width: calc(300px - 1rem);
+        max-width: min-content;
+        left: 0;
+    }
 }
 
 .docs-nav::-webkit-scrollbar {
@@ -54,7 +86,7 @@
     background-color: #7ee787;
     color: #333;
     padding: 1rem;
-    font-size: 80%;
+    font-size: 90%;
     display: inline-block;
     border-radius: 0.5rem;
     margin: 0;

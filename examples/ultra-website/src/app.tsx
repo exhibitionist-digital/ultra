@@ -83,112 +83,95 @@ export default function App() {
         />
       </head>
       <body>
+        <Title />
         <main>
-          <Switch>
-            <Route path="/">
-              <Title />
-              <Header />
-              <HomePage />
-            </Route>
-            <Route path="/philosophy">
-              <Title title="Ultra: ESM University" />
-              <DocsLayout>
-                <Header />
-                <Philosophy />
-              </DocsLayout>
-            </Route>
-            <Route path="/docs/:section*">
-              <Title title="Ultra: ESM University" />
-              <DocsLayout>
-                <Header />
-                <Suspense>
-                  <Switch>
-                    <Route path="/docs">
-                      <Philosophy />
-                    </Route>
-                    <Route path="/docs/knowledge-base">
-                      <KnowledgeBase />
-                    </Route>
-                    {/* Getting Started */}
-                    <Route path="/docs/prerequisites">
-                      <Prerequisites />
-                    </Route>
-                    <Route path="/docs/create-project">
-                      <CreateProject />
-                    </Route>
-                    <Route path="/docs/routing">
-                      <Routing />
-                    </Route>
-                    <Route path="/docs/middleware">
-                      <Middleware />
-                    </Route>
-                    <Route path="/docs/styling">
-                      <Styling />
-                    </Route>
-                    <Route path="/docs/data-fetching">
-                      <DataFetching />
-                    </Route>
-                    <Route path="/docs/code-splitting">
-                      <CodeSplitting />
-                    </Route>
-                    <Route path="/docs/building-for-deployment">
-                      <Building />
-                    </Route>
-                    {/* Deploy */}
-                    <Route path="/docs/deploy">
-                      <NotFound />
-                    </Route>
-                    <Route path="/docs/deploy/deno-deploy">
-                      <DenoDeploy />
-                    </Route>
-                    <Route path="/docs/deploy/fly-docker">
-                      <Fly />
-                    </Route>
-                    <Route path="/docs/deploy/vercel">
-                      <NotFound />
-                    </Route>
-                    <Route path="/docs/deploy/netlify">
-                      <NotFound />
-                    </Route>
-                    <Route path="/docs/deploy/cloudflare">
-                      <NotFound />
-                    </Route>
-                    {/* Hooks */}
-                    <Route path="/docs/hooks">
-                      <Hooks />
-                    </Route>
-                    <Route path="/docs/hooks/use-asset">
-                      <UseAssetHook />
-                    </Route>
-                    <Route path="/docs/hooks/use-async">
-                      <UseAsyncHook />
-                    </Route>
-                    <Route path="/docs/hooks/use-env">
-                      <UseEnvHook />
-                    </Route>
-                    <Route path="/docs/hooks/use-island">
-                      <UseIslandHook />
-                    </Route>
-                    <Route path="/docs/hooks/use-preload">
-                      <UsePreloadHook />
-                    </Route>
-                    <Route path="/docs/hooks/use-server-context">
-                      <UseServerContextHook />
-                    </Route>
-                    <Route path="/docs/hooks/use-server-inserted-html">
-                      <UseServerInsertedHTMLHook />
-                    </Route>
-                    <Route>
-                      <NotFound />
-                    </Route>
-                  </Switch>
-                </Suspense>
-              </DocsLayout>
-            </Route>
-            <Route>
-              404
-            </Route>
-          </Switch>
+          <DocsLayout>
+            <Suspense>
+              <Switch>
+                <Route path="/">
+                  <HomePage />
+                </Route>
+                <Route path="/docs">
+                  <Philosophy />
+                </Route>
+                <Route path="/docs/knowledge-base">
+                  <KnowledgeBase />
+                </Route>
+                {/* Getting Started */}
+                <Route path="/docs/prerequisites">
+                  <Prerequisites />
+                </Route>
+                <Route path="/docs/create-project">
+                  <CreateProject />
+                </Route>
+                <Route path="/docs/routing">
+                  <Routing />
+                </Route>
+                <Route path="/docs/middleware">
+                  <Middleware />
+                </Route>
+                <Route path="/docs/styling">
+                  <Styling />
+                </Route>
+                <Route path="/docs/data-fetching">
+                  <DataFetching />
+                </Route>
+                <Route path="/docs/code-splitting">
+                  <CodeSplitting />
+                </Route>
+                <Route path="/docs/building-for-deployment">
+                  <Building />
+                </Route>
+                {/* Deploy */}
+                <Route path="/docs/deploy">
+                  <NotFound />
+                </Route>
+                <Route path="/docs/deploy/deno-deploy">
+                  <DenoDeploy />
+                </Route>
+                <Route path="/docs/deploy/fly-docker">
+                  <Fly />
+                </Route>
+                <Route path="/docs/deploy/vercel">
+                  <NotFound />
+                </Route>
+                <Route path="/docs/deploy/netlify">
+                  <NotFound />
+                </Route>
+                <Route path="/docs/deploy/cloudflare">
+                  <NotFound />
+                </Route>
+                {/* Hooks */}
+                <Route path="/docs/hooks">
+                  <Hooks />
+                </Route>
+                <Route path="/docs/hooks/use-asset">
+                  <UseAssetHook />
+                </Route>
+                <Route path="/docs/hooks/use-async">
+                  <UseAsyncHook />
+                </Route>
+                <Route path="/docs/hooks/use-env">
+                  <UseEnvHook />
+                </Route>
+                <Route path="/docs/hooks/use-island">
+                  <UseIslandHook />
+                </Route>
+                <Route path="/docs/hooks/use-preload">
+                  <UsePreloadHook />
+                </Route>
+                <Route path="/docs/hooks/use-server-context">
+                  <UseServerContextHook />
+                </Route>
+                <Route path="/docs/hooks/use-server-inserted-html">
+                  <UseServerInsertedHTMLHook />
+                </Route>
+                <Route>
+                  <NotFound />
+                </Route>
+              </Switch>
+            </Suspense>
+          </DocsLayout>
         </main>
         <script
           dangerouslySetInnerHTML={{
@@ -206,9 +189,10 @@ export default function App() {
 const Header = () => {
   return (
     <header id="site-header">
-      <Link href="/" className="logo">
-        <Ultra />
-        <span>Ultra</span>
+      <Link href="/">
+        <a>
+          <Ultra />
+        </a>
       </Link>
       <nav id="site-nav">
         <Link href="/docs">
@@ -229,6 +213,7 @@ const Header = () => {
 const Ultra = () => {
   return (
     <svg
+      className="logo"
       fill="none"
       height="440"
       viewBox="0 0 440 440"
@@ -268,3 +253,5 @@ const NotFound = () => {
     </>
   );
 };
+
+export { Ultra };

@@ -1,9 +1,10 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { MDXProvider } from "@mdx-js/react";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import useAsset from "ultra/hooks/use-asset.js";
 import { ModuleSource } from "../components/ModuleSource.tsx";
 import { HotTip } from "../components/HotTip.tsx";
+import { Ultra } from "../app.tsx";
 
 const Blank = ({ href, children }) => {
   return (
@@ -13,7 +14,14 @@ const Blank = ({ href, children }) => {
   );
 };
 
-export function DocsLayout({ children }: { children: ReactNode }) {
+export function DocsLayout(
+  { children }: { children: ReactNode },
+) {
+  const [open, setOpen] = useState(false);
+  const [location] = useLocation();
+  useEffect(() => {
+    setOpen(false);
+  }, [location]);
   return (
     <MDXProvider
       components={{
@@ -29,8 +37,17 @@ export function DocsLayout({ children }: { children: ReactNode }) {
           //@ts-ignore whatever
           precedence="default"
         />
-        <div className="docs-nav">
+
+        <div className={`docs-nav ${open ? "open" : ""}`}>
           <nav>
+            <Link href="/">
+              <a>
+                <Ultra />
+              </a>
+            </Link>
+
+            <button onClick={() => setOpen(!open)}>Close Menu</button>
+
             <strong>
               <Link href="/docs">📖 Philosophy</Link>
             </strong>
@@ -77,6 +94,9 @@ export function DocsLayout({ children }: { children: ReactNode }) {
           </nav>
         </div>
         <div className="page docs">
+          <strong>
+            <button onClick={() => setOpen(!open)}>Open Menu</button>
+          </strong>
           {children}
         </div>
       </div>

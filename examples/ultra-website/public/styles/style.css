@@ -33,7 +33,7 @@ body {
   max-width: 1500px;
   min-width: 350px;
   margin: auto;
-  font-size: 120%;
+  font-size: 100%;
   padding-bottom: 5rem;
 }
 
@@ -136,21 +136,27 @@ h4 {
 
 #site-header {
   display: flex;
-  flex-direction: row;
   align-items: center;
   padding: 1rem 0;
   margin-bottom: 2rem;
-}
-
-#site-nav {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 2rem;
   flex-wrap: wrap;
 }
 
+#site-nav {
+  display: block;
+  flex: 1 1 100%;
+  text-align: center;
+  align-items: center;
+  padding: 1rem 0 0;
+  flex-wrap: wrap;
+}
+
+#site-header a {
+  margin: auto;
+}
+
 #site-nav a {
-  margin-right: 1em;
+  margin: auto 0.5rem;
 }
 
 #github {
@@ -184,7 +190,7 @@ blockquote {
   background: #6666ff;
   border-radius: 0.5rem;
   margin-bottom: 2em;
-  font-size: 80%;
+  font-size: 90%;
   display: inline-block;
 }
 
@@ -193,7 +199,6 @@ blockquote {
 }
 
 .logo {
-  display: inline-flex;
   align-items: center;
   text-decoration: none;
   text-transform: initial;
@@ -202,8 +207,8 @@ blockquote {
   font-weight: 600;
 }
 
-.logo svg {
-  margin: 0 0.5rem 0 -0.5rem;
+.logo {
+  margin: auto;
   width: 80px;
   height: 80px;
   background: #1a1a1a;
@@ -214,15 +219,21 @@ blockquote {
   outline: none;
 }
 
-.home {
-  text-align: center;
-  padding-bottom: 3rem;
+section.home {
+  text-align: left;
+  padding: 0;
+  margin: 0;
 }
 
 .home figure {
   position: relative;
-  padding: 5rem 0 2rem;
-  margin-bottom: -1rem;
+  padding: 0rem 0 0rem;
+}
+
+.home svg {
+  width: 50%;
+  height: 50%;
+  max-width: 150px;
 }
 
 .home img {
@@ -346,9 +357,16 @@ code::-webkit-scrollbar {
   }
 }
 
-.page,
 figure {
-  margin: 0 2rem;
+  padding: 0;
+  margin: 0;
+}
+
+.page {
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  max-width: 100%;
+  flex-grow: 1;
 }
 
 .page p,
@@ -399,7 +417,8 @@ ul {
 pre {
   max-width: 100%;
   overflow: auto;
-  display: table;
+  display: block;
+  max-width: 800px
 }
 
 pre code {
