@@ -47,6 +47,7 @@ export class UltraBuilder extends Builder {
   public inlineServerDynamicImports: boolean;
 
   private plugin?: BuildPlugin;
+  private resolvedOptions: BuildOptions;
 
   constructor(
     options: Partial<BuildOptions>,
@@ -99,6 +100,8 @@ export class UltraBuilder extends Builder {
         sourceMaps: resolvedOptions.sourceMaps,
       },
     });
+
+    this.resolvedOptions = resolvedOptions;
 
     // Override the logger
     this.log = new Logger("INFO");
@@ -210,7 +213,7 @@ export class UltraBuilder extends Builder {
     /**
      * Patch deno.json
      */
-    await this.#patchDenoJsonConfig(result);
+    await this.#patchDenoJsonConfig(this.resolvedOptions, result);
 
     /**
      * Copy any generated files to the output
@@ -307,7 +310,7 @@ export class UltraBuilder extends Builder {
     );
   }
 
-  async #patchDenoJsonConfig(result: BuildResult) {
+  async #patchDenoJsonConfig(options: BuildOptions, result: BuildResult) {
     const source = await result.outputSources.get("./deno.json");
 
     if (source) {
@@ -315,6 +318,11 @@ export class UltraBuilder extends Builder {
       if (denoConfig) {
         if (denoConfig.compilerOptions?.jsx) {
           denoConfig.compilerOptions.jsx = "react-jsx";
+        }
+
+        if (!options.vendorDependencies && denoConfig.tasks?.start) {
+          denoConfig.tasks.start = denoConfig.tasks.start
+            .replace(" --no-remote", "");
         }
 
         denoConfig.importMap = "./importMap.server.json";
