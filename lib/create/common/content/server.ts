@@ -69,7 +69,7 @@ const helmetContext: Record<string, any> = {};
 
 ${
     config.ts
-      ? "function ServerApp({context}: Context){"
+      ? "function ServerApp({context}: { context: Context }){"
       : "function ServerApp({context}){"
   }
 
