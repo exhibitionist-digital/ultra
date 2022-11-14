@@ -11,7 +11,13 @@
   },
   "compilerOptions": {
     "jsx": "react-jsxdev",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "lib": [
+      "deno.ns",
+      "dom",
+      "dom.iterable",
+      "dom.asynciterable"
+    ]
   },
   "importMap": "./importMap.json"
 }
