@@ -37,8 +37,20 @@ export type RenderedReadableStream = ReadableStream<Uint8Array> & {
   allReady?: Promise<void> | undefined;
 };
 
+export type CompilerHooks = {
+  beforeTransform?: (
+    source: string,
+    file: { path: string; extension: string },
+  ) => string;
+  afterTransform?: (
+    source: string,
+    file: { path: string; extension: string },
+  ) => string;
+};
+
 export type CompilerOptions = {
   root: string;
+  hooks?: CompilerHooks;
 } & Omit<TransformSourceOptions, "minify" | "development">;
 
 export type TransformSourceOptions = {
