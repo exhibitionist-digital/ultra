@@ -15,17 +15,17 @@ import {
   serverContent,
   styleContent,
 } from "./content/index.ts";
-import { twindContent, twindProviderContent } from "../modules/twind/index.ts";
+import { twindContent, twindProviderContent } from "../modules/twind.ts";
 import {
   stitchesConfigContent,
   stitchesProviderContent,
-} from "../modules/stitches/index.ts";
-import { wouterContent } from "../modules/wouter/index.ts";
+} from "../modules/stitches.ts";
+import { wouterContent } from "../modules/wouter.ts";
 import {
   queryClientContent,
   useDehydrateReactQueryContent,
-} from "../modules/react-query/index.ts";
-import { trpcClientContent, trpcRouterContent } from "../modules/trpc/index.ts";
+} from "../modules/react_query.ts";
+import { trpcClientContent, trpcRouterContent } from "../modules/trpc.ts";
 import { gradient } from "./styling.ts";
 
 export async function createUltraApp(config: Config) {

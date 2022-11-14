@@ -1,4 +1,4 @@
-import type { Config } from "../../common/config.ts";
+import type { Config } from "../common/config.ts";
 
 export function twindContent(config: Config) {
   return `
