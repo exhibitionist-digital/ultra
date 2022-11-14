@@ -18,10 +18,7 @@ export const compiler = (options: CompilerOptions) => {
   return async (context: Context, next: Next) => {
     const method = context.req.method;
     const requestPathname = new URL(context.req.url).pathname;
-    const pathname = requestPathname.replace(
-      `${ULTRA_COMPILER_PATH}/`,
-      "",
-    );
+    const pathname = requestPathname.replace(`${ULTRA_COMPILER_PATH}/`, "");
 
     const extension = extname(pathname);
     const path = join(root, pathname);
@@ -31,7 +28,21 @@ export const compiler = (options: CompilerOptions) => {
 
     if (method === "GET" && isCompilerTarget) {
       const bytes = await fetch(url).then((response) => response.arrayBuffer());
-      const source = new TextDecoder().decode(bytes);
+      let source = new TextDecoder().decode(bytes);
+
+      if (options.hooks?.beforeTransform) {
+        try {
+          source = options.hooks.beforeTransform(source, {
+            path,
+            extension,
+          });
+        } catch (e) {
+          log.error(e);
+        }
+        if (typeof source !== "string") {
+          throw new Error("beforeTransform hook must return a string");
+        }
+      }
 
       log.debug(sprintf("Compiling: %s", url.toString()));
 
@@ -50,6 +61,20 @@ export const compiler = (options: CompilerOptions) => {
         });
 
         let { code, map } = transformed;
+
+        if (options.hooks?.afterTransform) {
+          try {
+            code = options.hooks.afterTransform(code, {
+              path,
+              extension,
+            });
+          } catch (e) {
+            log.error(e);
+          }
+          if (typeof source !== "string") {
+            throw new Error("afterTransform hook must return a string");
+          }
+        }
 
         if (map) {
           code = insertSourceMap(code, map, url);
@@ -72,6 +97,8 @@ export const compiler = (options: CompilerOptions) => {
 
 function insertSourceMap(code: string, map: string, sourceUrl: URL) {
   return `${code}\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,${
-    encode(map)
+    encode(
+      map,
+    )
   }\n//# sourceURL=ultra://${sourceUrl.pathname}`;
 }
