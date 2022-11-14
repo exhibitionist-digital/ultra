@@ -1,7 +1,10 @@
-import { useTw } from "./hooks/useTw.ts";
+import { lazy, Suspense } from "react";
+import Post from "./post.tsx";
+import { tw } from "./twind.ts";
+
+const LazyPost = lazy(() => import("./post.tsx"));
 
 export default function App() {
-  const tw = useTw();
   return (
     <html lang="en">
       <head>
@@ -11,17 +14,15 @@ export default function App() {
         <link rel="shortcut icon" href="/favicon.ico" />
       </head>
       <body>
-        <div className={tw(`text(3xl white) bg-blue-500 p-3`)}>
-          Hello with-twind!
-        </div>
-        <div className={tw(`text(3xl white) bg-blue-500 p-3`)}>
-          Hello with-twind!
-        </div>
-        <div className={tw(`text(3xl white) bg-blue-500 p-3`)}>
-          Hello with-twind!
-        </div>
-        <div className={tw(`text(3xl white) bg-blue-500 p-3`)}>
-          Hello with-twind!
+        <div className={tw`flex flex-col gap-4`}>
+          <Suspense>
+            <Post />
+            <Post />
+            <Post />
+            <LazyPost color="red" />
+            <LazyPost color="green" />
+            <LazyPost color="purple" />
+          </Suspense>
         </div>
       </body>
     </html>
