@@ -2,7 +2,7 @@ import type { Config } from "../../common/config.ts";
 
 export function twindContent(config: Config) {
   return `
-import { cssomSheet, setup${config.ts ? ", Configuration" : ""} from "twind";
+import { cssomSheet, setup${config.ts ? ", Configuration" : ""}} from "twind";
 import { virtualSheet } from "twind/sheets";
 
 /**
