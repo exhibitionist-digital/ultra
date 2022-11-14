@@ -21,7 +21,7 @@ server.get("*", async (context) => {
 
 if (import.meta.main) {
   const { serve } = await import(
-    "https://deno.land/std@0.159.0/http/server.ts"
+    "https://deno.land/std@0.164.0/http/server.ts"
   );
   serve(server.fetch);
 }

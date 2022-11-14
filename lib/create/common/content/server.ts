@@ -7,7 +7,7 @@ export function serverContent(config: Config) {
   const ext = fileExtension(config);
 
   return `
-import { serve } from "https://deno.land/std@0.159.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.164.0/http/server.ts";
 import { createServer, createRouter } from "ultra/server.ts";
 import App from "${ext("./src/app", true)}";
 
