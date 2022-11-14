@@ -1,4 +1,5 @@
 .ultra
+deno.lock
 .DS_Store
 NOTES.md
 *.png
