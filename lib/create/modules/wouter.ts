@@ -1,4 +1,4 @@
-import { Config } from "../../common/config.ts";
+import { Config } from "../common/config.ts";
 
 export function wouterContent(config: Config) {
   return `
