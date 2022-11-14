@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.159.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.164.0/http/server.ts";
 import { getStyleTag } from "twind/sheets";
 import { createServer } from "ultra/server.ts";
 import { createHeadInsertionTransformStream } from "ultra/stream.ts";

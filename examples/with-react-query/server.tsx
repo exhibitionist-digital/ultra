@@ -1,5 +1,5 @@
 import { QueryClientProvider } from "@tanstack/react-query";
-import { serve } from "https://deno.land/std@0.159.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.164.0/http/server.ts";
 import { createServer } from "ultra/server.ts";
 import App from "./src/app.tsx";
 import { useDehydrateReactQuery } from "./src/hooks/useDehydrateReactQuery.tsx";
