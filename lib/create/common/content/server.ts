@@ -7,8 +7,10 @@ export function serverContent(config: Config) {
   const ext = fileExtension(config);
 
   return `
-import { serve } from "https://deno.land/std@0.159.0/http/server.ts";
-import { createServer, createRouter } from "ultra/server.ts";
+import { serve } from "https://deno.land/std@0.164.0/http/server.ts";
+import { createServer ${
+    config.ts ? ", type Context" : ""
+  } } from "ultra/server.ts";
 import App from "${ext("./src/app", true)}";
 
 ${
@@ -67,7 +69,7 @@ const helmetContext: Record<string, any> = {};
 
 ${
     config.ts
-      ? "function ServerApp({context}: any){"
+      ? "function ServerApp({context}: Context){"
       : "function ServerApp({context}){"
   }
 
