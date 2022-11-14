@@ -21,7 +21,7 @@ export { StringReader } from "https://deno.land/std@0.159.0/io/readers.ts";
 
 export { wait } from "https://deno.land/x/wait@0.1.12/mod.ts";
 
-export { Hono } from "https://deno.land/x/hono@v2.5.1/mod.ts";
+export { type Context, Hono } from "https://deno.land/x/hono@v2.5.1/mod.ts";
 export { getFilePath } from "https://deno.land/x/hono@v2.5.1/utils/filepath.ts";
 export { getMimeType } from "https://deno.land/x/hono@v2.5.1/utils/mime.ts";
 export { logger } from "https://deno.land/x/hono@v2.5.1/middleware.ts";
