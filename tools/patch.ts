@@ -6,7 +6,7 @@ import {
 } from "https://deno.land/std@0.164.0/semver/mod.ts";
 import { globToRegExp } from "https://deno.land/std@0.164.0/path/glob.ts";
 import { parse } from "https://deno.land/std@0.164.0/flags/mod.ts";
-import { assert } from "https://deno.land/std@0.164.0/_util/assert.ts";
+import { assert } from "https://deno.land/std@0.164.0/_util/asserts.ts";
 
 /**
  * This tool will update deno.land import strings in readme's and importMaps
