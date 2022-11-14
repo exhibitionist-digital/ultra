@@ -2,7 +2,7 @@ import type { Config } from "../../common/config.ts";
 
 export function twindContent(config: Config) {
   return `
-import { cssomSheet, setup, Configuration } from "twind";
+import { cssomSheet, setup${config.ts ? ", Configuration" : ""} from "twind";
 import { virtualSheet } from "twind/sheets";
 
 /**
@@ -31,7 +31,7 @@ export const sheet = typeof Deno !== "undefined" ? virtualSheet() : cssomSheet({
 /**
  * Twind configuration 
  */
-const config: Configuration = {
+const config${config.ts ? ": Configuration" : ""} = {
   sheet,
   /**
    * Your theme configuration for twind
