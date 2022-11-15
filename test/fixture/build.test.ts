@@ -60,7 +60,7 @@ Deno.test(
     // Test that the built output starts correctly
     const process = await Deno.run({
       cwd: "./output/no-browser-entrypoint",
-      cmd: [Deno.execPath(), "task", "start"],
+      cmd: [Deno.execPath(), "task", "start:no-browser"],
     });
 
     const status = await process.status();

@@ -49,7 +49,9 @@ export async function createServer(
   const server = new UltraServer(root, {
     mode,
     entrypoint: browserEntrypoint,
-    importMapPath: resolveImportMapPath(mode, root, options.importMapPath),
+    importMapPath: options.importMapPath
+      ? resolveImportMapPath(mode, root, options.importMapPath)
+      : undefined,
     assetManifestPath: String(assetManifestPath),
     enableEsModuleShims,
     esModuleShimsPath,

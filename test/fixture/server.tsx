@@ -9,9 +9,7 @@ import { serverSheet, TWProvider } from "./src/context/twind.tsx";
 import { theme } from "./theme.ts";
 
 const server = await createServer({
-  importMapPath: Deno.env.get("ULTRA_MODE") === "development"
-    ? import.meta.resolve("./importMap.dev.json")
-    : import.meta.resolve("./importMap.json"),
+  importMapPath: import.meta.resolve("./importMap.json"),
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 
