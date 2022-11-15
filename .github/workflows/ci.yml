@@ -28,7 +28,9 @@ jobs:
       
       - uses: actions/cache@v3
         with:
-          path: ${{ env.DENO_DIR }}
+          path: |
+            ~/.deno
+            ~/.cache/deno
           key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
 
       - name: Verify formatting
