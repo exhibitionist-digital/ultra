@@ -8,9 +8,7 @@ import { TRPCServerProvider } from "./src/trpc/server.tsx";
 import { serverSheet, TWProvider } from "./src/context/twind.tsx";
 import { theme } from "./theme.ts";
 
-const server = await createServer({
-  importMapPath: import.meta.resolve("./importMap.json"),
-});
+const server = await createServer();
 
 server.all("/api/trpc/:path", (context) => {
   return fetchRequestHandler({

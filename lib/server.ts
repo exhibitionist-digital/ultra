@@ -27,7 +27,7 @@ const defaultOptions = {
 };
 
 export async function createServer(
-  options: CreateServerOptions,
+  options: CreateServerOptions = {},
 ): Promise<UltraServer> {
   const resolvedOptions = {
     ...defaultOptions,
