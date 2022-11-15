@@ -17,6 +17,10 @@ jobs:
       id-token: write
       contents: read
 
+    env:
+      DENO_NO_UPDATE_CHECK: true
+      DENO_DIR: .deno
+
     steps:
       - name: Setup repo
         uses: actions/checkout@v3
@@ -28,9 +32,7 @@ jobs:
       
       - uses: actions/cache@v3
         with:
-          path: |
-            ~/.deno
-            ~/.cache/deno
+          path: .deno
           key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
 
       - name: Verify formatting
