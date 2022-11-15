@@ -5,6 +5,9 @@ NOTES.md
 *.png
 **/src/content
 
+# test fixture output
+test/fixture/output
+
 # tools/dev.ts generated files
 examples/*/deno.dev.json
 examples/*/importMap.dev.json

@@ -9,10 +9,7 @@ import { serverSheet, TWProvider } from "./src/context/twind.tsx";
 import { theme } from "./theme.ts";
 
 const server = await createServer({
-  importMapPath: Deno.env.get("ULTRA_MODE") === "development"
-    ? import.meta.resolve("./importMap.dev.json")
-    : import.meta.resolve("./importMap.json"),
-  browserEntrypoint: import.meta.resolve("./client.tsx"),
+  importMapPath: import.meta.resolve("./importMap.json"),
 });
 
 server.all("/api/trpc/:path", (context) => {
@@ -48,8 +45,6 @@ server.get("*", async (context) => {
 if (import.meta.main) {
   serve(server.fetch, {
     onListen() {
-      // We exit onListen so we know the server started successfully
-      // in our tests
       Deno.exit(0);
     },
   });

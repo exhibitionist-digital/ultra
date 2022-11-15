@@ -1,9 +1,7 @@
 {
   "tasks": {
     "dev": "deno run -A tools/dev.ts",
-    "test": "deno test --allow-all && deno task test-fixture",
-    "test-fixture": "cd test/fixture && TEST_FIXTURE=true deno test --allow-all",
-    "test:watch": "cd test/fixture && deno test --allow-all --watch",
+    "test": "deno test --allow-all ./test/unit && cd test/fixture && deno test --allow-all",
     "version-bump:minor": "deno run -A tools/patch.ts --release=minor",
     "version-bump:patch": "deno run -A tools/patch.ts --release=patch"
   },

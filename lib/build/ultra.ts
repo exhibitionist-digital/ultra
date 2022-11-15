@@ -54,11 +54,9 @@ export class UltraBuilder extends Builder {
     private onSuccessCallback?: OnSuccessCallback,
   ) {
     const resolvedOptions = deepMerge<BuildOptions>(defaultOptions, options);
-    const root = resolvedOptions.root;
 
-    const output = resolvedOptions.output
-      ? resolve(root, resolvedOptions.output)
-      : resolve(root, ".ultra");
+    const root = resolvedOptions.root;
+    const output = resolve(root, resolvedOptions.output || ".ultra");
 
     const browserEntrypoint = resolvedOptions.browserEntrypoint
       ? makeRelative(root, resolvedOptions.browserEntrypoint)
