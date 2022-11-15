@@ -8,10 +8,7 @@ import { TRPCServerProvider } from "./src/trpc/server.tsx";
 import { serverSheet, TWProvider } from "./src/context/twind.tsx";
 import { theme } from "./theme.ts";
 
-const server = await createServer({
-  importMapPath: import.meta.resolve("./importMap.json"),
-  browserEntrypoint: import.meta.resolve("./client.tsx"),
-});
+const server = await createServer();
 
 server.all("/api/trpc/:path", (context) => {
   return fetchRequestHandler({
@@ -46,8 +43,6 @@ server.get("*", async (context) => {
 if (import.meta.main) {
   serve(server.fetch, {
     onListen() {
-      // We exit onListen so we know the server started successfully
-      // in our tests
       Deno.exit(0);
     },
   });

@@ -17,7 +17,7 @@ export type CreateServerOptions = {
    * The path to your ImportMap. Ultra will inject this into the head
    * of your rendered HTML markup.
    */
-  importMapPath: string;
+  importMapPath?: string;
   enableEsModuleShims?: boolean;
   esModuleShimsPath?: string;
   /**

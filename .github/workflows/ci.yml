@@ -1,8 +1,8 @@
-name: Format, Lint, Test
+name: CI
 
 on:
   pull_request:
-    types: [opened, review_requested, ready_for_review, synchronize]
+    types: [opened, synchronize]
   push:
     branches: [main]
 
@@ -10,12 +10,16 @@ jobs:
   fmt-lint-test:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     
     permissions:
       id-token: write
       contents: read
+
+    env:
+      DENO_NO_UPDATE_CHECK: true
+      DENO_DIR: .deno-cache
 
     steps:
       - name: Setup repo
@@ -25,12 +29,13 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
+
+      - name: Deno Info
+        run: deno info
       
       - uses: actions/cache@v3
         with:
-          path: |
-            ~/.deno
-            ~/.cache/deno
+          path: .deno-cache
           key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
 
       - name: Verify formatting

@@ -15,7 +15,7 @@ type UltraServerRenderOptions = {
 
 type UltraServerOptions = {
   mode: Mode;
-  importMapPath: string;
+  importMapPath?: string;
   assetManifestPath: string;
   enableEsModuleShims?: boolean;
   esModuleShimsPath?: string;
@@ -28,7 +28,7 @@ export class UltraServer extends Hono {
 
   public mode: Mode;
   public baseUrl: string;
-  public importMapPath: string;
+  public importMapPath?: string;
   public assetManifestPath: string;
   public enableEsModuleShims?: boolean;
   public esModuleShimsPath?: string;
@@ -63,9 +63,11 @@ export class UltraServer extends Hono {
     log.debug("Initialising server");
 
     /**
-     * Parse the provided importMap
+     * Parse the importMap if provided
      */
-    this.importMap = await this.#parseJsonFile(this.importMapPath);
+    this.importMap = this.importMapPath
+      ? await this.#parseJsonFile(this.importMapPath)
+      : undefined;
 
     /**
      * Parse the provided asset manifest if we have an entrypoint
@@ -78,16 +80,18 @@ export class UltraServer extends Hono {
     this.assetManifest = assetManifest ? new Map(assetManifest) : undefined;
 
     /**
-     * Prepare the entrypoint
+     * Prepare the entrypoint if provided an importMap
      */
-    this.entrypoint = this.#prepareEntrypoint(this.importMap!);
+    if (this.importMap) {
+      this.entrypoint = this.#prepareEntrypoint(this.importMap);
 
-    if (this.entrypoint) {
-      this.#bootstrapModules = [
-        this.entrypoint.startsWith("file://")
-          ? fromFileUrl(this.entrypoint)
-          : this.entrypoint,
-      ];
+      if (this.entrypoint) {
+        this.#bootstrapModules = [
+          this.entrypoint.startsWith("file://")
+            ? fromFileUrl(this.entrypoint)
+            : this.entrypoint,
+        ];
+      }
     }
 
     // Validate
@@ -120,14 +124,23 @@ export class UltraServer extends Hono {
   }
 
   async #parseJsonFile<T>(path: string): Promise<T> {
-    log.debug(sprintf("Parsing JSON: %s", path));
-    const bytes = await fetch(path).then((response) => response.arrayBuffer());
-    const content = new TextDecoder().decode(bytes);
+    try {
+      log.debug(sprintf("Parsing JSON: %s", path));
 
-    const json = JSON.parse(content);
-    log.debug(json);
+      const bytes = await fetch(path).then((response) =>
+        response.arrayBuffer()
+      );
+      const content = new TextDecoder().decode(bytes);
 
-    return json;
+      const json = JSON.parse(content);
+      log.debug(json);
+
+      return json;
+    } catch (cause) {
+      throw new Error(sprintf("Failed to parse JSON file at path: %s", path), {
+        cause,
+      });
+    }
   }
 
   #valid() {
