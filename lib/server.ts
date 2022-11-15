@@ -109,16 +109,14 @@ export function assertServerOptions(
     );
 
     /**
-     * Assert that we are provided an importMapPath
+     * Assert that we are provided an importMapPath if a browserEntrypoint is provided
      */
-    assert(options.importMapPath, "No importMapPath was supplied");
-
-    /**
-     * Assert that we are provided a browserEntrypoint
-     */
-    assert(
-      `A browser entrypoint was not provided "${options.browserEntrypoint}"`,
-    );
+    if (options.browserEntrypoint) {
+      assert(
+        options.importMapPath,
+        "No importMapPath was supplied, yet a browserEntrypoint has been set.",
+      );
+    }
 
     return true;
   } catch (error) {
