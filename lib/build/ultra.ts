@@ -1,4 +1,4 @@
-import { Logger } from "../logger.ts";
+import { log } from "../logger.ts";
 import { makeRelative } from "../utils/fs.ts";
 import { assertEntrypointExists } from "./assert.ts";
 import {
@@ -90,8 +90,6 @@ export class UltraBuilder extends Builder {
       .build();
 
     super(context, {
-      name: "ultra",
-      logLevel: "INFO",
       compilerOptions: {
         minify: true,
         jsxImportSource: resolvedOptions.jsxImportSource,
@@ -102,7 +100,7 @@ export class UltraBuilder extends Builder {
     this.resolvedOptions = resolvedOptions;
 
     // Override the logger
-    this.log = new Logger("INFO");
+    this.log = log;
     this.plugin = options.plugin;
     this.inlineServerDynamicImports =
       resolvedOptions.inlineServerDynamicImports;

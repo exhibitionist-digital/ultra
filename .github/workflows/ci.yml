@@ -1,4 +1,4 @@
-name: Format, Lint, Test
+name: CI
 
 on:
   pull_request:
@@ -20,6 +20,7 @@ jobs:
     env:
       DENO_NO_UPDATE_CHECK: true
       DENO_DIR: .deno
+      ULTRA_LOG_LEVEL: DEBUG
 
     steps:
       - name: Setup repo
@@ -29,6 +30,9 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
+
+      - name: Deno Info
+        run: deno info
       
       - uses: actions/cache@v3
         with:
