@@ -19,7 +19,7 @@ jobs:
 
     env:
       DENO_NO_UPDATE_CHECK: true
-      DENO_DIR: .deno
+      DENO_DIR: .deno-cache
       ULTRA_LOG_LEVEL: DEBUG
 
     steps:
@@ -36,7 +36,7 @@ jobs:
       
       - uses: actions/cache@v3
         with:
-          path: .deno
+          path: .deno-cache
           key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
 
       - name: Verify formatting

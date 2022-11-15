@@ -5,7 +5,19 @@
     "version-bump:minor": "deno run -A tools/patch.ts --release=minor",
     "version-bump:patch": "deno run -A tools/patch.ts --release=patch"
   },
+  "lint": {
+    "files": {
+      "exclude": [
+        ".deno-cache"
+      ]
+    }
+  },
   "fmt": {
+    "files": {
+      "exclude": [
+        ".deno-cache"
+      ]
+    },
     "options": {
       "indentWidth": 2,
       "useTabs": false,
