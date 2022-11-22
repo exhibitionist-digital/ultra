@@ -6,11 +6,11 @@
     "react-dom/": "https://esm.sh/react-dom@18.2.0&dev/",
     "@tanstack/react-query": "https://esm.sh/@tanstack/react-query@4.13.0?external=react",
     "@tanstack/react-query-devtools": "https://esm.sh/@tanstack/react-query-devtools@4.13.0?external=react,@tanstack/react-query&dev",
-    "@trpc/server": "https://esm.sh/@trpc/server@10.0.0-rc.1",
-    "@trpc/server/": "https://esm.sh/@trpc/server@10.0.0-rc.1/",
-    "@trpc/client": "https://esm.sh/*@trpc/client@10.0.0-rc.1",
-    "@trpc/client/": "https://esm.sh/*@trpc/client@10.0.0-rc.1/",
-    "@trpc/react-query": "https://esm.sh/*@trpc/react-query@10.0.0-rc.1",
+    "@trpc/server": "https://esm.sh/@trpc/server@10.0.0",
+    "@trpc/server/": "https://esm.sh/@trpc/server@10.0.0/",
+    "@trpc/client": "https://esm.sh/*@trpc/client@10.0.0",
+    "@trpc/client/": "https://esm.sh/*@trpc/client@10.0.0/",
+    "@trpc/react-query": "https://esm.sh/*@trpc/react-query@10.0.0",
     "zod": "https://deno.land/x/zod@v3.19.1/mod.ts",
     "ultra/": "https://deno.land/x/ultra@v2.1.2/"
   }
