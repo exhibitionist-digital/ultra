@@ -1,9 +1,8 @@
-import { sheet } from "./src/twind.ts";
 import { serve } from "https://deno.land/std@0.164.0/http/server.ts";
-import { getStyleTag } from "twind/sheets";
 import { createServer } from "ultra/server.ts";
 import { createHeadInsertionTransformStream } from "ultra/stream.ts";
 import App from "./src/app.tsx";
+import { stringify, tw } from "./src/twind.ts";
 
 const server = await createServer({
   importMapPath: Deno.env.get("ULTRA_MODE") === "development"
@@ -20,11 +19,11 @@ server.get("*", async (context) => {
 
   // Inject the style tag into the head of the streamed response
   const stylesInject = createHeadInsertionTransformStream(() => {
-    if (sheet.target instanceof Set) {
-      return Promise.resolve(getStyleTag(Array.from(sheet.target)));
+    if (Array.isArray(tw.target)) {
+      return Promise.resolve(stringify(tw.target));
     }
 
-    throw new Error("Expected sheet.target to be an instance of Set");
+    throw new Error("Expected tw.target to be an instance of an Array");
   });
 
   const transformed = result.pipeThrough(stylesInject);

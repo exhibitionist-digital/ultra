@@ -1,22 +1,30 @@
-import { cssomSheet, setup, tw } from "twind";
+// @see https://twind.style/library-mode
+import {
+  cssom,
+  injectGlobal as injectGlobal$,
+  keyframes as keyframes$,
+  stringify as stringify$,
+  twind,
+  tx as tx$,
+  virtual,
+} from "@twind/core";
+import config from "./twind.config.js";
 
-const serverSheet = (target = new Set<string>()) => {
-  return {
-    target,
-    insert: (rule: string) => {
-      target.add(rule);
-    },
-  };
-};
+const styleElementId = "__twind";
 
-// Create a "CSSStyleSheet" on the client and a "ServerSheet" when server side
-export const sheet = typeof Deno === "undefined" ? cssomSheet() : serverSheet();
+export const sheet = typeof Deno === "undefined"
+  ? cssom(`style#${styleElementId}`)
+  : virtual();
 
-setup({
+export const stringify = (target: unknown) =>
+  `<style id="${styleElementId}">${stringify$(target)}</style>`;
+
+//@ts-ignore twind type issue
+export const tw = twind(
+  config,
   sheet,
-  preflight: true,
-  theme: {},
-  plugins: {},
-});
+);
 
-export { tw };
+export const tx = tx$.bind(tw);
+export const injectGlobal = injectGlobal$.bind(tw);
+export const keyframes = keyframes$.bind(tw);
