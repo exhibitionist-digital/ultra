@@ -14,7 +14,7 @@ export default function App() {
         <link rel="shortcut icon" href="/favicon.ico" />
       </head>
       <body>
-        <div className={tw`flex flex-col gap-4`}>
+        <div className={tw(`flex flex-col gap-4`)}>
           <Suspense>
             <Post />
             <Post />

@@ -6,7 +6,8 @@
     "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
     "ultra/": "https://deno.land/x/ultra@v2.1.3/",
-    "twind": "https://esm.sh/twind@0.16.17",
-    "twind/sheets": "https://esm.sh/twind@0.16.17/sheets"
+    "@twind/core": "https://esm.sh/@twind/core@1.0.1",
+    "@twind/preset-autoprefix": "https://esm.sh/@twind/preset-autoprefix@1.0.1",
+    "@twind/preset-tailwind": "https://esm.sh/@twind/preset-tailwind@1.0.1"
   }
 }
