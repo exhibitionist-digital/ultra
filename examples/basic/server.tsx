@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std@0.164.0/http/server.ts";
 import { createServer } from "ultra/server.ts";
+import { createHeadInsertionTransformStream } from "ultra/stream.ts";
+import { stringify, tw } from "./src/twind/twind.ts";
 import App from "./src/app.tsx";
 
 const server = await createServer({
@@ -10,14 +12,21 @@ const server = await createServer({
 });
 
 server.get("*", async (context) => {
-  /**
-   * Render the request
-   */
-  const result = await server.render(<App />);
+// Inject the style tag into the head of the streamed response
+const stylesInject = createHeadInsertionTransformStream(() => {
+if (Array.isArray(tw.target)) {
+  return Promise.resolve(stringify(tw.target));
+}
 
-  return context.body(result, 200, {
-    "content-type": "text/html; charset=utf-8",
-  });
+throw new Error("Expected tw.target to be an instance of an Array");
+});
+
+const transformed = result.pipeThrough(stylesInject);
+
+return context.body(transformed, 200, {
+"content-type": "text/html; charset=utf-8",
+});
+
 });
 
 if (import.meta.main) {
