@@ -1,5 +1,5 @@
 import useAsset from "ultra/hooks/use-asset.js";
-
+import  { tw } from "./twind/twind.ts";
 export default function App() {
   return (
     <html lang="en">
@@ -13,7 +13,7 @@ export default function App() {
       </head>
       <body>
         <main>
-          <h1>
+             <h1 className={tw(`text-8xl font-mono margin mb-8`)}>
             <span></span>__<span></span>
           </h1>
           <p>
