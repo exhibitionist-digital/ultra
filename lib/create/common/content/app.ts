@@ -8,11 +8,8 @@ export function appContent(config: Config) {
   // deno-fmt-ignore
   return`
   import useAsset from "ultra/hooks/use-asset.js";
-  ${p.twind(`// Twind Provider
-  import { TwindProvider } from "${ext('./twind/TwindProvider', true)}";
-  `)}
   ${p.twind(`// Twind
-  import { tw } from "twind";
+  import { tw } from "./twind/twind.ts";
   `)}
   ${p.stitches(`// Stitches
   import { StitchesProvider } from "${ext('./stitches/StitchesProvider', true)}";
@@ -21,7 +18,6 @@ export function appContent(config: Config) {
   export default function App() {
     console.log("Hello world!");
     return (
-    ${p.twind('<TwindProvider>')} 
     ${p.stitches('<StitchesProvider>')}
       <html lang="en">
         <head>
@@ -33,7 +29,7 @@ export function appContent(config: Config) {
         </head>
         <body>
           <main>
-            <h1 ${p.twind('className={tw`text-8xl font-mono margin mb-8`}')}>
+            <h1 ${p.twind('className={tw(`text-8xl font-mono margin mb-8`)}')}>
               <span></span>__<span></span>
             </h1>
             <p>
@@ -49,14 +45,13 @@ export function appContent(config: Config) {
               >
                 this
               </a>, you may need it where you are going. It will show you how to
-              customise your routing, data fetching, and styling with popular
+              customize your routing, data fetching, and styling with popular
               libraries.
             </p>
           </main>
         </body>
       </html>
       ${p.stitches('</StitchesProvider>')}
-      ${p.twind('</TwindProvider>')}
     );
   }
    `;

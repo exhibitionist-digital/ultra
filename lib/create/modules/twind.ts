@@ -2,51 +2,50 @@ import type { Config } from "../common/config.ts";
 
 export function twindContent(config: Config) {
   return `
-import { cssomSheet, setup${config.ts ? ", Configuration" : ""}} from "twind";
-import { virtualSheet } from "twind/sheets";
+  // @see https://twind.style/library-mode
+  import {
+    cssom,
+    injectGlobal as injectGlobal$,
+    keyframes as keyframes$,
+    stringify as stringify$,
+    twind,
+    tx as tx$,
+    virtual,
+  } from "@twind/core";
+  import config from "./twind.config${config.ts ? ".ts" : ".js"}";
 
-/**
- * Depending on if we are running server side (Deno) or on the browser
- * we construct a VirtualSheet OR a CSSStyleSheet which will be populated
- * with the injected CSSStyleSheet from the injected style tag below.
- */
+  export const sheet = typeof Deno === "undefined"
+    ? cssom('style#__twind')
+    : virtual();
 
-${
-    config.ts
-      ? `
-export const sheet = typeof Deno !== "undefined" ? virtualSheet() : cssomSheet({
-   target: (document.getElementById("__twind") as HTMLStyleElement).sheet ||
-     undefined,
- });
-`
-      : `
-export const sheet = typeof Deno !== "undefined" ? virtualSheet() : cssomSheet({
-   target: document.getElementById("__twind").sheet ||
-     undefined,
- });
-`
-  }
+  export const stringify = (target: unknown) =>
+    \`<style id="__twind">\${stringify$(target)}</style>\`;
 
+  //@ts-ignore twind type issue
+  export const tw = twind(
+    config,
+    sheet,
+  );
 
-/**
- * Twind configuration 
- */
-const config${config.ts ? ": Configuration" : ""} = {
-  sheet,
-  /**
-   * Your theme configuration for twind
-   */
-  theme: {
-    extend: {}
-  },
-  /**
-   * Your plugins
-   */
-  plugins: {}
-};
-
-setup(config);
+  export const tx = tx$.bind(tw);
+  export const injectGlobal = injectGlobal$.bind(tw);
+  export const keyframes = keyframes$.bind(tw);
 `;
+}
+
+export function twindConfigContent(config: Config) {
+  return `
+  import { defineConfig } from "@twind/core";
+  import presetAutoprefix from "@twind/preset-autoprefix";
+  import presetTailwind from "@twind/preset-tailwind";
+
+  export default defineConfig({
+    theme: {
+    // add theme styles here
+    },
+    presets: [presetAutoprefix(), presetTailwind()],
+  });
+  `
 }
 
 export function twindProviderContent(config: Config) {
@@ -56,7 +55,7 @@ export function twindProviderContent(config: Config) {
    import { getStyleTagProperties, VirtualSheet } from "twind/sheets";
    import { sheet } from "./twind${config.ts ? ".ts" : ".js"}";
    import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
-   
+
    /**
     * This is just a guard to make sure we are dealing with
     * a server side StyleSheet
@@ -89,8 +88,8 @@ export function twindProviderContent(config: Config) {
          );
        }
      });
-   
+
      return <>{children}</>;
-   }   
+   }
    `;
 }

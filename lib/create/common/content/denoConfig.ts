@@ -18,6 +18,9 @@ export function denoConfigContent(config: Config) {
    "fmt": {
      "files": { "exclude": [".ultra"] }
    },
+   "lint": {
+    "files": { "exclude": [".ultra"] }
+   },
    "importMap": "./importMap.json"
  }`;
 }

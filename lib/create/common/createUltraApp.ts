@@ -15,7 +15,7 @@ import {
   serverContent,
   styleContent,
 } from "./content/index.ts";
-import { twindContent, twindProviderContent } from "../modules/twind.ts";
+import { twindContent, twindConfigContent } from "../modules/twind.ts";
 import {
   stitchesConfigContent,
   stitchesProviderContent,
@@ -56,8 +56,8 @@ export async function createUltraApp(config: Config) {
   if (config.includes.includes("twind")) {
     await create(ext("src/twind/twind", false), twindContent(config));
     await create(
-      ext("src/twind/TwindProvider", true),
-      twindProviderContent(config),
+      ext("src/twind/twind.config", false),
+      twindConfigContent(config),
     );
   }
 

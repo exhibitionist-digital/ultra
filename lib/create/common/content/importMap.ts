@@ -12,8 +12,9 @@ export function importMapContent(config: Config) {
           "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
           "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
 
-            ${p.twind('"twind": "https://esm.sh/twind@0.16.17",')}
-            ${p.twind('"twind/sheets": "https://esm.sh/twind@0.16.17/sheets",')}
+            ${p.twind('"@twind/core": "https://esm.sh/@twind/core@1.0.1",')}
+            ${p.twind('"@twind/preset-autoprefix": "https://esm.sh/@twind/preset-autoprefix@1.0.1",')}
+            ${p.twind('"@twind/preset-tailwind": "https://esm.sh/*@twind/preset-tailwind@1.0.1",')}
 
             ${
     p.stitches(
@@ -44,7 +45,7 @@ export function importMapContent(config: Config) {
       '"@tanstack/react-query": "https://esm.sh/@tanstack/react-query@4.2.3?external=react",',
     )
   }
-            
+
             ${
     p.reactHelmetAsync(
       '"react-helmet-async": "https://esm.sh/react-helmet-async@1.3.0?external=react",',
