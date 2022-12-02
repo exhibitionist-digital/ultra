@@ -33,7 +33,7 @@ export function twindContent(config: Config) {
 `;
 }
 
-export function twindConfigContent(config: Config) {
+export function twindConfigContent(_config: Config) {
   return `
   import { defineConfig } from "@twind/core";
   import presetAutoprefix from "@twind/preset-autoprefix";
@@ -45,7 +45,7 @@ export function twindConfigContent(config: Config) {
     },
     presets: [presetAutoprefix(), presetTailwind()],
   });
-  `
+  `;
 }
 
 export function twindProviderContent(config: Config) {

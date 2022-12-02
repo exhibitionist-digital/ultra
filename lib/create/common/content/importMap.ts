@@ -13,8 +13,16 @@ export function importMapContent(config: Config) {
           "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
 
             ${p.twind('"@twind/core": "https://esm.sh/@twind/core@1.0.1",')}
-            ${p.twind('"@twind/preset-autoprefix": "https://esm.sh/@twind/preset-autoprefix@1.0.1",')}
-            ${p.twind('"@twind/preset-tailwind": "https://esm.sh/*@twind/preset-tailwind@1.0.1",')}
+            ${
+    p.twind(
+      '"@twind/preset-autoprefix": "https://esm.sh/@twind/preset-autoprefix@1.0.1",',
+    )
+  }
+            ${
+    p.twind(
+      '"@twind/preset-tailwind": "https://esm.sh/*@twind/preset-tailwind@1.0.1",',
+    )
+  }
 
             ${
     p.stitches(

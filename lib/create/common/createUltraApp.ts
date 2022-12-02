@@ -15,7 +15,7 @@ import {
   serverContent,
   styleContent,
 } from "./content/index.ts";
-import { twindContent, twindConfigContent } from "../modules/twind.ts";
+import { twindConfigContent, twindContent } from "../modules/twind.ts";
 import {
   stitchesConfigContent,
   stitchesProviderContent,

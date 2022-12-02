@@ -139,7 +139,8 @@ server.get("*", async (context) => {
    let result = await server.render(<ServerApp context={context} />);
    ;
 
-    ${p.twind(`
+    ${
+    p.twind(`
     // Inject the style tag into the head of the streamed response
     const stylesInject = createHeadInsertionTransformStream(() => {
       if (Array.isArray(tw.target)) {
@@ -150,7 +151,8 @@ server.get("*", async (context) => {
     });
 
     result = result.pipeThrough(stylesInject);
-    `)}
+    `)
+  }
 
     return context.body(result, 200, {
       "content-type": "text/html; charset=utf-8",
@@ -161,6 +163,4 @@ if (import.meta.main) {
 }
 export default server;
 `;
-
 }
-
