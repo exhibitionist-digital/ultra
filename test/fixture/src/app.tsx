@@ -33,7 +33,7 @@ export default function App() {
             >
               this
             </a>, you may need it where you are going. It will show you how to
-            customise your routing, data fetching, and styling with popular
+            customize your routing, data fetching, and styling with popular
             libraries.
           </p>
           <Suspense>

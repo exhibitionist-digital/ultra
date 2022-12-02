@@ -15,7 +15,8 @@ import App from "${ext("./src/app", true)}";
 
 ${
     p.twind(`// Twind
-import "${ext("./src/twind/twind", false)}";
+import { createHeadInsertionTransformStream } from "ultra/stream.ts";
+import { stringify, tw } from "./src/twind/twind.ts";
 `)
   }
 
@@ -26,7 +27,7 @@ import { StaticRouter } from "react-router-dom/server";
   }
 
 ${
-    p.wouter(`// Wouter   
+    p.wouter(`// Wouter
 import { Router } from "wouter";
 import staticLocationHook from "wouter/static-location";
 import { SearchParamsProvider } from "${ext("./src/wouter/index", true)}";
@@ -135,13 +136,28 @@ server.get("*", async (context) => {
    /**
    * Render the request
    */
-   const result = await server.render(<ServerApp context={context} />);
+   let result = await server.render(<ServerApp context={context} />);
+   ;
 
-   return context.body(result, 200, {
-    "content-type": "text/html; charset=utf-8",
-   });
-});
+    ${
+    p.twind(`
+    // Inject the style tag into the head of the streamed response
+    const stylesInject = createHeadInsertionTransformStream(() => {
+      if (Array.isArray(tw.target)) {
+        return Promise.resolve(stringify(tw.target));
+      }
 
+      throw new Error("Expected tw.target to be an instance of an Array");
+    });
+
+    result = result.pipeThrough(stylesInject);
+    `)
+  }
+
+    return context.body(result, 200, {
+      "content-type": "text/html; charset=utf-8",
+    });
+  });
 if (import.meta.main) {
   serve(server.fetch);
 }

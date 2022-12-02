@@ -11,12 +11,6 @@ import hydrate from "ultra/hydrate.js";
 import App from "${ext("./src/app", true)}";
 
 ${
-    p.twind(`// Twind
-import "${ext("./src/twind/twind", false)}";
-`)
-  }
-
-${
     p.reactRouter(`// React Router
 import { BrowserRouter } from "react-router-dom";
 `)
