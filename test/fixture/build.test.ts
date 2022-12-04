@@ -14,14 +14,18 @@ Deno.test(
     });
 
     builder.ignore([
-      "./output/**",
+      "./output/",
       "./README.md",
       "./importMap.json",
       "./*.test.*",
     ]);
 
     const result = await builder.build();
+    const ignoredOutput = result.outputSources.filter((source) =>
+      source.relativePath().startsWith("./output/")
+    );
 
+    assertEquals(ignoredOutput.size, 0);
     assertEquals(result.outputSources.size > 0, true);
     assertEquals(result.dynamicImports.size, 2);
 
@@ -46,7 +50,7 @@ Deno.test(
     });
 
     builder.ignore([
-      "./output/**",
+      "./output/",
       "./README.md",
       "./importMap.json",
       "./*.test.*",
@@ -80,7 +84,7 @@ Deno.test(
     });
 
     builder.ignore([
-      "./output/**",
+      "./output/",
       "./README.md",
       "./importMap.json",
       "./*.test.*",
@@ -114,7 +118,7 @@ Deno.test(
     });
 
     builder.ignore([
-      "./output/**",
+      "./output/",
       "./README.md",
       "./importMap.json",
       "./*.test.*",
