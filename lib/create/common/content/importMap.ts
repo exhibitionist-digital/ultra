@@ -60,7 +60,7 @@ export function importMapContent(config: Config) {
     )
   }
 
-            "ultra/": "https://deno.land/x/ultra@v2.1.4/"
+            "ultra/": "https://deno.land/x/ultra@v2.1.5/"
          }
     }
    `;
