@@ -35,7 +35,6 @@ Deno.test("useAsync hook", async () => {
 
   const response = new Response(stream);
   const text = await response.text();
-  console.log(text);
 
   assertEquals(
     text.includes(
