@@ -3,15 +3,14 @@ import { renderToStream } from "../../lib/render.ts";
 import useAsync from "../../hooks/use-async.js";
 
 Deno.test("useAsync hook", async () => {
-  // deno-lint-ignore no-explicit-any
-  let callback: () => Promise<any>;
-
   const App = () => {
-    callback = useAsync(() =>
-      fetch(
-        "https://jsonplaceholder.typicode.com/todos/1",
-      ).then((response) => response.json())
+    useAsync(() =>
+      new Promise((resolve) => {
+        setTimeout(() => resolve("two"), 100);
+      })
     );
+    useAsync(() => Promise.resolve("one"));
+
     return (
       <html>
         <head>
@@ -36,18 +35,11 @@ Deno.test("useAsync hook", async () => {
 
   const response = new Response(stream);
   const text = await response.text();
-  const data = await callback!();
-
-  assertEquals(data, {
-    userId: 1,
-    id: 1,
-    title: "delectus aut autem",
-    completed: false,
-  });
+  console.log(text);
 
   assertEquals(
     text.includes(
-      '<script id="ultra-async-data-stream-:R0:" type="application/json">{"userId":1,"id":1,"title":"delectus aut autem","completed":false}</script>',
+      '<script id="ultra-async-data-stream-:R0H1:" type="application/json">"one"</script>',
     ),
     true,
   );
