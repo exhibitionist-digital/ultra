@@ -9,20 +9,39 @@ import { walk } from "https://deno.land/std@0.168.0/fs/walk.ts";
 import { serve } from "https://deno.land/std@0.167.0/http/mod.ts";
 import { deferred } from "https://deno.land/std@0.167.0/async/deferred.ts";
 import { debounce } from "https://deno.land/std@0.167.0/async/mod.ts";
+import { channel } from "./channel.ts";
+import { log } from "../logger.ts";
 
 let mainWorker: Worker;
 let webSocket: WebSocket;
 
-function websocketHandler(req: Request) {
-  if (req.headers.get("upgrade") != "websocket") {
+function websocketHandler(request: Request) {
+  if (request.headers.get("upgrade") != "websocket") {
     return new Response(null, { status: 501 });
   }
-  const { socket, response } = Deno.upgradeWebSocket(req);
+  const { socket, response } = Deno.upgradeWebSocket(request);
   webSocket = socket;
+
+  socket.addEventListener("message", (event) => {
+    if (event.data === "ping") {
+      socket.send("pong");
+    }
+    if (event.data === "reload") {
+      channel.addEventListener("message", () => {
+        socket.send("reload");
+      });
+    }
+  });
+
   return response;
 }
 
-serve(websocketHandler, { port: 8080 });
+serve(websocketHandler, {
+  port: 8080,
+  onListen({ hostname, port }) {
+    log.info(`Dev server listening on ${hostname}:${port}`);
+  },
+});
 
 type CreateDevOptions = {
   output?: string;
@@ -52,10 +71,10 @@ export function createDev(options?: CreateDevOptions) {
     const workingDirPath = getWorkingDirPath(path);
     await ensureDir(dirname(workingDirPath));
 
-    console.log("copyToWorkingDir", {
-      path,
-      workingDirPath,
-    });
+    // log.debug("copyToWorkingDir", {
+    //   path,
+    //   workingDirPath,
+    // });
 
     await Deno.copyFile(path, workingDirPath);
     return toFileUrl(workingDirPath);
@@ -65,14 +84,14 @@ export function createDev(options?: CreateDevOptions) {
 
   function createWorker(entrypoint: URL) {
     if (mainWorker) {
-      console.log("restarting");
+      log.debug("restarting");
       mainWorker.terminate();
     } else {
-      console.log("createWorker");
+      log.debug("createWorker");
     }
 
     if (watcherListener) {
-      console.log("removing old listener");
+      log.debug("removing old listener");
       watcher.removeEventListener("message", watcherListener);
     }
 
@@ -110,7 +129,7 @@ export function createDev(options?: CreateDevOptions) {
   return async function dev(entrypointPath: string) {
     Deno.env.set("ULTRA_ROOT", workingDir);
 
-    console.log("dev context", {
+    log.debug("dev context", {
       mainModule,
       rootDir,
       workingDir,
@@ -128,14 +147,14 @@ export function createDev(options?: CreateDevOptions) {
     }
 
     function cleanup() {
-      console.log("\ncleanup");
+      log.debug("\ncleanup");
       try {
         Deno.removeSync(workingDir, { recursive: true });
       } catch {
         // do nothing
       }
       mainWorker.terminate();
-      console.log("cleanup done");
+      log.debug("cleanup done");
     }
 
     const promise = deferred();
@@ -147,7 +166,7 @@ export function createDev(options?: CreateDevOptions) {
 
     Deno.addSignalListener("SIGINT", () => {
       promise.then().finally(() => {
-        console.log("exiting");
+        log.debug("exiting");
         Deno.exit();
       });
 
