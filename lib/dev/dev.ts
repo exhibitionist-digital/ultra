@@ -2,7 +2,6 @@ import {
   dirname,
   fromFileUrl,
   join,
-  resolve,
   toFileUrl,
 } from "https://deno.land/std@0.167.0/path/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.168.0/fs/ensure_dir.ts";
