@@ -4,6 +4,8 @@ import {
   join,
   toFileUrl,
 } from "https://deno.land/std@0.167.0/path/mod.ts";
+import { ensureDir } from "https://deno.land/std@0.168.0/fs/ensure_dir.ts";
+import { walk } from "https://deno.land/std@0.168.0/fs/walk.ts";
 import { serve } from "https://deno.land/std@0.167.0/http/mod.ts";
 import { deferred } from "https://deno.land/std@0.167.0/async/deferred.ts";
 import { debounce } from "https://deno.land/std@0.167.0/async/mod.ts";
@@ -40,6 +42,8 @@ export function createDev() {
 
   async function copyToWorkingDir(path: string) {
     const workingDirPath = join(workingDir, path.replace(rootDir, "."));
+    await ensureDir(dirname(workingDirPath));
+
     console.log("copyToWorkingDir", {
       path,
       workingDirPath,
@@ -91,13 +95,19 @@ export function createDev() {
 
     watcher.postMessage(rootDir);
 
-    // console.log({
-    //   mainModule,
-    //   rootDir,
-    //   workingDir,
-    //   entrypointPath,
-    //   entrypoint,
-    // });
+    console.log({
+      mainModule,
+      rootDir,
+      workingDir,
+      entrypointPath,
+      entrypoint,
+    });
+
+    for await (const entry of walk(rootDir)) {
+      if (entry.isFile) {
+        await copyToWorkingDir(entry.path);
+      }
+    }
 
     const promise = deferred();
 
