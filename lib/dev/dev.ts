@@ -40,14 +40,19 @@ export function createDev() {
     },
   });
 
+  function getWorkingDirPath(path: string) {
+    return join(workingDir, path.replace(rootDir, "."));
+  }
+
   async function copyToWorkingDir(path: string) {
-    const workingDirPath = join(workingDir, path.replace(rootDir, "."));
+    const workingDirPath = getWorkingDirPath(path);
     await ensureDir(dirname(workingDirPath));
 
     console.log("copyToWorkingDir", {
       path,
       workingDirPath,
     });
+
     await Deno.copyFile(path, workingDirPath);
     return toFileUrl(workingDirPath);
   }
@@ -69,9 +74,17 @@ export function createDev() {
 
     watcherListener = debounce(
       async function (event: MessageEvent<Deno.FsEvent>) {
-        await Promise.all(
-          event.data.paths.map((path) => copyToWorkingDir(path)),
-        );
+        if (event.data.kind === "create" || event.data.kind === "modify") {
+          await Promise.all(
+            event.data.paths.map((path) => copyToWorkingDir(path)),
+          );
+        } else if (event.data.kind === "remove") {
+          await Promise.all(
+            event.data.paths.map((path) =>
+              Deno.remove(getWorkingDirPath(path))
+            ),
+          );
+        }
         mainWorker = createWorker(entrypoint);
         webSocket?.send("reload");
       },
