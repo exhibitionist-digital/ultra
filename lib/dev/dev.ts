@@ -100,7 +100,6 @@ export function createDev() {
       rootDir,
       workingDir,
       entrypointPath,
-      entrypoint,
     });
 
     for await (const entry of walk(rootDir)) {
