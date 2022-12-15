@@ -2,6 +2,7 @@ import {
   dirname,
   fromFileUrl,
   join,
+  resolve,
   toFileUrl,
 } from "https://deno.land/std@0.167.0/path/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.168.0/fs/ensure_dir.ts";
@@ -24,11 +25,15 @@ function websocketHandler(req: Request) {
 
 serve(websocketHandler, { port: 8080 });
 
-export function createDev() {
+type CreateDevOptions = {
+  output?: string;
+};
+
+export function createDev(options?: CreateDevOptions) {
   const mainModule = fromFileUrl(import.meta.resolve(Deno.mainModule));
   const rootDir = dirname(mainModule);
 
-  const workingDir = Deno.makeTempDirSync({
+  const workingDir = options?.output || Deno.makeTempDirSync({
     prefix: `ultra_dev_`,
   });
 
@@ -104,6 +109,8 @@ export function createDev() {
   }
 
   return async function dev(entrypointPath: string) {
+    Deno.env.set("ULTRA_ROOT", workingDir);
+
     console.log("dev context", {
       mainModule,
       rootDir,
@@ -123,8 +130,12 @@ export function createDev() {
 
     function cleanup() {
       console.log("\ncleanup");
+      try {
+        Deno.removeSync(workingDir, { recursive: true });
+      } catch {
+        // do nothing
+      }
       mainWorker.terminate();
-      Deno.removeSync(workingDir, { recursive: true });
       console.log("cleanup done");
     }
 

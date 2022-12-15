@@ -43,7 +43,7 @@ export async function createServer(
     esModuleShimsPath,
   } = resolvedOptions;
 
-  const root = Deno.cwd();
+  const root = Deno.env.get("ULTRA_ROOT") || Deno.cwd();
   const assetManifestPath = toFileUrl(resolve(root, "asset-manifest.json"));
 
   const server = new UltraServer(root, {

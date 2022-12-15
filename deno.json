@@ -5,6 +5,7 @@
     "version-bump:minor": "deno run -A tools/patch.ts --release=minor",
     "version-bump:patch": "deno run -A tools/patch.ts --release=patch"
   },
+  "lock": false,
   "lint": {
     "files": {
       "exclude": [

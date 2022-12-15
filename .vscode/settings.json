@@ -3,6 +3,8 @@
   "deno.lint": true,
   "deno.config": "./deno.json",
   "editor.defaultFormatter": "denoland.vscode-deno",
+  "deno.inlayHints.parameterNames.enabled": "none",
+  "deno.inlayHints.variableTypes.enabled": false,
   "deno.enablePaths": [
     "./examples/ultra-website",
     "./examples/basic",
