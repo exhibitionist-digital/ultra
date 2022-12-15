@@ -55,11 +55,11 @@ export function createDev() {
   let watcherListener: (event: MessageEvent<Deno.FsEvent>) => void;
 
   function createWorker(entrypoint: URL) {
-    console.log("createWorker");
-
     if (mainWorker) {
-      console.log("terminating stale worker");
+      console.log("restarting");
       mainWorker.terminate();
+    } else {
+      console.log("createWorker");
     }
 
     if (watcherListener) {
@@ -91,16 +91,16 @@ export function createDev() {
   }
 
   return async function dev(entrypointPath: string) {
-    const entrypoint = await copyToWorkingDir(fromFileUrl(entrypointPath));
-
-    watcher.postMessage(rootDir);
-
-    console.log({
+    console.log("dev context", {
       mainModule,
       rootDir,
       workingDir,
       entrypointPath,
     });
+
+    const entrypoint = await copyToWorkingDir(fromFileUrl(entrypointPath));
+
+    watcher.postMessage(rootDir);
 
     for await (const entry of walk(rootDir)) {
       if (entry.isFile) {
@@ -108,16 +108,19 @@ export function createDev() {
       }
     }
 
-    const promise = deferred();
-
-    mainWorker = createWorker(entrypoint);
-
-    promise.then(() => {
+    function cleanup() {
       console.log("\ncleanup");
       mainWorker.terminate();
       Deno.removeSync(workingDir, { recursive: true });
       console.log("cleanup done");
-    });
+    }
+
+    const promise = deferred();
+
+    mainWorker = createWorker(entrypoint);
+
+    promise.then(cleanup);
+    globalThis.addEventListener("unhandledrejection", cleanup);
 
     Deno.addSignalListener("SIGINT", () => {
       promise.then().finally(() => {
