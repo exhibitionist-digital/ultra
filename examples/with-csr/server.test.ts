@@ -12,10 +12,10 @@ Deno.test("it works", async (t) => {
 
     assertEquals(response.status, 200);
     assertEquals(
-      response.headers.get("content-type"),
+      (response.headers.get("content-type") || "").toLowerCase(),
       "text/html; charset=utf-8",
     );
 
-    assertEquals(content.includes("<strong>Ultra</strong>"), true);
+    assertEquals(content.includes("<title>Ultra CSR</title>"), true);
   });
 });

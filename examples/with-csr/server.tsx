@@ -1,10 +1,11 @@
 import { serve } from "https://deno.land/std@0.164.0/http/server.ts";
 import { createServer } from "ultra/server.ts";
 
+const importMapPath = Deno.env.get("ULTRA_MODE") === "development"
+  ? "./importMap.dev.json"
+  : "./importMap.json";
 const server = await createServer({
-  importMapPath: Deno.env.get("ULTRA_MODE") === "development"
-    ? import.meta.resolve("./importMap.dev.json")
-    : import.meta.resolve("./importMap.json"),
+  importMapPath: import.meta.resolve(importMapPath),
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 
@@ -22,7 +23,7 @@ server.get("*", (context) => {
         <link rel="stylesheet" href="/style.css">
         <script async src="https://ga.jspm.io/npm:es-module-shims@1.6.2/dist/es-module-shims.js" crossorigin="anonymous"></script>
         <script type="importmap">
-            ${Deno.readTextFileSync("./importMap.json")}
+            ${Deno.readTextFileSync(importMapPath)}
         </script>
       </head>
       <body>
