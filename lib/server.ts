@@ -98,7 +98,7 @@ export function assertServerOptions(
     /**
      * Ensure we are running a supported Deno version
      */
-    options.mode === "development" && ensureMinDenoVersion();
+    // options.mode === "development" && ensureMinDenoVersion();
 
     /**
      * Assert that we are provided a valid "mode"
