@@ -76,7 +76,6 @@ export async function createServer(
 
   if (mode === "development") {
     log.info("Loading compiler");
-    
 
     // deno-fmt-ignore
     server.get(`${ULTRA_COMPILER_PATH}/*`, compiler({
