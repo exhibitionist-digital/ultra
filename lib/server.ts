@@ -6,6 +6,7 @@ import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
 import { resolveImportMapPath } from "./utils/import-map.ts";
+import { compiler } from "./middleware/compiler.ts";
 
 /**
  * Dotenv
@@ -75,7 +76,7 @@ export async function createServer(
 
   if (mode === "development") {
     log.info("Loading compiler");
-    const { compiler } = await import("./middleware/compiler.ts");
+    
 
     // deno-fmt-ignore
     server.get(`${ULTRA_COMPILER_PATH}/*`, compiler({
