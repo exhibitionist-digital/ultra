@@ -1,15 +1,16 @@
-import init, {
-  transform,
-} from "https://esm.sh/@swc/wasm-web@1.3.11/wasm-web.js";
+// import init, {
+//   transform,
+// } from "https://esm.sh/@swc/wasm-web@1.3.11/wasm-web.js";
+import { transform } from "https://deno.land/x/swc@0.2.1/mod.ts";
 import { cache } from "https://deno.land/x/cache@0.2.13/mod.ts";
 import { TransformSourceOptions } from "../types.ts";
 import { toFileUrl } from "../deps.ts";
 
-const file = await cache(
-  "https://esm.sh/@swc/wasm-web@1.3.11/wasm-web_bg.wasm",
-);
+// const file = await cache(
+//   "https://esm.sh/@swc/wasm-web@1.3.11/wasm-web_bg.wasm",
+// );
 
-await init(toFileUrl(file.path));
+// await init(toFileUrl(file.path));
 
 export async function transformSource(
   source: string,
