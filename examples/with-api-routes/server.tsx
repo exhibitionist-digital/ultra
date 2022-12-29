@@ -29,6 +29,24 @@ api.get("/posts", (context) => {
  */
 server.route("/api", api);
 
+/**
+ * Create our Websocket router
+ */
+const ws = createRouter();
+
+ws.get("/", (c) => {
+  const { response, socket } = Deno.upgradeWebSocket(c.req);
+
+  socket.addEventListener("message", (e) => console.log(e));
+
+  return response;
+});
+
+/**
+ * Mount the Websocket router to /ws
+ */
+server.route("/ws", ws);
+
 server.get("*", async (context) => {
   /**
    * Render the request
