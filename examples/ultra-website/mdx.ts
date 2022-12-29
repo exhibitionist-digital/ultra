@@ -3,7 +3,7 @@ import {
   globToRegExp,
   join,
 } from "https://deno.land/std@0.164.0/path/mod.ts";
-import { Dir, walk } from "https://deno.land/std@0.164.0/fs/mod.ts";
+import { ensureDir, walk } from "https://deno.land/std@0.164.0/fs/mod.ts";
 import { compile as compileMDX } from "https://esm.sh/@mdx-js/mdx@2.1.3/lib/compile.js";
 import rehypeHighlight from "https://esm.sh/rehype-highlight?no-check";
 import rehypeSlug from "https://esm.sh/rehype-slug?no-check";
