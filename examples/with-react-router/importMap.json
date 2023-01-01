@@ -6,7 +6,8 @@
     "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
     "ultra/": "https://deno.land/x/ultra@v2.1.7/",
-    "react-router-dom": "https://esm.sh/react-router-dom@6.3.0?external=react",
-    "react-router-dom/server": "https://esm.sh/react-router-dom@6.3.0/server?external=react"
+    "react-router-dom": "https://esm.sh/react-router-dom@6.6.1?external=react",
+    "react-router-dom/server": "https://esm.sh/react-router-dom@6.6.1/server?external=react",
+    "@remix-run/router": "https://esm.sh/@remix-run/router"
   }
 }
