@@ -1,6 +1,4 @@
 import { crayon } from "https://deno.land/x/crayon@3.3.2/mod.ts";
-import { serve } from "https://deno.land/std@0.155.0/http/server.ts";
-import { serveDir } from "https://deno.land/std@0.155.0/http/file_server.ts";
 import { join } from "https://deno.land/std@0.155.0/path/mod.ts";
 
 type ImportMap = {
@@ -15,18 +13,9 @@ type ImportMap = {
  */
 
 /**
- * Start the dev file server
+ * Start the dev example
  */
-serve((request) => {
-  return serveDir(request, {
-    showDirListing: true,
-    showDotfiles: false,
-    quiet: true,
-    enableCors: true,
-  });
-}, {
-  port: 4507,
-  async onListen({ port, hostname }) {
+async function dev() {
     const examples: string[] = [];
     for await (const entry of Deno.readDir("examples")) {
       if (entry.isDirectory) {
@@ -59,7 +48,7 @@ serve((request) => {
         ),
       );
 
-      importMap.imports["ultra/"] = `http://localhost:${port}/`;
+      importMap.imports["ultra/"] = `../../`;
       config.importMap = "importMap.dev.json";
 
       await Deno.writeTextFile(devConfigPath, JSON.stringify(config, null, 2));
@@ -68,7 +57,6 @@ serve((request) => {
         JSON.stringify(importMap, null, 2),
       );
 
-      console.log(`Dev file server listening http://${hostname}:${port}`);
 
       // Valid entrypoints for our examples
       const serverEntrypoints = [
@@ -103,9 +91,8 @@ serve((request) => {
           "run",
           "-A",
           "--watch",
-          `--reload=http://localhost:${port}`,
-          "--config",
-          "deno.dev.json",
+          //`--reload=http://localhost:4507`,
+          "-c", "deno.dev.json",
           serverEntrypoint,
         ],
         cwd: examplePath,
@@ -119,8 +106,9 @@ serve((request) => {
       console.error(error);
       Deno.exit(1);
     }
-  },
-});
+}
+dev()
+
 
 async function ask<T = string>(question = ":", answers?: T[]) {
   await Deno.stdout.write(new TextEncoder().encode(question + " "));

@@ -1,10 +1,11 @@
 import type { ReactElement } from "react";
 import { ULTRA_COMPILER_PATH } from "./constants.ts";
-import { fromFileUrl, Hono, logger, relative, sprintf } from "./deps.ts";
+import { fromFileUrl, Hono, logger, relative,resolve, sprintf } from "./deps.ts";
 import { log } from "./logger.ts";
 import { renderToStream } from "./render.ts";
 import { Context, ImportMap, Mode } from "./types.ts";
 import { toUltraUrl } from "./utils/url.ts";
+
 
 type UltraServerRenderOptions = {
   generateStaticHTML?: boolean;
@@ -33,6 +34,7 @@ export class UltraServer extends Hono {
   public enableEsModuleShims?: boolean;
   public esModuleShimsPath?: string;
   public entrypoint?: string;
+  public ultraDir?: string;
 
   #bootstrapModules?: string[];
 
@@ -83,6 +85,7 @@ export class UltraServer extends Hono {
      * Prepare the entrypoint if provided an importMap
      */
     if (this.importMap) {
+      this.#importMapHandler(this.importMap)
       this.entrypoint = this.#prepareEntrypoint(this.importMap);
 
       if (this.entrypoint) {
@@ -140,6 +143,20 @@ export class UltraServer extends Hono {
       throw new Error(sprintf("Failed to parse JSON file at path: %s", path), {
         cause,
       });
+    }
+  }
+
+  #importMapHandler(importMap: ImportMap | undefined) {
+    if (importMap?.imports) {
+      const ultraUrl = importMap.imports['ultra/']
+      if (!ultraUrl.startsWith("http")) {
+        if (ultraUrl.startsWith("/")){
+          this.ultraDir = ultraUrl
+        } else {
+          this.ultraDir = resolve(Deno.cwd(), ultraUrl)
+        }
+        importMap.imports['ultra/']="/ultra/"
+      }
     }
   }
 
