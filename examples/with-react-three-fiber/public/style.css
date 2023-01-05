@@ -1,0 +1,25 @@
+html,
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: #111;
+  color: white;
+  text-align: center;
+  line-height: 100vh;
+  font-family: monospace;
+}
+
+canvas {
+  height: 100vh;
+  opacity: 0;
+  animation-fill-mode: forwards;
+  animation-name: fadeIn;
+  animation-duration: 1s;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
