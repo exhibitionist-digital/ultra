@@ -1,5 +1,5 @@
 import { ULTRA_COMPILER_PATH } from "./constants.ts";
-import { assert, dotenv, Hono, resolve, toFileUrl } from "./deps.ts";
+import { assert, dotenv, etag, Hono, resolve, toFileUrl } from "./deps.ts";
 import { ensureMinDenoVersion } from "./dev/ensureMinDenoVersion.ts";
 import { log } from "./logger.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
@@ -59,6 +59,9 @@ export async function createServer(
   });
 
   await server.init();
+
+  // Initalize etag middleware
+  server.use("*", etag());
 
   // We always try to serve public assets before anything else.
   // deno-fmt-ignore
