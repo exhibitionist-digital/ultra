@@ -55,7 +55,7 @@ export const compiler = (options: CompilerOptions) => {
           dynamicImport,
           jsxImportSource,
           runtime,
-          development: true,
+          development: Deno.env.get("ULTRA_MODE") === "development",
           sourceMaps: true,
           minify: false,
         });
