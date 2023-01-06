@@ -8,7 +8,6 @@ import { UltraServer } from "./ultra.ts";
 import { resolveImportMapPath } from "./utils/import-map.ts";
 import type { Context, Next } from "./types.ts";
 
-
 /**
  * Dotenv
  */
