@@ -57,7 +57,7 @@ export async function transformSource(
     },
     sourceMaps: sourceMaps ? true : undefined,
     inlineSourcesContent: true,
-    minify,
+    minify: true,
   });
 
   /**
