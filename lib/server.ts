@@ -1,13 +1,5 @@
 import { ULTRA_COMPILER_PATH } from "./constants.ts";
-import {
-  assert,
-  cache,
-  dotenv,
-  etag,
-  Hono,
-  resolve,
-  toFileUrl,
-} from "./deps.ts";
+import { assert, dotenv, etag, Hono, resolve, toFileUrl } from "./deps.ts";
 import { ensureMinDenoVersion } from "./dev/ensureMinDenoVersion.ts";
 import { log } from "./logger.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
@@ -70,10 +62,12 @@ export async function createServer(
 
   // Initalize etag middleware
   server.use("*", etag({ weak: false }));
-  server.get(
-    "*",
-    cache({ cacheName: "my-app", cacheControl: "max-age=3600", wait: true }),
-  );
+  server.use("*", async (ctx, next)=>{
+    await next()
+    ctx.header("Cache-Control", "no-cache, no-store, must-revalidate")
+    ctx.header("Pragma", "no-cache")
+    ctx.header("Expires", "0")
+  })
 
   // We always try to serve public assets before anything else.
   // deno-fmt-ignore
