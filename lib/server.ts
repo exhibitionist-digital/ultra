@@ -61,7 +61,7 @@ export async function createServer(
   await server.init();
 
   // Initalize etag middleware
-  server.use("*", etag());
+  server.use("*", etag({ weak: false }));
 
   // We always try to serve public assets before anything else.
   // deno-fmt-ignore
