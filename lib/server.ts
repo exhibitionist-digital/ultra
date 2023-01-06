@@ -62,10 +62,13 @@ export async function createServer(
 
   // Initalize etag middleware
   server.use("*", etag({ weak: false }));
-  server.use("*", async (ctx, next) => {
-    await next();
-    ctx.header("Cache-Control", "public, max-age=10, no-transform");
-  });
+  // Set cache control to 10 seconds in JIT mode, without transform
+  if (mode === "jit") {
+    server.use("*", async (ctx, next) => {
+      await next();
+      ctx.header("Cache-Control", "public, max-age=0, no-transform");
+    });
+  }
 
   // We always try to serve public assets before anything else.
   // deno-fmt-ignore
