@@ -64,7 +64,7 @@ export async function createServer(
   server.use("*", etag({ weak: false }));
   server.use("*", async (ctx, next) => {
     await next();
-    ctx.header("Cache-Control", "public, max-age=3600");
+    ctx.header("Cache-Control", "public, max-age=10");
   });
 
   // We always try to serve public assets before anything else.
