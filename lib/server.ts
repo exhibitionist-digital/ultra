@@ -77,7 +77,7 @@ export async function createServer(
   if (mode === "development" || mode === "jit") {
     log.info(
       "Loading compiler" +
-        (mode === "jit" ? "in JIT mode" : "in development mode"),
+        (mode === "jit" ? " in JIT mode" : " in development mode"),
     );
     // deno-fmt-ignore
     server.get(`${ULTRA_COMPILER_PATH}/*`, compiler({
