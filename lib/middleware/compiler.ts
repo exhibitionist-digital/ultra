@@ -57,7 +57,7 @@ export const compiler = (options: CompilerOptions) => {
           runtime,
           development: Deno.env.get("ULTRA_MODE") === "development",
           sourceMaps: true,
-          minify: Deno.env.get("ULTRA_MODE") === "development",
+          minify: Deno.env.get("ULTRA_MODE") !== "development",
         });
 
         let { code, map } = transformed;
