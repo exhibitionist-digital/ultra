@@ -60,8 +60,6 @@ export async function createServer(
 
   await server.init();
 
-  console.log("Starting server in", mode, "mode");
-
   // We always try to serve public assets before anything else.
   // deno-fmt-ignore
   server.get("*", serveStatic({

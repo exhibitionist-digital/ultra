@@ -45,6 +45,12 @@ export async function transformSource(
         tsx: true,
       },
       externalHelpers,
+      minify: minify
+        ? {
+          mangle: true,
+          compress: true,
+        }
+        : undefined,
       transform: {
         react: {
           useBuiltins,
@@ -57,7 +63,7 @@ export async function transformSource(
     },
     sourceMaps: sourceMaps ? true : undefined,
     inlineSourcesContent: true,
-    minify: true,
+    minify,
   });
 
   /**
