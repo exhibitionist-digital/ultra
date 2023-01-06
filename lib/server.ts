@@ -62,12 +62,10 @@ export async function createServer(
 
   // Initalize etag middleware
   server.use("*", etag({ weak: false }));
-  server.use("*", async (ctx, next)=>{
-    await next()
-    ctx.header("Cache-Control", "no-cache, no-store, must-revalidate")
-    ctx.header("Pragma", "no-cache")
-    ctx.header("Expires", "0")
-  })
+  server.use("*", async (ctx, next) => {
+    await next();
+    ctx.header("Cache-Control", "public, max-age=3600");
+  });
 
   // We always try to serve public assets before anything else.
   // deno-fmt-ignore
