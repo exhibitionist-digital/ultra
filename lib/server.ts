@@ -6,6 +6,7 @@ import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
 import { resolveImportMapPath } from "./utils/import-map.ts";
+import { compiler } from "./middleware/compiler.ts";
 
 /**
  * Dotenv
@@ -73,10 +74,11 @@ export async function createServer(
     cache: mode !== "development",
   }));
 
-  if (mode === "development") {
-    log.info("Loading compiler");
-    const { compiler } = await import("./middleware/compiler.ts");
-
+  if (mode === "development" || mode === "jit") {
+    log.info(
+      "Loading compiler",
+      mode === "jit" ? "in JIT mode" : "in development mode",
+    );
     // deno-fmt-ignore
     server.get(`${ULTRA_COMPILER_PATH}/*`, compiler({
       root,
@@ -104,8 +106,8 @@ export function assertServerOptions(
      * Assert that we are provided a valid "mode"
      */
     assert(
-      ["development", "production"].includes(options.mode!),
-      `Invalid value supplied for "mode", expected either "production" or "development" received "${options.mode}"`,
+      ["development", "production", "jit"].includes(options.mode!),
+      `Invalid value supplied for "mode", expected either "production", "jit, or "development"; received "${options.mode}"`,
     );
 
     /**

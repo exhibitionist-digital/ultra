@@ -5,11 +5,16 @@ import { cache } from "https://deno.land/x/cache@0.2.13/mod.ts";
 import { TransformSourceOptions } from "../types.ts";
 import { toFileUrl } from "../deps.ts";
 
-const file = await cache(
-  "https://esm.sh/@swc/wasm-web@1.3.11/wasm-web_bg.wasm",
-);
+let file;
+if (Deno.env.get("ULTRA_MODE") === "development") {
+  file = await cache("https://esm.sh/@swc/wasm-web@1.3.11/wasm-web_bg.wasm");
+}
 
-await init(toFileUrl(file.path));
+await init(
+  file
+    ? toFileUrl(file.path)
+    : "https://esm.sh/@swc/wasm-web@1.3.11/wasm-web_bg.wasm",
+);
 
 export async function transformSource(
   source: string,
