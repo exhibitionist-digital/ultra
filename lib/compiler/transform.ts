@@ -7,13 +7,11 @@ import { toFileUrl } from "../deps.ts";
 
 let file;
 if (Deno.env.get("ULTRA_MODE") === "development") {
-  file = await cache("https://esm.sh/@swc/wasm-web@1.3.11/wasm-web_bg.wasm");
+  file = await cache("./wasm-web_bg.wasm");
 }
 
 await init(
-  file
-    ? toFileUrl(file.path)
-    : "https://esm.sh/@swc/wasm-web@1.3.11/wasm-web_bg.wasm",
+  file ? toFileUrl(file.path) : "./wasm-web_bg.wasm",
 );
 
 export async function transformSource(
