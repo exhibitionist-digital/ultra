@@ -1,5 +1,6 @@
-import { transform } from "https://deno.land/x/swc@0.2.1/mod.ts";
+import * as esbuild from "https://deno.land/x/esbuild@v0.17.0/mod.js"
 import { TransformSourceOptions } from "../types.ts";
+
 
 export async function transformSource(
   source: string,
@@ -19,37 +20,14 @@ export async function transformSource(
     refresh = false,
   } = options;
 
-  const transformed = await transform(source, {
-    // @ts-ignore This exists in the Rust API, but isn't exposed on the config type for some reason
-    filename,
-    jsc: {
-      target,
-      parser: {
-        syntax: "typescript",
-        dynamicImport,
-        tsx: true,
-      },
-      externalHelpers,
-      minify: minify
-        ? {
-          mangle: true,
-          compress: true,
-        }
-        : undefined,
-      transform: {
-        react: {
-          useBuiltins,
-          importSource: jsxImportSource,
-          runtime,
-          development,
-          refresh,
-        },
-      },
-    },
-    sourceMaps: sourceMaps ? true : undefined,
-    inlineSourcesContent: true,
-    minify,
-  });
+  const transformed = await esbuild.transform(source, {
+    loader: "tsx",
+    jsx: "automatic",
+    minify: false,
+    jsxImportSource: "react",
+    sourcemap: true,
+  })
+  source = 'import React from "react";' + transformed.code 
 
   /**
    * Check if we should add jsx pragmas to the compiled
