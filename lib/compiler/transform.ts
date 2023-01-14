@@ -1,18 +1,25 @@
 import init, {
   transform,
 } from "https://esm.sh/@swc/wasm-web@1.3.11/wasm-web.js";
-import { cache } from "https://deno.land/x/cache@0.2.13/mod.ts";
 import { TransformSourceOptions } from "../types.ts";
-import { toFileUrl } from "../deps.ts";
 
-let file;
-if (Deno.env.get("ULTRA_MODE") === "development") {
-  file = await cache("./wasm-web_bg.wasm");
+let swcReady = false
+async function ensureSWCInitialized() {
+    if(swcReady) return
+    if (Deno.run === undefined) {
+      const wasmURL = new URL(import.meta.url.substring(0, import.meta.url.lastIndexOf("/")) + "/wasm-web_bg.wasm", import.meta.url).href;
+      const r = await fetch(wasmURL)
+      const resp = new Response(r.body, {
+        headers: { "Content-Type": "application/wasm" },
+      });
+      const wasmModule = await WebAssembly.compileStreaming(resp);
+      await init(wasmModule);
+      swcReady = true
+    } else {
+      await init(import.meta.url.substring(0, import.meta.url.lastIndexOf("/")) + "/wasm-web_bg.wasm")
+      swcReady = true
+    }
 }
-
-await init(
-  file ? toFileUrl(file.path) : "./wasm-web_bg.wasm",
-);
 
 export async function transformSource(
   source: string,
@@ -32,6 +39,7 @@ export async function transformSource(
     refresh = false,
   } = options;
 
+  await ensureSWCInitialized();
   const transformed = await transform(source, {
     // @ts-ignore This exists in the Rust API, but isn't exposed on the config type for some reason
     filename,
