@@ -3,13 +3,13 @@ export {
   ContextBuilder,
   FileBag,
   VirtualFile,
-} from "https://deno.land/x/mesozoic@v1.2.7/mod.ts";
+} from "https://deno.land/x/mesozoic@v1.2.8/mod.ts";
 export type {
   BuilderOptions,
   BuildResult,
   PatternLike,
-} from "https://deno.land/x/mesozoic@v1.2.7/mod.ts";
-export type { EntrypointConfig } from "https://deno.land/x/mesozoic@v1.2.7/lib/entrypoint.ts";
+} from "https://deno.land/x/mesozoic@v1.2.8/mod.ts";
+export type { EntrypointConfig } from "https://deno.land/x/mesozoic@v1.2.8/lib/entrypoint.ts";
 export { deepMerge } from "https://deno.land/std@0.164.0/collections/deep_merge.ts";
 export { crayon } from "https://deno.land/x/crayon@3.3.2/mod.ts";
 export {
