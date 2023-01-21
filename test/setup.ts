@@ -9,8 +9,7 @@ if (importMap.imports && githubSha) {
   /**
    * Set ultra to the latest commit
    */
-  importMap.imports["ultra/"] =
-    `https://denopkg.com/exhibitionist-digital/ultra@${githubSha}/`;
+  importMap.imports["ultra/"] = `../../`;
 
   /**
    * Write it out

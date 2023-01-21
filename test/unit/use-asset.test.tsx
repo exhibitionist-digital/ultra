@@ -1,7 +1,7 @@
 import {
   assertEquals,
   assertThrows,
-} from "https://deno.land/std@0.155.0/testing/asserts.ts";
+} from "https://deno.land/std@0.173.0/testing/asserts.ts";
 import { renderToStream } from "../../lib/render.ts";
 import useAsset from "../../hooks/use-asset.js";
 
