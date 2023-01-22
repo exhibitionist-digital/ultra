@@ -11,13 +11,19 @@ type ImportMap = {
  * would like to work on, generate a `deno.dev.json` and `importMap.dev.json`
  * in that examples project directory, and run the ./server.tsx in dev mode.
  */
+interface DenoConfig {
+  tasks: Record<string, string>;
+  lock?: boolean;
+  compilerOptions: Record<string, string>;
+  importMap: string;
+}
 export async function initExampleConfig(example: string) {
   try {
     const examplePath = join("examples", example);
     const devConfigPath = join(examplePath, "deno.dev.json");
     const devImportMapPath = join(examplePath, "importMap.dev.json");
 
-    const config: Record<string, string> = JSON.parse(
+    const config: DenoConfig = JSON.parse(
       await readTextFile(join(examplePath, "deno.json")),
     );
 
@@ -27,6 +33,14 @@ export async function initExampleConfig(example: string) {
 
     importMap.imports["ultra/"] = `../../`;
     config.importMap = "importMap.dev.json";
+
+    // Since `deno task -c deno.dev.json dev` doesn't pass `deno.dev.json` to cli by default
+    if (config.tasks.dev && !config.tasks.dev.includes("deno.dev.json")) {
+      config.tasks.dev = config.tasks.dev.replace(
+        /^deno run/,
+        "deno run -c deno.dev.json",
+      );
+    }
 
     await Deno.writeTextFile(devConfigPath, JSON.stringify(config, null, 2));
     await Deno.writeTextFile(

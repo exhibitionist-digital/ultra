@@ -155,7 +155,7 @@ export class UltraServer extends Hono {
   #importMapHandler(importMap: ImportMap | undefined) {
     if (importMap?.imports) {
       const ultraUrl = importMap.imports["ultra/"];
-      // Set importMap for ultra/ framework
+      //1. Set importMap for ultra/ framework
       if (ultraUrl && !ultraUrl.startsWith("http")) {
         if (ultraUrl.startsWith("/")) {
           this.ultraDir = ultraUrl;
@@ -164,6 +164,8 @@ export class UltraServer extends Hono {
         }
         importMap.imports["ultra/"] = "/ultra/";
       }
+      //2. @/ path
+      importMap.imports["@/"] = "/_ultra/compiler/src/";
     }
   }
 
