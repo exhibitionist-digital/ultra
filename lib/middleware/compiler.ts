@@ -1,4 +1,4 @@
-import { createCompiler } from "https://deno.land/x/mesozoic@v1.3.0/mod.ts";
+import { createCompiler } from "https://deno.land/x/mesozoic@v1.3.1/mod.ts";
 import { ULTRA_COMPILER_PATH } from "../constants.ts";
 import { extname, join, sprintf, toFileUrl } from "../deps.ts";
 import { log } from "../logger.ts";
