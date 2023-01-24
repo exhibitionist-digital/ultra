@@ -92,8 +92,8 @@ export class UltraBuilder extends Builder {
     super(context, {
       compilerOptions: {
         minify: true,
+        development: false,
         jsxImportSource: resolvedOptions.jsxImportSource,
-        sourceMaps: resolvedOptions.sourceMaps,
       },
     });
 
