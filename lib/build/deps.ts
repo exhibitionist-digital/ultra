@@ -1,15 +1,16 @@
 export {
   Builder,
   ContextBuilder,
+  createCompiler,
   FileBag,
   VirtualFile,
-} from "https://deno.land/x/mesozoic@v1.3.1/mod.ts";
+} from "https://denopkg.com/deckchairlabs/mesozoic@0922f03b560ab82a9ca61391f33fee5f1243fda8/mod.ts";
 export type {
   BuilderOptions,
   BuildResult,
   PatternLike,
-} from "https://deno.land/x/mesozoic@v1.3.1/mod.ts";
-export type { EntrypointConfig } from "https://deno.land/x/mesozoic@v1.3.1/lib/entrypoint.ts";
+} from "https://denopkg.com/deckchairlabs/mesozoic@0922f03b560ab82a9ca61391f33fee5f1243fda8/mod.ts";
+export type { EntrypointConfig } from "https://denopkg.com/deckchairlabs/mesozoic@0922f03b560ab82a9ca61391f33fee5f1243fda8/lib/entrypoint.ts";
 export { deepMerge } from "https://deno.land/std@0.173.0/collections/deep_merge.ts";
 export { crayon } from "https://deno.land/x/crayon@3.3.2/mod.ts";
 export {
