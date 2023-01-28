@@ -43,7 +43,7 @@ export async function createServer(
     esModuleShimsPath,
   } = resolvedOptions;
 
-  const root = Deno.cwd();
+  const root = Deno.env.get("ULTRA_ROOT") || Deno.cwd();
   const assetManifestPath = toFileUrl(resolve(root, "asset-manifest.json"));
 
   const server = new UltraServer(root, {
@@ -76,12 +76,15 @@ export async function createServer(
   if (mode === "development") {
     log.info("Loading compiler");
     const { compiler } = await import("./middleware/compiler.ts");
+    const { channel } = await import("./dev/channel.ts");
 
     // deno-fmt-ignore
     server.get(`${ULTRA_COMPILER_PATH}/*`, compiler({
       root,
       ...options.compilerOptions,
     }));
+
+    channel.postMessage("ready");
   }
 
   return server;

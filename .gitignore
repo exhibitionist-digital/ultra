@@ -12,5 +12,8 @@ test/fixture/output
 examples/*/deno.dev.json
 examples/*/importMap.dev.json
 
+# dev testing
+examples/.dev
+
 # Local Netlify folder
 .netlify

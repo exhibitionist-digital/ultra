@@ -169,7 +169,7 @@ export class UltraServer extends Hono {
         }
       }
     } else {
-      entrypointSpecifier = toUltraUrl(this.root, this.entrypoint, this.mode)!;
+      entrypointSpecifier = toUltraUrl(this.root, this.entrypoint)!;
     }
 
     log.debug(sprintf("Resolved entrypoint: %s", entrypointSpecifier));

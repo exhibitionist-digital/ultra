@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run -A --no-check --watch ./server.tsx",
+    "dev": "deno run --allow-all --unstable dev.ts",
     "test": "deno test --allow-all",
     "build": "deno run -A ./build.ts",
     "start": "ULTRA_MODE=production deno run -A --no-remote ./server.js"
