@@ -41,10 +41,12 @@ export function importMapContent(config: Config) {
     )
   }
 
-            ${p.wouter('"wouter": "https://esm.sh/wouter?external=react",')}
+            ${
+    p.wouter('"wouter": "https://esm.sh/wouter@2.9.2?external=react",')
+  }
             ${
     p.wouter(
-      '"wouter/static-location": "https://esm.sh/wouter/static-location?external=react",',
+      '"wouter/static-location": "https://esm.sh/wouter@2.9.2/static-location?external=react",',
     )
   }
 
