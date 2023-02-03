@@ -4,7 +4,7 @@ export type { Next } from "https://deno.land/x/hono@v2.5.1/types.ts";
 import type { JscTarget } from "https://esm.sh/@swc/core@1.3.11/types.d.ts";
 export type { StatusCode } from "https://deno.land/x/hono@v2.5.1/utils/http-status.ts";
 
-export type Mode = "development" | "production";
+export type Mode = "development" | "production" | "jit";
 
 export type Context<
   RequestParamKeyType extends string = string,

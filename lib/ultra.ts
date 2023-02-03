@@ -48,7 +48,7 @@ export class UltraServer extends Hono {
     this.enableEsModuleShims = options.enableEsModuleShims;
     this.esModuleShimsPath = options.esModuleShimsPath;
     this.entrypoint = options.entrypoint;
-    this.baseUrl = this.mode === "development"
+    this.baseUrl = (this.mode === "development" || this.mode === "jit")
       ? `${ULTRA_COMPILER_PATH}/`
       : "/";
 

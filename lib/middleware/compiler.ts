@@ -55,9 +55,9 @@ export const compiler = (options: CompilerOptions) => {
           dynamicImport,
           jsxImportSource,
           runtime,
-          development: true,
+          development: Deno.env.get("ULTRA_MODE") === "development",
           sourceMaps: true,
-          minify: false,
+          minify: Deno.env.get("ULTRA_MODE") !== "development",
         });
 
         let { code, map } = transformed;

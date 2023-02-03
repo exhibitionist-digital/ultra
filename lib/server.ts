@@ -1,11 +1,12 @@
 import { ULTRA_COMPILER_PATH } from "./constants.ts";
-import { assert, dotenv, Hono, resolve, toFileUrl } from "./deps.ts";
+import { assert, dotenv, etag, Hono, resolve, toFileUrl } from "./deps.ts";
 import { ensureMinDenoVersion } from "./dev/ensureMinDenoVersion.ts";
 import { log } from "./logger.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
 import { resolveImportMapPath } from "./utils/import-map.ts";
+import { compiler } from "./middleware/compiler.ts";
 
 /**
  * Dotenv
@@ -59,6 +60,16 @@ export async function createServer(
 
   await server.init();
 
+  // Initalize etag middleware
+  server.use("*", etag({ weak: false }));
+  // Set cache control to 10 seconds in JIT mode, without transform
+  if (mode === "jit") {
+    server.use("*", async (ctx, next) => {
+      await next();
+      ctx.header("Cache-Control", "public, max-age=0, no-transform");
+    });
+  }
+
   // We always try to serve public assets before anything else.
   // deno-fmt-ignore
   server.get("*", serveStatic({
@@ -73,10 +84,11 @@ export async function createServer(
     cache: mode !== "development",
   }));
 
-  if (mode === "development") {
-    log.info("Loading compiler");
-    const { compiler } = await import("./middleware/compiler.ts");
-
+  if (mode === "development" || mode === "jit") {
+    log.info(
+      "Loading compiler" +
+        (mode === "jit" ? " in JIT mode" : " in development mode"),
+    );
     // deno-fmt-ignore
     server.get(`${ULTRA_COMPILER_PATH}/*`, compiler({
       root,
@@ -104,8 +116,8 @@ export function assertServerOptions(
      * Assert that we are provided a valid "mode"
      */
     assert(
-      ["development", "production"].includes(options.mode!),
-      `Invalid value supplied for "mode", expected either "production" or "development" received "${options.mode}"`,
+      ["development", "production", "jit"].includes(options.mode!),
+      `Invalid value supplied for "mode", expected either "production", "jit, or "development"; received "${options.mode}"`,
     );
 
     /**
