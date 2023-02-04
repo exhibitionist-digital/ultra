@@ -19,7 +19,7 @@ jobs:
 
     env:
       DENO_NO_UPDATE_CHECK: true
-      DENO_DIR: .deno-cache
+      # DENO_DIR: .deno-cache
 
     steps:
       - name: Setup repo
@@ -33,10 +33,10 @@ jobs:
       - name: Deno Info
         run: deno info
       
-      - uses: actions/cache@v3
-        with:
-          path: .deno-cache
-          key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
+      # - uses: actions/cache@v3
+      #   with:
+      #     path: .deno-cache
+      #     key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
 
       - name: Verify formatting
         run: deno fmt --check
