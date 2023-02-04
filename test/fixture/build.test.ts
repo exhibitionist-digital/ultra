@@ -1,7 +1,7 @@
 import {
   assert,
   assertEquals,
-} from "https://deno.land/std@0.164.0/testing/asserts.ts";
+} from "https://deno.land/std@0.173.0/testing/asserts.ts";
 import { createBuilder } from "../../build.ts";
 
 Deno.test(

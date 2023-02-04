@@ -1,21 +1,18 @@
-import { transformSource } from "../compiler/transform.ts";
+import { createCompiler } from "../build/deps.ts";
 import { ULTRA_COMPILER_PATH } from "../constants.ts";
-import { encode, extname, join, sprintf, toFileUrl } from "../deps.ts";
+import { extname, join, sprintf, toFileUrl } from "../deps.ts";
 import { log } from "../logger.ts";
 import type { CompilerOptions, Context, Next } from "../types.ts";
 
 export const compiler = (options: CompilerOptions) => {
   const {
     root,
-    target,
-    useBuiltins,
-    externalHelpers,
-    dynamicImport,
-    jsxImportSource,
-    runtime,
+    jsxImportSource = "react",
   } = options;
 
   return async (context: Context, next: Next) => {
+    const { transform } = await createCompiler();
+
     const method = context.req.method;
     const requestPathname = new URL(context.req.url).pathname;
     const pathname = requestPathname.replace(`${ULTRA_COMPILER_PATH}/`, "");
@@ -47,24 +44,17 @@ export const compiler = (options: CompilerOptions) => {
       log.debug(sprintf("Compiling: %s", url.toString()));
 
       try {
-        const transformed = await transformSource(source, {
-          filename: url.pathname,
-          target,
-          externalHelpers,
-          useBuiltins,
-          dynamicImport,
+        let transpiled = await transform(
+          url.pathname,
+          source,
           jsxImportSource,
-          runtime,
-          development: true,
-          sourceMaps: true,
-          minify: false,
-        });
-
-        let { code, map } = transformed;
+          true,
+          false,
+        );
 
         if (options.hooks?.afterTransform) {
           try {
-            code = options.hooks.afterTransform(code, {
+            transpiled = options.hooks.afterTransform(transpiled, {
               path,
               extension,
             });
@@ -76,11 +66,7 @@ export const compiler = (options: CompilerOptions) => {
           }
         }
 
-        if (map) {
-          code = insertSourceMap(code, map, url);
-        }
-
-        return new Response(code, {
+        return new Response(transpiled, {
           status: 200,
           headers: {
             "content-type": "text/javascript; charset=utf-8",
@@ -94,11 +80,3 @@ export const compiler = (options: CompilerOptions) => {
     await next();
   };
 };
-
-function insertSourceMap(code: string, map: string, sourceUrl: URL) {
-  return `${code}\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,${
-    encode(
-      map,
-    )
-  }\n//# sourceURL=ultra://${sourceUrl.pathname}`;
-}
