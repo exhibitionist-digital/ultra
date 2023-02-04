@@ -1,7 +1,7 @@
 {
   "tasks": {
     "dev": "deno run -A tools/dev.ts",
-    "test": "deno test --allow-all --no-lock ./test/unit && cd test/fixture && ULTRA_LOG_LEVEL=DEBUG deno test --no-lock --allow-all",
+    "test": "deno test --allow-all --no-lock ./test/unit && cd test/fixture && deno test --no-lock --allow-all",
     "version-bump:minor": "deno run -A tools/patch.ts --release=minor",
     "version-bump:patch": "deno run -A tools/patch.ts --release=patch"
   },
