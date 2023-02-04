@@ -1,12 +1,12 @@
-import { walk } from "https://deno.land/std@0.173.0/fs/mod.ts";
+import { walk } from "https://deno.land/std@0.176.0/fs/mod.ts";
 import {
   increment,
   parse as parseSemver,
   ReleaseType,
-} from "https://deno.land/std@0.173.0/semver/mod.ts";
-import { globToRegExp } from "https://deno.land/std@0.173.0/path/glob.ts";
-import { parse } from "https://deno.land/std@0.173.0/flags/mod.ts";
-import { assert } from "https://deno.land/std@0.173.0/_util/asserts.ts";
+} from "https://deno.land/std@0.176.0/semver/mod.ts";
+import { globToRegExp } from "https://deno.land/std@0.176.0/path/glob.ts";
+import { parse } from "https://deno.land/std@0.176.0/flags/mod.ts";
+import { assert } from "https://deno.land/std@0.176.0/_util/asserts.ts";
 
 /**
  * This tool will update deno.land import strings in readme's and importMaps

@@ -1,5 +1,5 @@
-import { dirname, join } from "https://deno.land/std@0.173.0/path/mod.ts";
-import { ensureDir } from "https://deno.land/std@0.173.0/fs/ensure_dir.ts";
+import { dirname, join } from "https://deno.land/std@0.176.0/path/mod.ts";
+import { ensureDir } from "https://deno.land/std@0.176.0/fs/ensure_dir.ts";
 import { confirm } from "./ask.ts";
 import { Config } from "./config.ts";
 import { gradient } from "./styling.ts";

@@ -1,6 +1,6 @@
 // @ts-nocheck wip
 import { QueryClientProvider } from "@tanstack/react-query";
-import { serve } from "https://deno.land/std@0.152.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.176.0/http/server.ts";
 import { createRouter, createServer } from "ultra/server.ts";
 import { Router } from "wouter";
 import staticLocationHook from "wouter/static-location";
