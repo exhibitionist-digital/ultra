@@ -4,6 +4,8 @@ import { extname, join, sprintf, toFileUrl } from "../deps.ts";
 import { log } from "../logger.ts";
 import type { CompilerOptions, Context, Next } from "../types.ts";
 
+const { transform } = await createCompiler();
+
 export const compiler = (options: CompilerOptions) => {
   const {
     root,
@@ -11,8 +13,6 @@ export const compiler = (options: CompilerOptions) => {
   } = options;
 
   return async (context: Context, next: Next) => {
-    const { transform } = await createCompiler();
-
     const method = context.req.method;
     const requestPathname = new URL(context.req.url).pathname;
     const pathname = requestPathname.replace(`${ULTRA_COMPILER_PATH}/`, "");
