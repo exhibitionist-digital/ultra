@@ -8,7 +8,8 @@
   "lock": false,
   "compilerOptions": {
     "jsx": "react-jsxdev",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "lib": ["dom", "deno.ns", "dom.iterable", "dom.asynciterable"]
   },
   "importMap": "./importMap.json"
 }
