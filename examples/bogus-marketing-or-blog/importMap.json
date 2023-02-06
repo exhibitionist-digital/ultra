@@ -4,6 +4,6 @@
     "react/": "https://esm.sh/react@18.2.0/",
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/": "https://esm.sh/react-dom@18.2.0/",
-    "ultra/": "https://deno.land/x/ultra@v2.1.7/"
+    "ultra/": "https://deno.land/x/ultra@vy/"
   }
 }

@@ -7,6 +7,6 @@
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
     "@react-spring/web": "https://esm.sh/@react-spring/web?external=react",
     "@use-gesture/react": "https://esm.sh/@use-gesture/react?external=react&bundle",
-    "ultra/": "https://deno.land/x/ultra@v2.1.7/"
+    "ultra/": "https://deno.land/x/ultra@vy/"
   }
 }
