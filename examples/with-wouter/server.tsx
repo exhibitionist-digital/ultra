@@ -26,8 +26,12 @@ server.get("*", async (context) => {
   );
 
   return context.body(result, 200, {
-    "content-type": "text/html",
+    "content-type": "text/html; charset=utf-8",
   });
 });
 
-serve(server.fetch);
+if (import.meta.main) {
+  serve(server.fetch);
+}
+
+export default server;

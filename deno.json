@@ -4,7 +4,7 @@
     "test": "deno task test:unit && deno task test:fixture && deno task test:examples",
     "test:unit": "deno test -A ./test/unit",
     "test:fixture": "cd ./test/fixture && deno test -A",
-    "test:examples": "deno run -A ./tools/test-examples.ts basic with-csr with-unocss",
+    "test:examples": "deno run -A ./tools/test-examples.ts basic with-csr with-unocss with-wouter",
     "version-bump:minor": "deno run -A tools/patch.ts --release=minor",
     "version-bump:patch": "deno run -A tools/patch.ts --release=patch"
   },
