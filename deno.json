@@ -1,7 +1,10 @@
 {
   "tasks": {
     "dev": "deno run -A tools/dev.ts",
-    "test": "deno test -A ./test/unit && cd test/fixture && deno test -A && cd ../.. && deno run -A tools/test-examples.ts basic with-csr with-unocss",
+    "test": "deno task test:unit && deno task test:fixture && deno task test:examples",
+    "test:unit": "deno test -A ./test/unit",
+    "test:fixture": "cd ./test/fixture && deno test -A",
+    "test:examples": "deno run -A ./tools/test-examples.ts basic with-csr with-unocss",
     "version-bump:minor": "deno run -A tools/patch.ts --release=minor",
     "version-bump:patch": "deno run -A tools/patch.ts --release=patch"
   },
