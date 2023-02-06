@@ -1,5 +1,5 @@
 import { crayon } from "https://deno.land/x/crayon@3.3.2/mod.ts";
-import { join } from "../lib/deps.ts";
+import { join } from "https://deno.land/std@0.176.0/path/mod.ts";
 
 type ImportMap = {
   imports: Record<string, string>;

@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.155.0/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.176.0/testing/asserts.ts";
 import { renderToStream } from "../../lib/render.ts";
 import useAsync from "../../hooks/use-async.js";
 
