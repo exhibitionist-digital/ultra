@@ -20,10 +20,10 @@ async function testRenderedContainsText(location: string, text: string) {
  */
 Deno.test("it works", async (t) => {
   await t.step("it can render the homepage", async () => {
-    await testRenderedContainsText('http://localhost/', 'Home page')
+    await testRenderedContainsText("http://localhost/", "Home page");
   });
 
-  await t.step('it can render the about page', async () => {
-    await testRenderedContainsText('http://localhost/about', 'About page')
-  })
+  await t.step("it can render the about page", async () => {
+    await testRenderedContainsText("http://localhost/about", "About page");
+  });
 });
