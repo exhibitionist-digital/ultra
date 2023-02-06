@@ -1,10 +1,11 @@
 {
   "tasks": {
     "dev": "deno run -A tools/dev.ts",
-    "test": "deno test --allow-all --no-lock ./test/unit && cd test/fixture && deno test --no-lock --allow-all",
+    "test": "deno test -A ./test/unit && cd test/fixture && deno test -A && cd ../.. && deno run -A tools/test-examples.ts basic with-csr with-unocss",
     "version-bump:minor": "deno run -A tools/patch.ts --release=minor",
     "version-bump:patch": "deno run -A tools/patch.ts --release=patch"
   },
+  "lock": false,
   "lint": {
     "files": {
       "exclude": [

@@ -6,6 +6,7 @@ import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
 import { resolveImportMapPath } from "./utils/import-map.ts";
+import type { Context, Next } from "./types.ts";
 
 /**
  * Dotenv
@@ -65,6 +66,20 @@ export async function createServer(
     root: resolve(root, "./public"),
     cache: mode !== "development",
   }));
+
+  // Serve anything else static at "/"
+  // deno-fmt-ignore
+  server.get("/ultra/*", (
+    context: Context,
+    next: Next,
+  ): Promise<Response | undefined> => {
+    const path = new URL(context.req.url).pathname.slice(`/ultra`.length)
+    return serveStatic({
+      root: server.ultraDir,
+      path: path,
+      cache: mode !== "development",
+    })(context,next);
+  });
 
   // Serve anything else static at "/"
   // deno-fmt-ignore

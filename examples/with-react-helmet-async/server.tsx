@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.164.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.176.0/http/server.ts";
 import { HelmetProvider } from "react-helmet-async";
 import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
 import { createServer } from "ultra/server.ts";

@@ -29,9 +29,9 @@ async function reload() {
 }
 
 process = await dev();
-const watcher = Deno.watchFs(["."]);
+const watcher = Deno.watchFs(["./src"]);
 for await (const { kind } of watcher) {
   if (kind === "modify" || kind === "create") {
-    reload();
+    await reload();
   }
 }
