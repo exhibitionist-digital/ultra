@@ -1,0 +1,26 @@
+# 🪰 Fly.io / Docker
+
+Use this `Dockerfile`. It is multi-stage and will both build and run the production ready app.
+
+```dockerfile
+FROM denoland/deno as builder
+WORKDIR /app
+COPY . /app
+RUN deno task build
+
+FROM denoland/deno
+EXPOSE 8000
+COPY --from=builder /app/.ultra /app
+WORKDIR /app
+CMD ["deno", "task", "start"]
+```
+
+You can modify this as needed, another possible Dockerfile assumes you commit your build artifacts, or deploy locally from built files.
+
+```dockerfile
+FROM denoland/deno
+EXPOSE 8000
+WORKDIR /app
+COPY .ultra /app
+CMD ["deno", "task", "start"]
+```

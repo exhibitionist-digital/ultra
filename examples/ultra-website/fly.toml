@@ -1,7 +1,6 @@
-# fly.toml file generated for u2 on 2022-08-25T15:54:42+10:00
+# fly.toml file generated for ultra-docs on 2022-11-09T07:12:32+11:00
 
 app = "u2"
-
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
@@ -18,7 +17,6 @@ processes = []
   processes = ["app"]
   protocol = "tcp"
   script_checks = []
-
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20

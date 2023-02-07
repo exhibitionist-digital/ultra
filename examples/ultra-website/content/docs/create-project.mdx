@@ -1,0 +1,130 @@
+# Create a Project
+
+Before we begin, make sure you've read and have all the required [prerequisites](/docs/prerequisites) before proceeding.
+
+#### [Quick Start](#quick-start)
+
+If you made it this far, you probably just want to hit the ground running. Run the command
+below in your terminal and follow the prompts.
+
+```bash
+deno run -A -r https://deno.land/x/ultra/create.ts
+```
+
+> **FYI**: You can pass custom options after this script to make this quicker in the future
+
+`react-query` `wouter` `react-router` `twind` `stitches`
+
+Use it like...
+
+```bash
+# basic (no third party dependencies)
+deno run -A -r https://deno.land/x/ultra/create.ts basic
+
+# with twind and react-query
+deno run -A -r https://deno.land/x/ultra/create.ts twind react-query
+```
+
+<HotTip>If you are just getting started, we recommend that you start with the `basic` version of **Ultra**</HotTip>
+
+---
+
+#### [Manual Setup](#manual-setup)
+
+Setting up an Ultra project manually requires a few steps, but it will give you a better understanding
+of how Ultra works, and Deno projects in general
+
+<small>*Keep in mind, you can name the files that you will be creating below, whatever you want, and place them wherever you want. Just be sure to update any references to those files, with those updated paths.*</small>
+
+##### [importMap.json](#importmapjson)
+
+If you don't know what an `importMap` is, or how awesome they are, you can read more about them in the [knowledge base](/docs/knowledge-base#import-maps).
+```json
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0?dev",
+    "react/": "https://esm.sh/react@18.2.0&dev/",
+    "react-dom": "https://esm.sh/react-dom@18.2.0?dev",
+    "react-dom/": "https://esm.sh/react-dom@18.2.0&dev/",
+    "ultra/": "https://deno.land/x/ultra@v2.0.0/"
+  }
+}
+```
+
+##### [app.tsx](#apptsx)
+
+```tsx
+export default function App() {
+  return (
+    <html lang="en">
+      <head>
+        <meta charSet="utf-8" />
+        <title>Ultra</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+      <body>
+        <h1>Yep, hello</h1>
+      </body>
+    </html>
+  );
+}
+```
+
+##### [server.tsx](#servertsx)
+
+```tsx
+import { serve } from "https://deno.land/std/http/server.ts";
+import { createServer } from "ultra/server.ts";
+
+// This is your main app entrypoint that you created earlier,
+// you can adjust the path if you named it differently.
+import App from "./app.tsx";
+
+const server = await createServer({
+  // This is the path to the importMap you created earlier.
+  importMapPath: import.meta.resolve("./importMap.json"),
+
+  // This is the entrypoint that is sent along with the
+  // server rendered HTML to the browser.
+  browserEntrypoint: import.meta.resolve("./client.tsx"),
+});
+
+// Add a route to the server that will handle all incoming GET requests.
+server.get("*", async (context) => {
+  // Render the incoming request to a https://developer.mozilla.org/docs/Web/API/ReadableStream.
+  const stream = await server.render(<App />);
+
+  // Return a response with the server rendered HTML.
+  return context.body(stream, 200, {
+    "content-type": "text/html; charset=utf-8",
+  });
+});
+
+// Start listening for incoming requests
+serve(server.fetch);
+```
+
+##### [client.tsx](#clienttsx)
+
+```tsx
+import hydrate from "ultra/hydrate.js";
+import App from "./app.tsx";
+
+hydrate(document, <App />);
+```
+
+##### [deno.json](#denojson)
+
+```json
+{
+  "tasks": {
+    "dev": "deno run --allow-all --watch ./server.tsx",
+    "test": "deno test --allow-all"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsxdev",
+    "jsxImportSource": "react"
+  },
+  "importMap": "./importMap.json"
+}
+```

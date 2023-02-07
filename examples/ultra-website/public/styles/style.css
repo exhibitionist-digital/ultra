@@ -1,13 +1,13 @@
 @font-face {
   font-family: "Space Grotesk";
-  src: url(/SG-Linear.woff2) format("woff2");
+  src: url(./SG-Linear.woff2) format("woff2");
   font-weight: 100 700;
   font-display: block;
 }
 
 @font-face {
   font-family: "Fancy";
-  src: url(/fancy.woff2) format("woff2");
+  src: url(./fancy.woff2) format("woff2");
   font-weight: 100 700;
   font-display: block;
 }
@@ -33,7 +33,7 @@ body {
   max-width: 1500px;
   min-width: 350px;
   margin: auto;
-  font-size: 120%;
+  font-size: 100%;
   padding-bottom: 5rem;
 }
 
@@ -50,15 +50,13 @@ a:focus {
   outline: 1px dotted #777;
 }
 
-nav {
-  display: flex;
-  align-items: center;
-  padding: 0 2rem 3rem;
-  flex-wrap: wrap;
+a[disabled] {
+  color: #666;
+  cursor: not-allowed;
 }
 
-nav a {
-  margin-right: 1em;
+a[disabled]::after {
+  content: " ⏳"
 }
 
 hr {
@@ -101,6 +99,7 @@ h5 a::before,
 h6 a::before {
   content: "# ";
   color: #777;
+  font-weight: bold;
 }
 
 h4 a::before,
@@ -108,10 +107,11 @@ h5 a::before,
 h6 a::before {
   content: "→ ";
   color: #777;
+  font-weight: bold;
 }
 
 h1 {
-  font-size: clamp(2rem, 10vw, 8rem);
+  font-size: clamp(2rem, 10vw, 4rem);
   font-weight: 700;
   margin: auto;
   text-shadow: 3px 3px 0 black;
@@ -134,11 +134,29 @@ h4 {
   margin: 0 auto;
 }
 
-.top {
+#site-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 1rem;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+#site-nav {
+  display: block;
+  flex: 1 1 100%;
+  text-align: center;
+  align-items: center;
+  padding: 1rem 0 0;
+  flex-wrap: wrap;
+}
+
+#site-header a {
+  margin: auto;
+}
+
+#site-nav a {
+  margin: auto 0.5rem;
 }
 
 #github {
@@ -160,6 +178,7 @@ h4 {
   to {
     background: black;
   }
+
   from {
     background: #6666ff;
   }
@@ -169,9 +188,9 @@ blockquote {
   margin: 0;
   padding: 1rem;
   background: #6666ff;
-  border-radius: 0.5em;
+  border-radius: 0.5rem;
   margin-bottom: 2em;
-  font-size: 80%;
+  font-size: 90%;
   display: inline-block;
 }
 
@@ -180,7 +199,6 @@ blockquote {
 }
 
 .logo {
-  display: inline-flex;
   align-items: center;
   text-decoration: none;
   text-transform: initial;
@@ -189,25 +207,33 @@ blockquote {
   font-weight: 600;
 }
 
-.logo svg {
-  margin: 0 -0.25em;
+.logo {
+  margin: auto;
   width: 80px;
   height: 80px;
+  background: #1a1a1a;
+  border-radius: 50%;
 }
 
 .logo:focus {
   outline: none;
 }
 
-.home {
-  text-align: center;
-  padding-bottom: 3rem;
+section.home {
+  text-align: left;
+  padding: 0;
+  margin: 0;
 }
 
 .home figure {
   position: relative;
-  padding: 5rem 0 2rem;
-  margin-bottom: -1rem;
+  padding: 0rem 0 0rem;
+}
+
+.home svg {
+  width: 50%;
+  height: 50%;
+  max-width: 150px;
 }
 
 .home img {
@@ -252,15 +278,15 @@ code::-webkit-scrollbar {
 
 .story p {
   margin: 1em 0;
-  color: #777;
+  color: #aeaeae;
   display: block;
 }
 
 .story h3:first-of-type,
 .page h2 {
   font-family: "Fancy";
-  font-size: clamp(2.5em, 7vw, 5em);
-  color: #777;
+  font-size: clamp(2em, 5vw, 4em);
+  color: #aeaeae;
   text-align: center;
   padding: 1rem 0;
   margin: 0 auto;
@@ -273,10 +299,12 @@ code::-webkit-scrollbar {
     right: 1rem;
     top: 1rem;
   }
+
   .story figure {
     display: flex;
     align-items: center;
   }
+
   .story figure img {
     width: 80% !important;
   }
@@ -288,9 +316,8 @@ code::-webkit-scrollbar {
 
 .story figure img {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 227 / 332;
   object-fit: cover;
-  min-height: 500px;
   border-radius: 1em;
   margin: auto;
   display: block;
@@ -320,6 +347,7 @@ code::-webkit-scrollbar {
     display: flex;
     align-items: center;
   }
+
   .story figure img {
     width: 80%;
   }
@@ -329,15 +357,23 @@ code::-webkit-scrollbar {
   }
 }
 
-.page,
 figure {
-  margin: 0 2rem;
+  padding: 0;
+  margin: 0;
+}
+
+.page {
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  max-width: 100%;
+  flex-grow: 1;
 }
 
 .page p,
 .page small {
-  max-width: 600px;
+  max-width: 80ch;
   margin: 0 0 2rem;
+  line-height: 1.7rem;
   display: block;
 }
 
@@ -378,48 +414,16 @@ ul {
   margin: 0;
 }
 
-.lil-ultra {
-  appearance: none;
-  border: none;
-  background: none;
+pre {
+  max-width: 100%;
+  overflow: auto;
   display: block;
-  text-align: center;
-  font-family: monospace;
-  color: #777;
-  margin: 5rem auto 3rem auto;
-  font-size: clamp(3em, 15vw, 8em);
-  font-weight: 400;
-}
-
-.lil-ultra:hover,
-.lil-ultra:focus {
-  color: #6666ff;
-  cursor: not-allowed;
-}
-
-.lil-ultra span::before {
-  content: "@";
-  animation: blink 3s infinite;
-}
-
-@keyframes blink {
-  0%,
-  50%,
-  70%,
-  95% {
-    content: "@";
-  }
-
-  65%,
-  90% {
-    content: "—";
-  }
+  max-width: 800px
 }
 
 pre code {
-  display: inline-block;
-  overflow-x: auto;
-  max-width: 100%;
+  display: block;
+  width: 100%;
   padding: 1.5rem 2rem;
   line-height: 1.333;
   font-size: 0.8rem;
@@ -437,8 +441,9 @@ pre code {
 
 .hljs {
   color: #c9d1d9;
-  background: #0d1117;
+  background: #1a1a1a;
 }
+
 .hljs-doctag,
 .hljs-keyword,
 .hljs-meta .hljs-keyword,
@@ -448,12 +453,14 @@ pre code {
 .hljs-variable.language_ {
   color: #ff7b72;
 }
+
 .hljs-title,
 .hljs-title.class_,
 .hljs-title.class_.inherited__,
 .hljs-title.function_ {
   color: #d2a8ff;
 }
+
 .hljs-attr,
 .hljs-attribute,
 .hljs-literal,
@@ -466,48 +473,59 @@ pre code {
 .hljs-variable {
   color: #79c0ff;
 }
+
 .hljs-meta .hljs-string,
 .hljs-regexp,
 .hljs-string {
   color: #a5d6ff;
 }
+
 .hljs-built_in,
 .hljs-symbol {
   color: #ffa657;
 }
+
 .hljs-code,
 .hljs-comment,
 .hljs-formula {
   color: #8b949e;
 }
+
 .hljs-name,
 .hljs-quote,
 .hljs-selector-pseudo,
 .hljs-selector-tag {
   color: #7ee787;
 }
+
 .hljs-subst {
   color: #c9d1d9;
 }
+
 .hljs-section {
   color: #1f6feb;
   font-weight: 700;
 }
+
 .hljs-bullet {
   color: #f2cc60;
 }
+
 .hljs-emphasis {
   color: #c9d1d9;
   font-style: italic;
 }
+
 .hljs-strong {
   color: #c9d1d9;
   font-weight: 700;
 }
+
 .hljs-addition {
   color: #aff5b4;
   background-color: #033a16;
 }
+
 .hljs-deletion {
   color: #ffdcd7;
   background-color: #67060c;

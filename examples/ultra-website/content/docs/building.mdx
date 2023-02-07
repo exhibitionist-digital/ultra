@@ -1,0 +1,49 @@
+# Building for Deployment
+
+Our build pipeline is powered internally by [Mesozoic](https://github.com/deckchairlabs/mesozoic).
+
+To run **Ultra** in production, we recommened using `ultra/build.ts`. It will do the following:
+
+- Create a `.ultra` dir inside of your project
+- Transpile your TypeScript and JSX to vanilla JS.
+- Vendor all of your dependencies
+- Version your source and public files
+- Auto generate 2 (two) production import maps (One for client/hydration, and the other for server)
+
+[Learn more about how to customise Mesozoic](https://github.com/deckchairlabs/mesozoic)
+
+---
+
+A basic `build.ts`
+
+```js
+import { createBuilder } from "ultra/build.ts";
+
+// Pass in your entry points here
+const builder = createBuilder({
+  browserEntrypoint: import.meta.resolve("./client.tsx"),
+  serverEntrypoint: import.meta.resolve("./server.tsx"),
+});
+
+// You can use globs to ignore certain files from the build pipeline
+builder.ignore([
+  "./README.md",
+  "./importMap.json",
+  "./*.dev.json",
+  "./*.test.ts",
+]);
+
+// This will return an array of build asset, if you wanted to use
+// them for any reason...
+const result = await builder.build();
+```
+
+Run this with `deno run -A ./build.ts`
+
+---
+
+#### [Running production](#running-production)
+
+You can `cd` into `.ultra` and run `deno task start` to see the production server running.
+
+Production builds run with `--no-remote` 🔥

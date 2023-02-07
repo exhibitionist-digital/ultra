@@ -101,17 +101,25 @@ More examples can be found [here](https://github.com/exhibitionist-digital/ultra
 
 #### [useAsset](#useasset)
 
-```js
+```jsx
 import useAsset from "ultra/hooks/use-asset.js";
 
-<link rel="preload" as="style" href={useAsset("/style.css")} />
+export function App() {
+  return (
+    <html>
+      <head>
+        <link rel="stylesheet" href={useAsset("/style.css")} />
+      </head>
+    </html>
+  )
+}
 ```
 
 `useAsset` allows **Ultra** to version your assets during build for deploying to production. In development it's a non-op.
 
 #### [useServerInsertedHTML](#useflusheffects)
 
-```js
+```jsx
 import useServerInsertedHTML from "ultra/hooks/use-server-inserted-html.js";
 
 
@@ -133,10 +141,10 @@ Similar to the [hook](https://github.com/vercel/next.js/blob/aef60dc581f564b64cf
 
 #### [usePreload](#usepreload)
 
-```js
+```tsx
 import usePreload from "ultra/hooks/use-preload.js";
 
-usePreload(${href})
+usePreload(href)
 ```
 
 This hook will insert a `<link rel="preload" />` tag into the head of the server render document. During client side transitions, this won't do anything.
@@ -187,12 +195,12 @@ jobs:
 
     steps:
       - name: Clone repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Install Deno
-        uses: denoland/setup-deno@main
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
         with:
-          deno-version: 1.25.1
+          deno-version: v1.x
 
       - name: Build site
         run: deno run -A ./build.ts # Your build script
@@ -210,13 +218,13 @@ jobs:
 
 Use this `Dockerfile`. It is multi-stage, and will both build and run the production ready app.
 
-```bash
-FROM denoland/deno:1.25.0 as builder
+```dockerfile
+FROM denoland/deno as builder
 WORKDIR /app
 COPY . /app
 RUN deno task build
 
-FROM denoland/deno:1.25.0
+FROM denoland/deno
 EXPOSE 8000
 COPY --from=builder /app/.ultra /app
 WORKDIR /app
@@ -225,8 +233,8 @@ CMD ["deno", "task", "start"]
 
 You can modify this as needed, another possible Dockerfile assumes you commit your build artifacts, or deploy locally from built files.
 
-```bash
-FROM denoland/deno:1.25.0
+```dockerfile
+FROM denoland/deno
 EXPOSE 8000
 WORKDIR /app
 COPY .ultra /app

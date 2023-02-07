@@ -1,0 +1,10 @@
+# usePreload
+
+This hook will insert a `<link rel="preload" />` tag into the head of the server render document. During client side transitions, this won't do anything.
+
+```tsx
+import usePreload from "ultra/hooks/use-preload.js";
+
+usePreload(href)
+```
+

@@ -1,0 +1,57 @@
+# 🧠 Knowledge Base
+
+**Ultra** leans into the latest browser features. Before you close this window, let us explain...
+
+#### [Import Maps](#import-maps)
+
+Instead of using `package.json` and define your dependencies and their versions, you can speficy them here. Now, you can use these bare specifiers in your codebase. The greatest thing about these Import Maps is that they can be used exactly the same way in Deno as well as your browser.
+
+`importMap.json`
+
+```js
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0?dev",
+    "react/": "https://esm.sh/react@18.2.0/",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
+    "ultra/": "https://deno.land/x/ultra@v2.0.0/"
+  }
+}
+```
+
+`index.jsx`
+
+```js
+// use like you normally would...
+// this works in your browser too!!!
+import { useEffect } from 'react'
+```
+
+What is extra cool about Import Maps is that when we deploy to production, we can just replace the CDN urls above with locally resolved versions. The same source code 'just works'!
+
+[Learn more about Import Maps](https://html.spec.whatwg.org/multipage/webappapis.html#import-maps)
+
+#### [ESM (ECMAScript Modules)](#esm-ecmascript-modules)
+
+You've probably been writing ESM for years and haven't noticed. It's the defacto standard for modern code bases, and just like Import Maps above, these can be used natively in your browser as well!
+
+This is a good thing — browsers can optimize loading of modules, making it more efficient than having to use a library/bundler and do overly complex processing. Our goal is to write browser optimised code from the start. No robotic bundling overlords required.
+
+[Learn more about ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
+
+### [ESM CDNs](#esm-cdns)
+
+While much of the JS ecosystem has moved (or is moving to ESM) there are some stragglers out there who haven't had a chance to catch up yet. CDN's like esm.sh and jspm.io allow usage of much of the npm ecosystem, but as ESM. 
+
+Follow [React's transition to ESM here](https://github.com/facebook/react/issues/11503).
+
+#### [esm.sh](#esmsh)
+
+[https://esm.sh](https://esm.sh)
+
+#### [jspm.org](#jspmorg)
+
+[https://jspm.org](https://jspm.org)
+

@@ -1,0 +1,25 @@
+# Code Splitting
+
+Writing and shipping native ESM allows you to take advantage of some pretty neat optimisation features. Dynamic imports and the `lazy` API can be used to import components on the fly, in a way that is compatible with `Suspense`.
+
+[React Lazy Docs](https://reactjs.org/docs/code-splitting.html#reactlazy)
+
+```js
+import { lazy, Suspense } from 'react';
+
+const OtherComponent = lazy(() => import('./OtherComponent.jsx'));
+
+function MyComponent() {
+  return (
+    <div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <OtherComponent />
+      </Suspense>
+    </div>
+  );
+}
+```
+
+When both server and client rendering this component, the `OtherComponent.jsx` will only be imported when requested. Native code-splitting? YES!
+
+<HotTip>Using `lazy` imports with Routing is one of the best things ever</HotTip>

@@ -5,7 +5,7 @@ import Content from "../content/philosophy.js";
 export default function Markdown() {
   return (
     <MDXProvider>
-      <section className={`page philosophy`}>
+      <section>
         <Content />
       </section>
     </MDXProvider>

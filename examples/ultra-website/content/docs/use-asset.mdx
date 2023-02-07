@@ -1,0 +1,45 @@
+# useAsset
+
+When you [build an Ultra project for deployment](/docs/build), static assets in your project will be renamed to include
+a <span title="a unique hash based on the content of the asset">content hash</span> in the filename and added to the
+[asset-manifest.json](/docs/knowledge-base#asset-manifest) in the build output directory.
+
+This means if you were to reference a static asset like below, the browser will receive a `404 Not Found` error when
+a request is made for that asset.
+
+```jsx
+// A request for the "/cool-cat.png" asset will fail with a 404 :(
+export function WhatACoolCatComponent() {
+    return (
+        <img src="/cool-cat.png" alt="Just a cool cat" />
+    )
+}
+```
+
+This is exactly why the `useAsset` hook exists. It will resolve the new filename of the original asset in the `asset-manifest.json` and return it.
+
+<HotTip>When you're referencing a static asset, wrap it with `useAsset`</HotTip>
+
+#### [Examples](#examples)
+
+```tsx
+import useAsset from 'ultra/hooks/use-asset.js'
+
+export function App() {
+    // You can assign the returned path to a variable
+    // Or you can use it directly in your JSX, as long as it follows the rules of hooks
+    const coolCatImage = useAsset('/cool-cat.png')
+    return (
+        <html>
+            <head>
+                <title>Cool Cat App</title>
+                <link rel="stylesheet" href={useAsset('/styles.css')} />
+            </head>
+            <body>
+                Damn cool Cat App
+                <img src={coolCatImage} alt="Just a cool cat" />
+            </body>
+        </html>
+    )
+}
+```
