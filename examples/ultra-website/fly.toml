@@ -1,6 +1,6 @@
 # fly.toml file generated for ultra-docs on 2022-11-09T07:12:32+11:00
 
-app = "ultra-docs"
+app = "u2"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
