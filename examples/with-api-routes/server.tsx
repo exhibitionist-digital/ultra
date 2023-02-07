@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.159.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.176.0/http/server.ts";
 import { createRouter, createServer } from "ultra/server.ts";
 import App from "./src/app.tsx";
 
@@ -28,6 +28,24 @@ api.get("/posts", (context) => {
  * Mount the API router to /api
  */
 server.route("/api", api);
+
+/**
+ * Create our Websocket router
+ */
+const ws = createRouter();
+
+ws.get("/", (c) => {
+  const { response, socket } = Deno.upgradeWebSocket(c.req);
+
+  socket.addEventListener("message", (e) => console.log(e));
+
+  return response;
+});
+
+/**
+ * Mount the Websocket router to /ws
+ */
+server.route("/ws", ws);
 
 server.get("*", async (context) => {
   /**

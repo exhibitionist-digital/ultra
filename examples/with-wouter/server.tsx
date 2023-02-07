@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.159.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.176.0/http/server.ts";
 import { createServer } from "ultra/server.ts";
 import { Router } from "wouter";
 import staticLocationHook from "wouter/static-location";
@@ -26,8 +26,12 @@ server.get("*", async (context) => {
   );
 
   return context.body(result, 200, {
-    "content-type": "text/html",
+    "content-type": "text/html; charset=utf-8",
   });
 });
 
-serve(server.fetch);
+if (import.meta.main) {
+  serve(server.fetch);
+}
+
+export default server;

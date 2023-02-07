@@ -1,4 +1,11 @@
+import { useEffect } from "react";
+
 export default function App() {
+  useEffect(() => {
+    // connect to websocket
+    const socket = new WebSocket("ws://localhost:8000/ws");
+    console.log({ socket });
+  }, []);
   return (
     <html lang="en">
       <head>

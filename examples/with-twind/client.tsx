@@ -1,12 +1,10 @@
-import { cssomSheet } from "twind";
+import { setup } from "@twind/core";
 import hydrate from "ultra/hydrate.js";
 import App from "./src/app.tsx";
-import { TWProvider } from "./src/context/twind.tsx";
-import { theme } from "./theme.ts";
+import { sheet } from "./src/twind.ts";
+import config from "./src/twind.config.js";
 
-hydrate(
-  document,
-  <TWProvider sheet={cssomSheet()} theme={theme}>
-    <App />
-  </TWProvider>,
-);
+//@ts-ignore twind types issue
+setup(config, sheet);
+
+hydrate(document, <App />);

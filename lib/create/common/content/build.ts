@@ -13,7 +13,11 @@ const builder = createBuilder({
 
 builder.ignore([
   "./README.md",
-  "./importMap.json"
+  "./importMap.json",
+  "./.git/**",
+  "./.vscode/**",
+  "./.github/**",
+  "./.gitignore"
 ]);
 
 // deno-lint-ignore no-unused-vars

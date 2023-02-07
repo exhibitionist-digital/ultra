@@ -1,0 +1,11 @@
+{
+  "imports": {
+    "react": "https://esm.sh/v106/react@18.2.0?dev",
+    "react/": "https://esm.sh/v106/react@18.2.0/",
+    "react-dom": "https://esm.sh/v106/react-dom@18.2.0",
+    "react-dom/server": "https://esm.sh/v106/react-dom@18.2.0/server?dev",
+    "react-dom/client": "https://esm.sh/v106/react-dom@18.2.0/client?dev",
+    "@react-three/fiber": "https://esm.sh/v106/@react-three/fiber?external=react",
+    "ultra/": "https://deno.land/x/ultra@v2.2.1/"
+  }
+}

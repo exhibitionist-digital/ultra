@@ -1,4 +1,5 @@
 {
+  "lock": false,
   "test": {
     "files": {
       "exclude": [".ultra/"]
@@ -7,11 +8,18 @@
   "tasks": {
     "dev": "deno run -A --no-check --watch ./server.tsx",
     "build": "deno run -A ./build.ts",
-    "start": "ULTRA_MODE=production deno run -A --no-remote ./server.js"
+    "start": "ULTRA_MODE=production deno run -A --no-remote ./server.js",
+    "start:no-browser": "ULTRA_MODE=production deno run -A --no-remote ./server.no-browser.js"
   },
   "compilerOptions": {
     "jsx": "react-jsxdev",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "lib": [
+      "deno.ns",
+      "dom",
+      "dom.iterable",
+      "dom.asynciterable"
+    ]
   },
   "importMap": "./importMap.json"
 }

@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.153.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.176.0/http/server.ts";
 import { createServer } from "ultra/server.ts";
 import App from "./src/app.tsx";
 import { queryClient } from "./src/query-client.tsx";
@@ -9,9 +9,7 @@ import { serverSheet, TWProvider } from "./src/context/twind.tsx";
 import { theme } from "./theme.ts";
 
 const server = await createServer({
-  importMapPath: Deno.env.get("ULTRA_MODE") === "development"
-    ? import.meta.resolve("./importMap.dev.json")
-    : import.meta.resolve("./importMap.json"),
+  importMapPath: import.meta.resolve("./importMap.json"),
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 
@@ -46,7 +44,13 @@ server.get("*", async (context) => {
 });
 
 if (import.meta.main) {
-  serve(server.fetch);
+  serve(server.fetch, {
+    onListen() {
+      // We exit onListen so we know the server started successfully
+      // in our tests
+      Deno.exit(0);
+    },
+  });
 }
 
 export default server;

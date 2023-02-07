@@ -12,8 +12,17 @@ export function importMapContent(config: Config) {
           "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
           "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
 
-            ${p.twind('"twind": "https://esm.sh/twind@0.16.17",')}
-            ${p.twind('"twind/sheets": "https://esm.sh/twind@0.16.17/sheets",')}
+            ${p.twind('"@twind/core": "https://esm.sh/@twind/core@1.0.1",')}
+            ${
+    p.twind(
+      '"@twind/preset-autoprefix": "https://esm.sh/@twind/preset-autoprefix@1.0.1",',
+    )
+  }
+            ${
+    p.twind(
+      '"@twind/preset-tailwind": "https://esm.sh/*@twind/preset-tailwind@1.0.1",',
+    )
+  }
 
             ${
     p.stitches(
@@ -32,10 +41,12 @@ export function importMapContent(config: Config) {
     )
   }
 
-            ${p.wouter('"wouter": "https://esm.sh/wouter?external=react",')}
+            ${
+    p.wouter('"wouter": "https://esm.sh/wouter@2.9.2?external=react",')
+  }
             ${
     p.wouter(
-      '"wouter/static-location": "https://esm.sh/wouter/static-location?external=react",',
+      '"wouter/static-location": "https://esm.sh/wouter@2.9.2/static-location?external=react",',
     )
   }
 
@@ -44,14 +55,14 @@ export function importMapContent(config: Config) {
       '"@tanstack/react-query": "https://esm.sh/@tanstack/react-query@4.2.3?external=react",',
     )
   }
-            
+
             ${
     p.reactHelmetAsync(
       '"react-helmet-async": "https://esm.sh/react-helmet-async@1.3.0?external=react",',
     )
   }
 
-            "ultra/": "https://deno.land/x/ultra@v2.1.0/"
+            "ultra/": "https://deno.land/x/ultra@v2.2.1/"
          }
     }
    `;

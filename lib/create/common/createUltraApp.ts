@@ -4,7 +4,7 @@ import {
   brightBlue,
   underline,
   yellow,
-} from "https://deno.land/std@0.159.0/fmt/colors.ts";
+} from "https://deno.land/std@0.176.0/fmt/colors.ts";
 import { createFile, fetchFile, fileExtension } from "./io.ts";
 import {
   appContent,
@@ -15,17 +15,17 @@ import {
   serverContent,
   styleContent,
 } from "./content/index.ts";
-import { twindContent, twindProviderContent } from "../modules/twind/index.ts";
+import { twindConfigContent, twindContent } from "../modules/twind.ts";
 import {
   stitchesConfigContent,
   stitchesProviderContent,
-} from "../modules/stitches/index.ts";
-import { wouterContent } from "../modules/wouter/index.ts";
+} from "../modules/stitches.ts";
+import { wouterContent } from "../modules/wouter.ts";
 import {
   queryClientContent,
   useDehydrateReactQueryContent,
-} from "../modules/react-query/index.ts";
-import { trpcClientContent, trpcRouterContent } from "../modules/trpc/index.ts";
+} from "../modules/react_query.ts";
+import { trpcClientContent, trpcRouterContent } from "../modules/trpc.ts";
 import { gradient } from "./styling.ts";
 
 export async function createUltraApp(config: Config) {
@@ -56,8 +56,8 @@ export async function createUltraApp(config: Config) {
   if (config.includes.includes("twind")) {
     await create(ext("src/twind/twind", false), twindContent(config));
     await create(
-      ext("src/twind/TwindProvider", true),
-      twindProviderContent(config),
+      ext("src/twind/twind.config", false),
+      twindConfigContent(config),
     );
   }
 

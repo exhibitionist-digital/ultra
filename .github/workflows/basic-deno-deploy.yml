@@ -4,7 +4,6 @@ on:
   push:
     branches: [main]
 
-
 jobs:
   deploy:
     name: Basic / Deno Deploy
@@ -18,12 +17,12 @@ jobs:
 
     steps:
       - name: Clone repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Install Deno
-        uses: denoland/setup-deno@main
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
         with:
-          deno-version: 1.25.1
+          deno-version: v1.x
 
       - name: Build site
         run: deno run -A ./build.ts

@@ -1,13 +1,27 @@
 {
   "tasks": {
     "dev": "deno run -A tools/dev.ts",
-    "test": "deno test --allow-all && deno task test-fixture",
-    "test-fixture": "cd test/fixture && TEST_FIXTURE=true deno test --allow-all",
-    "test:watch": "cd test/fixture && deno test --allow-all --watch",
+    "test": "deno task test:unit && deno task test:fixture && deno task test:examples",
+    "test:unit": "deno test -A ./test/unit",
+    "test:fixture": "cd ./test/fixture && deno test -A",
+    "test:examples": "deno run -A ./tools/test-examples.ts basic with-csr with-unocss with-wouter",
     "version-bump:minor": "deno run -A tools/patch.ts --release=minor",
     "version-bump:patch": "deno run -A tools/patch.ts --release=patch"
   },
+  "lock": false,
+  "lint": {
+    "files": {
+      "exclude": [
+        ".deno-cache"
+      ]
+    }
+  },
   "fmt": {
+    "files": {
+      "exclude": [
+        ".deno-cache"
+      ]
+    },
     "options": {
       "indentWidth": 2,
       "useTabs": false,

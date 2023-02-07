@@ -2,8 +2,8 @@ import {
   dirname,
   globToRegExp,
   join,
-} from "https://deno.land/std@0.159.0/path/mod.ts";
-import { ensureDir, walk } from "https://deno.land/std@0.159.0/fs/mod.ts";
+} from "https://deno.land/std@0.176.0/path/mod.ts";
+import { ensureDir, walk } from "https://deno.land/std@0.176.0/fs/mod.ts";
 import { compile as compileMDX } from "https://esm.sh/@mdx-js/mdx@2.1.3/lib/compile.js";
 import rehypeHighlight from "https://esm.sh/rehype-highlight@6.0.0";
 import rehypeSlug from "https://esm.sh/rehype-slug@5.1.0";

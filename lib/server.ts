@@ -6,6 +6,7 @@ import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
 import { resolveImportMapPath } from "./utils/import-map.ts";
+import type { Context, Next } from "./types.ts";
 
 /**
  * Dotenv
@@ -27,7 +28,7 @@ const defaultOptions = {
 };
 
 export async function createServer(
-  options: CreateServerOptions,
+  options: CreateServerOptions = {},
 ): Promise<UltraServer> {
   const resolvedOptions = {
     ...defaultOptions,
@@ -49,7 +50,9 @@ export async function createServer(
   const server = new UltraServer(root, {
     mode,
     entrypoint: browserEntrypoint,
-    importMapPath: resolveImportMapPath(mode, root, options.importMapPath),
+    importMapPath: options.importMapPath
+      ? resolveImportMapPath(mode, root, options.importMapPath)
+      : undefined,
     assetManifestPath: String(assetManifestPath),
     enableEsModuleShims,
     esModuleShimsPath,
@@ -63,6 +66,20 @@ export async function createServer(
     root: resolve(root, "./public"),
     cache: mode !== "development",
   }));
+
+  // Serve anything else static at "/"
+  // deno-fmt-ignore
+  server.get("/ultra/*", (
+    context: Context,
+    next: Next,
+  ): Promise<Response | undefined> => {
+    const path = new URL(context.req.url).pathname.slice(`/ultra`.length)
+    return serveStatic({
+      root: server.ultraDir,
+      path: path,
+      cache: mode !== "development",
+    })(context,next);
+  });
 
   // Serve anything else static at "/"
   // deno-fmt-ignore
@@ -107,16 +124,14 @@ export function assertServerOptions(
     );
 
     /**
-     * Assert that we are provided an importMapPath
+     * Assert that we are provided an importMapPath if a browserEntrypoint is provided
      */
-    assert(options.importMapPath, "No importMapPath was supplied");
-
-    /**
-     * Assert that we are provided a browserEntrypoint
-     */
-    assert(
-      `A browser entrypoint was not provided "${options.browserEntrypoint}"`,
-    );
+    if (options.browserEntrypoint) {
+      assert(
+        options.importMapPath,
+        "No importMapPath was supplied, yet a browserEntrypoint has been set.",
+      );
+    }
 
     return true;
   } catch (error) {
