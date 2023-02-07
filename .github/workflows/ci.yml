@@ -32,11 +32,14 @@ jobs:
 
       - name: Deno Info
         run: deno info
+
+      - id: deno-info
+        run: echo "MODULES_CACHE=$(deno info --json | jq -r '.modulesCache')" >> $GITHUB_OUTPUT
       
-      # - uses: actions/cache@v3
-      #   with:
-      #     path: .deno-cache
-      #     key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
+      - uses: actions/cache@v3
+        with:
+          path: ${{ steps.deno-info.outputs.MODULES_CACHE }}
+          key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
 
       - name: Verify formatting
         run: deno fmt --check
