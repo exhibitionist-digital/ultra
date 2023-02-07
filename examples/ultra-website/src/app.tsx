@@ -91,79 +91,70 @@ export default function App() {
                 <Route path="/">
                   <HomePage />
                 </Route>
-                <Route path="/docs">
+                <Route path="/philosophy">
                   <Philosophy />
                 </Route>
-                <Route path="/docs/knowledge-base">
+                <Route path="/knowledge-base">
                   <KnowledgeBase />
                 </Route>
                 {/* Getting Started */}
-                <Route path="/docs/prerequisites">
+                <Route path="/prerequisites">
                   <Prerequisites />
                 </Route>
-                <Route path="/docs/create-project">
+                <Route path="/create-project">
                   <CreateProject />
                 </Route>
-                <Route path="/docs/routing">
+                <Route path="/routing">
                   <Routing />
                 </Route>
-                <Route path="/docs/middleware">
+                <Route path="/middleware">
                   <Middleware />
                 </Route>
-                <Route path="/docs/styling">
+                <Route path="/styling">
                   <Styling />
                 </Route>
-                <Route path="/docs/data-fetching">
+                <Route path="/data-fetching">
                   <DataFetching />
                 </Route>
-                <Route path="/docs/code-splitting">
+                <Route path="/code-splitting">
                   <CodeSplitting />
                 </Route>
-                <Route path="/docs/building-for-deployment">
+                <Route path="/building-for-deployment">
                   <Building />
                 </Route>
                 {/* Deploy */}
-                <Route path="/docs/deploy">
+                <Route path="/deploy">
                   <NotFound />
                 </Route>
-                <Route path="/docs/deploy/deno-deploy">
+                <Route path="/deno-deploy">
                   <DenoDeploy />
                 </Route>
-                <Route path="/docs/deploy/fly-docker">
+                <Route path="/fly-docker">
                   <Fly />
                 </Route>
-                <Route path="/docs/deploy/vercel">
-                  <NotFound />
-                </Route>
-                <Route path="/docs/deploy/netlify">
-                  <NotFound />
-                </Route>
-                <Route path="/docs/deploy/cloudflare">
-                  <NotFound />
-                </Route>
                 {/* Hooks */}
-                <Route path="/docs/hooks">
+                <Route path="/hooks">
                   <Hooks />
                 </Route>
-                <Route path="/docs/hooks/use-asset">
+                <Route path="/use-asset">
                   <UseAssetHook />
                 </Route>
-                <Route path="/docs/hooks/use-async">
+                <Route path="/use-async">
                   <UseAsyncHook />
                 </Route>
-                <Route path="/docs/hooks/use-env">
+                <Route path="/use-env">
                   <UseEnvHook />
                 </Route>
-                <Route path="/docs/hooks/use-island">
+                <Route path="/use-island">
                   <UseIslandHook />
                 </Route>
-                <Route path="/docs/hooks/use-preload">
+                <Route path="/use-preload">
                   <UsePreloadHook />
                 </Route>
-                <Route path="/docs/hooks/use-server-context">
+                <Route path="/use-server-context">
                   <UseServerContextHook />
                 </Route>
-                <Route path="/docs/hooks/use-server-inserted-html">
+                <Route path="/use-server-inserted-html">
                   <UseServerInsertedHTMLHook />
                 </Route>
                 <Route>

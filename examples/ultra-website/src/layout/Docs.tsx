@@ -49,46 +49,41 @@ export function DocsLayout(
             <button onClick={() => setOpen(!open)}>Close Menu</button>
 
             <strong>
-              <Link href="/docs">📖 Philosophy</Link>
+              <Link href="/philosophy">📖 Philosophy</Link>
             </strong>
             <strong>
-              <Link href="/docs/knowledge-base">🧠 Knowledge Base</Link>
+              <Link href="/knowledge-base">🧠 Knowledge Base</Link>
             </strong>
           </nav>
           <nav>
             <em>Getting Started</em>
-            <Link href="/docs/prerequisites">Prerequisites</Link>
-            <Link href="/docs/create-project">Create a Project</Link>
-            <Link href="/docs/routing">Routing</Link>
-            <Link href="/docs/middleware">Middleware</Link>
-            <Link href="/docs/styling">Styling</Link>
-            <Link href="/docs/data-fetching">Data Fetching</Link>
-            <Link href="/docs/code-splitting">Code Splitting</Link>
-            <Link href="/docs/building-for-deployment">
+            <Link href="/prerequisites">Prerequisites</Link>
+            <Link href="/create-project">Create a Project</Link>
+            <Link href="/routing">Routing</Link>
+            <Link href="/middleware">Middleware</Link>
+            <Link href="/styling">Styling</Link>
+            <Link href="/data-fetching">Data Fetching</Link>
+            <Link href="/code-splitting">Code Splitting</Link>
+            <Link href="/building-for-deployment">
               Building for Deployment
             </Link>
           </nav>
           <nav>
             <em>Deployment</em>
-            <Link href="/docs/deploy/deno-deploy">🦕 Deno Deploy</Link>
-            <Link href="/docs/deploy/fly-docker">🪰 fly.io / Docker</Link>
-            <Link href="/docs/deploy/vercel" disabled>Vercel</Link>
-            <Link href="/docs/deploy/netlify" disabled>Netlify</Link>
-            <Link href="/docs/deploy/cloudflare" disabled>Cloudflare</Link>
+            <Link href="/deno-deploy">🦕 Deno Deploy</Link>
+            <Link href="/fly-docker">🪰 fly.io / Docker</Link>
           </nav>
           <nav>
-            <strong>
-              <Link href="/docs/hooks">🪝 Hooks</Link>
-            </strong>
-            <Link href="/docs/hooks/use-asset">useAsset</Link>
-            {/* <Link href="/docs/hooks/use-async" disabled>useAsync</Link> */}
-            <Link href="/docs/hooks/use-env" disabled>useEnv</Link>
-            {/* <Link href="/docs/hooks/use-island" disabled>useIsland</Link> */}
-            <Link href="/docs/hooks/use-preload">usePreload</Link>
-            <Link href="/docs/hooks/use-server-context" disabled>
+            <em>Hooks</em>
+            <Link href="/use-asset">useAsset</Link>
+            {/* <Link href="/hooks/use-async" disabled>useAsync</Link> */}
+            <Link href="/use-env" disabled>useEnv</Link>
+            {/* <Link href="/hooks/use-island" disabled>useIsland</Link> */}
+            <Link href="/use-preload">usePreload</Link>
+            <Link href="/use-server-context" disabled>
               useServerContext
             </Link>
-            <Link href="/docs/hooks/use-server-inserted-html" disabled>
+            <Link href="/use-server-inserted-html" disabled>
               useServerInsertedHTML
             </Link>
           </nav>
