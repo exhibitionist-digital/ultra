@@ -1,13 +1,13 @@
 {
   "imports": {
-    "react": "https://esm.sh/react@18.2.0?dev",
-    "react/": "https://esm.sh/react@18.2.0/",
-    "react-dom": "https://esm.sh/react-dom@18.2.0",
-    "react-dom/server": "https://esm.sh/react-dom@18.2.0/server?dev",
-    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?dev",
+    "react": "https://esm.sh/v106/react@18.2.0?dev",
+    "react/": "https://esm.sh/v106/react@18.2.0/",
+    "react-dom": "https://esm.sh/v106/react-dom@18.2.0",
+    "react-dom/server": "https://esm.sh/v106/react-dom@18.2.0/server?dev",
+    "react-dom/client": "https://esm.sh/v106/react-dom@18.2.0/client?dev",
     "ultra/": "https://deno.land/x/ultra@v2.2.1/",
-    "@twind/core": "https://esm.sh/@twind/core@1.0.1",
-    "@twind/preset-autoprefix": "https://esm.sh/@twind/preset-autoprefix@1.0.1",
-    "@twind/preset-tailwind": "https://esm.sh/*@twind/preset-tailwind@1.0.1"
+    "@twind/core": "https://esm.sh/v106/@twind/core@1.0.1",
+    "@twind/preset-autoprefix": "https://esm.sh/v106/@twind/preset-autoprefix@1.0.1",
+    "@twind/preset-tailwind": "https://esm.sh/v106/*@twind/preset-tailwind@1.0.1"
   }
 }
