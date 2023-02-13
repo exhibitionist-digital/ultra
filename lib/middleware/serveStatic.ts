@@ -25,18 +25,24 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
       root: options.root,
     });
 
-    const splitPath = path.split(".");
-    if (splitPath[splitPath.length - 2].endsWith("server")) {
-      return new Response("", { status: 400 });
-    }
-    if (Deno.env.get("ULTRA_MODE") === "production") {
-      if (splitPath[splitPath.length - 3].endsWith("server")) {
+    console.log("PATHNAME", url.pathname);
+
+    if (
+      !options.root?.endsWith("/public") &&
+      !url.pathname.startsWith("/public/")
+    ) {
+      const splitPath = path.split(".");
+      if (splitPath[splitPath.length - 2].endsWith("server")) {
         return new Response("", { status: 400 });
+      }
+      if (Deno.env.get("ULTRA_MODE") === "production") {
+        if (splitPath[splitPath.length - 3].endsWith("server")) {
+          return new Response("", { status: 400 });
+        }
       }
     }
 
     path = `/${path}`;
-
     try {
       const response = await fetch(toFileUrl(path));
       const headers = new Headers(response.headers);
@@ -55,10 +61,7 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
           headers.append("Content-Type", mimeType);
         }
 
-        return new Response(
-          response.body,
-          { status: 200, headers },
-        );
+        return new Response(response.body, { status: 200, headers });
       } else {
         log.warning(`Static file: ${path} is not found`);
         await next();
