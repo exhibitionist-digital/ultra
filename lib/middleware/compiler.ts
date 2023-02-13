@@ -7,10 +7,7 @@ import type { CompilerOptions, Context, Next } from "../types.ts";
 const { transform } = await createCompiler();
 
 export const compiler = (options: CompilerOptions) => {
-  const {
-    root,
-    jsxImportSource = "react",
-  } = options;
+  const { root, jsxImportSource = "react" } = options;
 
   return async (context: Context, next: Next) => {
     const method = context.req.method;
@@ -21,7 +18,19 @@ export const compiler = (options: CompilerOptions) => {
     const path = join(root, pathname);
     const url = toFileUrl(path);
 
-    const isCompilerTarget = [".ts", ".tsx", ".js", ".jsx"].includes(extension);
+    const splitPath = path.split(".");
+    if (splitPath[splitPath.length - 2].endsWith("server")) {
+      return new Response("", { status: 400 });
+    }
+    if (Deno.env.get("ULTRA_MODE") === "production") {
+      if (splitPath[splitPath.length - 3].endsWith("server")) {
+        return new Response("", { status: 400 });
+      }
+    }
+
+    const isCompilerTarget = [".ts", ".tsx", ".js", ".jsx"].includes(
+      extension,
+    );
 
     if (method === "GET" && isCompilerTarget) {
       const bytes = await fetch(url).then((response) => response.arrayBuffer());
@@ -37,7 +46,9 @@ export const compiler = (options: CompilerOptions) => {
           log.error(e);
         }
         if (typeof source !== "string") {
-          throw new Error("beforeTransform hook must return a string");
+          throw new Error(
+            "beforeTransform hook must return a string",
+          );
         }
       }
 
@@ -62,7 +73,9 @@ export const compiler = (options: CompilerOptions) => {
             log.error(e);
           }
           if (typeof source !== "string") {
-            throw new Error("afterTransform hook must return a string");
+            throw new Error(
+              "afterTransform hook must return a string",
+            );
           }
         }
 

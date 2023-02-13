@@ -25,6 +25,16 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
       root: options.root,
     });
 
+    const splitPath = path.split(".");
+    if (splitPath[splitPath.length - 2].endsWith("server")) {
+      return new Response("", { status: 400 });
+    }
+    if (Deno.env.get("ULTRA_MODE") === "production") {
+      if (splitPath[splitPath.length - 3].endsWith("server")) {
+        return new Response("", { status: 400 });
+      }
+    }
+
     path = `/${path}`;
 
     try {
