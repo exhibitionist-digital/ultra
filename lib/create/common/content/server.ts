@@ -98,7 +98,7 @@ ${
     )
   }
 
-const requestUrl = new URL(context.req.url)
+${p.wouter("const requestUrl = new URL(context.req.url)")}
 
 return (
 
@@ -136,8 +136,9 @@ server.get("*", async (context) => {
    /**
    * Render the request
    */
-   let result = await server.render(<ServerApp context={context} />);
-   ;
+   ${
+    config.includes.includes("twind") ? "let" : "const"
+  } result = await server.render(<ServerApp context={context} />);
 
     ${
     p.twind(`
