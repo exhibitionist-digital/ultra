@@ -1,38 +1,34 @@
-import { lazy, Suspense, useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import useAsset from "ultra/hooks/use-asset.js";
 import { Link, Route, Switch, useLocation } from "wouter";
 import HomePage from "./components/Home.tsx";
-import Docs from "./components/Docs.tsx";
 import Philosophy from "./components/Philosophy.tsx";
-import GitHub from "./components/Github.tsx";
 import { DocsLayout } from "./layout/Docs.tsx";
 
 // Getting Started
-const KnowledgeBase = lazy(() => import("./content/docs/knowledge-base.js"));
-const Prerequisites = lazy(() => import("./content/docs/prerequisites.js"));
-const CreateProject = lazy(() => import("./content/docs/create-project.js"));
-const Routing = lazy(() => import("./content/docs/routing.js"));
-const Middleware = lazy(() => import("./content/docs/middleware.js"));
-const Styling = lazy(() => import("./content/docs/styling.js"));
-const DataFetching = lazy(() => import("./content/docs/data-fetching.js"));
-const CodeSplitting = lazy(() => import("./content/docs/code-splitting.js"));
-const Building = lazy(() => import("./content/docs/building.js"));
+import KnowledgeBase from "./content/docs/knowledge-base.js";
+import Prerequisites from "./content/docs/prerequisites.js";
+import CreateProject from "./content/docs/create-project.js";
+import Routing from "./content/docs/routing.js";
+import Middleware from "./content/docs/middleware.js";
+import Styling from "./content/docs/styling.js";
+import DataFetching from "./content/docs/data-fetching.js";
+import CodeSplitting from "./content/docs/code-splitting.js";
+import Building from "./content/docs/building.js";
 // Hooks
-const Hooks = lazy(() => import("./content/docs/hooks.js"));
-const UseAssetHook = lazy(() => import("./content/docs/use-asset.js"));
-const UseAsyncHook = lazy(() => import("./content/docs/use-async.js"));
-const UseEnvHook = lazy(() => import("./content/docs/use-env.js"));
-const UseIslandHook = lazy(() => import("./content/docs/use-island.js"));
-const UsePreloadHook = lazy(() => import("./content/docs/use-preload.js"));
-const UseServerContextHook = lazy(() =>
-  import("./content/docs/use-server-context.js")
-);
-const UseServerInsertedHTMLHook = lazy(() =>
-  import("./content/docs/use-server-inserted-html.js")
-);
+import Hooks from "./content/docs/hooks.js";
+import UseAssetHook from "./content/docs/use-asset.js";
+import UseAsyncHook from "./content/docs/use-async.js";
+import UseEnvHook from "./content/docs/use-env.js";
+import UseIslandHook from "./content/docs/use-island.js";
+import UsePreloadHook from "./content/docs/use-preload.js";
+import UseServerContextHook from "./content/docs/use-server-context.js";
+
+import UseServerInsertedHTMLHook from "./content/docs/use-server-inserted-html.js";
+
 // Deployment
-const DenoDeploy = lazy(() => import("./content/docs/deno-deploy.js"));
-const Fly = lazy(() => import("./content/docs/fly.js"));
+import DenoDeploy from "./content/docs/deno-deploy.js";
+import Fly from "./content/docs/fly.js";
 
 export default function App() {
   const [pathname] = useLocation();
