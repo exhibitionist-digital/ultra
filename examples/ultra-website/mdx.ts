@@ -18,7 +18,7 @@ export async function compile(path: string) {
   });
 
   /**
-   * Walk the ./content directory for every .mdx file compile it to Javascript
+   * Walk the ./content directory for every .mdx file compile it to JavaScript
    * Save the output to ./src/content/[path]
    */
   for await (

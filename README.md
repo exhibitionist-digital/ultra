@@ -43,7 +43,7 @@ so 2018 just saying that word).
 \*\* _Examples include (but not limited to) `react-query` `twind` `stitches`
 `react-router` `wouter` `mdx`_ **@__@**
 
-**Does Ultra _'ship js'_?**
+**Does Ultra _'ship JS'_?**
 
 Yes, **Ultra** creates rich web applications which allow complex client-side
 routing, allow components to persist through route changes (media players,
@@ -51,7 +51,7 @@ interactive elements, etc).
 
 Our goal is to both write _AND_ ship source code that works the same way on
 server/runtime and client. We view the browser as more than just a "target".
-Browser is life, and javascript is good.
+Browser is life, and JavaScript is good.
 
 **Can I use TypeScript and/or JSX?**
 
