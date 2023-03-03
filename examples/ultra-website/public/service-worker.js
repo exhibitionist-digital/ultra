@@ -7,7 +7,7 @@ self.addEventListener("install", (event) => {
     (async function () {
       const cache = await caches.open(CACHE_NAME);
       await cache.addAll(CACHED_URLS);
-    })()
+    })(),
   );
 });
 
@@ -65,8 +65,8 @@ self.addEventListener("activate", (event) => {
             const deleteThisCache = cacheName !== CACHE_NAME;
             return deleteThisCache;
           })
-          .map((cacheName) => caches.delete(cacheName))
+          .map((cacheName) => caches.delete(cacheName)),
       );
-    })()
+    })(),
   );
 });
