@@ -14,8 +14,9 @@ export default function App() {
       <body className="m-0 p-4 font-mono bg-amber text-center">
         <main>
           <p>
-            Welcome to <strong>Ultra</strong>. This is a barebones starter for
-            your web app.
+            Welcome to{" "}
+            <strong>Ultra</strong>. This is a barebones starter for your web
+            app.
           </p>
           <p>
             Take{" "}
