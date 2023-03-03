@@ -1,11 +1,13 @@
 {
   "imports": {
+    "std/": "https://deno.land/std@0.178.0/",
     "react": "https://esm.sh/v106/react@18.2.0?dev",
     "react/": "https://esm.sh/v106/react@18.2.0/",
     "react-dom": "https://esm.sh/v106/react-dom@18.2.0",
     "react-dom/server": "https://esm.sh/v106/react-dom@18.2.0/server?dev",
     "react-dom/client": "https://esm.sh/v106/react-dom@18.2.0/client?dev",
     "ultra/": "https://deno.land/x/ultra@v2.2.1/",
-    "unocss/cli": "https://esm.sh/v106/@unocss/cli"
+    "unocss-core": "https://esm.sh/@unocss/core@0.50.3",
+    "unocss-preset-wind": "https://esm.sh/@unocss/preset-wind@0.50.3?bundle&no-check"
   }
 }
