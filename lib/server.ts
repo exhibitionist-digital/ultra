@@ -81,13 +81,6 @@ export async function createServer(
     })(context,next);
   });
 
-  // Serve anything else static at "/"
-  // deno-fmt-ignore
-  server.get("*", serveStatic({
-    root: resolve(root, "./"),
-    cache: mode !== "development",
-  }));
-
   if (mode === "development") {
     log.info("Loading compiler");
     const { compiler } = await import("./middleware/compiler.ts");
