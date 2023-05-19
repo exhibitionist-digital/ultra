@@ -5,23 +5,23 @@ async function testExample(example: string) {
   try {
     const examplePath = join("examples", example);
     await initExampleConfig(example);
-    const cmd = [
-      Deno.execPath(),
-      "test",
-      "-c",
-      "deno.dev.json",
-      "-A",
-    ];
-    console.log("test ", examplePath, cmd);
-    const process = Deno.run({
-      cmd,
+    const command = new Deno.Command(Deno.execPath(), {
+      args: [
+        "test",
+        "-c",
+        "deno.dev.json",
+        "-A",
+      ],
       cwd: examplePath,
       env: {
         ULTRA_MODE: "development",
       },
     });
+    const process = command.spawn();
 
-    const status = await process.status();
+    console.log("test ", examplePath);
+
+    const status = await process.status;
     if (status.code > 0) {
       Deno.exit(status.code);
     }
