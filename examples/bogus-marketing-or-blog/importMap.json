@@ -1,9 +1,9 @@
 {
   "imports": {
-    "react": "https://esm.sh/v106/react@18.2.0",
-    "react/": "https://esm.sh/v106/react@18.2.0/",
-    "react-dom": "https://esm.sh/v106/react-dom@18.2.0",
-    "react-dom/": "https://esm.sh/v106/react-dom@18.2.0/",
+    "react": "https://esm.sh/v122/react@18.2.0",
+    "react/": "https://esm.sh/v122/react@18.2.0/",
+    "react-dom": "https://esm.sh/v122/react-dom@18.2.0",
+    "react-dom/": "https://esm.sh/v122/react-dom@18.2.0/",
     "ultra/": "https://deno.land/x/ultra@v2.2.1/"
   }
 }

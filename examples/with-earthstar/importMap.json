@@ -1,12 +1,12 @@
 {
   "imports": {
     "earthstar": "https://cdn.earthstar-project.org/js/earthstar.bundle.v9.3.3.js",
-    "react-earthstar": "https://esm.sh/v106/react-earthstar?external=react,earthstar",
-    "react": "https://esm.sh/v106/react@18.2.0?dev",
-    "react/": "https://esm.sh/v106/react@18.2.0/",
-    "react-dom": "https://esm.sh/v106/react-dom@18.2.0",
-    "react-dom/server": "https://esm.sh/v106/react-dom@18.2.0/server?dev",
-    "react-dom/client": "https://esm.sh/v106/react-dom@18.2.0/client?dev",
+    "react-earthstar": "https://esm.sh/v122/react-earthstar?external=react,earthstar",
+    "react": "https://esm.sh/v122/react@18.2.0?dev",
+    "react/": "https://esm.sh/v122/react@18.2.0/",
+    "react-dom": "https://esm.sh/v122/react-dom@18.2.0",
+    "react-dom/server": "https://esm.sh/v122/react-dom@18.2.0/server?dev",
+    "react-dom/client": "https://esm.sh/v122/react-dom@18.2.0/client?dev",
     "ultra/": "https://deno.land/x/ultra@v2.2.1/"
   }
 }

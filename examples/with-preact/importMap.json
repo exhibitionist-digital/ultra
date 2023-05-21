@@ -1,10 +1,10 @@
 {
   "imports": {
-    "react": "https://esm.sh/v106/preact@10.11.1&external=preact/compat",
-    "preact": "https://esm.sh/v106/preact@10.11.1",
-    "preact/": "https://esm.sh/v106/preact@10.11.1/",
-    "react-dom": "https://esm.sh/v106/preact@10.11.1&external=preact/compat",
-    "react-dom/": "https://esm.sh/v106/preact@10.11.1&external=preact/compat/",
+    "react": "https://esm.sh/v122/preact@10.11.1&external=preact/compat",
+    "preact": "https://esm.sh/v122/preact@10.11.1",
+    "preact/": "https://esm.sh/v122/preact@10.11.1/",
+    "react-dom": "https://esm.sh/v122/preact@10.11.1&external=preact/compat",
+    "react-dom/": "https://esm.sh/v122/preact@10.11.1&external=preact/compat/",
     "ultra/": "https://deno.land/x/ultra@v2.2.1/"
   }
 }
