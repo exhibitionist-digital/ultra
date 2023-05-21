@@ -3,6 +3,8 @@ name: WWW / Deno Deploy
 on:
   push:
     branches: [main]
+    paths:
+      - 'examples/ultra-website/**'
 
 jobs:
   deploy:
