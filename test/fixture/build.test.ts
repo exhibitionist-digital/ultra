@@ -41,7 +41,6 @@ Deno.test(
 
     const status = await process.status;
     assert(status.success);
-    await process.kill();
   },
 );
 
@@ -77,7 +76,6 @@ Deno.test(
 
     const status = await process.status;
     assert(status.success);
-    await process.kill();
   },
 );
 
@@ -115,7 +113,6 @@ Deno.test(
 
     const status = await process.status;
     assert(status.success);
-    await process.kill();
   },
 );
 
@@ -153,6 +150,5 @@ Deno.test(
 
     const status = await process.status;
     assert(status.success);
-    await process.kill();
   },
 );
