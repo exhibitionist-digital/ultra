@@ -8,15 +8,16 @@ async function dev() {
     patterns: ["src/**/*"],
     outFile: "public/uno.css",
   });
-  const server = Deno.run({
-    cmd: [
-      Deno.execPath(),
+  const command = new Deno.Command(Deno.execPath(), {
+    args: [
       "run",
       "-A",
       "--location=http://localhost:8000",
       "./server.tsx",
     ],
   });
+  const server = command.spawn();
+
   return server;
 }
 

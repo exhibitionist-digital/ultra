@@ -30,14 +30,18 @@ Deno.test(
     assertEquals(result.dynamicImports.size, 2);
 
     // Test that the built output starts correctly
-    const process = await Deno.run({
+    const command = new Deno.Command(Deno.execPath(), {
+      args: [
+        "task",
+        "start",
+      ],
       cwd: "./output/browser-entrypoint",
-      cmd: [Deno.execPath(), "task", "start"],
     });
+    const process = command.spawn();
 
-    const status = await process.status();
+    const status = await process.status;
     assert(status.success);
-    await process.close();
+    await process.kill();
   },
 );
 
@@ -62,14 +66,18 @@ Deno.test(
     assertEquals(result.dynamicImports.size, 2);
 
     // Test that the built output starts correctly
-    const process = await Deno.run({
+    const command = new Deno.Command(Deno.execPath(), {
+      args: [
+        "task",
+        "start:no-browser",
+      ],
       cwd: "./output/no-browser-entrypoint",
-      cmd: [Deno.execPath(), "task", "start:no-browser"],
     });
+    const process = command.spawn();
 
-    const status = await process.status();
+    const status = await process.status;
     assert(status.success);
-    await process.close();
+    await process.kill();
   },
 );
 
@@ -96,14 +104,18 @@ Deno.test(
     assertEquals(result.dynamicImports.size, 2);
 
     // Test that the built output starts correctly
-    const process = await Deno.run({
+    const command = new Deno.Command(Deno.execPath(), {
+      args: [
+        "task",
+        "start",
+      ],
       cwd: "./output/no-vendor-deps",
-      cmd: [Deno.execPath(), "task", "start"],
     });
+    const process = command.spawn();
 
-    const status = await process.status();
+    const status = await process.status;
     assert(status.success);
-    await process.close();
+    await process.kill();
   },
 );
 
@@ -130,13 +142,17 @@ Deno.test(
     assertEquals(result.dynamicImports.size, 2);
 
     // Test that the built output starts correctly
-    const process = await Deno.run({
+    const command = new Deno.Command(Deno.execPath(), {
+      args: [
+        "task",
+        "start",
+      ],
       cwd: "./output/inline-dynamic-imports",
-      cmd: [Deno.execPath(), "task", "start"],
     });
+    const process = command.spawn();
 
-    const status = await process.status();
+    const status = await process.status;
     assert(status.success);
-    await process.close();
+    await process.kill();
   },
 );

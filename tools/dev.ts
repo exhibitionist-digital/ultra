@@ -91,9 +91,9 @@ async function dev() {
     /**
      * Run the server with generated dev config
      */
-    const process = Deno.run({
-      cmd: [
-        Deno.execPath(),
+
+    const command = new Deno.Command(Deno.execPath(), {
+      args: [
         "run",
         "-A",
         "--watch",
@@ -106,8 +106,9 @@ async function dev() {
         ULTRA_MODE: "development",
       },
     });
+    const process = command.spawn();
 
-    await process.status();
+    await process.status;
   } catch (error) {
     console.error(error);
     Deno.exit(1);
