@@ -67,7 +67,7 @@ export async function createServer(
     cache: mode !== "development",
   }));
 
-  // Serve anything else static at "/"
+  // Serve static at "/ultra/"
   // deno-fmt-ignore
   server.get("/ultra/*", (
     context: Context,
@@ -81,7 +81,7 @@ export async function createServer(
     })(context,next);
   });
 
-  // Serve anything else static at "/"
+  // Serve anything else
   // deno-fmt-ignore
   server.get("*", serveStatic({
     root: resolve(root, "./"),

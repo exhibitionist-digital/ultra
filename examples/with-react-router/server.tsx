@@ -26,4 +26,8 @@ server.get("*", async (context) => {
   });
 });
 
-serve(server.fetch);
+if (import.meta.main) {
+  serve(server.fetch);
+}
+
+export default server;

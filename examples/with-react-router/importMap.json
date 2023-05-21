@@ -7,6 +7,7 @@
     "react-dom/client": "https://esm.sh/v106/react-dom@18.2.0/client?dev",
     "ultra/": "https://deno.land/x/ultra@v2.2.1/",
     "react-router-dom": "https://esm.sh/v106/react-router-dom@6.3.0?external=react",
-    "react-router-dom/server": "https://esm.sh/v106/react-router-dom@6.3.0/server?external=react"
+    "react-router-dom/server": "https://esm.sh/v106/react-router-dom@6.3.0/server?external=react",
+    "@/": "./src/"
   }
 }

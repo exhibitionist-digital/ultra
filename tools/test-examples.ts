@@ -4,7 +4,6 @@ import { initExampleConfig } from "./dev.ts";
 async function testExample(example: string) {
   try {
     const examplePath = join("examples", example);
-    await initExampleConfig(example);
     const cmd = [
       Deno.execPath(),
       "test",
@@ -13,6 +12,7 @@ async function testExample(example: string) {
       "-A",
     ];
     console.log("test ", examplePath, cmd);
+    await initExampleConfig(example);
     const process = Deno.run({
       cmd,
       cwd: examplePath,
