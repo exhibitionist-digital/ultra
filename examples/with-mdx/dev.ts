@@ -5,8 +5,14 @@ await compile("./content");
 /**
  * Now start the server
  */
-const server = Deno.run({
-  cmd: [Deno.execPath(), "run", "-A", "./server.tsx"],
+const command = new Deno.Command(Deno.execPath(), {
+  args: [
+    "run",
+    "-A",
+    "./server.tsx",
+  ],
 });
 
-await server.status();
+const server = command.spawn();
+
+await server.status;

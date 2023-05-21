@@ -92,7 +92,15 @@ export async function createUltraApp(config: Config) {
   }
 
   // Format files
-  await Deno.run({ cmd: ["deno", "fmt", `${config.name}/`] }).status();
+  const command = new Deno.Command(Deno.execPath(), {
+    args: [
+      "deno",
+      "fmt",
+      `${config.name}/`,
+    ],
+  });
+
+  await command.spawn().status;
 
   // Finish up
   console.log(outdent`
