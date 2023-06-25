@@ -94,7 +94,6 @@ export async function createUltraApp(config: Config) {
   // Format files
   const command = new Deno.Command(Deno.execPath(), {
     args: [
-      "deno",
       "fmt",
       `${config.name}/`,
     ],
