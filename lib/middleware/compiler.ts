@@ -14,12 +14,17 @@ export const compiler = (options: CompilerOptions) => {
 
   return async (context: Context, next: Next) => {
     const method = context.req.method;
-    const requestPathname = new URL(context.req.url).pathname;
+    const requestPathname = decodeURIComponent(
+      new URL(context.req.url).pathname,
+    );
+
     const pathname = requestPathname.replace(`${ULTRA_COMPILER_PATH}/`, "");
+    const isRemoteSource = pathname.startsWith("https://") ||
+      pathname.startsWith("http://");
 
     const extension = extname(pathname);
-    const path = join(root, pathname);
-    const url = toFileUrl(path);
+    const path = !isRemoteSource ? join(root, pathname) : pathname;
+    const url = !isRemoteSource ? toFileUrl(path) : new URL(pathname);
 
     const isCompilerTarget = [".ts", ".tsx", ".js", ".jsx"].includes(extension);
 

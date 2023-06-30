@@ -122,6 +122,7 @@ export class UltraServer extends Hono {
     log.debug("Rendering component");
 
     return renderToStream(Component, context, {
+      mode: this.mode,
       baseUrl: this.baseUrl,
       assetManifest: this.assetManifest,
       importMap: this.importMap,

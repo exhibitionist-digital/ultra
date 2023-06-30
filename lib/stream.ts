@@ -6,7 +6,7 @@
  */
 import type { ReactElement } from "react";
 import * as ReactDOMServer from "react-dom/server";
-import { ImportMap, RenderedReadableStream } from "./types.ts";
+import { ImportMap, Mode, RenderedReadableStream } from "./types.ts";
 import { nonNullable } from "./utils/non-nullable.ts";
 import { log } from "./logger.ts";
 import { readableStreamFromReader, StringReader } from "./deps.ts";
@@ -155,19 +155,37 @@ export function createImportMapInjectionStream(
   importMap: ImportMap,
   enableEsModuleShims?: boolean,
   esModuleShimsPath?: string,
+  mode?: Mode,
 ) {
   log.debug("Stream inject importMap");
   let injected = false;
+
   return createHeadInsertionTransformStream(() => {
     if (injected) return Promise.resolve("");
+
+    if (mode === "development") {
+      importMap.imports = Object.fromEntries(
+        Object.entries(importMap.imports).map(([key, value]) => {
+          if (key.startsWith("@ultra/")) {
+            value = value.endsWith("/") ? value.slice(0, -1) : value;
+            value = `/_ultra/compiler/${encodeURIComponent(value)}/`;
+          }
+
+          return [key, value];
+        }),
+      );
+    }
+
     const scripts = [
       `<script type="importmap">${JSON.stringify(importMap)}</script>`,
     ];
+
     if (enableEsModuleShims && esModuleShimsPath) {
       scripts.unshift(
         `<script async src="${esModuleShimsPath}" crossorigin="anonymous"></script>`,
       );
     }
+
     injected = true;
     return Promise.resolve(scripts.join("\n"));
   });
@@ -241,6 +259,7 @@ export function renderToInitialStream({
 }
 
 type ContinueFromInitialStreamOptions = {
+  mode?: Mode;
   generateStaticHTML: boolean;
   disableHydration: boolean;
   dataStream?: TransformStream<Uint8Array, Uint8Array>;
@@ -257,6 +276,7 @@ export async function continueFromInitialStream(
   options: ContinueFromInitialStreamOptions,
 ): Promise<ReadableStream<Uint8Array>> {
   const {
+    mode,
     importMap,
     enableEsModuleShims,
     esModuleShimsPath,
@@ -291,6 +311,7 @@ export async function continueFromInitialStream(
         importMap,
         enableEsModuleShims,
         esModuleShimsPath,
+        mode,
       )
       : null,
     /**
