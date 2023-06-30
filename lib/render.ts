@@ -3,7 +3,7 @@ import * as ReactDOMServer from "react-dom/server";
 import { UltraProvider } from "./provider.ts";
 import { getServerInsertedHTML } from "./context/serverInsertedHtml.ts";
 import { createFlushDataStreamHandler } from "./context/dataStream.ts";
-import type { Context } from "./types.ts";
+import type { Context, Mode } from "./types.ts";
 import { log } from "./logger.ts";
 import {
   continueFromInitialStream,
@@ -13,6 +13,7 @@ import {
 import { ImportMap } from "./types.ts";
 
 type RenderToStreamOptions = ReactDOMServer.RenderToReadableStreamOptions & {
+  mode?: Mode;
   baseUrl: string;
   importMap: ImportMap | undefined;
   assetManifest: Map<string, string> | undefined;
@@ -43,6 +44,7 @@ export async function renderToStream(
   options: RenderToStreamOptions,
 ) {
   const {
+    mode,
     baseUrl,
     generateStaticHTML = false,
     disableHydration = false,
@@ -80,6 +82,7 @@ export async function renderToStream(
   );
 
   return await continueFromInitialStream(renderStream, {
+    mode,
     generateStaticHTML,
     disableHydration,
     getServerInsertedHTML,

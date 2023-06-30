@@ -14,6 +14,7 @@
     "zod": "https://deno.land/x/zod@v3.19.1/mod.ts",
     "twind": "https://esm.sh/twind@0.16.17",
     "twind/sheets": "https://esm.sh/twind@0.16.17/sheets",
-    "ultra/": "https://denopkg.com/exhibitionist-digital/ultra@main/"
+    "ultra/": "https://denopkg.com/exhibitionist-digital/ultra@main/",
+    "@ultra/qrcode/": "https://deno.land/x/qrcode@v2.0.0/"
   }
 }
