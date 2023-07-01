@@ -6,10 +6,11 @@
  */
 import type { ReactElement } from "react";
 import * as ReactDOMServer from "react-dom/server";
-import { ImportMap, Mode, RenderedReadableStream } from "./types.ts";
-import { nonNullable } from "./utils/non-nullable.ts";
-import { log } from "./logger.ts";
 import { readableStreamFromReader, StringReader } from "./deps.ts";
+import { log } from "./logger.ts";
+import { ImportMap, Mode, RenderedReadableStream } from "./types.ts";
+import { isCompilerTarget } from "./utils/compiler.ts";
+import { nonNullable } from "./utils/non-nullable.ts";
 
 export function encodeText(input: string) {
   return new TextEncoder().encode(input);
@@ -170,7 +171,7 @@ export function createImportMapInjectionStream(
     if (mode === "development") {
       importMap.imports = Object.fromEntries(
         Object.entries(importMap.imports).map(([key, value]) => {
-          if (isSpecialPrefix(key)) {
+          if (isSpecialPrefix(key) || isCompilerTarget(value)) {
             value = value.endsWith("/") ? value.slice(0, -1) : value;
             value = `/_ultra/compiler/${encodeURIComponent(value)}/`;
           }

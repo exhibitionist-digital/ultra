@@ -3,6 +3,7 @@ import { ULTRA_COMPILER_PATH } from "../constants.ts";
 import { extname, join, sprintf, toFileUrl } from "../deps.ts";
 import { log } from "../logger.ts";
 import type { CompilerOptions, Context, Next } from "../types.ts";
+import { isCompilerTarget } from "../utils/compiler.ts";
 
 const { transform } = await createCompiler();
 
@@ -26,9 +27,9 @@ export const compiler = (options: CompilerOptions) => {
     const path = !isRemoteSource ? join(root, pathname) : pathname;
     const url = !isRemoteSource ? toFileUrl(path) : new URL(pathname);
 
-    const isCompilerTarget = [".ts", ".tsx", ".js", ".jsx"].includes(extension);
+    const shouldCompile = isCompilerTarget(pathname);
 
-    if (method === "GET" && isCompilerTarget) {
+    if (method === "GET" && shouldCompile) {
       const bytes = await fetch(url).then((response) => response.arrayBuffer());
       let source = new TextDecoder().decode(bytes);
 
