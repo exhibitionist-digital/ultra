@@ -160,13 +160,17 @@ export function createImportMapInjectionStream(
   log.debug("Stream inject importMap");
   let injected = false;
 
+  function isSpecialPrefix(specifier: string) {
+    return specifier.startsWith("@ultra/") || specifier.startsWith("@/");
+  }
+
   return createHeadInsertionTransformStream(() => {
     if (injected) return Promise.resolve("");
 
     if (mode === "development") {
       importMap.imports = Object.fromEntries(
         Object.entries(importMap.imports).map(([key, value]) => {
-          if (key.startsWith("@ultra/")) {
+          if (isSpecialPrefix(key)) {
             value = value.endsWith("/") ? value.slice(0, -1) : value;
             value = `/_ultra/compiler/${encodeURIComponent(value)}/`;
           }
