@@ -171,7 +171,10 @@ export function createImportMapInjectionStream(
     if (mode === "development") {
       importMap.imports = Object.fromEntries(
         Object.entries(importMap.imports).map(([key, value]) => {
-          if (isSpecialPrefix(key) || isCompilerTarget(value)) {
+          if (
+            value.startsWith("/_ultra/compiler/") === false &&
+            (isSpecialPrefix(key) || isCompilerTarget(value))
+          ) {
             value = value.endsWith("/") ? value.slice(0, -1) : value;
             value = `/_ultra/compiler/${encodeURIComponent(value)}/`;
           }
