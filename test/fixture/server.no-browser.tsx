@@ -1,12 +1,12 @@
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { serve } from "https://deno.land/std@0.176.0/http/server.ts";
 import { createServer } from "ultra/server.ts";
+import { createHeadInsertionTransformStream } from "ultra/stream.ts";
 import App from "./src/app.tsx";
 import { queryClient } from "./src/query-client.tsx";
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { appRouter } from "./src/server/router.ts";
 import { TRPCServerProvider } from "./src/trpc/server.tsx";
-import { serverSheet, TWProvider } from "./src/context/twind.tsx";
-import { theme } from "./theme.ts";
+import { stringify, tw } from "./src/twind.ts";
 
 const server = await createServer();
 
@@ -20,7 +20,6 @@ server.all("/api/trpc/:path", (context) => {
 });
 
 server.get("*", async (context) => {
-  const sheet = serverSheet();
   // clear query cache
   queryClient.clear();
 
@@ -29,13 +28,22 @@ server.get("*", async (context) => {
    */
   const result = await server.render(
     <TRPCServerProvider>
-      <TWProvider sheet={sheet} theme={theme}>
-        <App />
-      </TWProvider>
+      <App />
     </TRPCServerProvider>,
   );
 
-  return context.body(result, 200, {
+  // Inject the style tag into the head of the streamed response
+  const stylesInject = createHeadInsertionTransformStream(() => {
+    if (Array.isArray(tw.target)) {
+      return Promise.resolve(stringify(tw.target));
+    }
+
+    throw new Error("Expected tw.target to be an instance of an Array");
+  });
+
+  const transformed = result.pipeThrough(stylesInject);
+
+  return context.body(transformed, 200, {
     "content-type": "text/html; charset=utf-8",
   });
 });
@@ -43,6 +51,8 @@ server.get("*", async (context) => {
 if (import.meta.main) {
   serve(server.fetch, {
     onListen() {
+      // We exit onListen so we know the server started successfully
+      // in our tests
       Deno.exit(0);
     },
   });
