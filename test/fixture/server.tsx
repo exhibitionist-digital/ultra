@@ -1,12 +1,12 @@
+import App from "@/app.tsx";
+import { queryClient } from "@/query-client.tsx";
+import { appRouter } from "@/server/router.ts";
+import { TRPCServerProvider } from "@/trpc/server.tsx";
+import { stringify, tw } from "@/twind.ts";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { serve } from "https://deno.land/std@0.176.0/http/server.ts";
 import { createServer } from "ultra/server.ts";
 import { createHeadInsertionTransformStream } from "ultra/stream.ts";
-import App from "./src/app.tsx";
-import { queryClient } from "./src/query-client.tsx";
-import { appRouter } from "./src/server/router.ts";
-import { TRPCServerProvider } from "./src/trpc/server.tsx";
-import { stringify, tw } from "./src/twind.ts";
 
 const server = await createServer({
   importMapPath: import.meta.resolve("./importMap.json"),
