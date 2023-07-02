@@ -1,9 +1,7 @@
 {
   "lock": false,
   "test": {
-    "files": {
-      "exclude": [".ultra/"]
-    }
+    "exclude": [".ultra/"]
   },
   "tasks": {
     "dev": "deno run -A --no-check --watch ./server.tsx",
