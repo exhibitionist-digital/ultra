@@ -27,7 +27,7 @@ Deno.test(
 
     assertEquals(ignoredOutput.size, 0);
     assertEquals(result.outputSources.size > 0, true);
-    assertEquals(result.dynamicImports.size, 2);
+    assertEquals(result.dynamicImports.size, 1);
 
     // Test that the built output starts correctly
     const command = new Deno.Command(Deno.execPath(), {
@@ -62,7 +62,7 @@ Deno.test(
     const result = await builder.build();
 
     assertEquals(result.outputSources.size > 0, true);
-    assertEquals(result.dynamicImports.size, 2);
+    assertEquals(result.dynamicImports.size, 1);
 
     // Test that the built output starts correctly
     const command = new Deno.Command(Deno.execPath(), {
@@ -99,7 +99,7 @@ Deno.test(
     const result = await builder.build();
 
     assertEquals(result.outputSources.size > 0, true);
-    assertEquals(result.dynamicImports.size, 2);
+    assertEquals(result.dynamicImports.size, 1);
 
     // Test that the built output starts correctly
     const command = new Deno.Command(Deno.execPath(), {
@@ -136,7 +136,7 @@ Deno.test(
     const result = await builder.build();
 
     assertEquals(result.outputSources.size > 0, true);
-    assertEquals(result.dynamicImports.size, 2);
+    assertEquals(result.dynamicImports.size, 1);
 
     // Test that the built output starts correctly
     const command = new Deno.Command(Deno.execPath(), {

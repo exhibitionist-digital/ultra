@@ -1,5 +1,6 @@
 import useAsset from "ultra/hooks/use-asset.js";
 import useEnv from "ultra/hooks/use-env.js";
+import Button from "@/components/Button.tsx";
 
 export default function App() {
   // Read our environment variable from '.env' or the host environment
@@ -37,6 +38,7 @@ export default function App() {
             customise your routing, data fetching, and styling with popular
             libraries.
           </p>
+          <Button>Button</Button>
         </main>
       </body>
     </html>

@@ -6,10 +6,11 @@
  */
 import type { ReactElement } from "react";
 import * as ReactDOMServer from "react-dom/server";
-import { ImportMap, Mode, RenderedReadableStream } from "./types.ts";
-import { nonNullable } from "./utils/non-nullable.ts";
-import { log } from "./logger.ts";
 import { readableStreamFromReader, StringReader } from "./deps.ts";
+import { log } from "./logger.ts";
+import { ImportMap, Mode, RenderedReadableStream } from "./types.ts";
+import { isCompilerTarget } from "./utils/compiler.ts";
+import { nonNullable } from "./utils/non-nullable.ts";
 
 export function encodeText(input: string) {
   return new TextEncoder().encode(input);
@@ -160,13 +161,20 @@ export function createImportMapInjectionStream(
   log.debug("Stream inject importMap");
   let injected = false;
 
+  function isSpecialPrefix(specifier: string) {
+    return specifier.startsWith("@ultra/") || specifier.startsWith("@/");
+  }
+
   return createHeadInsertionTransformStream(() => {
     if (injected) return Promise.resolve("");
 
     if (mode === "development") {
       importMap.imports = Object.fromEntries(
         Object.entries(importMap.imports).map(([key, value]) => {
-          if (key.startsWith("@ultra/")) {
+          if (
+            value.startsWith("/_ultra/compiler/") === false &&
+            (isSpecialPrefix(key) || isCompilerTarget(value))
+          ) {
             value = value.endsWith("/") ? value.slice(0, -1) : value;
             value = `/_ultra/compiler/${encodeURIComponent(value)}/`;
           }

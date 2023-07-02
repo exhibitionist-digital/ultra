@@ -6,6 +6,7 @@
     "react-dom/server": "https://esm.sh/v122/react-dom@18.2.0/server?dev",
     "react-dom/client": "https://esm.sh/v122/react-dom@18.2.0/client?dev",
     "ultra/": "https://deno.land/x/ultra@v2.2.4/",
-    "@ultra/qrcode/": "https://deno.land/x/qrcode@v2.0.0/"
+    "@ultra/qrcode/": "https://deno.land/x/qrcode@v2.0.0/",
+    "@/": "./src/"
   }
 }

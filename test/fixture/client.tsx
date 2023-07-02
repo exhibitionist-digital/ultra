@@ -1,15 +1,16 @@
-import { cssomSheet } from "twind";
+import { setup } from "@twind/core";
 import hydrate from "ultra/hydrate.js";
-import App from "./src/app.tsx";
-import { TWProvider } from "./src/context/twind.tsx";
-import { TRPCClientProvider } from "./src/trpc/client.tsx";
-import { theme } from "./theme.ts";
+import App from "@/app.tsx";
+import { TRPCClientProvider } from "@/trpc/client.tsx";
+import { sheet } from "@/twind.ts";
+import config from "@/twind.config.js";
+
+//@ts-ignore twind types issue
+setup(config, sheet);
 
 hydrate(
   document,
   <TRPCClientProvider>
-    <TWProvider sheet={cssomSheet()} theme={theme}>
-      <App />
-    </TWProvider>
+    <App />
   </TRPCClientProvider>,
 );
