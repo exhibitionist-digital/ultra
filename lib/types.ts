@@ -1,14 +1,8 @@
-import type { Context as HonoContext } from "https://deno.land/x/hono@v2.5.1/mod.ts";
-import type { Environment } from "https://deno.land/x/hono@v2.5.1/types.ts";
-export type { Next } from "https://deno.land/x/hono@v2.5.1/types.ts";
-export type { StatusCode } from "https://deno.land/x/hono@v2.5.1/utils/http-status.ts";
+export type { Context } from "https://deno.land/x/hono@v3.2.7/mod.ts";
+export type { Next } from "https://deno.land/x/hono@v3.2.7/types.ts";
+export type { StatusCode } from "https://deno.land/x/hono@v3.2.7/utils/http-status.ts";
 
 export type Mode = "development" | "production";
-
-export type Context<
-  RequestParamKeyType extends string = string,
-  E extends Partial<Environment> = Environment,
-> = HonoContext<RequestParamKeyType, E>;
 
 export type CreateServerOptions = {
   mode?: Mode;
