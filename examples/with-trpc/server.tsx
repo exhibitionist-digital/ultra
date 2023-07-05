@@ -1,8 +1,7 @@
-import { serve } from "https://deno.land/std@0.176.0/http/server.ts";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { createServer } from "ultra/server.ts";
 import App from "./src/app.tsx";
 import { queryClient } from "./src/query-client.tsx";
-import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { appRouter } from "./src/server/router.ts";
 import { TRPCServerProvider } from "./src/trpc/server.tsx";
 
@@ -41,7 +40,7 @@ server.get("*", async (context) => {
 });
 
 if (import.meta.main) {
-  serve(server.fetch);
+  Deno.serve(server.fetch);
 }
 
 export default server;

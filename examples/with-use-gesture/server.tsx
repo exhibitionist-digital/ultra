@@ -1,5 +1,4 @@
-import { serve } from "https://deno.land/std@0.176.0/http/server.ts";
-import { createRouter, createServer } from "ultra/server.ts";
+import { createServer } from "ultra/server.ts";
 import App from "./src/app.tsx";
 
 const server = await createServer({
@@ -20,4 +19,4 @@ server.get("*", async (context) => {
   });
 });
 
-serve(server.fetch);
+Deno.serve(server.fetch);

@@ -1,7 +1,5 @@
-import useAsset from "ultra/hooks/use-asset.js";
-import hydrate from "ultra/hydrate.js";
-import React from "react";
 import { useState } from "react";
+import hydrate from "ultra/hydrate.js";
 
 export default function App() {
   const [count, setCount] = useState(0);

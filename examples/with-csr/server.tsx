@@ -1,4 +1,3 @@
-import { serve } from "https://deno.land/std@0.176.0/http/server.ts";
 import { createServer } from "ultra/server.ts";
 
 const importMapPath = Deno.env.get("ULTRA_MODE") === "development"
@@ -35,7 +34,7 @@ server.get("*", (context) => {
 });
 
 if (import.meta.main) {
-  serve(server.fetch);
+  Deno.serve(server.fetch);
 }
 
 export default server;

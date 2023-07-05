@@ -14,7 +14,7 @@ server.get("*", async (context) => {
   /**
    * Render the request
    */
-  const result = await server.render(<App request={context.req} />, {
+  const result = await server.render(<App request={context.req.raw} />, {
     generateStaticHTML: true,
     disableHydration: true,
   });
@@ -24,6 +24,4 @@ server.get("*", async (context) => {
   });
 });
 
-// Use Deno flash server
-// @ts-ignore flash type 404
 Deno.serve({ port: 8000 }, server.fetch);
