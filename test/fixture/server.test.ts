@@ -8,7 +8,7 @@ Deno.test(
     const response = await server.request("http://localhost/");
     const content = await response.text();
 
-    assertEquals(response.headers.get("x-foo"), "foo");
+    assertEquals(response.headers.get("x-foo"), "bar");
 
     await t.step("it can render the homepage", () => {
       assertEquals(response.status, 200);
