@@ -3,10 +3,9 @@ import { assert, dotenv, Hono, resolve, toFileUrl } from "./deps.ts";
 import { ensureMinDenoVersion } from "./dev/ensureMinDenoVersion.ts";
 import { log } from "./logger.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
-import { CreateServerOptions, Mode } from "./types.ts";
+import { CreateServerOptions, Env, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
 import { resolveImportMapPath } from "./utils/import-map.ts";
-import type { Context, Next } from "./types.ts";
 
 /**
  * Dotenv
@@ -27,9 +26,15 @@ const defaultOptions = {
     "https://ga.jspm.io/npm:es-module-shims@1.6.2/dist/es-module-shims.js",
 };
 
-export async function createServer(
+export async function createServer<
+  // deno-lint-ignore no-explicit-any
+  E extends Env = any,
+  // deno-lint-ignore ban-types
+  S = {},
+  BasePath extends string = "/",
+>(
   options: CreateServerOptions = {},
-): Promise<UltraServer> {
+) {
   const resolvedOptions = {
     ...defaultOptions,
     ...options,
@@ -47,7 +52,7 @@ export async function createServer(
   const root = Deno.cwd();
   const assetManifestPath = toFileUrl(resolve(root, "asset-manifest.json"));
 
-  const server = new UltraServer(root, {
+  const server = new UltraServer<E, S, BasePath>(root, {
     mode,
     entrypoint: browserEntrypoint,
     importMapPath: options.importMapPath
@@ -69,16 +74,13 @@ export async function createServer(
 
   // Serve anything else static at "/"
   // deno-fmt-ignore
-  server.get("/ultra/*", (
-    context: Context,
-    next: Next,
-  ): Promise<Response | undefined> => {
+  server.get("/ultra/*", (context, next) => {
     const path = new URL(context.req.url).pathname.slice(`/ultra`.length)
     return serveStatic({
       root: server.ultraDir,
       path: path,
       cache: mode !== "development",
-    })(context,next);
+    })(context, next);
   });
 
   // Serve anything else static at "/"
@@ -102,8 +104,14 @@ export async function createServer(
   return server;
 }
 
-export function createRouter() {
-  return new Hono();
+export function createRouter<
+  // deno-lint-ignore no-explicit-any
+  E extends Env = any,
+  // deno-lint-ignore ban-types
+  S = {},
+  BasePath extends string = "/",
+>() {
+  return new Hono<E, S, BasePath>();
 }
 
 export function assertServerOptions(

@@ -10,7 +10,7 @@ import {
 } from "./deps.ts";
 import { log } from "./logger.ts";
 import { renderToStream } from "./render.ts";
-import { Context, ImportMap, Mode } from "./types.ts";
+import { Context, Env, ImportMap, Mode } from "./types.ts";
 import { toUltraUrl } from "./utils/url.ts";
 
 type UltraServerRenderOptions = {
@@ -29,7 +29,12 @@ type UltraServerOptions = {
   entrypoint?: string;
 };
 
-export class UltraServer extends Hono {
+export class UltraServer<
+  E extends Env = Env,
+  // deno-lint-ignore ban-types
+  S = {},
+  BasePath extends string = "/",
+> extends Hono<E, S, BasePath> {
   public importMap: ImportMap | undefined;
   public assetManifest: Map<string, string> | undefined;
 

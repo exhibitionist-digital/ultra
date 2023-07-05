@@ -16,6 +16,7 @@ serve((request) => {
       args: [
         "test",
         "-A",
+        "--reload",
       ],
       cwd: join(Deno.cwd(), "test", "fixture"),
     }).spawn();

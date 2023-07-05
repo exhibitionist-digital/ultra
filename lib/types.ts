@@ -1,4 +1,4 @@
-export type { Context } from "https://deno.land/x/hono@v3.2.7/mod.ts";
+export type { Context, Env } from "https://deno.land/x/hono@v3.2.7/mod.ts";
 export type { Next } from "https://deno.land/x/hono@v3.2.7/types.ts";
 export type { StatusCode } from "https://deno.land/x/hono@v3.2.7/utils/http-status.ts";
 
