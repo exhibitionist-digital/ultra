@@ -13,10 +13,15 @@ const server = await createServer({
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 
+server.use("*", async (context, next) => {
+  context.header("x-foo", "bar");
+  await next();
+});
+
 server.all("/api/trpc/:path", (context) => {
   return fetchRequestHandler({
     endpoint: "/api/trpc",
-    req: context.req as Request,
+    req: context.req.raw,
     router: appRouter,
     createContext: () => ({}),
   });
