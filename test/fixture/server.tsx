@@ -8,13 +8,21 @@ import { TRPCServerProvider } from "./src/trpc/server.tsx";
 import { serverSheet, TWProvider } from "./src/context/twind.tsx";
 import { theme } from "./theme.ts";
 
-const server = await createServer({
+type Environment = {
+  Variables: {
+    foo?: string;
+  };
+};
+
+const server = await createServer<Environment, { foo: boolean }>({
   importMapPath: import.meta.resolve("./importMap.json"),
   browserEntrypoint: import.meta.resolve("./client.tsx"),
 });
 
 server.use("*", async (context, next) => {
   context.header("x-foo", "bar");
+  context.set("foo", "bar");
+
   await next();
 });
 
