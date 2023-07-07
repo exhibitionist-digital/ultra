@@ -6,6 +6,6 @@
     "react-dom/server": "https://esm.sh/v122/react-dom@18.2.0/server?dev",
     "react-dom/client": "https://esm.sh/v122/react-dom@18.2.0/client?dev",
     "@react-three/fiber": "https://esm.sh/v122/@react-three/fiber?external=react",
-    "ultra/": "https://deno.land/x/ultra@v2.3.0/"
+    "ultra/": "https://deno.land/x/ultra@v2.3.1/"
   }
 }
