@@ -1,12 +1,12 @@
 import { createContext } from "react";
 
 /**
- * @type {React.Context<Map<string, string>>}
+ * @type {Map<string, string>}
  */
-const EnvContext = createContext(
-  typeof Deno === "undefined"
-    ? new Map(globalThis.__ULTRA_ENV || [])
-    : new Map(),
-);
+export const env = typeof Deno === "undefined"
+  ? new Map(globalThis.__ULTRA_ENV || [])
+  : new Map(Object.entries(Deno.env.toObject()));
+
+const EnvContext = createContext(env);
 
 export default EnvContext;
