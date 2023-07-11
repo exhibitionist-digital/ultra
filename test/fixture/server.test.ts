@@ -1,5 +1,6 @@
 import { assertEquals } from "https://deno.land/std@0.176.0/testing/asserts.ts";
 import server from "./server.tsx";
+import { env } from "ultra/hooks/env-context.js";
 
 Deno.test(
   "server works in development mode",
@@ -9,6 +10,7 @@ Deno.test(
     const content = await response.text();
 
     assertEquals(response.headers.get("x-foo"), "bar");
+    assertEquals(env.get("ULTRA_FOO"), "bar");
 
     await t.step("it can render the homepage", () => {
       assertEquals(response.status, 200);

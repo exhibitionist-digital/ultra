@@ -18,6 +18,9 @@ serve((request) => {
         "-A",
         "--reload",
       ],
+      env: {
+        "ULTRA_FOO": "bar",
+      },
       cwd: join(Deno.cwd(), "test", "fixture"),
     }).spawn();
 
