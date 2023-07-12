@@ -7,6 +7,7 @@ const abortController = new AbortController();
 serve((request) => {
   return serveDir(request, {
     fsRoot: Deno.cwd(),
+    quiet: true,
   });
 }, {
   port: 3000,
