@@ -3,6 +3,11 @@ name: WWW / Deno Deploy
 on:
   release:
     types: [published]
+  
+  push:
+    branches: [main]
+    paths:
+      - 'examples/ultra-website/**'
 
 jobs:
   deploy:
