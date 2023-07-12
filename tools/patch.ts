@@ -87,6 +87,10 @@ if (import.meta.main) {
   if (version) {
     await patchFile("./README.md", version);
     await patchFile("./lib/create/common/content/importMap.ts", version);
+    await patchFile(
+      "./examples/ultra-website/content/docs/create-project.mdx",
+      version,
+    );
 
     for await (
       const entry of walk("./", {
