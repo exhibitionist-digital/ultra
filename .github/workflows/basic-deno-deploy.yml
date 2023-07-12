@@ -1,10 +1,8 @@
 name: Basic / Deno Deploy
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'examples/basic/**'
+  release:
+    types: [published]
 
 jobs:
   deploy:
