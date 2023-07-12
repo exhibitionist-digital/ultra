@@ -1,9 +1,9 @@
 {
   "imports": {
-    "react": "https://esm.sh/v122/react@18.2.0",
-    "react/": "https://esm.sh/v122/react@18.2.0/",
-    "react-dom": "https://esm.sh/v122/react-dom@18.2.0",
-    "react-dom/": "https://esm.sh/v122/react-dom@18.2.0/",
+    "react": "https://esm.sh/stable/react@18.2.0?dev",
+    "react/": "https://esm.sh/stable/react@18.2.0&dev/",
+    "react-dom": "https://esm.sh/stable/react-dom@18.2.0?external=react&dev",
+    "react-dom/": "https://esm.sh/stable/react-dom@18.2.0&external=react&dev/",
     "react-router-dom": "https://esm.sh/v122/react-router-dom@6.3.0?external=react",
     "react-router-dom/server": "https://esm.sh/v122/react-router-dom@6.3.0/server?external=react",
     "preact": "https://esm.sh/v122/preact@10.11.0",

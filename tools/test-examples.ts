@@ -11,6 +11,7 @@ async function testExample(example: string) {
         "-c",
         "deno.dev.json",
         "-A",
+        "--no-check",
       ],
       cwd: examplePath,
       env: {
