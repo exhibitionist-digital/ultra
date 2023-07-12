@@ -50,9 +50,6 @@ jobs:
       - name: Type Check
         if: matrix.os == 'ubuntu-latest'
         run: deno check ./*.ts
-
-      - name: Setup tests
-        run: deno run -A test/setup.ts
       
       - name: Run tests
         run: deno task test
