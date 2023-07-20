@@ -5,7 +5,7 @@
     "react-dom": "https://esm.sh/v122/react-dom@18.2.0",
     "react-dom/server": "https://esm.sh/v122/react-dom@18.2.0/server?dev",
     "react-dom/client": "https://esm.sh/v122/react-dom@18.2.0/client?dev",
-    "ultra/": "https://deno.land/x/ultra@v2.3.2/",
+    "ultra/": "https://deno.land/x/ultra@v2.3.3/",
     "@stitches/react": "https://esm.sh/v122/@stitches/react@1.2.8?external=react"
   }
 }
