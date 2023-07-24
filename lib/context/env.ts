@@ -3,11 +3,11 @@ import EnvContext from "../../hooks/env-context.js";
 import useServerInsertedHTML from "../../hooks/use-server-inserted-html.js";
 
 export function EnvProvider({ children }: { children: JSX.Element }) {
-  const env = Object.entries(Deno.env.toObject()).filter(([key]) =>
-    key.startsWith("ULTRA_PUBLIC_")
+  const publicEnv = Object.entries(Deno.env.toObject()).filter(([key]) =>
+    key.startsWith("ULTRA_PUBLIC_") || key === "ULTRA_MODE"
   );
 
-  const value = new Map<string, string>(env);
+  const value = new Map<string, string>(publicEnv);
 
   useServerInsertedHTML(() => {
     const entries = Array.from(value.entries());

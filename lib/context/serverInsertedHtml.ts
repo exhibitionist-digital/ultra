@@ -26,7 +26,9 @@ export const getServerInsertedHTML = (): Promise<string> => {
     h(
       Fragment,
       null,
-      Array.from(serverInsertedHTMLCallbacks).map((callback) => callback()),
+      Array.from(serverInsertedHTMLCallbacks).map((callback, index) =>
+        h(Fragment, { key: `server-insert-cb-${index}` }, callback())
+      ),
     ),
   ));
 };
