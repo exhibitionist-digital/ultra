@@ -12,7 +12,7 @@ Deno.test("useEnv hook", async () => {
     return (
       <html>
         <head>
-          <title>useContext</title>
+          <title>useEnv</title>
         </head>
         <body>
           <div>{value}</div>
