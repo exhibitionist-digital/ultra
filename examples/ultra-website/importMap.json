@@ -7,7 +7,7 @@
     "react-dom": "https://esm.sh/v122/react-dom@0.0.0-experimental-8951c5fc9-20220915",
     "react-dom/server": "https://esm.sh/v122/react-dom@0.0.0-experimental-8951c5fc9-20220915/server",
     "react-dom/client": "https://esm.sh/v122/react-dom@0.0.0-experimental-8951c5fc9-20220915/client",
-    "ultra/": "https://deno.land/x/ultra@v2.3.5/",
+    "ultra/": "https://deno.land/x/ultra@v2.3.6/",
     "@tanstack/react-query": "https://esm.sh/v122/@tanstack/react-query@4.1.3?external=react",
     "wouter": "https://esm.sh/v122/wouter@2.9.0?external=react",
     "wouter/static-location": "https://esm.sh/v122/wouter@2.9.0/static-location?external=react"

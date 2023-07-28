@@ -1,2 +1,2 @@
 /* Do not set this manually, run tools/patch.ts if releasing a new version */
-export const VERSION = "2.3.5";
+export const VERSION = "2.3.6";
