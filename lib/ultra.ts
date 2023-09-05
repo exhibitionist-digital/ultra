@@ -14,6 +14,7 @@ import { Context, Env, ImportMap, Mode } from "./types.ts";
 import { toUltraUrl } from "./utils/url.ts";
 
 type UltraServerRenderOptions = {
+  entrypoint?: string;
   generateStaticHTML?: boolean;
   enableEsModuleShims?: boolean;
   disableHydration?: boolean;
@@ -46,8 +47,6 @@ export class UltraServer<
   public esModuleShimsPath?: string;
   public entrypoint?: string;
   public ultraDir?: string;
-
-  #bootstrapModules?: string[];
 
   constructor(
     public root: string,
@@ -97,15 +96,10 @@ export class UltraServer<
      */
     if (this.importMap) {
       this.#importMapHandler(this.importMap);
-      this.entrypoint = this.#prepareEntrypoint(this.importMap);
-
-      if (this.entrypoint) {
-        this.#bootstrapModules = [
-          this.entrypoint.startsWith("file://")
-            ? fromFileUrl(this.entrypoint)
-            : this.entrypoint,
-        ];
-      }
+      this.entrypoint = this.#prepareEntrypoint(
+        this.importMap,
+        this.entrypoint,
+      );
     }
 
     // Validate
@@ -126,6 +120,22 @@ export class UltraServer<
   ) {
     log.debug("Rendering component");
 
+    let bootstrapModules: string[] = [];
+
+    if (options?.entrypoint) {
+      options.entrypoint = options?.entrypoint && this.importMap
+        ? this.#prepareEntrypoint(this.importMap, options.entrypoint)
+        : undefined;
+    }
+
+    const entrypoint = options?.entrypoint || this.entrypoint;
+
+    if (entrypoint) {
+      bootstrapModules = [
+        entrypoint.startsWith("file://") ? fromFileUrl(entrypoint) : entrypoint,
+      ];
+    }
+
     return renderToStream(Component, context, {
       mode: this.mode,
       baseUrl: this.baseUrl,
@@ -133,7 +143,7 @@ export class UltraServer<
       importMap: this.importMap,
       enableEsModuleShims: this.enableEsModuleShims,
       esModuleShimsPath: this.esModuleShimsPath,
-      bootstrapModules: this.#bootstrapModules,
+      bootstrapModules,
       ...options,
     });
   }
@@ -180,16 +190,16 @@ export class UltraServer<
     }
   }
 
-  #prepareEntrypoint(importMap: ImportMap) {
-    if (!this.entrypoint) {
+  #prepareEntrypoint(importMap: ImportMap, entrypoint?: string) {
+    if (!entrypoint) {
       log.debug("No entrypoint provided, hydration disabled.");
-      return this.entrypoint;
+      return entrypoint;
     }
 
-    log.debug(sprintf("Resolving entrypoint: %s", this.entrypoint));
+    log.debug(sprintf("Resolving entrypoint: %s", entrypoint));
 
     let entrypointSpecifier = `./${
-      relative(this.root, fromFileUrl(this.entrypoint))
+      relative(this.root, fromFileUrl(entrypoint))
     }`;
 
     if (this.mode === "production") {
@@ -199,7 +209,7 @@ export class UltraServer<
         }
       }
     } else {
-      entrypointSpecifier = toUltraUrl(this.root, this.entrypoint, this.mode)!;
+      entrypointSpecifier = toUltraUrl(this.root, entrypoint, this.mode)!;
     }
 
     log.debug(sprintf("Resolved entrypoint: %s", entrypointSpecifier));
