@@ -40,6 +40,12 @@ server.get("*", async (context) => {
   // clear query cache
   queryClient.clear();
 
+  const requestUrl = new URL(context.req.url);
+
+  const entrypoint = requestUrl.pathname === "/foo"
+    ? import.meta.resolve("./client.foo.tsx")
+    : import.meta.resolve("./client.tsx");
+
   /**
    * Render the request
    */
@@ -49,6 +55,9 @@ server.get("*", async (context) => {
         <App />
       </TWProvider>
     </TRPCServerProvider>,
+    {
+      entrypoint,
+    },
   );
 
   return context.body(result, 200, {

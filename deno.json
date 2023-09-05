@@ -10,18 +10,21 @@
   },
   "lock": false,
   "lint": {
-    "files": {
-      "exclude": [
-        ".deno-cache"
-      ]
-    }
+    "exclude": [
+      ".deno-cache"
+    ]
   },
   "fmt": {
-    "files": {
-      "exclude": [
-        ".deno-cache"
-      ]
-    },
+    "exclude": [
+      ".deno-cache",
+      "examples/**/.ultra",
+      "examples/**/importMap.dev.json",
+      "examples/**/deno.dev.json",
+      "examples/with-netlify-(WIP)/.netlify/*",
+      "examples/ultra-website/src/content/*",
+      "examples/with-mdx/src/content/*",
+      "test/fixture/output/*"
+    ],
     "options": {
       "indentWidth": 2,
       "useTabs": false,

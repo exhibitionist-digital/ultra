@@ -24,4 +24,4 @@ export default function App() {
   );
 }
 
-typeof (document) !== "undefined" && hydrate(document, <App />);
+typeof document !== "undefined" && hydrate(document, <App />);

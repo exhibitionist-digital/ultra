@@ -37,6 +37,19 @@ Deno.test(
       assertEquals(content.includes("<strong>Ultra</strong>"), true);
     });
 
+    await t.step("it can override the entrypoint", async () => {
+      const response = await server.request("http://localhost/foo");
+      const content = await response.text();
+
+      assertEquals(response.status, 200);
+      assertEquals(
+        response.headers.get("content-type"),
+        "text/html; charset=utf-8",
+      );
+
+      assertEquals(content.includes("client.foo.tsx"), true);
+    });
+
     await t.step("it can serve static assets from '/public'", async () => {
       const response = await server.request("https://localhost/style.css");
       response.body?.cancel();
