@@ -23,7 +23,7 @@ const defaultOptions = {
   mode: (modeFromEnv || "development") as Mode,
   enableEsModuleShims: true,
   esModuleShimsPath:
-    "https://ga.jspm.io/npm:es-module-shims@1.6.2/dist/es-module-shims.js",
+    "https://ga.jspm.io/npm:es-module-shims@1.8.0/dist/es-module-shims.js",
 };
 
 export async function createServer<
