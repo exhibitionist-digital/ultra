@@ -182,7 +182,7 @@ export function createImportMapInjectionStream(
 
     if (enableEsModuleShims && esModuleShimsPath) {
       scripts.unshift(
-        `<script async src="${esModuleShimsPath}" crossorigin="anonymous"></script>`,
+        `<script async src="${esModuleShimsPath}" crossorigin="anonymous" nomodule></script>`,
       );
     }
 
