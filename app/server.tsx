@@ -5,6 +5,14 @@ import UltraServer from "ultra/lib/react/server.js";
 import App from "./app.tsx";
 
 const root = Deno.cwd();
+
+// create symlink to ultra for development
+try {
+  await Deno.symlink("../", "./ultra", { type: "dir" });
+} catch (error) {
+  // ignore
+}
+
 const importMap = {
   imports: {
     "react": "https://esm.sh/react@18?dev",
