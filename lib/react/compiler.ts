@@ -1,5 +1,6 @@
 import { join } from "https://deno.land/std@0.203.0/url/mod.ts";
 import { compile } from "https://deno.land/x/mesozoic@v1.3.10/lib/compiler.ts";
+import { type RequestHandler } from "../handler.ts";
 
 type CompilerOptions = {
   root: URL | string;
@@ -7,17 +8,18 @@ type CompilerOptions = {
   denyList?: string[];
 };
 
-export function createCompilerHandler(options: CompilerOptions) {
+export function createCompilerHandler(
+  options: CompilerOptions,
+): RequestHandler {
   const root = new URL(options.root.toString(), import.meta.url);
-
+  const prefix = "/_ultra/";
   const pattern = new URLPattern({
-    pathname: "/_ultra/:path*",
+    pathname: `${prefix}:path*`,
   });
 
   const handleRequest = async (request: Request): Promise<Response> => {
     const { pathname } = new URL(request.url);
-    const filePath = pathname.replace(/^\/_ultra\//, "");
-    console.debug("filePath", filePath);
+    const filePath = pathname.replace(prefix, "./");
     const fileUrl = join(root, filePath);
 
     const source = await Deno.readTextFile(fileUrl);
