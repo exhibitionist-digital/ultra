@@ -3,9 +3,11 @@ import { compile } from "https://deno.land/x/mesozoic@v1.3.10/lib/compiler.ts";
 
 type CompilerOptions = {
   root: URL | string;
+  allowList?: string[];
+  denyList?: string[];
 };
 
-export function createCompiler(options: CompilerOptions) {
+export function createCompilerHandler(options: CompilerOptions) {
   const root = new URL(options.root.toString(), import.meta.url);
 
   const pattern = new URLPattern({
@@ -15,6 +17,7 @@ export function createCompiler(options: CompilerOptions) {
   const handleRequest = async (request: Request): Promise<Response> => {
     const { pathname } = new URL(request.url);
     const filePath = pathname.replace(/^\/_ultra\//, "");
+    console.debug("filePath", filePath);
     const fileUrl = join(root, filePath);
 
     const source = await Deno.readTextFile(fileUrl);

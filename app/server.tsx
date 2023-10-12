@@ -1,6 +1,8 @@
 import { renderToReadableStream } from "react-dom/server";
-import { createCompiler } from "ultra/lib/react/compiler.ts";
-import { createRenderer } from "ultra/lib/react/renderer.ts";
+import { createImportMapProxy } from "ultra/lib/importMap.ts";
+import { createCompilerHandler } from "ultra/lib/react/compiler.ts";
+import { createRenderHandler } from "ultra/lib/react/renderer.ts";
+import UltraServer from "ultra/lib/react/server.js";
 import App from "./app.tsx";
 
 const importMap = {
@@ -8,24 +10,32 @@ const importMap = {
     "react": "https://esm.sh/react@18?dev",
     "react/": "https://esm.sh/react@18&dev/",
     "react-dom/": "https://esm.sh/react-dom@18&dev&external=react/",
+    "/~/": import.meta.resolve("./"),
   },
 };
 
 const root = Deno.cwd();
 
-const renderer = createRenderer({
+const proxiedImportMap = await createImportMapProxy(importMap, root);
+
+const renderer = createRenderHandler({
   root,
-  importMap,
+  importMap: proxiedImportMap,
   render(request) {
-    return renderToReadableStream(<App />, {
-      bootstrapModules: [
-        import.meta.resolve("./client.tsx"),
-      ],
-    });
+    return renderToReadableStream(
+      <UltraServer request={request}>
+        <App />
+      </UltraServer>,
+      {
+        bootstrapModules: [
+          import.meta.resolve("./client.tsx"),
+        ],
+      },
+    );
   },
 });
 
-const compiler = createCompiler({
+const compiler = createCompilerHandler({
   root,
 });
 
@@ -40,5 +50,9 @@ Deno.serve((request) => {
     return compiler.handleRequest(request);
   }
 
-  return renderer.handleRequest(request);
+  if (renderer.supportsRequest(request)) {
+    return renderer.handleRequest(request);
+  }
+
+  return new Response("Not Found", { status: 404 });
 });
