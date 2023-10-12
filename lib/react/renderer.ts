@@ -1,4 +1,5 @@
 import { toFileUrl } from "https://deno.land/std@0.203.0/path/to_file_url.ts";
+import { ImportMap } from "../importMap.ts";
 
 interface Renderer {
   handleRequest: (request: Request) => Promise<Response>;
@@ -8,13 +9,6 @@ interface RendererOptions<T> {
   importMap?: ImportMap;
   render: RenderFunction<T>;
 }
-
-type ImportMap = {
-  imports?: SpecifierMap;
-  scopes?: Record<string, SpecifierMap>;
-};
-
-type SpecifierMap = Record<string, string>;
 
 type RenderResult<T> = Promise<T> | T | Promise<Response> | Response;
 
@@ -40,7 +34,6 @@ export function createRenderer(
         transform: (chunk, controller) => {
           let output = new TextDecoder().decode(chunk);
 
-          // Inject an import map into the head, if there is a script tag in the head, place it before that
           if (importMapScript) {
             output = injectImportMapScript(importMapScript, output);
           }
@@ -75,6 +68,8 @@ export function createRenderer(
   };
 }
 
+// Inject an import map into the head, if there is a script tag in the head, place it before that
+
 function injectImportMapScript(importMapScript: string, output: string) {
   const head = output.match(/<head>(.*)<\/head>/s);
   if (head) {
@@ -90,6 +85,9 @@ function injectImportMapScript(importMapScript: string, output: string) {
         `${head[0]}${importMapScript}`,
       );
     }
+  } else {
+    // if there is no head tag, just inject it at the top of the output
+    output = `${importMapScript}${output}`;
   }
 
   return output;
