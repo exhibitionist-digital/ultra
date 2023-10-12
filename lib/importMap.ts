@@ -1,8 +1,4 @@
-import {
-  type ImportMapJson,
-  parseFromJson,
-} from "https://deno.land/x/import_map@v0.15.0/mod.ts";
-import { toFileUrl } from "./deps.ts";
+import { type ImportMapJson, parseFromJson, toFileUrl } from "./deps.ts";
 
 export type ImportMap = ImportMapJson;
 
@@ -40,7 +36,7 @@ export async function createImportMapProxy(
         return importsProxy;
       }
 
-      return target[prop];
+      return target[prop as keyof typeof target];
     },
   });
 }

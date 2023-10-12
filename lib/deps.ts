@@ -7,6 +7,10 @@ export {
   relative,
   resolve,
 } from "https://deno.land/std@0.176.0/path/mod.ts";
+export {
+  type ImportMapJson,
+  parseFromJson,
+} from "https://deno.land/x/import_map@v0.15.0/mod.ts";
 export { toFileUrl } from "https://deno.land/std@0.203.0/path/to_file_url.ts";
 export { load as dotenv } from "https://deno.land/std@0.176.0/dotenv/mod.ts";
 export { default as outdent } from "https://deno.land/x/outdent@v0.8.0/mod.ts";
