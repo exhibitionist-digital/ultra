@@ -2,18 +2,17 @@ import { renderToReadableStream } from "react-dom/server";
 import { createCompilerHandler } from "ultra/lib/react/compiler.ts";
 import { createRenderHandler } from "ultra/lib/react/renderer.ts";
 import UltraServer from "ultra/lib/react/server.js";
-import { createImportMapProxy } from "ultra/lib/importMap.ts";
 import App from "./app.tsx";
 
 const root = Deno.cwd();
-const importMap = await createImportMapProxy({
+const importMap = {
   imports: {
     "react": "https://esm.sh/react@18?dev",
     "react/": "https://esm.sh/react@18&dev/",
     "react-dom/": "https://esm.sh/react-dom@18&dev&external=react/",
     "/~/": import.meta.resolve("./"),
   },
-}, root);
+};
 
 const renderer = createRenderHandler({
   root,
