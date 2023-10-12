@@ -1,17 +1,20 @@
-import { createRenderer } from "ultra/lib/react/renderer.ts";
 import { renderToReadableStream } from "react-dom/server";
+import { createCompiler } from "ultra/lib/react/compiler.ts";
+import { createRenderer } from "ultra/lib/react/renderer.ts";
 import App from "./app.tsx";
-import { createCompiler } from "ultra/lib/compiler.ts";
 
 const importMap = {
   imports: {
-    "react": "https://esm.sh/react@18",
-    "react/": "https://esm.sh/react@18/",
-    "react-dom/": "https://esm.sh/react-dom@18&external=react/",
+    "react": "https://esm.sh/react@18?dev",
+    "react/": "https://esm.sh/react@18&dev/",
+    "react-dom/": "https://esm.sh/react-dom@18&dev&external=react/",
   },
 };
 
+const root = Deno.cwd();
+
 const renderer = createRenderer({
+  root,
   importMap,
   render(request) {
     return renderToReadableStream(<App />, {
@@ -23,7 +26,7 @@ const renderer = createRenderer({
 });
 
 const compiler = createCompiler({
-  root: Deno.cwd(),
+  root,
 });
 
 Deno.serve((request) => {
@@ -33,7 +36,7 @@ Deno.serve((request) => {
     return new Response(null, { status: 404 });
   }
 
-  if (url.pathname.startsWith("/_ultra/")) {
+  if (compiler.supportsRequest(request)) {
     return compiler.handleRequest(request);
   }
 
