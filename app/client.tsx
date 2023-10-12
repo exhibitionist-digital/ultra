@@ -1,4 +1,9 @@
-import { hydrateRoot } from "react-dom/client";
+import UltraClient, { hydrate } from "ultra/lib/react/client.js";
 import App from "/~/app.tsx";
 
-hydrateRoot(document, <App />);
+hydrate(
+  document,
+  <UltraClient>
+    <App />
+  </UltraClient>,
+);

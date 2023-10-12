@@ -1,8 +1,5 @@
-import { type ImportMap } from "./importMap.ts";
-
 export interface RendererOptions<T> {
   root: string | URL;
-  importMap?: ImportMap;
   render: RenderFunction<T>;
 }
 

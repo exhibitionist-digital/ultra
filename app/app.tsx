@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from "react";
 import { ErrorBoundary } from "https://esm.sh/*react-error-boundary@4.0.11";
+import { ImportMapScript } from "ultra/lib/react/client.js";
 
 const LazyComponent = lazy(() => import("./components/Test.tsx"));
 
@@ -13,6 +14,8 @@ export default function App() {
     <html>
       <head>
         <title>Testing</title>
+        <link rel="stylesheet" href="/style.css" />
+        <ImportMapScript />
       </head>
       <body>
         <main>Hello World {state}</main>

@@ -1,70 +1,19 @@
-import { type ImportMap } from "./importMap.ts";
-
-type RenderResponseTransformerOptions = {
-  root: URL;
-  importMap?: ImportMap;
-};
-
-export function createRenderResponseTransformer(
-  options: RenderResponseTransformerOptions,
-) {
-  const { root, importMap } = options;
-
-  const transformer = (result: Response | ReadableStream) => {
-    if (result instanceof ReadableStream) {
-      const transforms: TransformStream<Uint8Array, Uint8Array>[] = [];
-      transforms.push(createUltraUrlTransformStream(root));
-
-      if (importMap) {
-        transforms.push(createImportMapTransformStream(importMap));
-      }
-
-      const stream = transforms.reduce(
-        (readable, transform) => readable.pipeThrough(transform),
-        result as ReadableStream<Uint8Array>,
-      );
-
-      return new Response(stream, {
-        headers: {
-          "content-type": "text/html",
-        },
-      });
-    }
-
-    if (result instanceof Response) {
-      const transforms: TransformStream<Uint8Array, Uint8Array>[] = [];
-
-      if (result.body) {
-        transforms.push(createUltraUrlTransformStream(root));
-        if (importMap) {
-          transforms.push(
-            createImportMapTransformStream(importMap),
-          );
-        }
-      }
-
-      const stream = transforms.reduce(
-        (readable, transform) => readable.pipeThrough(transform),
-        result.body as ReadableStream<Uint8Array>,
-      );
-
-      return new Response(stream, {
-        headers: result.headers,
-      });
-    }
-  };
-
-  return transformer;
-}
+import { ImportMap } from "./importMap.ts";
 
 export function createUltraUrlTransformStream(root: URL) {
   const regex = new RegExp(root.toString(), "g");
+  let buffer = "";
+
   const transform = new TransformStream<Uint8Array, Uint8Array>({
-    transform: (chunk, controller) => {
+    transform: (chunk) => {
       const output = new TextDecoder().decode(chunk);
-      const newOutput = output.replace(regex, "/_ultra");
-      chunk = new TextEncoder().encode(newOutput);
+      buffer += output;
+    },
+    flush: (controller) => {
+      const newOutput = buffer.replace(regex, "/_ultra");
+      const chunk = new TextEncoder().encode(newOutput);
       controller.enqueue(chunk);
+      controller.terminate();
     },
   });
 

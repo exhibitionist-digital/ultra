@@ -11,15 +11,15 @@ const importMap = {
     "react/": "https://esm.sh/react@18&dev/",
     "react-dom/": "https://esm.sh/react-dom@18&dev&external=react/",
     "/~/": import.meta.resolve("./"),
+    "ultra/": import.meta.resolve("./ultra/"),
   },
 };
 
 const renderer = createRenderHandler({
   root,
-  importMap,
   render(request) {
     return renderToReadableStream(
-      <UltraServer request={request}>
+      <UltraServer request={request} importMap={importMap}>
         <App />
       </UltraServer>,
       {

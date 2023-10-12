@@ -1,10 +1,7 @@
 import { toFileUrl } from "../deps.ts";
 import { type RequestHandler } from "../handler.ts";
 import { type RendererOptions } from "../renderer.ts";
-import {
-  createImportMapTransformStream,
-  createUltraUrlTransformStream,
-} from "../stream.ts";
+import { createUltraUrlTransformStream } from "../stream.ts";
 
 export function createRenderHandler(
   options: RendererOptions<JSX.Element>,
@@ -13,16 +10,10 @@ export function createRenderHandler(
     ? options.root
     : toFileUrl(options.root);
 
-  const importMap = options.importMap;
-
   const handleRequest = async (request: Request): Promise<Response> => {
     const result = await options.render(request);
     if (result instanceof ReadableStream) {
       const transforms: TransformStream<Uint8Array, Uint8Array>[] = [];
-
-      if (importMap) {
-        transforms.push(createImportMapTransformStream(importMap));
-      }
 
       transforms.push(createUltraUrlTransformStream(root));
 
@@ -43,11 +34,6 @@ export function createRenderHandler(
 
       if (result.body) {
         transforms.push(createUltraUrlTransformStream(root));
-        if (importMap) {
-          transforms.push(
-            createImportMapTransformStream(importMap),
-          );
-        }
       }
 
       const stream = transforms.reduce(
