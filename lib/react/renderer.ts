@@ -5,8 +5,16 @@ interface Renderer {
 }
 
 interface RendererOptions<T> {
+  importMap?: ImportMap;
   render: RenderFunction<T>;
 }
+
+type ImportMap = {
+  imports?: SpecifierMap;
+  scopes?: Record<string, SpecifierMap>;
+};
+
+type SpecifierMap = Record<string, string>;
 
 type RenderResult<T> = Promise<T> | T | Promise<Response> | Response;
 
@@ -20,19 +28,28 @@ export function createRenderer(
 ): Renderer {
   const cwd = toFileUrl(Deno.cwd());
 
+  const importMapScript = options.importMap
+    ? `<script type="importmap">${JSON.stringify(options.importMap)}</script>`
+    : null;
+
   const handleRequest = async (request: Request): Promise<Response> => {
     const result = await options.render(request);
 
     if (result instanceof ReadableStream) {
       const transform = new TransformStream<Uint8Array, Uint8Array>({
         transform: (chunk, controller) => {
-          const string = new TextDecoder().decode(chunk);
+          let output = new TextDecoder().decode(chunk);
+
+          // Inject an import map into the head, if there is a script tag in the head, place it before that
+          if (importMapScript) {
+            output = injectImportMapScript(importMapScript, output);
+          }
 
           // Find any urls in the string that match the cwd and replace them with the Ultra url
           const regex = new RegExp(cwd.toString(), "g");
-          const replaced = string.replace(regex, "/_ultra");
+          output = output.replace(regex, "/_ultra");
 
-          chunk = new TextEncoder().encode(replaced);
+          chunk = new TextEncoder().encode(output);
           controller.enqueue(chunk);
         },
       });
@@ -56,4 +73,24 @@ export function createRenderer(
   return {
     handleRequest,
   };
+}
+
+function injectImportMapScript(importMapScript: string, output: string) {
+  const head = output.match(/<head>(.*)<\/head>/s);
+  if (head) {
+    const headEnd = head[1].match(/<script.*<\/script>/s);
+    if (headEnd) {
+      output = output.replace(
+        headEnd[0],
+        `${importMapScript}${headEnd[0]}`,
+      );
+    } else {
+      output = output.replace(
+        head[0],
+        `${head[0]}${importMapScript}`,
+      );
+    }
+  }
+
+  return output;
 }
