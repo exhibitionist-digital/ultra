@@ -113,6 +113,34 @@ Deno.test("renderToStream html without head", async () => {
 });
 
 
+Deno.test("renderToStream html with empty head", async () => {
+  const App = () => {
+    return (
+      <html>
+        <head></head>
+      </html>
+    );
+  };
+
+  const stream = await renderToStream(
+    <App />,
+    undefined,
+    {
+      baseUrl: "/",
+      importMap: { imports: {} },
+      assetManifest: new Map()
+    },
+  );
+
+  const response = new Response(stream);
+  const text = await response.text();
+
+  assertEquals(
+    text.includes('Hi'),
+    false,
+  );
+});
+
 Deno.test("renderToStream html body with empty head", async () => {
   const App = () => {
     return (
