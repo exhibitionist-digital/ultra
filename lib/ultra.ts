@@ -35,10 +35,11 @@ export class UltraServer<
   // deno-lint-ignore ban-types
   S = {},
   BasePath extends string = "/",
-> extends Hono<E, S, BasePath> {
+> {
   public importMap: ImportMap | undefined;
   public assetManifest: Map<string, string> | undefined;
 
+  public root: string;
   public mode: Mode;
   public baseUrl: string;
   public importMapPath?: string;
@@ -48,12 +49,20 @@ export class UltraServer<
   public entrypoint?: string;
   public ultraDir?: string;
 
-  constructor(
-    public root: string,
-    options: UltraServerOptions,
-  ) {
-    super();
+  public wrappedServer: Hono<E, S, BasePath>;
 
+  constructor(
+    root: string,
+    options: UltraServerOptions
+  );
+  constructor (
+    root: string,
+    options: UltraServerOptions,
+    wrappedServer?: Hono<E, S, BasePath>,
+  ) {
+    this.wrappedServer = wrappedServer ?? new Hono<E, S, BasePath>();
+
+    this.root = root;
     this.mode = options.mode;
     this.importMapPath = options.importMapPath;
     this.assetManifestPath = options.assetManifestPath;
@@ -68,7 +77,7 @@ export class UltraServer<
       ? (message: string) => log.info(message)
       : (message: string) => console.info(message);
 
-    this.use("*", logger(logFn));
+    this.wrappedServer.use("*", logger(logFn));
   }
 
   async init() {

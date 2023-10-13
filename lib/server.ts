@@ -67,14 +67,14 @@ export async function createServer<
 
   // We always try to serve public assets before anything else.
   // deno-fmt-ignore
-  server.get("*", serveStatic({
+  server.wrappedServer.get("*", serveStatic({
     root: resolve(root, "./public"),
     cache: mode !== "development",
   }));
 
   // Serve anything else static at "/"
   // deno-fmt-ignore
-  server.get("/ultra/*", (context, next) => {
+  server.wrappedServer.get("/ultra/*", (context, next) => {
     const path = new URL(context.req.url).pathname.slice(`/ultra`.length)
     return serveStatic({
       root: server.ultraDir,
@@ -85,7 +85,7 @@ export async function createServer<
 
   // Serve anything else static at "/"
   // deno-fmt-ignore
-  server.get("*", serveStatic({
+  server.wrappedServer.get("*", serveStatic({
     root: resolve(root, "./"),
     cache: mode !== "development",
   }));
@@ -95,7 +95,7 @@ export async function createServer<
     const { compiler } = await import("./middleware/compiler.ts");
 
     // deno-fmt-ignore
-    server.get(`${ULTRA_COMPILER_PATH}/*`, compiler({
+    server.wrappedServer.get(`${ULTRA_COMPILER_PATH}/*`, compiler({
       root,
       ...options.compilerOptions,
     }));
