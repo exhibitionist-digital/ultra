@@ -14,7 +14,7 @@ Deno.test("renderToStream string", async () => {
     {
       baseUrl: "/",
       importMap: { imports: {} },
-      assetManifest: new Map()
+      assetManifest: new Map(),
     },
   );
 
@@ -22,16 +22,14 @@ Deno.test("renderToStream string", async () => {
   const text = await response.text();
 
   assertEquals(
-    text.includes('Hi'),
+    text.includes("Hi"),
     true,
   );
 });
 
 Deno.test("renderToStream div", async () => {
   const App = () => {
-    return (
-      <div>Hi</div>
-    );
+    return <div>Hi</div>;
   };
 
   const stream = await renderToStream(
@@ -40,7 +38,7 @@ Deno.test("renderToStream div", async () => {
     {
       baseUrl: "/",
       importMap: { imports: {} },
-      assetManifest: new Map()
+      assetManifest: new Map(),
     },
   );
 
@@ -48,11 +46,10 @@ Deno.test("renderToStream div", async () => {
   const text = await response.text();
 
   assertEquals(
-    text.includes('Hi'),
+    text.includes("Hi"),
     true,
   );
 });
-
 
 Deno.test("renderToStream body", async () => {
   const App = () => {
@@ -69,7 +66,7 @@ Deno.test("renderToStream body", async () => {
     {
       baseUrl: "/",
       importMap: { imports: {} },
-      assetManifest: new Map()
+      assetManifest: new Map(),
     },
   );
 
@@ -77,7 +74,7 @@ Deno.test("renderToStream body", async () => {
   const text = await response.text();
 
   assertEquals(
-    text.includes('Hi'),
+    text.includes("Hi"),
     true,
   );
 });
@@ -99,7 +96,7 @@ Deno.test("renderToStream html without head", async () => {
     {
       baseUrl: "/",
       importMap: { imports: {} },
-      assetManifest: new Map()
+      assetManifest: new Map(),
     },
   );
 
@@ -107,11 +104,10 @@ Deno.test("renderToStream html without head", async () => {
   const text = await response.text();
 
   assertEquals(
-    text.includes('Hi'),
+    text.includes("Hi"),
     true,
   );
 });
-
 
 Deno.test("renderToStream html with empty head", async () => {
   const App = () => {
@@ -128,7 +124,7 @@ Deno.test("renderToStream html with empty head", async () => {
     {
       baseUrl: "/",
       importMap: { imports: {} },
-      assetManifest: new Map()
+      assetManifest: new Map(),
     },
   );
 
@@ -136,7 +132,7 @@ Deno.test("renderToStream html with empty head", async () => {
   const text = await response.text();
 
   assertEquals(
-    text.includes('Hi'),
+    text.includes("Hi"),
     false,
   );
 });
@@ -159,7 +155,7 @@ Deno.test("renderToStream html body with empty head", async () => {
     {
       baseUrl: "/",
       importMap: { imports: {} },
-      assetManifest: new Map()
+      assetManifest: new Map(),
     },
   );
 
@@ -167,7 +163,7 @@ Deno.test("renderToStream html body with empty head", async () => {
   const text = await response.text();
 
   assertEquals(
-    text.includes('Hi'),
+    text.includes("Hi"),
     true,
   );
 });
