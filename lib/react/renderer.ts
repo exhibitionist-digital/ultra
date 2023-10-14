@@ -1,10 +1,11 @@
+import { type ReactDOMServerReadableStream } from "react-dom/server";
 import { toFileUrl } from "../deps.ts";
 import { type RequestHandler } from "../handler.ts";
 import { type RendererOptions } from "../renderer.ts";
 import { createUltraUrlTransformStream } from "../stream.ts";
 
 export function createRenderHandler(
-  options: RendererOptions<JSX.Element>,
+  options: RendererOptions<ReactDOMServerReadableStream>,
 ): RequestHandler {
   const root = options.root instanceof URL
     ? options.root
