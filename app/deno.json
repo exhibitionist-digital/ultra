@@ -7,6 +7,9 @@
     "ultra/": "../",
     "/~/": "./"
   },
+  "tasks": {
+    "dev": "deno run -A server.tsx"
+  },
   "compilerOptions": {
     "jsx": "react-jsxdev",
     "jsxImportSource": "react"
