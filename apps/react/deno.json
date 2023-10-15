@@ -4,7 +4,7 @@
     "react/": "https://esm.sh/stable/react@18.2.0&dev/",
     "react-dom": "https://esm.sh/react-dom@18.2.0?external=react&dev",
     "react-dom/": "https://esm.sh/react-dom@18.2.0&external=react&dev/",
-    "ultra/": "../",
+    "ultra/": "../../",
     "/~/": "./"
   },
   "tasks": {

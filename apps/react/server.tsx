@@ -8,7 +8,7 @@ const root = Deno.cwd();
 
 // create symlink to ultra for development
 try {
-  await Deno.symlink("../", "./ultra", { type: "dir" });
+  await Deno.symlink("../../", "./ultra", { type: "dir" });
 } catch (error) {
   // ignore
 }
