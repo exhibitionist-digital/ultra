@@ -13,9 +13,15 @@
   [hmr](https://github.com/denoland/deno/pull/20876),
   [cli](https://esm.sh/#cli))
 
+---
+
 `./react` is a simple Ultra server working the above bullet points in action. We
 are exposing `createRenderHandler` and `createCompilerHandler` which should
 allow more custom non-react implementations.
+
+To run: cd into `./react` and run `deno task dev`
+
+---
 
 Would be nice to see a simple `./web-components` example. Even if the SSR is
 limited.
