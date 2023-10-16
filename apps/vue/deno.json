@@ -1,0 +1,11 @@
+{
+  "imports": {
+    "vue": "https://esm.sh/vue",
+    "vue/": "https://esm.sh/vue/",
+    "ultra/": "../../",
+    "/~/": "./"
+  },
+  "tasks": {
+    "dev": "deno run -A server.tsx"
+  }
+}
