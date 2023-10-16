@@ -6,6 +6,6 @@
     "/~/": "./"
   },
   "tasks": {
-    "dev": "deno run -A server.tsx"
+    "dev": "deno run -A server.js"
   }
 }
