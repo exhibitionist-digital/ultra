@@ -6,6 +6,6 @@
     "/~/": "./"
   },
   "tasks": {
-    "dev": "deno run -A server.js"
+    "dev": "deno run -A --watch server.js"
   }
 }

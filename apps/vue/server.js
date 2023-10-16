@@ -1,5 +1,7 @@
 import { createSSRApp, h, ref, shallowRef } from 'https://esm.sh/vue';
+import { createRenderHandler } from 'ultra/lib/vue/renderer.ts';
 import { renderToWebStream } from 'https://esm.sh/@vue/server-renderer';
+import app from './app.js';
 
 // TODO: This is a basic vue ssr example, need to add renderer to inject hydration codes
 
@@ -21,25 +23,13 @@ const importMap = {
   },
 };
 
-const app = createSSRApp({
-  setup() {
-    const count = shallowRef(0);
+const ultraApp = createSSRApp(app);
 
-    function up() {
-      count.value += 1;
-    }
-
-    function down() {
-      count.value -= 1;
-    }
-
-    return function render() {
-      return h('div', [
-        h('h1', 'count: ' + count.value),
-        h('button', { onClick: up }, 'Up'),
-        h('button', { onClick: down }, 'Down'),
-      ]);
-    };
+const renderer = createRenderHandler({
+  root,
+  client: './client.js',
+  render(request) {
+    return renderToWebStream(ultraApp);
   },
 });
 
@@ -50,5 +40,9 @@ Deno.serve((request) => {
     return new Response(null, { status: 404 });
   }
 
-  return new Response(renderToWebStream(app));
+  if (renderer.supportsRequest(request)) {
+    return renderer.handleRequest(request);
+  }
+
+  // return new Response();
 });
