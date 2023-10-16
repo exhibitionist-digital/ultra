@@ -15,9 +15,7 @@
 
 ---
 
-`./react` is a simple Ultra server working the above bullet points in action. We
-are exposing `createRenderHandler` and `createCompilerHandler` which should
-allow more custom non-react implementations.
+`./react` is a simple Ultra server working the above bullet points in action.
 
 To run: cd into `./react` and run `deno task dev`
 
