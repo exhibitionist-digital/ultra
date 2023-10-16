@@ -4,6 +4,7 @@ const importMap = {
   imports: {
     vue: 'https://esm.sh/vue',
     'vue/': 'https://esm.sh/vue/',
+    'app.js': '/app.js',
   },
 };
 
@@ -12,6 +13,14 @@ const ImportMapScript = () => {
     name: 'importmap',
     type: 'importmap',
     innerHTML: JSON.stringify(importMap),
+  });
+};
+
+const HydrateScript = () => {
+  return h('script', {
+    name: 'script',
+    type: 'module',
+    src: `/client.js`,
   });
 };
 
@@ -28,8 +37,12 @@ const app = {
     }
 
     return function render() {
-      return h('html', [
-        h('head', [h('title', 'Ultra SSR Vue Example'), ImportMapScript()]),
+      return h('html', { lang: 'en' }, [
+        h('head', [
+          h('title', 'Ultra SSR Vue Example'),
+          ImportMapScript(),
+          HydrateScript(),
+        ]),
         h('body', [
           h('h1', 'count: ' + count.value),
           h('button', { onClick: up }, 'Up'),
