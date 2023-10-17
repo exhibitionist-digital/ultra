@@ -1,7 +1,6 @@
 import { ULTRA_COMPILER_PATH } from "./constants.ts";
 import { assert, dotenv, Hono, resolve, toFileUrl } from "./deps.ts";
 import { ensureMinDenoVersion } from "./dev/ensureMinDenoVersion.ts";
-import { log } from "./logger.ts";
 import { serveStatic } from "./middleware/serveStatic.ts";
 import { CreateServerOptions, Env, Mode } from "./types.ts";
 import { UltraServer } from "./ultra.ts";
@@ -91,7 +90,6 @@ export async function createServer<
   }));
 
   if (mode === "development") {
-    log.info("Loading compiler");
     const { compiler } = await import("./middleware/compiler.ts");
 
     // deno-fmt-ignore
