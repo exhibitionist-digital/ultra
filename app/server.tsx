@@ -1,6 +1,5 @@
 import { renderToReadableStream } from "react-dom/server";
-import { createCompilerHandler } from "ultra/lib/react/compiler.ts";
-import { createRenderHandler } from "ultra/lib/react/renderer.ts";
+import { createReactHandler } from "ultra/lib/react/mod.ts";
 import UltraServer from "ultra/lib/react/server.js";
 import App from "./app.tsx";
 
@@ -23,7 +22,7 @@ const importMap = {
   },
 };
 
-const renderer = createRenderHandler({
+const handler = createReactHandler({
   root,
   render(request) {
     return renderToReadableStream(
@@ -39,10 +38,6 @@ const renderer = createRenderHandler({
   },
 });
 
-const compiler = createCompilerHandler({
-  root,
-});
-
 Deno.serve((request) => {
   const url = new URL(request.url, "http://localhost");
 
@@ -50,12 +45,8 @@ Deno.serve((request) => {
     return new Response(null, { status: 404 });
   }
 
-  if (compiler.supportsRequest(request)) {
-    return compiler.handleRequest(request);
-  }
-
-  if (renderer.supportsRequest(request)) {
-    return renderer.handleRequest(request);
+  if (handler.supportsRequest(request)) {
+    return handler.handleRequest(request);
   }
 
   return new Response("Not Found", { status: 404 });
