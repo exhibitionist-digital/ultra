@@ -1,4 +1,4 @@
-import { h, shallowRef } from 'https://esm.sh/vue';
+import { h, shallowRef, createSSRApp } from 'https://esm.sh/vue';
 
 const importMap = {
   imports: {
@@ -20,7 +20,7 @@ const HydrateScript = () => {
   return h('script', {
     name: 'script',
     type: 'module',
-    src: `/client.js`,
+    src: `/app.js`,
   });
 };
 
@@ -54,3 +54,8 @@ const app = {
 };
 
 export default app;
+
+if (typeof document !== 'undefined') {
+  const ultraApp = createSSRApp(app);
+  ultraApp.mount(document);
+}
