@@ -6,7 +6,7 @@
   "image": "mcr.microsoft.com/devcontainers/base:jammy",
   "features": {
     "ghcr.io/devcontainers-contrib/features/deno:1": {
-      "version": "1.36.4"
+      "version": "1.37.1"
     }
   },
   "customizations": {
