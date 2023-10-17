@@ -6,6 +6,9 @@
   "[css]": {
     "editor.defaultFormatter": "vscode.css-language-features"
   },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "denoland.vscode-deno",
+  },
   "deno.enablePaths": [
     "./examples/ultra-website",
     "./examples/basic",
