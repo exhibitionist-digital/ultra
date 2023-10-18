@@ -1,4 +1,5 @@
 // required until Deno v2
+// https://github.com/denoland/deno/issues/13367
 import 'data:text/javascript,delete globalThis.window;';
 
 import { createRenderHandler } from 'ultra/lib/vue/renderer.ts';
@@ -10,7 +11,7 @@ const root = Deno.cwd();
 // create symlink to ultra for development
 try {
   await Deno.symlink('../../', './ultra', { type: 'dir' });
-} catch (error) {
+} catch {
   // ignore
 }
 
@@ -25,7 +26,7 @@ const importmap = {
 const renderer = createRenderHandler({
   root,
   render(request) {
-    app.provide(/* key */ 'importmap', /* value */ JSON.stringify(importmap));
+    app.provide('importmap', JSON.stringify(importmap));
     router.push(new URL(request.url).pathname);
     return router.isReady().then(() => renderToWebStream(app));
   },
@@ -34,13 +35,15 @@ const renderer = createRenderHandler({
 Deno.serve(async (request) => {
   const url = new URL(request.url, 'http://localhost');
 
-  // quick js file sserver
+  // quick js file server
   const static_path = './src';
   const filePath = static_path + url.pathname;
   let file;
   try {
     file = await Deno.readFile(filePath);
-  } catch {}
+  } catch {
+    // ignore
+  }
   if (file) {
     return new Response(file, {
       headers: { 'content-type': 'text/javascript' },
