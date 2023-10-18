@@ -1,8 +1,9 @@
 {
   "imports": {
-    "vue": "https://esm.sh/vue",
-    "vue/": "https://esm.sh/vue/",
     "ultra/": "../../",
+    "vue": "https://esm.sh/vue@3.3.4?dev",
+    "vue/": "https://esm.sh/vue@3.3.4?dev/",
+    "vue-router": "https://esm.sh/vue-router@4.2.5?dev",
     "/~/": "./"
   },
   "tasks": {

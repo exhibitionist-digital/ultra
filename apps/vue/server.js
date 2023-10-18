@@ -1,7 +1,9 @@
-import { createSSRApp } from 'https://esm.sh/vue';
+// required until Deno v2
+import 'data:text/javascript,delete globalThis.window;';
+
 import { createRenderHandler } from 'ultra/lib/vue/renderer.ts';
 import { renderToWebStream } from 'https://esm.sh/@vue/server-renderer';
-import app from './src/app.js';
+import app, { router } from './src/app.js';
 
 const root = Deno.cwd();
 
@@ -12,12 +14,20 @@ try {
   // ignore
 }
 
-const ultraApp = createSSRApp(app);
+const importmap = {
+  imports: {
+    vue: 'https://esm.sh/vue@3.3.4?dev',
+    'vue/': 'https://esm.sh/vue@3.3.4?dev/',
+    'vue-router': 'https://esm.sh/vue-router@4.2.5?dev',
+  },
+};
 
 const renderer = createRenderHandler({
   root,
   render(request) {
-    return renderToWebStream(ultraApp);
+    app.provide(/* key */ 'importmap', /* value */ JSON.stringify(importmap));
+    router.push(new URL(request.url).pathname);
+    return router.isReady().then(() => renderToWebStream(app));
   },
 });
 

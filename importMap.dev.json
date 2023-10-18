@@ -32,6 +32,9 @@
     "@stitches/react": "https://esm.sh/v122/@stitches/react@1.2.8?external=react",
     "react-helmet-async": "https://esm.sh/v122/react-helmet-async@1.3.0?external=react",
     "@ultra/qrcode/": "https://deno.land/x/qrcode@v2.0.0/",
-    "ultra/": "./"
+    "ultra/": "./",
+    "vue": "https://esm.sh/vue@3.3.4?dev",
+    "vue/": "https://esm.sh/vue@3.3.4?dev/",
+    "vue-router": "https://esm.sh/vue-router@4.2.5?dev"
   }
 }
