@@ -1,5 +1,7 @@
+
 import { useState } from "react";
-import hydrate from "ultra/hydrate.js";
+import UltraClient, { hydrate } from "ultra/lib/react/client.js";
+import { ImportMapScript } from "ultra/lib/react/client.js";
 
 export default function App() {
   const [count, setCount] = useState(0);
@@ -9,6 +11,7 @@ export default function App() {
         <meta charSet="utf-8" />
         <title>lite</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <ImportMapScript />
       </head>
       <body>
         <main>
@@ -22,6 +25,11 @@ export default function App() {
       </body>
     </html>
   );
-}
+};
 
-typeof document !== "undefined" && hydrate(document, <App />);
+typeof document !== "undefined" && hydrate(
+  document,
+  <UltraClient>
+    <App />
+  </UltraClient>,
+);
