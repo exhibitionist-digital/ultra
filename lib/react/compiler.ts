@@ -10,9 +10,9 @@ type CompilerOptions = {
 
 export function createCompilerHandler(
   options: CompilerOptions,
-  prefix = "/_ultra/",
 ): RequestHandler {
   const root = new URL(options.root.toString(), import.meta.url);
+  const prefix = "/_ultra/";
   const pattern = new URLPattern({
     pathname: `${prefix}:path*`,
   });
