@@ -9,6 +9,8 @@ import { composeHandlers } from "ultra/lib/handler.ts";
 
 const root = Deno.cwd();
 
+// change hash
+
 const importMap = Deno.env.get("ULTRA_MODE") === "development"
   ? await readImportMap("./importMap.dev.json")
   : await readImportMap("./importMap.json");
