@@ -19,8 +19,11 @@ export function createCompilerHandler(
   });
 
   const handleRequest = async (request: Request): Promise<Response> => {
+    log.debug(`[react/compiler.ts] Root ${root}`)
     const { pathname } = new URL(request.url);
+    log.debug(`[react/compiler.ts] Received ${pathname}`)
     const filePath = pathname.replace(prefix, "./");
+    log.debug(`[react/compiler.ts] Tramsformed ${filePath}`)
     const fileUrl = join(root, filePath);
 
     log.debug(`[react/compiler.ts] Compiling ${fileUrl}`)
