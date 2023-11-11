@@ -9,6 +9,18 @@ type CompilerOptions = {
   denyList?: string[];
 };
 
+async function getSourceFile(fileUrl: URL) {
+  try {
+    return await Deno.readTextFile(fileUrl);
+  } catch (_) {
+    return await (await fetch(fileUrl, {
+      headers: {
+        "Content-Type": "application/javascript",
+      }
+    })).text();
+  }
+}
+
 export function createCompilerHandler(
   options: CompilerOptions,
 ): RequestHandler {
@@ -27,7 +39,7 @@ export function createCompilerHandler(
     const fileUrl = join(root, filePath);
 
     log.debug(`[react/compiler.ts] Compiling ${fileUrl}`)
-    const source = await Deno.readTextFile(fileUrl);
+    const source = await getSourceFile(fileUrl);
     const result = await compile(fileUrl.toString(), source, {
       jsxImportSource: "react",
       development: true,
