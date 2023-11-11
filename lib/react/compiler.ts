@@ -1,6 +1,7 @@
 import { join } from "https://deno.land/std@0.203.0/url/mod.ts";
 import { compile } from "https://deno.land/x/mesozoic@v1.3.10/lib/compiler.ts";
 import { type RequestHandler } from "../handler.ts";
+import { log } from "ultra/lib/deps.ts";
 
 type CompilerOptions = {
   root: URL | string;
@@ -22,6 +23,7 @@ export function createCompilerHandler(
     const filePath = pathname.replace(prefix, "./");
     const fileUrl = join(root, filePath);
 
+    log.debug(`[react/compiler.ts] Compiling ${fileUrl}`)
     const source = await Deno.readTextFile(fileUrl);
     const result = await compile(fileUrl.toString(), source, {
       jsxImportSource: "react",
