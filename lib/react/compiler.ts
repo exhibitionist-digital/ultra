@@ -1,5 +1,5 @@
 import { join } from "https://deno.land/std@0.203.0/url/mod.ts";
-import { compile } from "https://deno.land/x/mesozoic@v1.3.10/lib/compiler.ts";
+import { compile } from "https://deno.land/x/danielduel_ultra_stack_mesozoic@0.0.2/lib/compiler.ts";
 import { type RequestHandler } from "../handler.ts";
 import { log } from "ultra/lib/logger.ts";
 
