@@ -26,7 +26,20 @@ export const compiler = (options: CompilerOptions) => {
     const path = !isRemoteSource ? join(root, pathname) : pathname;
     const url = !isRemoteSource ? toFileUrl(path) : new URL(pathname);
 
-    const isCompilerTarget = [".ts", ".tsx", ".js", ".jsx"].includes(extension);
+    const isCompilerTarget = [".ts", ".tsx", ".js", ".jsx", ".json"].includes(extension);
+    const isJson = [".json"].includes(extension);
+
+    if (method === "GET" && isJson) {
+      const bytes = await fetch(url).then((response) => response.arrayBuffer());
+      const source = new TextDecoder().decode(bytes);
+
+      return new Response(source, {
+        status: 200,
+        headers: {
+          "content-type": "application/json; charset=utf-8",
+        },
+      });
+    }
 
     if (method === "GET" && isCompilerTarget) {
       const bytes = await fetch(url).then((response) => response.arrayBuffer());
