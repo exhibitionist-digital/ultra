@@ -56,6 +56,15 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
 
       return;
     } catch (_error) {
+      if (path.match("\.map$")) {
+        log.debug(`Static file: ${path} does not exist, returning 404`);
+
+        return new Response(
+          null,
+          { status: 404 },
+        );
+      }
+
       /**
        * This is so we can just continue the request if the above fetch fails,
        * since the static asset might not exist, and we want to avoid Deno APIs
@@ -64,6 +73,7 @@ export const serveStatic = (options: ServeStaticOptions = { root: "" }) => {
        * TODO: Maybe we should handle the type of error that fetch would throw?
        */
       log.debug(`Static file: ${path} does not exist, continuing`);
+
       await next();
     }
   };
