@@ -1,6 +1,5 @@
 import { createServer } from "ultra/server.ts";
 import { Router } from "wouter";
-import staticLocationHook from "wouter/static-location";
 import App from "./src/app.tsx";
 
 const server = await createServer({
@@ -13,7 +12,7 @@ server.get("*", async (context) => {
    * Render the request
    */
   const result = await server.render(
-    <Router hook={staticLocationHook(new URL(context.req.url).pathname)}>
+    <Router ssrPath={new URL(context.req.url).pathname}>
       <App />
     </Router>,
   );
