@@ -29,8 +29,6 @@ import { StaticRouter } from "react-router-dom/server";
 ${
     p.wouter(`// Wouter
 import { Router } from "wouter";
-import staticLocationHook from "wouter/static-location";
-import { SearchParamsProvider } from "${ext("./src/wouter/index", true)}";
 `)
   }
 
@@ -111,14 +109,13 @@ ${
 ${p.reactRouter("<StaticRouter location={new URL(context.req.url).pathname}>")}
 ${
     p.wouter(`
-<Router hook={staticLocationHook(requestUrl.pathname)}>
-<SearchParamsProvider value={requestUrl.searchParams}>
+<Router ssrPath={requestUrl.pathname} ssrSearch={requestUrl.search}>
 `)
   }
 
 <App />
 
-${p.wouter("</SearchParamsProvider></Router>")}
+${p.wouter("</Router>")}
 ${p.reactRouter("</StaticRouter>")}
 ${p.reactQuery("</QueryClientProvider>")}
 ${p.reactHelmetAsync("</HelmetProvider>")}
