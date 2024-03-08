@@ -1,8 +1,6 @@
 import { createServer } from "ultra/server.ts";
 import { Router } from "wouter";
-import staticLocationHook from "wouter/static-location";
 import App from "./src/app.tsx";
-import { SearchParamsProvider } from "./src/context/SearchParams.tsx";
 
 const server = await createServer({
   importMapPath: Deno.env.get("ULTRA_MODE") === "development"
@@ -16,11 +14,10 @@ server.get("*", async (context) => {
    * Render the request
    */
   const requestUrl = new URL(context.req.url);
+
   const result = await server.render(
-    <Router hook={staticLocationHook(requestUrl.pathname)}>
-      <SearchParamsProvider value={requestUrl.searchParams}>
-        <App />
-      </SearchParamsProvider>
+    <Router ssrPath={requestUrl.pathname} ssrSearch={requestUrl.search}>
+      <App />
     </Router>,
   );
 
