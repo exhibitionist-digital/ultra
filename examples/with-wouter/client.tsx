@@ -6,5 +6,5 @@ hydrate(
   document,
   <Router ssrSearch={location.search}>
     <App />
-  </Router>
+  </Router>,
 );
