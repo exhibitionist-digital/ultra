@@ -40,7 +40,7 @@ export default function App() {
   }, [pathname]);
 
   const top = () => {
-    window.scroll({
+    globalThis.scroll({
       top: 0,
       left: 0,
       behavior: "smooth",
