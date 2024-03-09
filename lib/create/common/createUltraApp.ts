@@ -20,7 +20,6 @@ import {
   stitchesConfigContent,
   stitchesProviderContent,
 } from "../modules/stitches.ts";
-import { wouterContent } from "../modules/wouter.ts";
 import {
   queryClientContent,
   useDehydrateReactQueryContent,
@@ -70,10 +69,6 @@ export async function createUltraApp(config: Config) {
       ext("src/stitches/StitchesProvider", true),
       stitchesProviderContent(config),
     );
-  }
-
-  if (config.includes.includes("wouter")) {
-    await create(ext("src/wouter/index", true), wouterContent(config));
   }
 
   if (config.includes.includes("react-query" || "trpc")) {

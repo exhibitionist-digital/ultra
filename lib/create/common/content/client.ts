@@ -19,7 +19,6 @@ import { BrowserRouter } from "react-router-dom";
 ${
     p.wouter(`// Wouter
 import { Router } from "wouter";
-import { SearchParamsProvider } from "${ext("./src/wouter/index", true)}";
 `)
   }
 
@@ -47,14 +46,13 @@ ${
 ${p.reactRouter("<BrowserRouter>")}
 ${
     p.wouter(`
-<Router>
-<SearchParamsProvider value={new URLSearchParams(window.location.search)}>
+<Router ssrSearch={window.location.search}>
 `)
   }
 
 <App />
 
-${p.wouter("</SearchParamsProvider></Router>")}
+${p.wouter("</Router>")}
 ${p.reactRouter("</BrowserRouter>")}
 ${p.reactQuery("</Hydrate></QueryClientProvider>")}
 ${p.reactHelmetAsync("</HelmetProvider>")}
