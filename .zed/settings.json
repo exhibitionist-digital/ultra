@@ -9,7 +9,7 @@
     }
   },
   "languages": {
-    "TypeScript": {
+    "JavaScript": {
       "language_servers": [
         "deno",
         "!typescript-language-server",
@@ -18,7 +18,7 @@
       ],
       "formatter": "language_server"
     },
-    "TSX": {
+    "JSX": {
       "language_servers": [
         "deno",
         "!typescript-language-server",
