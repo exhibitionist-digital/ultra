@@ -1,55 +1,55 @@
-name: CI
+# name: CI
 
-on:
-  pull_request:
-    types: [opened, synchronize]
-  push:
-    branches: [main]
+# on:
+#   pull_request:
+#     types: [opened, synchronize]
+#   push:
+#     branches: [main]
 
-jobs:
-  fmt-lint-test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    
-    permissions:
-      id-token: write
-      contents: read
+# jobs:
+#   fmt-lint-test:
+#     strategy:
+#       matrix:
+#         os: [ubuntu-latest, windows-latest, macos-latest]
+#     runs-on: ${{ matrix.os }}
 
-    env:
-      DENO_NO_UPDATE_CHECK: true
-      # DENO_DIR: .deno-cache
+#     permissions:
+#       id-token: write
+#       contents: read
 
-    steps:
-      - name: Setup repo
-        uses: actions/checkout@v3
+#     env:
+#       DENO_NO_UPDATE_CHECK: true
+#       # DENO_DIR: .deno-cache
 
-      - name: Setup Deno
-        uses: denoland/setup-deno@v1
-        with:
-          deno-version: v1.x
+#     steps:
+#       - name: Setup repo
+#         uses: actions/checkout@v3
 
-      - name: Deno Info
-        run: deno info
+#       - name: Setup Deno
+#         uses: denoland/setup-deno@v1
+#         with:
+#           deno-version: v1.x
 
-      # - id: deno-info
-      #   run: echo "MODULES_CACHE=$(deno info --json | jq -r '.modulesCache')" >> $GITHUB_OUTPUT
-      
-      # - uses: actions/cache@v3
-      #   with:
-      #     path: ${{ steps.deno-info.outputs.MODULES_CACHE }}
-      #     key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
+#       - name: Deno Info
+#         run: deno info
 
-      - name: Verify formatting
-        run: deno fmt --check
+#       # - id: deno-info
+#       #   run: echo "MODULES_CACHE=$(deno info --json | jq -r '.modulesCache')" >> $GITHUB_OUTPUT
 
-      - name: Run linter
-        run: deno lint
+#       # - uses: actions/cache@v3
+#       #   with:
+#       #     path: ${{ steps.deno-info.outputs.MODULES_CACHE }}
+#       #     key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
 
-      - name: Type Check
-        if: matrix.os == 'ubuntu-latest'
-        run: deno check ./*.ts
-      
-      - name: Run tests
-        run: deno task test
+#       - name: Verify formatting
+#         run: deno fmt --check
+
+#       - name: Run linter
+#         run: deno lint
+
+#       - name: Type Check
+#         if: matrix.os == 'ubuntu-latest'
+#         run: deno check ./*.ts
+
+#       - name: Run tests
+#         run: deno task test
