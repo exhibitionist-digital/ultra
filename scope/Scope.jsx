@@ -14,7 +14,7 @@
  */
 const Scope = ({ href, css, children }) => {
   return (
-    <ultra-scope>
+    <ultra-scope style={{ display: "contents" }}>
       {href && <link rel="stylesheet" href={href} />}
       {css && (
         <style
