@@ -32,14 +32,4 @@ const Scope = ({ href, css, children }) => {
 
 export default Scope;
 
-/**
- * @param {string} a
- * @param {any} s
- */
-const css = (a, s) => {
-  const c = new String(a);
-  // @ts-ignore html escaped string
-  return (c.isEscaped = !0), (c.callbacks = s), c;
-};
-
-export { css };
+export const css = String.raw;
