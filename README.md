@@ -9,3 +9,8 @@
 [![Discord][discord-badge]][discord]
 
 </div>
+
+**Thank you for going on this journey with us.**
+
+[discord-badge]: https://img.shields.io/discord/956480805088153620?logo=discord&label=Discord&color=000000&&logoColor=ffffff
+[discord]: https://discord.gg/XDC5WxGHb2
