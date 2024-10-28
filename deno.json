@@ -1,0 +1,17 @@
+{
+  "tasks": {
+    "dev": "deno serve -A --unstable-hmr ./website/server.jsx",
+    "start": "deno serve -A --parallel ./website/server.jsx"
+  },
+  "imports": {
+    "@app/components/": "./components/",
+    "@std/fs": "jsr:@std/fs@^1.0.4",
+    "@std/path": "jsr:@std/path@^1.0.6",
+    "hono": "jsr:@hono/hono@^4.6.5",
+    "@ultra/": "./"
+  },
+  "compilerOptions": {
+    "jsx": "precompile",
+    "jsxImportSource": "hono/jsx"
+  }
+}
