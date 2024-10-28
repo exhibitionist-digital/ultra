@@ -7,6 +7,5 @@
 #### No Build Web Component Framework
 
 [![Discord][discord-badge]][discord]
-![Deno compatibility](https://shield.deno.dev/deno/^2)
 
 </div>
