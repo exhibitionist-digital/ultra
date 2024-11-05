@@ -6,7 +6,7 @@ import EnvContext from "./env-context.js";
  */
 export default function useEnv(name) {
   if (
-    typeof Deno === "undefined" && name.startsWith("ULTRA_PUBLIC_") === false
+    typeof Deno === "undefined" && name.startsWith("ULTRA_PUBLIC_") === false && name !== "ULTRA_MODE"
   ) {
     throw new Error(`Attempt to access non-public env variable. ${name}`);
   }
